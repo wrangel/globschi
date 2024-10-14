@@ -68,3 +68,6 @@ export async function getUrls() {
     };
   });
 }
+
+// eslint-disable-next-line
+export default { getUrls };

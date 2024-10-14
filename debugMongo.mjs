@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import { connectDB, Island } from "./server.mjs";
 
-async function queryAllIslands() {
+export async function queryAllIslands() {
   try {
     await connectDB();
     console.log("Connected to MongoDB");
@@ -15,12 +15,18 @@ async function queryAllIslands() {
       console.log("-------------------");
     });
     console.log(`Total number of Islands: ${docs.length}`);
+
+    return docs; // Return the documents
   } catch (error) {
     console.error(`Error querying Islands:`, error);
+    throw error; // Rethrow the error so it can be caught by the caller
   } finally {
     await mongoose.disconnect();
     console.log("Disconnected from MongoDB");
   }
 }
 
-export { queryAllIslands };
+// If you want to run this file directly
+if (import.meta.url === `file://${process.argv[1]}`) {
+  queryAllIslands().catch(console.error);
+}

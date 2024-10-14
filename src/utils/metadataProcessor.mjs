@@ -1,6 +1,6 @@
 // metadataProcessor.mjs
 
-import { Constants } from "./constants.mjs";
+import Constants from "./constants.mjs";
 
 const prepareDate = (date) => {
   const options = {

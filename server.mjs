@@ -4,7 +4,7 @@ import dotenv from "dotenv";
 import cors from "cors";
 import { beautify } from "./src/utils/metadataProcessor.mjs";
 import { getUrls } from "./src/utils/serveSignedUrls.js";
-import { queryAllIslands } from "./debugMongo.js";
+import { queryAllIslands } from "./debugMongo.mjs";
 
 dotenv.config();
 

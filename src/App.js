@@ -27,11 +27,15 @@ function App() {
 
   async function fetchBeautifiedData() {
     try {
-      const response = await fetch("/api/beautified-islands");
+      const response = await fetch(
+        "http://localhost:8091/api/beautified-islands"
+      );
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
-      const data = await response.json();
+      const text = await response.text();
+      console.log("Raw server response:", text);
+      const data = JSON.parse(text);
       setBeautifiedData(data);
     } catch (error) {
       console.error("Failed to fetch beautified data:", error);

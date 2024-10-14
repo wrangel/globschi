@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 import dotenv from "dotenv";
 import cors from "cors";
 import { beautify } from "./src/utils/metadataProcessor.mjs";
-import { getUrls } from "./src/utils/serveSignedUrls.js";
+import { getUrls } from "./src/utils/serveSignedUrls.mjs";
 import { queryAllIslands } from "./debugMongo.mjs";
 
 dotenv.config();

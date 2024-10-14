@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import HomePage from "./views/HomePage";
 import "./styles/main.css";
-import { getUrls } from "./utils/serveSignedUrls";
+import { getUrls } from "./utils/serveSignedUrls.mjs";
 
 function App() {
   const [loginStatus, setLoginStatus] = useState("Checking...");

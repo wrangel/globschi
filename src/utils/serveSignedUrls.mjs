@@ -1,8 +1,8 @@
 import { GetObjectCommand, ListObjectsCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
-import Constants from "./constants";
-import { getId } from "./helpers";
-import s3Client from "./awsConfig";
+import Constants from "./constants.mjs";
+import { getId } from "./helpers.js";
+import s3Client from "./awsConfig.js";
 
 export async function getUrls() {
   // Wait for Promise to resolve to get all the files in the bucket
@@ -68,6 +68,3 @@ export async function getUrls() {
     };
   });
 }
-
-// eslint-disable-next-line
-export default { getUrls };

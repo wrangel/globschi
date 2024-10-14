@@ -1,7 +1,7 @@
 import express from "express";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
-import { prepareDate } from "./src/utils/prepareMetadata.mjs";
+import { prepareDate } from "./src/utils/metadataProcessor.mjs";
 
 dotenv.config();
 

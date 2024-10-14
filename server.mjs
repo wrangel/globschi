@@ -9,7 +9,7 @@ import { queryAllIslands } from "./debugMongo.mjs";
 dotenv.config();
 
 const app = express();
-const PORT = process.env.DB_PORT || 8091;
+const PORT = process.env.PORT || 8081;
 
 // Enable CORS
 app.use(cors());

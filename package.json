@@ -1,7 +1,7 @@
 {
   "name": "panotest",
   "version": "0.1.0",
-  "proxy": "http://localhost:8081",
+  "proxy": "http://localhost:8091",
   "private": true,
   "dependencies": {
     "@aws-sdk/client-s3": "^3.670.0",
@@ -9,13 +9,13 @@
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
+    "axios": "^1.7.7",
     "concurrently": "^9.0.1",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "eslint-config-react-app": "^7.0.1",
     "express": "^4.21.1",
     "mongoose": "^8.7.1",
-    "panolens": "^0.12.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-masonry-css": "^1.0.16",

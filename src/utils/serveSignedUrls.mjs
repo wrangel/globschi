@@ -1,8 +1,9 @@
 import { GetObjectCommand, ListObjectsCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import Constants from "./constants.mjs";
-import { getId } from "./helpers.js";
-import s3Client from "./awsConfig.js";
+const helpers = await import("./helpers.mjs");
+const { getId } = helpers;
+import { s3Client } from "./awsConfig.mjs";
 
 export async function getUrls() {
   // Wait for Promise to resolve to get all the files in the bucket

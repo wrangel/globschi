@@ -1,122 +1,63 @@
-import React, { useEffect, useState } from "react";
-import HomePage from "./views/HomePage";
-import "./styles/main.css";
-import { getUrls } from "./utils/serveSignedUrls.mjs";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 
 function App() {
-  const [loginStatus, setLoginStatus] = useState("Checking...");
-  const [presignedUrls, setPresignedUrls] = useState([]);
-  const [beautifiedData, setBeautifiedData] = useState([]);
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    testAwsLogin();
-    fetchBeautifiedData();
+    const fetchData = async () => {
+      try {
+        const response = await axios.get("/api/beautified-islands");
+        setData(response.data);
+        setLoading(false);
+      } catch (err) {
+        setError("Error fetching data");
+        setLoading(false);
+      }
+    };
+
+    fetchData();
   }, []);
 
-  async function testAwsLogin() {
-    try {
-      // Get presigned URLs from AWS S3
-      const urls = await getUrls();
-      setPresignedUrls(urls);
-      setLoginStatus("Login succeeded");
-    } catch (error) {
-      console.error("AWS login failed:", error);
-      setLoginStatus("Login failed");
-    }
-  }
-
-  async function fetchBeautifiedData() {
-    try {
-      const response = await fetch(
-        "http://localhost:8091/api/beautified-islands"
-      );
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
-      const text = await response.text();
-      console.log("Raw server response:", text);
-      const data = JSON.parse(text);
-      setBeautifiedData(data);
-    } catch (error) {
-      console.error("Failed to fetch beautified data:", error);
-    }
-  }
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>{error}</div>;
 
   return (
-    <div className="App">
-      <h1>AWS Login Test</h1>
-      <p>Login status: {loginStatus}</p>
-
-      <div>
-        <h2>S3 Objects:</h2>
-        <ul>
-          {presignedUrls.map((item) => (
-            <li key={item.name}>
-              {item.name}:
-              <ul>
-                <li>
-                  Actual:{" "}
-                  <a
-                    href={item.urls.actual}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    View
-                  </a>
-                </li>
-                {item.urls.thumbnail && (
-                  <li>
-                    Thumbnail:{" "}
-                    <a
-                      href={item.urls.thumbnail}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      View
-                    </a>
-                  </li>
-                )}
-              </ul>
-            </li>
-          ))}
-        </ul>
-      </div>
-
-      <div>
-        <h2>Beautified Data:</h2>
-        <ul>
-          {beautifiedData.map((item) => (
-            <li key={item.name}>
-              <h3>{item.name}</h3>
-              <p>Type: {item.type}</p>
-              <p>Viewer: {item.viewer}</p>
-              <p>Author: {item.author}</p>
-              <p>Date: {item.dateTime}</p>
-              <p>
-                Location: {item.location}, {item.region}, {item.country}
-              </p>
-              <p>
-                Coordinates: {item.latitude}, {item.longitude}
-              </p>
-              <p>Altitude: {item.altitude}</p>
-              {item.postalCode && <p>Postal Code: {item.postalCode}</p>}
-              {item.road && <p>Road: {item.road}</p>}
-              <p>Views: {item.noViews}</p>
-              <img src={item.thumbnailUrl} alt={`Thumbnail of ${item.name}`} />
-              <br />
-              <a
-                href={item.actualUrl + item.actualQueryString}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                View Full Image
-              </a>
-            </li>
-          ))}
-        </ul>
-      </div>
-
-      <HomePage />
+    <div>
+      <h1>Island Data</h1>
+      {data.map((item, index) => (
+        <div key={index}>
+          <h2>{item.name}</h2>
+          <p>
+            Actual URL:{" "}
+            <a
+              href={item.urls.actual}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              View
+            </a>
+          </p>
+          <p>
+            Thumbnail URL:{" "}
+            <a
+              href={item.urls.thumbnail}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              View
+            </a>
+          </p>
+          <p>Author: {item.author}</p>
+          <p>Date: {item.dateTimeString}</p>
+          <p>Location: {item.location}</p>
+          <p>Country: {item.country}</p>
+          <p>Region: {item.region}</p>
+          <p>Views: {item.noViews}</p>
+        </div>
+      ))}
     </div>
   );
 }

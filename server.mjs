@@ -2,7 +2,8 @@ import express from "express";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 import { beautify } from "./metadataProcessor.mjs";
-import serveSignedUrls from "./src/utils/serveSignedUrls.js";
+import { getUrls } from "./src/utils/serveSignedUrls.js";
+import { queryAllIslands } from "./debugMongo.js";
 
 dotenv.config();
 
@@ -97,8 +98,9 @@ app.get("/api/islands", async (req, res) => {
 // API route to get beautified island data
 app.get("/api/beautified-islands", async (req, res) => {
   try {
-    const presignedUrls = await serveSignedUrls.getUrls();
-    const beautifiedData = await beautify(presignedUrls);
+    const presignedUrls = await getUrls();
+    const mongoData = await queryAllIslands();
+    const beautifiedData = await beautify(mongoData, presignedUrls);
     res.json(beautifiedData);
   } catch (error) {
     console.error("Error fetching beautified island data:", error);

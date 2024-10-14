@@ -1,9 +1,7 @@
 // metadataProcessor.mjs
 
 import { Constants } from "./src/utils/constants.mjs";
-import { Island } from "./server.mjs";
 
-// Prepare date for website
 const prepareDate = (date) => {
   const options = {
     year: "numeric",
@@ -20,27 +18,15 @@ const prepareDate = (date) => {
   return new Intl.DateTimeFormat("en-US", options).format(date);
 };
 
-// Adapt metadata to show prettily on the website
-export const beautify = async (presignedUrls) => {
-  // Get the metadata from MongoDB
-  const docs = await Island.find().sort({ dateTime: -1 }).lean();
+export const beautify = async (mongoData, presignedUrls) => {
+  return mongoData.map((doc) => {
+    const urls =
+      presignedUrls.find((element) => element.name === doc.name)?.urls || {};
 
-  // Get the current presigned urls
-  return docs.map((doc) => {
-    const urls = presignedUrls
-      .filter((element) => {
-        return element.name === doc.name;
-      })
-      .map((element) => {
-        return element.urls;
-      });
-
-    // Prepare the url of the actual image
-    const url = new URL(urls[0].actual);
+    const url = new URL(urls.actual || "");
     const url1 = url.origin + url.pathname;
     const url2 = encodeURIComponent(url.search);
 
-    // Prepare output
     return {
       name: doc.name,
       type: doc.type,
@@ -56,7 +42,7 @@ export const beautify = async (presignedUrls) => {
       postalCode: doc.postalCode,
       road: doc.road === undefined ? "" : ", above " + doc.road,
       noViews: 0,
-      thumbnailUrl: urls[0].thumbnail,
+      thumbnailUrl: urls.thumbnail || "",
       actualUrl: url1,
       actualQueryString: url2,
     };

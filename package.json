@@ -4,9 +4,11 @@
   "private": true,
   "dependencies": {
     "@aws-sdk/client-s3": "^3.670.0",
+    "@aws-sdk/s3-request-presigner": "^3.670.0",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
+    "concurrently": "^9.0.1",
     "dotenv": "^16.4.5",
     "eslint-config-react-app": "^7.0.1",
     "express": "^4.21.1",
@@ -24,7 +26,10 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "server": "node server.mjs",
+    "client": "pnpm start",
+    "dev": "concurrently \"npm run server\" \"npm run client\""
   },
   "eslintConfig": {
     "extends": [

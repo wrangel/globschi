@@ -11,6 +11,9 @@ importers:
       '@aws-sdk/client-s3':
         specifier: ^3.670.0
         version: 3.670.0
+      '@aws-sdk/s3-request-presigner':
+        specifier: ^3.670.0
+        version: 3.670.0
       '@testing-library/jest-dom':
         specifier: ^5.17.0
         version: 5.17.0
@@ -20,6 +23,9 @@ importers:
       '@testing-library/user-event':
         specifier: ^13.5.0
         version: 13.5.0(@testing-library/dom@8.20.1)
+      concurrently:
+        specifier: ^9.0.1
+        version: 9.0.1
       dotenv:
         specifier: ^16.4.5
         version: 16.4.5
@@ -197,6 +203,10 @@ packages:
     resolution: {integrity: sha512-iNr+JhhA902JMKHG9IwT9YdaEx6KGl6vjAL5BRNeOjfj4cZYMog6Lz/IlfOAltMtT0w88DAHDEFrBd2uO0l2eg==}
     engines: {node: '>=16.0.0'}
 
+  '@aws-sdk/s3-request-presigner@3.670.0':
+    resolution: {integrity: sha512-cTTQWJhmCRNH9NZbTqAhx3aXmC+p7gYzj7kNOyzdTA6D4jJOQZekxFFEQ0T2BPFYPR9Elk77W0yK+Nv9wMVD4g==}
+    engines: {node: '>=16.0.0'}
+
   '@aws-sdk/signature-v4-multi-region@3.669.0':
     resolution: {integrity: sha512-TVwlWAxfBHnFjnfTBQWUhzVJzjwVhkq1+KR0JZV7JrfqeyBOdZjAaV9ie3VNY9HUouecq1fDuKaSwe4JiWQsHg==}
     engines: {node: '>=16.0.0'}
@@ -217,6 +227,10 @@ packages:
 
   '@aws-sdk/util-endpoints@3.667.0':
     resolution: {integrity: sha512-X22SYDAuQJWnkF1/q17pkX3nGw5XMD9YEUbmt87vUnRq7iyJ3JOpl6UKOBeUBaL838wA5yzdbinmCITJ/VZ1QA==}
+    engines: {node: '>=16.0.0'}
+
+  '@aws-sdk/util-format-url@3.667.0':
+    resolution: {integrity: sha512-S0D731SnEPnTfbJ/Dldw5dDrOc8uipK6NLXHDs2xIq0t61iwZLMEiN8yWCs2wAZVVJKpldUM1THLaaufU9SSSA==}
     engines: {node: '>=16.0.0'}
 
   '@aws-sdk/util-locate-window@3.568.0':
@@ -2269,6 +2283,10 @@ packages:
   cliui@7.0.4:
     resolution: {integrity: sha512-OcRE68cOsVMXp1Yvonl/fzkQOyjLSu/8bhPDfQt0e0/Eb283TKP20Fs2MqoPsr9SwA595rRCA+QMzYc9nBP+JQ==}
 
+  cliui@8.0.1:
+    resolution: {integrity: sha512-BSeNnyus75C4//NQ9gQt1/csTXyo/8Sb+afLAkzAptFuMsod9HFokGNudZpi/oQV73hnVK+sR+5PVRMd+Dr7YQ==}
+    engines: {node: '>=12'}
+
   co@4.6.0:
     resolution: {integrity: sha512-QVb0dM5HvG+uaxitm8wONl7jltx8dqhfU33DcqtOZcLSVIKSDDLDi7+0LbAKiyI8hD9u42m2YxXSkMGWThaecQ==}
     engines: {iojs: '>= 1.0.0', node: '>= 0.12.0'}
@@ -2335,6 +2353,11 @@ packages:
 
   concat-map@0.0.1:
     resolution: {integrity: sha512-/Srv4dswyQNBfohGpz9o6Yb3Gz3SrUDqBH5rTuhGR7ahtlbYKnVxw2bCFMRljaA7EXHaXZ8wsHdodFvbkhKmqg==}
+
+  concurrently@9.0.1:
+    resolution: {integrity: sha512-wYKvCd/f54sTXJMSfV6Ln/B8UrfLBKOYa+lzc6CHay3Qek+LorVSBdMVfyewFhRbH0Rbabsk4D+3PL/VjQ5gzg==}
+    engines: {node: '>=18'}
+    hasBin: true
 
   confusing-browser-globals@1.0.11:
     resolution: {integrity: sha512-JsPKdmh8ZkmnHxDk55FZ1TqVLvEQTvoByJZRN9jzI0UjxK/QgAmsphz7PGtqgPieQZ/CQcHWXCR7ATDNhGe+YA==}
@@ -5135,6 +5158,9 @@ packages:
   run-parallel@1.2.0:
     resolution: {integrity: sha512-5l4VyZR86LZ/lDxZTR6jqL8AFE2S0IFLMP26AbjsLVADxHdhB/c0GUsH+y39UfCi3dzz8OlQuPmnaJOMoDHQBA==}
 
+  rxjs@7.8.1:
+    resolution: {integrity: sha512-AA3TVj+0A2iuIoQkWEK/tqFjBq2j+6PO6Y0zJcvzLAFhEFIO3HL0vls9hWLncZbAAbK0mar7oZ4V079I/qPMxg==}
+
   safe-array-concat@1.1.2:
     resolution: {integrity: sha512-vj6RsCsWBCf19jIeHEfkRMw8DPiBb+DMXklQ/1SGDHOMlHdPUkZXFQ2YdplS23zESTijAcurb1aSgJA3AgMu1Q==}
     engines: {node: '>=0.4'}
@@ -5596,6 +5622,10 @@ packages:
     resolution: {integrity: sha512-2lv/66T7e5yNyhAAC4NaKe5nVavzuGJQVVtRYLyQ2OI8tsJ61PMLlelehb0wi2Hx6+hT/OJUWZcw8MjlSRnxvw==}
     engines: {node: '>=14'}
 
+  tree-kill@1.2.2:
+    resolution: {integrity: sha512-L0Orpi8qGpRG//Nd+H90vFB+3iHnue1zSSGmNOOCh1GLJ7rUKVwV2HvijphGQS2UmhUZewS9VgvxYIdgr+fG1A==}
+    hasBin: true
+
   tryer@1.0.1:
     resolution: {integrity: sha512-c3zayb8/kWWpycWYg87P71E1S1ZL6b6IJxfb5fvsUgsf0S2MVGaDhDXXjDMpdCpfWXqptc+4mXwmiy1ypXqRAA==}
 
@@ -6020,9 +6050,17 @@ packages:
     resolution: {integrity: sha512-y11nGElTIV+CT3Zv9t7VKl+Q3hTQoT9a1Qzezhhl6Rp21gJ/IVTW7Z3y9EWXhuUBC2Shnf+DX0antecpAwSP8w==}
     engines: {node: '>=10'}
 
+  yargs-parser@21.1.1:
+    resolution: {integrity: sha512-tVpsJW7DdjecAiFpbIB1e3qxIQsE6NoPc5/eTdrbbIC4h0LVsWhnoa3g+m2HclBIujHzsxZ4VJVA+GUuc2/LBw==}
+    engines: {node: '>=12'}
+
   yargs@16.2.0:
     resolution: {integrity: sha512-D1mvvtDG0L5ft/jGWkLpG1+m0eQxOfaBvTNELraWj22wSVUMWxZUvYgJYcKh6jGGIkJFhH4IZPQhR4TKpc8mBw==}
     engines: {node: '>=10'}
+
+  yargs@17.7.2:
+    resolution: {integrity: sha512-7dSzzRQ++CKnNI/krKnYRV7JKKPUXMEh61soaHKg9mrWEhzFWhFnxPxGl+69cD1Ou63C13NUPCnmIcrvqCuM6w==}
+    engines: {node: '>=12'}
 
   yocto-queue@0.1.0:
     resolution: {integrity: sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==}
@@ -6493,6 +6531,17 @@ snapshots:
       '@smithy/util-middleware': 3.0.7
       tslib: 2.7.0
 
+  '@aws-sdk/s3-request-presigner@3.670.0':
+    dependencies:
+      '@aws-sdk/signature-v4-multi-region': 3.669.0
+      '@aws-sdk/types': 3.667.0
+      '@aws-sdk/util-format-url': 3.667.0
+      '@smithy/middleware-endpoint': 3.1.4
+      '@smithy/protocol-http': 4.1.4
+      '@smithy/smithy-client': 3.4.0
+      '@smithy/types': 3.5.0
+      tslib: 2.7.0
+
   '@aws-sdk/signature-v4-multi-region@3.669.0':
     dependencies:
       '@aws-sdk/middleware-sdk-s3': 3.669.0
@@ -6525,6 +6574,13 @@ snapshots:
       '@aws-sdk/types': 3.667.0
       '@smithy/types': 3.5.0
       '@smithy/util-endpoints': 2.1.3
+      tslib: 2.7.0
+
+  '@aws-sdk/util-format-url@3.667.0':
+    dependencies:
+      '@aws-sdk/types': 3.667.0
+      '@smithy/querystring-builder': 3.0.7
+      '@smithy/types': 3.5.0
       tslib: 2.7.0
 
   '@aws-sdk/util-locate-window@3.568.0':
@@ -9200,6 +9256,12 @@ snapshots:
       strip-ansi: 6.0.1
       wrap-ansi: 7.0.0
 
+  cliui@8.0.1:
+    dependencies:
+      string-width: 4.2.3
+      strip-ansi: 6.0.1
+      wrap-ansi: 7.0.0
+
   co@4.6.0: {}
 
   coa@2.0.2:
@@ -9259,6 +9321,16 @@ snapshots:
       - supports-color
 
   concat-map@0.0.1: {}
+
+  concurrently@9.0.1:
+    dependencies:
+      chalk: 4.1.2
+      lodash: 4.17.21
+      rxjs: 7.8.1
+      shell-quote: 1.8.1
+      supports-color: 8.1.1
+      tree-kill: 1.2.2
+      yargs: 17.7.2
 
   confusing-browser-globals@1.0.11: {}
 
@@ -12577,6 +12649,10 @@ snapshots:
     dependencies:
       queue-microtask: 1.2.3
 
+  rxjs@7.8.1:
+    dependencies:
+      tslib: 2.7.0
+
   safe-array-concat@1.1.2:
     dependencies:
       call-bind: 1.0.7
@@ -13110,6 +13186,8 @@ snapshots:
     dependencies:
       punycode: 2.3.1
 
+  tree-kill@1.2.2: {}
+
   tryer@1.0.1: {}
 
   ts-interface-checker@0.1.13: {}
@@ -13642,6 +13720,8 @@ snapshots:
 
   yargs-parser@20.2.9: {}
 
+  yargs-parser@21.1.1: {}
+
   yargs@16.2.0:
     dependencies:
       cliui: 7.0.4
@@ -13651,5 +13731,15 @@ snapshots:
       string-width: 4.2.3
       y18n: 5.0.8
       yargs-parser: 20.2.9
+
+  yargs@17.7.2:
+    dependencies:
+      cliui: 8.0.1
+      escalade: 3.2.0
+      get-caller-file: 2.0.5
+      require-directory: 2.1.1
+      string-width: 4.2.3
+      y18n: 5.0.8
+      yargs-parser: 21.1.1
 
   yocto-queue@0.1.0: {}

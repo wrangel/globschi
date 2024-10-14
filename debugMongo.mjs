@@ -23,4 +23,4 @@ async function queryAllIslands() {
   }
 }
 
-queryAllIslands();
+export { queryAllIslands };

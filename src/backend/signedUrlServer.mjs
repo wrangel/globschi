@@ -1,10 +1,7 @@
 import { GetObjectCommand, ListObjectsCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
-import Constants from "./constants.mjs";
-import loadEnv from "./loadEnv.mjs";
 import { s3Client } from "./awsConfig.mjs";
-
-loadEnv(); // This ensures the environment variables are loaded
+import { THUMBNAIL_ID, ACTUAL_ID } from "./constants.mjs";
 
 const helpers = await import("./helpers.mjs");
 const { getId } = helpers;
@@ -22,9 +19,9 @@ export async function getUrls() {
     list.map(async (content) => {
       const key = content.Key;
       const type =
-        key.substring(0, key.indexOf("/")) === Constants.THUMBNAIL_ID
-          ? Constants.THUMBNAIL_ID
-          : Constants.ACTUAL_ID;
+        key.substring(0, key.indexOf("/")) === THUMBNAIL_ID
+          ? THUMBNAIL_ID
+          : ACTUAL_ID;
       return {
         id: getId(key),
         type,

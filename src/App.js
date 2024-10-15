@@ -2,22 +2,29 @@ import React, { useState, useEffect } from "react";
 import { getUrls } from "./backend/signedUrlServer.mjs";
 
 function App() {
-  const [urls, setUrls] = useState([]);
+  const [urlData, setUrlData] = useState([]);
   const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function fetchUrls() {
       try {
         const fetchedUrls = await getUrls();
-        setUrls(fetchedUrls);
+        setUrlData(fetchedUrls);
+        setLoading(false);
       } catch (err) {
         console.error("Error fetching URLs:", err);
         setError(err.message);
+        setLoading(false);
       }
     }
 
     fetchUrls();
   }, []);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
   if (error) {
     return <div>Error: {error}</div>;
@@ -26,41 +33,37 @@ function App() {
   return (
     <div className="App">
       <h1>S3 Signed URLs</h1>
-      {urls.length === 0 ? (
-        <p>Loading...</p>
-      ) : (
-        <ul>
-          {urls.map((item, index) => (
-            <li key={index}>
-              {item.name}:
-              <ul>
+      <ul>
+        {urlData.map((item, index) => (
+          <li key={index}>
+            <h3>{item.name}</h3>
+            <ul>
+              <li>
+                Actual URL:{" "}
+                <a
+                  href={item.urls.actual}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  View
+                </a>
+              </li>
+              {item.urls.thumbnail && (
                 <li>
-                  Actual:{" "}
+                  Thumbnail URL:{" "}
                   <a
-                    href={item.urls.actual}
+                    href={item.urls.thumbnail}
                     target="_blank"
                     rel="noopener noreferrer"
                   >
                     View
                   </a>
                 </li>
-                {item.urls.thumbnail && (
-                  <li>
-                    Thumbnail:{" "}
-                    <a
-                      href={item.urls.thumbnail}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      View
-                    </a>
-                  </li>
-                )}
-              </ul>
-            </li>
-          ))}
-        </ul>
-      )}
+              )}
+            </ul>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }

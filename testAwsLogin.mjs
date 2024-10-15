@@ -1,21 +1,20 @@
-import { S3Client, ListObjectsV2Command } from "@aws-sdk/client-s3";
+import { ListObjectsV2Command } from "@aws-sdk/client-s3";
+import { s3Client } from "./src/utils/awsConfig.mjs";
 import dotenv from "dotenv";
+import { fileURLToPath } from "url";
+import { dirname, resolve } from "path";
 
-dotenv.config();
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
-const s3Client = new S3Client({
-  credentials: {
-    accessKeyId: process.env.ACCESS_KEY,
-    secretAccessKey: process.env.SECRET_ACCESS_KEY,
-  },
-  region: process.env.BUCKET_REGION,
-});
+// Load .env file from the root directory
+dotenv.config({ path: resolve(__dirname, ".env") });
 
 async function testAwsLogin() {
   try {
     const command = new ListObjectsV2Command({
       Bucket: process.env.SITE_BUCKET,
-      MaxKeys: 1, // We only need to list one object to confirm access
+      MaxKeys: 1,
     });
     const response = await s3Client.send(command);
     console.log("Successfully connected to AWS and accessed the bucket.");

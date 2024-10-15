@@ -2,9 +2,6 @@ import express from "express";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 import cors from "cors";
-import { beautify } from "./src/utils/metadataProcessor.mjs";
-import { getUrls } from "./src/utils/serveSignedUrls.mjs";
-import { queryAllIslands } from "./debugMongo.mjs";
 
 dotenv.config();
 
@@ -99,35 +96,6 @@ app.get("/api/test-mongo", async (req, res) => {
     res
       .status(500)
       .json({ message: "MongoDB connection failed", error: error.message });
-  }
-});
-
-// API route to get all Islands
-app.get("/api/islands", async (req, res) => {
-  try {
-    const islands = await Island.find().sort({ dateTime: -1 }).lean();
-    res.json(islands);
-  } catch (error) {
-    console.error("Error fetching islands:", error);
-    res.status(500).json({ message: error.message });
-  }
-});
-
-// API route to get beautified island data
-app.get("/api/beautified-islands", async (req, res) => {
-  try {
-    const presignedUrls = await getUrls();
-    console.log("Presigned URLs fetched:", presignedUrls.length);
-    const mongoData = await queryAllIslands();
-    console.log("MongoDB data fetched:", mongoData.length);
-
-    const beautifiedData = await beautify(mongoData, presignedUrls);
-    console.log("Data beautified:", beautifiedData.length);
-
-    res.json(beautifiedData);
-  } catch (error) {
-    console.error("Error in /api/beautified-islands:", error);
-    res.status(500).json({ message: error.message, stack: error.stack });
   }
 });
 

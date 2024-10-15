@@ -9,7 +9,7 @@ export async function getUrls() {
   // Wait for Promise to resolve to get all the files in the bucket
   const list = (
     await s3Client.send(
-      new ListObjectsCommand({ Bucket: process.env.REACT_APP_SITE_BUCKET })
+      new ListObjectsCommand({ Bucket: process.env.SITE_BUCKET })
     )
   ).Contents;
 
@@ -28,7 +28,7 @@ export async function getUrls() {
         sigUrl: await getSignedUrl(
           s3Client,
           new GetObjectCommand({
-            Bucket: process.env.REACT_APP_SITE_BUCKET,
+            Bucket: process.env.SITE_BUCKET,
             Key: key,
           }),
           { expiresIn: 95040 }

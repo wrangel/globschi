@@ -9,7 +9,7 @@ const connectDB = async () => {
     mongoose.options.strictQuery = false;
 
     await mongoose.connect(
-      `mongodb+srv://${process.env.REACT_APP_DB_USER}:${process.env.REACT_APP_DB_PASSWORD}@${process.env.REACT_APP_SERVER}/${process.env.REACT_APP_DB}?retryWrites=true&w=majority`
+      `mongodb+srv://${process.env.DB_USER}:${process.env.APP_DB_PASSWORD}@${process.env.SERVER}/${process.env.DB}?retryWrites=true&w=majority`
     );
 
     console.log("Connected to MongoDB");

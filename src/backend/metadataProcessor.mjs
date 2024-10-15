@@ -9,9 +9,17 @@ export const beautify = async (mongoData, presignedUrls) => {
     presignedUrls.some((urlItem) => urlItem.name === mongoItem.name)
   );
 
+  // Perform bookkeeping
+  const mongoNames = new Set(mongoData.map((item) => item.name));
+  const awsNames = new Set(presignedUrls.map((item) => item.name));
+  const onlyInMongo = [...mongoNames].filter((name) => !awsNames.has(name));
+  const onlyInAWS = [...awsNames].filter((name) => !mongoNames.has(name));
+
   console.log("Number of elements in mongoData:", mongoData.length);
   console.log("Number of elements in presignedUrls:", presignedUrls.length);
   console.log("Number of elements after intersection:", intersectedData.length);
+  console.log("Elements only in MongoDB:", onlyInMongo);
+  console.log("Elements only in AWS:", onlyInAWS);
 
   try {
     return intersectedData.map((doc) => {

@@ -1,14 +1,9 @@
+// testAwsLogin.mjs
 import { ListObjectsV2Command } from "@aws-sdk/client-s3";
 import { s3Client } from "./src/utils/awsConfig.mjs";
-import dotenv from "dotenv";
-import { fileURLToPath } from "url";
-import { dirname, resolve } from "path";
+import loadEnv from "./loadEnv.mjs";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-
-// Load .env file from the root directory
-dotenv.config({ path: resolve(__dirname, ".env") });
+loadEnv();
 
 async function testAwsLogin() {
   try {

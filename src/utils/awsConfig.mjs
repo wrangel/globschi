@@ -1,6 +1,6 @@
 // src/utils/awsConfig.mjs
 import { S3Client } from "@aws-sdk/client-s3";
-import loadEnv from "../../loadEnv.mjs";
+import loadEnv from "../loadEnv.mjs";
 
 loadEnv();
 

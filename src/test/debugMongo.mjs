@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { connectDB, Island } from "./server.mjs";
+import { connectDB, Island } from "../server.mjs";
 
 export async function queryAllIslands() {
   try {

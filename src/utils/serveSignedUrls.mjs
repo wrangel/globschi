@@ -1,9 +1,13 @@
 import { GetObjectCommand, ListObjectsCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import Constants from "./constants.mjs";
+import loadEnv from "./loadEnv.mjs";
+import { s3Client } from "./awsConfig.mjs";
+
+loadEnv(); // This ensures the environment variables are loaded
+
 const helpers = await import("./helpers.mjs");
 const { getId } = helpers;
-import { s3Client } from "./awsConfig.mjs";
 
 export async function getUrls() {
   // Wait for Promise to resolve to get all the files in the bucket
@@ -12,6 +16,7 @@ export async function getUrls() {
       new ListObjectsCommand({ Bucket: process.env.SITE_BUCKET })
     )
   ).Contents;
+
   // Provide Promises to get presigned urls
   const arr0 = await Promise.all(
     list.map(async (content) => {

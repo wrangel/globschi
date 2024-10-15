@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { getUrls } from "./utils/serveSignedUrls.mjs";
+import { getUrls } from "./backend/signedUrlServer.mjs";
 
 function App() {
   const [urls, setUrls] = useState([]);

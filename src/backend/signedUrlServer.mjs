@@ -1,7 +1,7 @@
 import { GetObjectCommand, ListObjectsCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import Constants from "./constants.mjs";
-import loadEnv from "../loadEnv.mjs";
+import loadEnv from "./loadEnv.mjs";
 import { s3Client } from "./awsConfig.mjs";
 
 loadEnv(); // This ensures the environment variables are loaded

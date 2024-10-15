@@ -1,9 +1,10 @@
 import express from "express";
 import mongoose from "mongoose";
-import dotenv from "dotenv";
 import cors from "cors";
+import loadEnv from "./loadEnv.mjs";
 
-dotenv.config();
+// Load environment variables
+loadEnv();
 
 console.log("Starting server...");
 

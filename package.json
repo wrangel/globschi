@@ -32,8 +32,8 @@
     "eject": "react-scripts eject",
     "client": "pnpm start",
     "server": "node src/backend/server.mjs",
-    "debug-mongo": "node src/backend/debugMongo.mjs",
-    "test-aws": "node src/backend/testAwsLogin.mjs",
+    "debug-mongo": "node src/backend/tests/debugMongo.mjs",
+    "test-aws": "node src/backend/tests/testAwsLogin.mjs",
     "dev": "concurrently \"npm run server\" \"npm run client\""
   },
   "eslintConfig": {

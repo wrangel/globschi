@@ -52,11 +52,11 @@ function CombinedDataList() {
             <p>
               Actual URL:{" "}
               <a
-                href={item.actualUrl}
+                href={item.actualQueryString}
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                {item.actualUrl}
+                {item.actualQueryString}
               </a>
             </p>
           </li>

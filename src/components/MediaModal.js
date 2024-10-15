@@ -1,3 +1,4 @@
+// src/components/MediaModal.js
 import Modal from "react-modal";
 import { useSwipeable } from "react-swipeable";
 import PanoramaViewer from "./PanoramaViewer";

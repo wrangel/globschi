@@ -1,3 +1,4 @@
+// src/components/PanoramaViewer.js
 import { useEffect, useRef } from "react";
 import * as PANOLENS from "panolens";
 

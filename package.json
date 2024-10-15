@@ -30,11 +30,11 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "server": "node src/server.mjs",
     "client": "pnpm start",
-    "dev": "concurrently \"npm run server\" \"npm run client\"",
-    "debug-mongo": "node src/test/debugMongo.mjs",
-    "test-aws": "node src/test/testAwsLogin.mjs"
+    "server": "node src/backend/server.mjs",
+    "debug-mongo": "node src/backend/debugMongo.mjs",
+    "test-aws": "node src/backend/testAwsLogin.mjs",
+    "dev": "concurrently \"npm run server\" \"npm run client\""
   },
   "eslintConfig": {
     "extends": [

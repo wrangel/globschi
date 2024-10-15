@@ -12,7 +12,6 @@ export async function getUrls() {
       new ListObjectsCommand({ Bucket: process.env.SITE_BUCKET })
     )
   ).Contents;
-
   // Provide Promises to get presigned urls
   const arr0 = await Promise.all(
     list.map(async (content) => {

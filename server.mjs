@@ -8,6 +8,8 @@ import { queryAllIslands } from "./debugMongo.mjs";
 
 dotenv.config();
 
+console.log("Starting server...");
+
 const app = express();
 const PORT = process.env.PORT || 8081;
 
@@ -116,7 +118,6 @@ app.get("/api/beautified-islands", async (req, res) => {
   try {
     const presignedUrls = await getUrls();
     console.log("Presigned URLs fetched:", presignedUrls.length);
-
     const mongoData = await queryAllIslands();
     console.log("MongoDB data fetched:", mongoData.length);
 

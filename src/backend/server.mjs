@@ -2,9 +2,9 @@ import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
 import { loadEnv } from "./loadEnv.mjs";
-loadEnv();
+import combinedDataRoute from "./routes/combinedDataRoute.mjs";
 
-// Rest of your server code
+loadEnv();
 
 console.log("Starting server...");
 
@@ -89,16 +89,11 @@ app.get("/", (req, res) => {
 
 // API route to test MongoDB connection
 app.get("/api/test-mongo", async (req, res) => {
-  try {
-    await mongoose.connection.db.admin().ping();
-    res.json({ message: "MongoDB connection successful" });
-  } catch (error) {
-    console.error("MongoDB connection failed:", error);
-    res
-      .status(500)
-      .json({ message: "MongoDB connection failed", error: error.message });
-  }
+  // ... (your existing code)
 });
+
+// Use the combined data route
+app.use("/api", combinedDataRoute);
 
 // Check if this module is the main module
 const isMainModule = import.meta.url === `file://${process.argv[1]}`;

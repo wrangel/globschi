@@ -1,11 +1,20 @@
 // metadataProcessor.mjs
 
-import Constants from "./constants.mjs";
+import { AUTHOR_PICTURES_PATH, MEDIA_PAGES } from "./constants.mjs";
 import { prepareDate } from "./helpers.mjs";
 
 export const beautify = async (mongoData, presignedUrls) => {
+  // Create an intersection based on the 'name' property
+  const intersectedData = mongoData.filter((mongoItem) =>
+    presignedUrls.some((urlItem) => urlItem.name === mongoItem.name)
+  );
+
+  console.log("Number of elements in mongoData:", mongoData.length);
+  console.log("Number of elements in presignedUrls:", presignedUrls.length);
+  console.log("Number of elements after intersection:", intersectedData.length);
+
   try {
-    return mongoData.map((doc) => {
+    return intersectedData.map((doc) => {
       const urls =
         presignedUrls.find((element) => element.name === doc.name)?.urls || {};
 
@@ -16,8 +25,8 @@ export const beautify = async (mongoData, presignedUrls) => {
       return {
         name: doc.name,
         type: doc.type,
-        viewer: doc.type === Constants.MEDIA_PAGES[1] ? "pano" : "img",
-        author: Constants.AUTHOR_PICTURES_PATH + doc.author + ".svg",
+        viewer: doc.type === MEDIA_PAGES[1] ? "pano" : "img",
+        author: AUTHOR_PICTURES_PATH + doc.author + ".svg",
         dateTime: prepareDate(doc.dateTime),
         latitude: doc.latitude,
         longitude: doc.longitude,

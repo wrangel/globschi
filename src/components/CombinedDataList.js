@@ -17,6 +17,10 @@ function CombinedDataList() {
       .then((data) => {
         setData(data);
         setLoading(false);
+        // Debug log to see all available fields
+        if (process.env.NODE_ENV === "development") {
+          console.log("Full dataset sample:", data[0]);
+        }
       })
       .catch((error) => {
         setError(error.message);
@@ -45,6 +49,16 @@ function CombinedDataList() {
               alt={item.name}
               style={{ maxWidth: "200px" }}
             />
+            <p>
+              Actual URL:{" "}
+              <a
+                href={item.actualUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {item.actualUrl}
+              </a>
+            </p>
           </li>
         ))}
       </ul>

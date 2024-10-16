@@ -10,15 +10,15 @@ const { getId } = helpers;
 
 export async function getUrls() {
   // Wait for Promise to resolve to get all the files in the bucket
-  const list = (
+  const array0 = (
     await s3Client.send(
       new ListObjectsCommand({ Bucket: process.env.SITE_BUCKET })
     )
   ).Contents;
 
   // Provide Promises to get presigned urls
-  const arr0 = await Promise.all(
-    list.map(async (content) => {
+  const array1 = await Promise.all(
+    array0.map(async (content) => {
       const key = content.Key;
       const type =
         key.substring(0, key.indexOf("/")) === THUMBNAIL_ID
@@ -41,7 +41,7 @@ export async function getUrls() {
   );
 
   // Reduce the info on the id
-  const arr1 = arr0.reduce((acc, d) => {
+  const array2 = array1.reduce((acc, d) => {
     const found = acc.find((a) => a.id === d.id);
     const value = { type: d.type, sigUrl: d.sigUrl };
     if (!found) {
@@ -52,8 +52,8 @@ export async function getUrls() {
     return acc;
   }, []);
 
-  // sort urls based on type (first: actual, second: thumbnail)
-  const arr2 = arr1.map((r) => {
+  // Sort urls based on type (first: actual, second: thumbnail)
+  const array3 = array2.map((r) => {
     const sorted = r.data.sort((a, b) => {
       if (a.type < b.type) return -1;
       if (a.type > b.type) return 1;
@@ -63,7 +63,7 @@ export async function getUrls() {
   });
 
   // Create new key value pair
-  return arr2.map((elem) => {
+  return array3.map((elem) => {
     let actual_url = elem.data[0].sigUrl;
     let thumbnail_url = elem.data[1]?.sigUrl;
     return {

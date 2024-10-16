@@ -26,10 +26,6 @@ export const beautify = async (mongoData, presignedUrls) => {
       const urls =
         presignedUrls.find((element) => element.name === doc.name)?.urls || {};
 
-      const url = new URL(urls.actual || "");
-      const url1 = url.origin + url.pathname;
-      const url2 = encodeURIComponent(url.search);
-
       return {
         name: doc.name,
         type: doc.type,
@@ -46,8 +42,7 @@ export const beautify = async (mongoData, presignedUrls) => {
         road: doc.road === undefined ? "" : ", above " + doc.road,
         noViews: 0,
         thumbnailUrl: urls.thumbnail || "",
-        actualUrl: url1,
-        actualQueryString: url2,
+        actualUrl: urls.actual || "",
       };
     });
   } catch (error) {

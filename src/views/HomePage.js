@@ -14,7 +14,7 @@ function HomePage() {
 
   return (
     <div className="home-page">
-      <h1>My Portfolio</h1>
+      <h1>Dronef Kollege von Globschi. Der arme Dronef versunken im See</h1>
       <PortfolioGrid items={items} />
     </div>
   );

@@ -63,9 +63,6 @@ h1 {
   transform: scale(1.08);
 }
 
-/* src/styles/main.css */
-/* ... (keep existing styles) ... */
-
 .image-popup {
   position: fixed;
   top: 0;
@@ -81,33 +78,32 @@ h1 {
 
 .image-popup-content {
   position: relative;
-  max-width: 90%;
-  max-height: 90%;
+  max-width: 95%; /* Allow more space for larger images */
+  max-height: 95%; /* Allow more space for larger images */
 }
 
 .image-popup-content img {
   max-width: 100%;
   max-height: 100%;
-  object-fit: contain;
+  object-fit: contain; /* Maintain aspect ratio */
 }
 
 .close-button {
   position: absolute;
-  top: 10px;
-  right: 10px;
+  top: 10px; /* Adjust positioning as needed */
+  right: 10px; /* Adjust positioning as needed */
   background-color: transparent;
   color: white;
   border: none;
   font-size: 30px;
   cursor: pointer;
-  padding: 5px;
-  line-height: 1;
 }
 
+/* Responsive adjustments */
 @media (max-width: 768px) {
   .close-button {
-    top: 20px;
-    right: 20px;
-    font-size: 40px;
+    top: 20px; /* Adjust positioning for smaller screens */
+    right: 20px; /* Adjust positioning for smaller screens */
+    font-size: 40px; /* Increase size for touch targets */
   }
 }

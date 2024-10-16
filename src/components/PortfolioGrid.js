@@ -1,19 +1,18 @@
-// src/components/PortfolioGrid.js
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import Masonry from "react-masonry-css";
 import PortfolioItem from "./PortfolioItem";
 import ImagePopup from "./ImagePopup";
 
-function PortfolioGrid({ items }) {
+const PortfolioGrid = React.memo(({ items }) => {
   const [selectedItem, setSelectedItem] = useState(null);
 
-  const handleItemClick = (item) => {
+  const handleItemClick = useCallback((item) => {
     setSelectedItem(item);
-  };
+  }, []);
 
-  const handleClosePopup = () => {
+  const handleClosePopup = useCallback(() => {
     setSelectedItem(null);
-  };
+  }, []);
 
   const breakpointColumnsObj = {
     default: 4,
@@ -40,6 +39,6 @@ function PortfolioGrid({ items }) {
       <ImagePopup item={selectedItem} onClose={handleClosePopup} />
     </>
   );
-}
+});
 
 export default PortfolioGrid;

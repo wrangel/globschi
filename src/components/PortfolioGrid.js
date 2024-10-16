@@ -60,9 +60,68 @@ const PortfolioGrid = React.memo(({ items }) => {
     [currentItems, handleItemClick]
   );
 
-  const paginate = (pageNumber) => setCurrentPage(pageNumber);
-
   const totalPages = Math.ceil(items.length / itemsPerPage);
+
+  const paginate = (pageNumber) => {
+    setCurrentPage(pageNumber);
+    window.scrollTo(0, 0);
+  };
+
+  const renderPaginationButtons = () => {
+    const pageNumbers = [];
+    const maxVisibleButtons = 5;
+    let startPage = Math.max(
+      1,
+      currentPage - Math.floor(maxVisibleButtons / 2)
+    );
+    let endPage = Math.min(totalPages, startPage + maxVisibleButtons - 1);
+
+    if (endPage - startPage + 1 < maxVisibleButtons) {
+      startPage = Math.max(1, endPage - maxVisibleButtons + 1);
+    }
+
+    for (let i = startPage; i <= endPage; i++) {
+      pageNumbers.push(
+        <button
+          key={i}
+          onClick={() => paginate(i)}
+          className={currentPage === i ? "active" : ""}
+        >
+          {i}
+        </button>
+      );
+    }
+
+    return (
+      <>
+        <button
+          onClick={() => paginate(currentPage - 1)}
+          disabled={currentPage === 1}
+        >
+          &laquo; Prev
+        </button>
+        {startPage > 1 && (
+          <>
+            <button onClick={() => paginate(1)}>1</button>
+            {startPage > 2 && <span>...</span>}
+          </>
+        )}
+        {pageNumbers}
+        {endPage < totalPages && (
+          <>
+            {endPage < totalPages - 1 && <span>...</span>}
+            <button onClick={() => paginate(totalPages)}>{totalPages}</button>
+          </>
+        )}
+        <button
+          onClick={() => paginate(currentPage + 1)}
+          disabled={currentPage === totalPages}
+        >
+          Next &raquo;
+        </button>
+      </>
+    );
+  };
 
   return (
     <>
@@ -73,13 +132,7 @@ const PortfolioGrid = React.memo(({ items }) => {
       >
         {memoizedItems}
       </Masonry>
-      <div className="pagination">
-        {Array.from({ length: totalPages }, (_, i) => (
-          <button key={i} onClick={() => paginate(i + 1)}>
-            {i + 1}
-          </button>
-        ))}
-      </div>
+      <div className="pagination">{renderPaginationButtons()}</div>
       <ImagePopup item={selectedItem} onClose={handleClosePopup} />
     </>
   );

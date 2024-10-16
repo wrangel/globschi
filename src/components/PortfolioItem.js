@@ -5,7 +5,6 @@ function PortfolioItem({ item }) {
   return (
     <div className="portfolio-item">
       <img src={item.thumbnailUrl} alt={item.name} />
-      <h3>{item.name}</h3>
     </div>
   );
 }

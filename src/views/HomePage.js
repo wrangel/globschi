@@ -1,11 +1,16 @@
-import React from "react";
+// src/views/HomePage.js
+import React, { useState, useEffect } from "react";
 import PortfolioGrid from "../components/PortfolioGrid";
 
 function HomePage() {
-  // You'll need to define your items here or fetch them from an API
-  const items = [
-    /* your portfolio items */
-  ];
+  const [items, setItems] = useState([]);
+
+  useEffect(() => {
+    fetch("/api/combined-data")
+      .then((response) => response.json())
+      .then((data) => setItems(data))
+      .catch((error) => console.error("Error fetching data:", error));
+  }, []);
 
   return (
     <div className="home-page">

@@ -6,6 +6,8 @@
   "dependencies": {
     "@aws-sdk/client-s3": "^3.670.0",
     "@aws-sdk/s3-request-presigner": "^3.670.0",
+    "@photo-sphere-viewer/autorotate-plugin": "^5.10.1",
+    "@photo-sphere-viewer/core": "^5.10.1",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",

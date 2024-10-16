@@ -1,4 +1,4 @@
-// src/components/MediaModal.js
+import React from "react";
 import Modal from "react-modal";
 import { useSwipeable } from "react-swipeable";
 import PanoramaViewer from "./PanoramaViewer";
@@ -16,25 +16,27 @@ function MediaModal({ isOpen, onClose, item, onNext, onPrev }) {
       className="media-modal"
       overlayClassName="media-modal-overlay"
     >
-      <div {...handlers}>
+      <div {...handlers} className="media-modal-content">
         {renderMedia(item)}
-        <button onClick={onPrev}>Previous</button>
-        <button onClick={onNext}>Next</button>
+        <button className="modal-nav prev" onClick={onPrev}>
+          &lt;
+        </button>
+        <button className="modal-nav next" onClick={onNext}>
+          &gt;
+        </button>
+        <button className="modal-close" onClick={onClose}>
+          &times;
+        </button>
       </div>
     </Modal>
   );
 }
 
 function renderMedia(item) {
-  switch (item.type) {
-    case "image":
-      return <img src={item.url} alt={item.title} />;
-    case "video":
-      return <video src={item.url} controls />;
-    case "panorama":
-      return <PanoramaViewer url={item.url} />;
-    default:
-      return null;
+  if (item.type === "pan") {
+    return <PanoramaViewer url={item.actualUrl} />;
+  } else {
+    return <img src={item.actualUrl} alt={item.name} />;
   }
 }
 

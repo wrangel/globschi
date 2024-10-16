@@ -1,19 +1,11 @@
 // src/components/PortfolioItem.js
-import React, { useState } from "react";
-import MediaModal from "./MediaModal";
+import React from "react";
 
-function PortfolioItem({ item }) {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
+function PortfolioItem({ item, onClick }) {
   return (
-    <div className="portfolio-item" onClick={() => setIsModalOpen(true)}>
-      <img src={item.thumbnailUrl} alt={item.title} />
-      <h3>{item.title}</h3>
-      <MediaModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        item={item}
-      />
+    <div className="portfolio-item" onClick={onClick}>
+      <img src={item.thumbnailUrl} alt={item.name} />
+      <h3>{item.name}</h3>
     </div>
   );
 }

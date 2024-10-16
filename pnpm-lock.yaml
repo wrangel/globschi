@@ -19,6 +19,12 @@ importers:
       '@aws-sdk/s3-request-presigner':
         specifier: ^3.670.0
         version: 3.670.0
+      '@photo-sphere-viewer/autorotate-plugin':
+        specifier: ^5.10.1
+        version: 5.10.1(@photo-sphere-viewer/core@5.10.1)
+      '@photo-sphere-viewer/core':
+        specifier: ^5.10.1
+        version: 5.10.1
       '@testing-library/jest-dom':
         specifier: ^5.17.0
         version: 5.17.0
@@ -1233,6 +1239,14 @@ packages:
   '@nodelib/fs.walk@1.2.8':
     resolution: {integrity: sha512-oGB+UxlgWcgQkgwo8GcEGwemoTFt3FIO9ababBmaGwXIoBKZ+GTy0pP185beGg7Llih/NSHSV2XAs1lnznocSg==}
     engines: {node: '>= 8'}
+
+  '@photo-sphere-viewer/autorotate-plugin@5.10.1':
+    resolution: {integrity: sha512-DzYyIg7j3AEWcQvCpfWjTSZboUPLLN9Stgquw8RnUHMfwT26FM96nNaZ7irJofoJ3jFYQ8twTxwZzdXp7sUzDQ==}
+    peerDependencies:
+      '@photo-sphere-viewer/core': 5.10.1
+
+  '@photo-sphere-viewer/core@5.10.1':
+    resolution: {integrity: sha512-xdvPbfQqLl8tggqNDMcczbQGNQHbA4N9u3RCuzYzhrN2PBE2ihL5TsH85smkH4GcRrJKypSzwXF7rDrQhcs7aQ==}
 
   '@pkgjs/parseargs@0.11.0':
     resolution: {integrity: sha512-+1VkjdD0QBLPodGrJUeqarH8VAIvQODIbwh9XpP5Syisf7YoQgsJKPNFoqqLQlu+VQ/tVSshMR6loPMn8U+dPg==}
@@ -5599,6 +5613,9 @@ packages:
   thenify@3.3.1:
     resolution: {integrity: sha512-RVZSIV5IG10Hk3enotrhvz0T9em6cyHBLkH/YAZuKqd8hRkKhSfCGIcP2KUY0EPxndzANBmNllzWPwak+bheSw==}
 
+  three@0.168.0:
+    resolution: {integrity: sha512-6m6jXtDwMJEK/GGMbAOTSAmxNdzKvvBzgd7q8bE/7Tr6m7PaBh5kKLrN7faWtlglXbzj7sVba48Idwx+NRsZXw==}
+
   three@0.169.0:
     resolution: {integrity: sha512-Ed906MA3dR4TS5riErd4QBsRGPcx+HBDX2O5yYE5GqJeFQTPU+M56Va/f/Oph9X7uZo3W3o4l2ZhBZ6f6qUv0w==}
 
@@ -7893,6 +7910,14 @@ snapshots:
     dependencies:
       '@nodelib/fs.scandir': 2.1.5
       fastq: 1.17.1
+
+  '@photo-sphere-viewer/autorotate-plugin@5.10.1(@photo-sphere-viewer/core@5.10.1)':
+    dependencies:
+      '@photo-sphere-viewer/core': 5.10.1
+
+  '@photo-sphere-viewer/core@5.10.1':
+    dependencies:
+      three: 0.168.0
 
   '@pkgjs/parseargs@0.11.0':
     optional: true
@@ -13172,6 +13197,8 @@ snapshots:
   thenify@3.3.1:
     dependencies:
       any-promise: 1.3.0
+
+  three@0.168.0: {}
 
   three@0.169.0: {}
 

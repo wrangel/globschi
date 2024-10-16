@@ -6,6 +6,9 @@ import { debounce } from "../utils/utils";
 
 const PortfolioGrid = React.memo(({ items }) => {
   const [selectedItem, setSelectedItem] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 12; // Adjust this number as needed
+
   const [breakpointColumns, setBreakpointColumns] = useState({
     default: 4,
     1100: 3,
@@ -41,6 +44,26 @@ const PortfolioGrid = React.memo(({ items }) => {
     };
   }, [debouncedUpdateBreakpoints]);
 
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = items.slice(indexOfFirstItem, indexOfLastItem);
+
+  const memoizedItems = useMemo(
+    () =>
+      currentItems.map((item) => (
+        <PortfolioItem
+          key={item.id}
+          item={item}
+          onItemClick={handleItemClick}
+        />
+      )),
+    [currentItems, handleItemClick]
+  );
+
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+  const totalPages = Math.ceil(items.length / itemsPerPage);
+
   return (
     <>
       <Masonry
@@ -48,14 +71,15 @@ const PortfolioGrid = React.memo(({ items }) => {
         className="masonry-grid"
         columnClassName="masonry-grid_column"
       >
-        {items.map((item) => (
-          <PortfolioItem
-            key={item.id}
-            item={item}
-            onItemClick={handleItemClick}
-          />
-        ))}
+        {memoizedItems}
       </Masonry>
+      <div className="pagination">
+        {Array.from({ length: totalPages }, (_, i) => (
+          <button key={i} onClick={() => paginate(i + 1)}>
+            {i + 1}
+          </button>
+        ))}
+      </div>
       <ImagePopup item={selectedItem} onClose={handleClosePopup} />
     </>
   );

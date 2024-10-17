@@ -5,33 +5,31 @@ import PortfolioItem from "./PortfolioItem";
 import ImagePopup from "./ImagePopup";
 
 function PortfolioGrid({ items }) {
-  const [selectedItemIndex, setSelectedItemIndex] = useState(null);
+  const [selectedItemId, setSelectedItemId] = useState(null);
 
-  const handleItemClick = useCallback(
-    (clickedItem) => {
-      const index = items.findIndex((item) => item.id === clickedItem.id);
-      setSelectedItemIndex(index);
-    },
-    [items]
-  );
+  const handleItemClick = useCallback((clickedItem) => {
+    setSelectedItemId(clickedItem.id);
+  }, []);
 
   const handleClosePopup = useCallback(() => {
-    setSelectedItemIndex(null);
+    setSelectedItemId(null);
   }, []);
 
   const handleNextItem = useCallback(() => {
-    if (selectedItemIndex !== null) {
-      setSelectedItemIndex((prevIndex) => (prevIndex + 1) % items.length);
-    }
-  }, [items.length, selectedItemIndex]);
+    setSelectedItemId((prevId) => {
+      const currentIndex = items.findIndex((item) => item.id === prevId);
+      const nextIndex = (currentIndex + 1) % items.length;
+      return items[nextIndex].id;
+    });
+  }, [items]);
 
   const handlePreviousItem = useCallback(() => {
-    if (selectedItemIndex !== null) {
-      setSelectedItemIndex(
-        (prevIndex) => (prevIndex - 1 + items.length) % items.length
-      );
-    }
-  }, [items.length, selectedItemIndex]);
+    setSelectedItemId((prevId) => {
+      const currentIndex = items.findIndex((item) => item.id === prevId);
+      const previousIndex = (currentIndex - 1 + items.length) % items.length;
+      return items[previousIndex].id;
+    });
+  }, [items]);
 
   const breakpointColumnsObj = {
     default: 4,
@@ -39,6 +37,8 @@ function PortfolioGrid({ items }) {
     700: 2,
     500: 1,
   };
+
+  const selectedItem = items.find((item) => item.id === selectedItemId) || null;
 
   return (
     <>
@@ -56,7 +56,7 @@ function PortfolioGrid({ items }) {
         ))}
       </Masonry>
       <ImagePopup
-        item={selectedItemIndex !== null ? items[selectedItemIndex] : null}
+        item={selectedItem}
         onClose={handleClosePopup}
         onNext={handleNextItem}
         onPrevious={handlePreviousItem}

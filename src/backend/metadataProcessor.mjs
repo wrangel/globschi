@@ -27,6 +27,7 @@ export const beautify = async (mongoData, presignedUrls) => {
         presignedUrls.find((element) => element.name === doc.name)?.urls || {};
 
       return {
+        id: doc._id.toString(), // Convert ObjectId to string
         name: doc.name,
         type: doc.type,
         viewer: doc.type === MEDIA_PAGES[1] ? "pano" : "img",

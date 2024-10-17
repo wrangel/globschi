@@ -14,6 +14,8 @@ export async function getCombinedData() {
     // Combine and process the data
     const combinedData = await beautify(mongoData, presignedUrls);
 
+    console.log(combinedData);
+
     return combinedData;
   } catch (error) {
     console.error("Error in getCombinedData:", error);

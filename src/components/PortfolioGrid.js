@@ -1,19 +1,37 @@
 // src/components/PortfolioGrid.js
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import Masonry from "react-masonry-css";
 import PortfolioItem from "./PortfolioItem";
 import ImagePopup from "./ImagePopup";
 
 function PortfolioGrid({ items }) {
-  const [selectedItem, setSelectedItem] = useState(null);
+  const [selectedItemIndex, setSelectedItemIndex] = useState(null);
 
-  const handleItemClick = (item) => {
-    setSelectedItem(item);
-  };
+  const handleItemClick = useCallback(
+    (clickedItem) => {
+      const index = items.findIndex((item) => item.id === clickedItem.id);
+      setSelectedItemIndex(index);
+    },
+    [items]
+  );
 
-  const handleClosePopup = () => {
-    setSelectedItem(null);
-  };
+  const handleClosePopup = useCallback(() => {
+    setSelectedItemIndex(null);
+  }, []);
+
+  const handleNextItem = useCallback(() => {
+    if (selectedItemIndex !== null) {
+      setSelectedItemIndex((prevIndex) => (prevIndex + 1) % items.length);
+    }
+  }, [items.length, selectedItemIndex]);
+
+  const handlePreviousItem = useCallback(() => {
+    if (selectedItemIndex !== null) {
+      setSelectedItemIndex(
+        (prevIndex) => (prevIndex - 1 + items.length) % items.length
+      );
+    }
+  }, [items.length, selectedItemIndex]);
 
   const breakpointColumnsObj = {
     default: 4,
@@ -37,7 +55,12 @@ function PortfolioGrid({ items }) {
           />
         ))}
       </Masonry>
-      <ImagePopup item={selectedItem} onClose={handleClosePopup} />
+      <ImagePopup
+        item={selectedItemIndex !== null ? items[selectedItemIndex] : null}
+        onClose={handleClosePopup}
+        onNext={handleNextItem}
+        onPrevious={handlePreviousItem}
+      />
     </>
   );
 }

@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useCallback, useState } from "react";
 import * as THREE from "three";
 
-const PanoramaViewer = ({ url }) => {
+const PanoramaViewer = ({ url, onInteractionStart, onInteractionEnd }) => {
   const containerRef = useRef(null);
   const sceneRef = useRef(null);
   const cameraRef = useRef(null);
@@ -17,13 +17,29 @@ const PanoramaViewer = ({ url }) => {
   const distanceRef = useRef(50);
   const [isPinching, setIsPinching] = useState(false);
   const [pinchDistance, setPinchDistance] = useState(0);
+  const interactionTimeoutRef = useRef(null);
 
-  const handleWheel = useCallback((e) => {
-    distanceRef.current = Math.max(
-      1,
-      Math.min(1000, distanceRef.current + e.deltaY * 0.05)
-    );
-  }, []);
+  const startInteraction = useCallback(() => {
+    if (!isUserInteractingRef.current) {
+      isUserInteractingRef.current = true;
+      onInteractionStart();
+    }
+    if (interactionTimeoutRef.current) {
+      clearTimeout(interactionTimeoutRef.current);
+    }
+  }, [onInteractionStart]);
+
+  const handleWheel = useCallback(
+    (e) => {
+      e.preventDefault();
+      distanceRef.current = Math.max(
+        1,
+        Math.min(1000, distanceRef.current + e.deltaY * 0.05)
+      );
+      startInteraction();
+    },
+    [startInteraction]
+  ); // Add startInteraction to the dependency array
 
   const getDistance = useCallback((touch1, touch2) => {
     return Math.sqrt(
@@ -32,9 +48,18 @@ const PanoramaViewer = ({ url }) => {
     );
   }, []);
 
+  const endInteraction = useCallback(() => {
+    interactionTimeoutRef.current = setTimeout(() => {
+      isUserInteractingRef.current = false;
+      setIsPinching(false);
+      onInteractionEnd();
+    }, 200);
+  }, [onInteractionEnd]);
+
   const onPointerDown = useCallback(
     (e) => {
-      isUserInteractingRef.current = true;
+      e.preventDefault();
+      startInteraction();
 
       const clientX = e.clientX || (e.touches && e.touches[0].clientX);
       const clientY = e.clientY || (e.touches && e.touches[0].clientY);
@@ -47,18 +72,18 @@ const PanoramaViewer = ({ url }) => {
         setPinchDistance(getDistance(e.touches[0], e.touches[1]));
       }
     },
-    [getDistance]
+    [getDistance, startInteraction]
   );
 
   const onPointerMove = useCallback(
     (e) => {
+      e.preventDefault();
       if (!isUserInteractingRef.current) return;
 
       const clientX = e.clientX || (e.touches && e.touches[0].clientX);
       const clientY = e.clientY || (e.touches && e.touches[0].clientY);
 
       if (isPinching && e.touches && e.touches.length === 2) {
-        // Handle pinch-to-zoom
         const newDistance = getDistance(e.touches[0], e.touches[1]);
         const delta = newDistance - pinchDistance;
         distanceRef.current = Math.max(
@@ -71,7 +96,6 @@ const PanoramaViewer = ({ url }) => {
         e.buttons === 1 ||
         (e.touches && e.touches.length === 1)
       ) {
-        // Handle two-finger movement or one-finger movement with pressed trackpad/touch
         const movementX = (clientX - onPointerDownMouseXRef.current) * 0.1;
         const movementY = (clientY - onPointerDownMouseYRef.current) * 0.1;
 
@@ -85,10 +109,13 @@ const PanoramaViewer = ({ url }) => {
     [isPinching, pinchDistance, getDistance]
   );
 
-  const onPointerUp = useCallback(() => {
-    isUserInteractingRef.current = false;
-    setIsPinching(false);
-  }, []);
+  const onPointerUp = useCallback(
+    (e) => {
+      e.preventDefault();
+      endInteraction();
+    },
+    [endInteraction]
+  );
 
   useEffect(() => {
     if (!containerRef.current) return;
@@ -171,10 +198,11 @@ const PanoramaViewer = ({ url }) => {
   return (
     <canvas
       ref={containerRef}
-      style={{ width: "100%", height: "100%" }}
+      style={{ width: "100%", height: "100%", touchAction: "none" }}
       onMouseDown={onPointerDown}
       onMouseMove={onPointerMove}
       onMouseUp={onPointerUp}
+      onMouseLeave={onPointerUp}
       onTouchStart={onPointerDown}
       onTouchMove={onPointerMove}
       onTouchEnd={onPointerUp}

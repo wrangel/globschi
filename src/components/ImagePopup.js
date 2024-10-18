@@ -1,13 +1,14 @@
-// src/components/ImagePopup.js
-import React, { useEffect, useRef, useCallback } from "react";
+import React, { useEffect, useRef, useCallback, useState } from "react";
 import { useSwipeable } from "react-swipeable";
 import PanoramaViewer from "./PanoramaViewer";
 
 function ImagePopup({ item, onClose, onNext, onPrevious }) {
   const popupRef = useRef(null);
+  const [isPanoramaInteracting, setIsPanoramaInteracting] = useState(false);
 
   const handleKeyDown = useCallback(
     (event) => {
+      if (isPanoramaInteracting) return;
       switch (event.key) {
         case "Escape":
           onClose();
@@ -22,7 +23,7 @@ function ImagePopup({ item, onClose, onNext, onPrevious }) {
           break;
       }
     },
-    [onClose, onPrevious, onNext]
+    [onClose, onPrevious, onNext, isPanoramaInteracting]
   );
 
   const handleClickOutside = useCallback(
@@ -33,6 +34,14 @@ function ImagePopup({ item, onClose, onNext, onPrevious }) {
     },
     [onClose]
   );
+
+  const handlePanoramaInteractionStart = useCallback(() => {
+    setIsPanoramaInteracting(true);
+  }, []);
+
+  const handlePanoramaInteractionEnd = useCallback(() => {
+    setIsPanoramaInteracting(false);
+  }, []);
 
   useEffect(() => {
     document.addEventListener("keydown", handleKeyDown);
@@ -47,8 +56,8 @@ function ImagePopup({ item, onClose, onNext, onPrevious }) {
   }, [handleKeyDown, handleClickOutside]);
 
   const swipeHandlers = useSwipeable({
-    onSwipedLeft: onNext,
-    onSwipedRight: onPrevious,
+    onSwipedLeft: isPanoramaInteracting ? null : onNext,
+    onSwipedRight: isPanoramaInteracting ? null : onPrevious,
     preventDefaultTouchmoveEvent: true,
     trackMouse: true,
   });
@@ -59,7 +68,11 @@ function ImagePopup({ item, onClose, onNext, onPrevious }) {
     if (item.type === "pan") {
       return (
         <div className="panorama-container">
-          <PanoramaViewer url={item.actualUrl} />
+          <PanoramaViewer
+            url={item.actualUrl}
+            onInteractionStart={handlePanoramaInteractionStart}
+            onInteractionEnd={handlePanoramaInteractionEnd}
+          />
         </div>
       );
     } else {
@@ -78,10 +91,16 @@ function ImagePopup({ item, onClose, onNext, onPrevious }) {
           className="nav-button prev"
           onClick={onPrevious}
           aria-label="Previous"
+          disabled={isPanoramaInteracting}
         >
           &#8249;
         </button>
-        <button className="nav-button next" onClick={onNext} aria-label="Next">
+        <button
+          className="nav-button next"
+          onClick={onNext}
+          aria-label="Next"
+          disabled={isPanoramaInteracting}
+        >
           &#8250;
         </button>
       </div>

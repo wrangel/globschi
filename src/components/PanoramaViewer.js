@@ -133,7 +133,7 @@ const PanoramaViewer = ({ url }) => {
       requestAnimationFrame(animate);
 
       if (!isUserInteractingRef.current) {
-        lonRef.current += 0.1;
+        lonRef.current += 0.03; // Autorotation
       }
 
       latRef.current = Math.max(-85, Math.min(85, latRef.current));

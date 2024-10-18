@@ -1,36 +1,42 @@
 // src/components/PanoramaViewer.js
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 
 const PanoramaViewer = ({ url }) => {
   const containerRef = useRef(null);
+  const [isPinching, setIsPinching] = useState(false);
+  const [pinchDistance, setPinchDistance] = useState(0);
+  const sceneRef = useRef(null);
+  const cameraRef = useRef(null);
+  const rendererRef = useRef(null);
 
   useEffect(() => {
     if (!containerRef.current) return;
 
-    let scene, camera, renderer, sphere, texture;
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(
+      75,
+      window.innerWidth / window.innerHeight,
+      1,
+      1000
+    );
+    const renderer = new THREE.WebGLRenderer();
 
-    const init = () => {
-      scene = new THREE.Scene();
-      camera = new THREE.PerspectiveCamera(
-        75,
-        window.innerWidth / window.innerHeight,
-        1,
-        1000
-      );
-      renderer = new THREE.WebGLRenderer();
-      renderer.setSize(window.innerWidth, window.innerHeight);
-      containerRef.current.appendChild(renderer.domElement);
+    sceneRef.current = scene;
+    cameraRef.current = camera;
+    rendererRef.current = renderer;
 
-      texture = new THREE.TextureLoader().load(url);
-      const geometry = new THREE.SphereGeometry(500, 60, 40);
-      geometry.scale(-1, 1, 1);
-      const material = new THREE.MeshBasicMaterial({ map: texture });
-      sphere = new THREE.Mesh(geometry, material);
-      scene.add(sphere);
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    containerRef.current.appendChild(renderer.domElement);
 
-      camera.position.set(0, 0, 0.1);
-    };
+    const texture = new THREE.TextureLoader().load(url);
+    const geometry = new THREE.SphereGeometry(500, 60, 40);
+    geometry.scale(-1, 1, 1);
+    const material = new THREE.MeshBasicMaterial({ map: texture });
+    const sphere = new THREE.Mesh(geometry, material);
+    scene.add(sphere);
+
+    camera.position.set(0, 0, 0.1);
 
     const animate = () => {
       requestAnimationFrame(animate);
@@ -58,7 +64,6 @@ const PanoramaViewer = ({ url }) => {
       flyIn();
     };
 
-    init();
     tinyPlanetEffect();
     flyInAnimation();
     animate();
@@ -78,7 +83,58 @@ const PanoramaViewer = ({ url }) => {
     };
   }, [url]);
 
-  return <div ref={containerRef} style={{ width: "100%", height: "100%" }} />;
+  const getDistance = (touch1, touch2) => {
+    return Math.sqrt(
+      Math.pow(touch1.clientX - touch2.clientX, 2) +
+        Math.pow(touch1.clientY - touch2.clientY, 2)
+    );
+  };
+
+  const handlePinchStart = (e) => {
+    if (e.touches.length === 2) {
+      setIsPinching(true);
+      setPinchDistance(getDistance(e.touches[0], e.touches[1]));
+    }
+  };
+
+  const handlePinchMove = (e) => {
+    if (isPinching && e.touches.length === 2) {
+      const newDistance = getDistance(e.touches[0], e.touches[1]);
+      const delta = newDistance - pinchDistance;
+
+      // Adjust the camera's FOV based on the pinch gesture
+      cameraRef.current.fov = Math.max(
+        30,
+        Math.min(90, cameraRef.current.fov - delta * 0.1)
+      );
+      cameraRef.current.updateProjectionMatrix();
+
+      setPinchDistance(newDistance);
+    }
+  };
+
+  const handlePinchEnd = () => {
+    setIsPinching(false);
+  };
+
+  const handleWheel = (e) => {
+    cameraRef.current.fov = Math.max(
+      30,
+      Math.min(90, cameraRef.current.fov + e.deltaY * 0.05)
+    );
+    cameraRef.current.updateProjectionMatrix();
+  };
+
+  return (
+    <div
+      ref={containerRef}
+      style={{ width: "100%", height: "100%" }}
+      onTouchStart={handlePinchStart}
+      onTouchMove={handlePinchMove}
+      onTouchEnd={handlePinchEnd}
+      onWheel={handleWheel}
+    />
+  );
 };
 
 export default PanoramaViewer;

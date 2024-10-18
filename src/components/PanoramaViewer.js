@@ -1,14 +1,22 @@
 // src/components/PanoramaViewer.js
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useCallback } from "react";
 import * as THREE from "three";
 
 const PanoramaViewer = ({ url }) => {
   const containerRef = useRef(null);
-  const [isPinching, setIsPinching] = useState(false);
-  const [pinchDistance, setPinchDistance] = useState(0);
   const sceneRef = useRef(null);
   const cameraRef = useRef(null);
   const rendererRef = useRef(null);
+
+  const handleWheel = useCallback((e) => {
+    if (cameraRef.current) {
+      cameraRef.current.fov = Math.max(
+        30,
+        Math.min(90, cameraRef.current.fov + e.deltaY * 0.05)
+      );
+      cameraRef.current.updateProjectionMatrix();
+    }
+  }, []);
 
   useEffect(() => {
     if (!containerRef.current) return;
@@ -20,53 +28,71 @@ const PanoramaViewer = ({ url }) => {
       1,
       1000
     );
-    const renderer = new THREE.WebGLRenderer();
+
+    // Try to use WebGL 2
+    const canvas = containerRef.current;
+    const context =
+      canvas.getContext("webgl2", { antialias: true }) ||
+      canvas.getContext("webgl", { antialias: true });
+
+    const renderer = new THREE.WebGLRenderer({
+      canvas: canvas,
+      context: context,
+      antialias: true,
+      powerPreference: "high-performance",
+    });
+
+    // Check if WebGL 2 is available
+    const isWebGL2 = renderer.capabilities.isWebGL2;
+    console.log("Using WebGL 2:", isWebGL2);
+
+    // Check max texture size
+    const gl = renderer.getContext();
+    const maxTextureSize = gl.getParameter(gl.MAX_TEXTURE_SIZE);
+    console.log("Max texture size:", maxTextureSize);
 
     sceneRef.current = scene;
     cameraRef.current = camera;
     rendererRef.current = renderer;
 
     renderer.setSize(window.innerWidth, window.innerHeight);
-    containerRef.current.appendChild(renderer.domElement);
 
-    const texture = new THREE.TextureLoader().load(url);
-    const geometry = new THREE.SphereGeometry(500, 60, 40);
-    geometry.scale(-1, 1, 1);
-    const material = new THREE.MeshBasicMaterial({ map: texture });
-    const sphere = new THREE.Mesh(geometry, material);
-    scene.add(sphere);
+    // Load and process texture
+    const textureLoader = new THREE.TextureLoader();
+    textureLoader.load(url, (texture) => {
+      // If the texture is larger than the max size, resize it
+      if (
+        texture.image.width > maxTextureSize ||
+        texture.image.height > maxTextureSize
+      ) {
+        const scale =
+          maxTextureSize / Math.max(texture.image.width, texture.image.height);
+        texture.image.width *= scale;
+        texture.image.height *= scale;
+      }
+
+      if (!isWebGL2) {
+        texture.generateMipmaps = false;
+        texture.minFilter = THREE.LinearFilter;
+      }
+
+      const geometry = new THREE.SphereGeometry(500, 60, 40);
+      geometry.scale(-1, 1, 1);
+      const material = new THREE.MeshBasicMaterial({ map: texture });
+      const sphere = new THREE.Mesh(geometry, material);
+      scene.add(sphere);
+
+      // Start animation after texture is loaded
+      animate();
+    });
 
     camera.position.set(0, 0, 0.1);
 
     const animate = () => {
       requestAnimationFrame(animate);
-      sphere.rotation.y += 0.001; // Autorotate
+      scene.rotation.y += 0.001; // Autorotate
       renderer.render(scene, camera);
     };
-
-    const tinyPlanetEffect = () => {
-      camera.fov = 160;
-      camera.updateProjectionMatrix();
-      camera.position.set(0, 0, 300);
-    };
-
-    const flyInAnimation = () => {
-      let progress = 0;
-      const flyIn = () => {
-        if (progress < 1) {
-          progress += 0.02;
-          camera.position.z = THREE.MathUtils.lerp(300, 0.1, progress);
-          camera.fov = THREE.MathUtils.lerp(160, 75, progress);
-          camera.updateProjectionMatrix();
-          requestAnimationFrame(flyIn);
-        }
-      };
-      flyIn();
-    };
-
-    tinyPlanetEffect();
-    flyInAnimation();
-    animate();
 
     const handleResize = () => {
       camera.aspect = window.innerWidth / window.innerHeight;
@@ -78,60 +104,14 @@ const PanoramaViewer = ({ url }) => {
 
     return () => {
       window.removeEventListener("resize", handleResize);
-      containerRef.current.removeChild(renderer.domElement);
       renderer.dispose();
     };
   }, [url]);
 
-  const getDistance = (touch1, touch2) => {
-    return Math.sqrt(
-      Math.pow(touch1.clientX - touch2.clientX, 2) +
-        Math.pow(touch1.clientY - touch2.clientY, 2)
-    );
-  };
-
-  const handlePinchStart = (e) => {
-    if (e.touches.length === 2) {
-      setIsPinching(true);
-      setPinchDistance(getDistance(e.touches[0], e.touches[1]));
-    }
-  };
-
-  const handlePinchMove = (e) => {
-    if (isPinching && e.touches.length === 2) {
-      const newDistance = getDistance(e.touches[0], e.touches[1]);
-      const delta = newDistance - pinchDistance;
-
-      // Adjust the camera's FOV based on the pinch gesture
-      cameraRef.current.fov = Math.max(
-        30,
-        Math.min(90, cameraRef.current.fov - delta * 0.1)
-      );
-      cameraRef.current.updateProjectionMatrix();
-
-      setPinchDistance(newDistance);
-    }
-  };
-
-  const handlePinchEnd = () => {
-    setIsPinching(false);
-  };
-
-  const handleWheel = (e) => {
-    cameraRef.current.fov = Math.max(
-      30,
-      Math.min(90, cameraRef.current.fov + e.deltaY * 0.05)
-    );
-    cameraRef.current.updateProjectionMatrix();
-  };
-
   return (
-    <div
+    <canvas
       ref={containerRef}
       style={{ width: "100%", height: "100%" }}
-      onTouchStart={handlePinchStart}
-      onTouchMove={handlePinchMove}
-      onTouchEnd={handlePinchEnd}
       onWheel={handleWheel}
     />
   );

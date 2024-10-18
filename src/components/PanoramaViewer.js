@@ -1,5 +1,5 @@
 // src/components/PanoramaViewer.js
-import React, { useEffect, useRef, useCallback } from "react";
+import React, { useEffect, useRef, useCallback, useState } from "react";
 import * as THREE from "three";
 
 const PanoramaViewer = ({ url }) => {
@@ -7,6 +7,8 @@ const PanoramaViewer = ({ url }) => {
   const sceneRef = useRef(null);
   const cameraRef = useRef(null);
   const rendererRef = useRef(null);
+  const [isPinching, setIsPinching] = useState(false);
+  const [pinchDistance, setPinchDistance] = useState(0);
 
   const handleWheel = useCallback((e) => {
     if (cameraRef.current) {
@@ -16,6 +18,47 @@ const PanoramaViewer = ({ url }) => {
       );
       cameraRef.current.updateProjectionMatrix();
     }
+  }, []);
+
+  const getDistance = useCallback((touch1, touch2) => {
+    return Math.sqrt(
+      Math.pow(touch1.clientX - touch2.clientX, 2) +
+        Math.pow(touch1.clientY - touch2.clientY, 2)
+    );
+  }, []);
+
+  const handleTouchStart = useCallback(
+    (e) => {
+      if (e.touches.length === 2) {
+        setIsPinching(true);
+        setPinchDistance(getDistance(e.touches[0], e.touches[1]));
+      }
+    },
+    [getDistance]
+  );
+
+  const handleTouchMove = useCallback(
+    (e) => {
+      if (isPinching && e.touches.length === 2) {
+        const newDistance = getDistance(e.touches[0], e.touches[1]);
+        const delta = newDistance - pinchDistance;
+
+        if (cameraRef.current) {
+          cameraRef.current.fov = Math.max(
+            30,
+            Math.min(90, cameraRef.current.fov - delta * 0.1)
+          );
+          cameraRef.current.updateProjectionMatrix();
+        }
+
+        setPinchDistance(newDistance);
+      }
+    },
+    [isPinching, pinchDistance, getDistance]
+  );
+
+  const handleTouchEnd = useCallback(() => {
+    setIsPinching(false);
   }, []);
 
   useEffect(() => {
@@ -60,21 +103,23 @@ const PanoramaViewer = ({ url }) => {
     // Load and process texture
     const textureLoader = new THREE.TextureLoader();
     textureLoader.load(url, (texture) => {
-      // If the texture is larger than the max size, resize it
+      // If the texture is larger than the max size, log a warning
       if (
         texture.image.width > maxTextureSize ||
         texture.image.height > maxTextureSize
       ) {
-        const scale =
-          maxTextureSize / Math.max(texture.image.width, texture.image.height);
-        texture.image.width *= scale;
-        texture.image.height *= scale;
+        console.warn(
+          `Texture size (${texture.image.width}x${texture.image.height}) exceeds maximum supported size (${maxTextureSize}x${maxTextureSize}). It may be automatically resized.`
+        );
       }
 
-      if (!isWebGL2) {
-        texture.generateMipmaps = false;
-        texture.minFilter = THREE.LinearFilter;
-      }
+      // Disable mipmaps to prevent further automatic resizing
+      texture.generateMipmaps = false;
+      texture.minFilter = THREE.LinearFilter;
+      texture.magFilter = THREE.LinearFilter;
+
+      // Use EquirectangularReflectionMapping for panoramic images
+      texture.mapping = THREE.EquirectangularReflectionMapping;
 
       const geometry = new THREE.SphereGeometry(500, 60, 40);
       geometry.scale(-1, 1, 1);
@@ -90,7 +135,6 @@ const PanoramaViewer = ({ url }) => {
 
     const animate = () => {
       requestAnimationFrame(animate);
-      scene.rotation.y += 0.001; // Autorotate
       renderer.render(scene, camera);
     };
 
@@ -113,6 +157,9 @@ const PanoramaViewer = ({ url }) => {
       ref={containerRef}
       style={{ width: "100%", height: "100%" }}
       onWheel={handleWheel}
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
     />
   );
 };

@@ -1,6 +1,7 @@
 // src/components/ImagePopup.js
 import React, { useEffect, useRef, useCallback } from "react";
 import { useSwipeable } from "react-swipeable";
+import PanoramaViewer from "./PanoramaViewer";
 
 function ImagePopup({ item, onClose, onNext, onPrevious }) {
   const popupRef = useRef(null);
@@ -54,10 +55,22 @@ function ImagePopup({ item, onClose, onNext, onPrevious }) {
 
   if (!item) return null;
 
+  const renderContent = () => {
+    if (item.type === "pan") {
+      return (
+        <div className="panorama-container">
+          <PanoramaViewer url={item.actualUrl} />
+        </div>
+      );
+    } else {
+      return <img src={item.actualUrl} alt={item.name} />;
+    }
+  };
+
   return (
     <div className="image-popup" {...swipeHandlers}>
       <div className="image-popup-content" ref={popupRef}>
-        <img src={item.actualUrl} alt={item.name} />
+        {renderContent()}
         <button className="close-button" onClick={onClose} aria-label="Close">
           &times;
         </button>

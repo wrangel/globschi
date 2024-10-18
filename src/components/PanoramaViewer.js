@@ -1,90 +1,80 @@
+// src/components/PanoramaViewer.js
 import React, { useEffect, useRef } from "react";
-import { Viewer } from "@photo-sphere-viewer/core";
-import { AutorotatePlugin } from "@photo-sphere-viewer/autorotate-plugin";
+import * as THREE from "three";
 
 const PanoramaViewer = ({ url }) => {
-  const viewerRef = useRef(null);
   const containerRef = useRef(null);
 
   useEffect(() => {
     if (!containerRef.current) return;
 
-    const panoMaxFov = 110;
-    const panoMinFov = 10;
+    let scene, camera, renderer, sphere, texture;
 
-    const animatedValues = {
-      pitch: { start: -Math.PI / 2, end: -0.1 },
-      yaw: { start: Math.PI, end: 0 },
-      zoom: { start: 0, end: 50 },
-      fisheye: { start: 2, end: 0 },
+    const init = () => {
+      scene = new THREE.Scene();
+      camera = new THREE.PerspectiveCamera(
+        75,
+        window.innerWidth / window.innerHeight,
+        1,
+        1000
+      );
+      renderer = new THREE.WebGLRenderer();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      containerRef.current.appendChild(renderer.domElement);
+
+      texture = new THREE.TextureLoader().load(url);
+      const geometry = new THREE.SphereGeometry(500, 60, 40);
+      geometry.scale(-1, 1, 1);
+      const material = new THREE.MeshBasicMaterial({ map: texture });
+      sphere = new THREE.Mesh(geometry, material);
+      scene.add(sphere);
+
+      camera.position.set(0, 0, 0.1);
     };
 
-    viewerRef.current = new Viewer({
-      container: containerRef.current,
-      panorama: url,
-      maxFov: panoMaxFov,
-      minFov: panoMinFov,
-      defaultPitch: animatedValues.pitch.start,
-      defaultYaw: animatedValues.yaw.start,
-      defaultZoomLvl: animatedValues.zoom.end,
-      fisheye: animatedValues.fisheye.start,
-      navbar: [
-        "autorotate",
-        "zoom",
-        "fullscreen",
-        {
-          id: "fisheye",
-          content: "🐟",
-          title: "Fisheye view",
-          className: "fisheye-button",
-          onClick: (viewer) => {
-            viewer.getPlugin(AutorotatePlugin).stop();
-            viewer.setOptions({
-              fisheye: true,
-              maxFov: 160,
-            });
-          },
-        },
-        {
-          id: "panorama",
-          content: "🌐",
-          title: "Panorama view",
-          className: "panorama-button",
-          onClick: () => intro(),
-        },
-      ],
-      plugins: [
-        [
-          AutorotatePlugin,
-          {
-            autostartDelay: null,
-            autostartOnIdle: false,
-            autorotatePitch: animatedValues.pitch.end,
-            autorotateSpeed: 0.11,
-          },
-        ],
-      ],
-    });
-
-    const intro = () => {
-      viewerRef.current.getPlugin(AutorotatePlugin).stop();
-      viewerRef.current
-        .animate({
-          properties: animatedValues,
-          duration: 6000,
-          easing: "inOutQuad",
-        })
-        .then(() => {
-          viewerRef.current.getPlugin(AutorotatePlugin).start();
-        });
+    const animate = () => {
+      requestAnimationFrame(animate);
+      sphere.rotation.y += 0.001; // Autorotate
+      renderer.render(scene, camera);
     };
 
-    viewerRef.current.addEventListener("ready", intro, { once: true });
+    const tinyPlanetEffect = () => {
+      camera.fov = 160;
+      camera.updateProjectionMatrix();
+      camera.position.set(0, 0, 300);
+    };
+
+    const flyInAnimation = () => {
+      let progress = 0;
+      const flyIn = () => {
+        if (progress < 1) {
+          progress += 0.02;
+          camera.position.z = THREE.MathUtils.lerp(300, 0.1, progress);
+          camera.fov = THREE.MathUtils.lerp(160, 75, progress);
+          camera.updateProjectionMatrix();
+          requestAnimationFrame(flyIn);
+        }
+      };
+      flyIn();
+    };
+
+    init();
+    tinyPlanetEffect();
+    flyInAnimation();
+    animate();
+
+    const handleResize = () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    };
+
+    window.addEventListener("resize", handleResize);
 
     return () => {
-      if (viewerRef.current) {
-        viewerRef.current.destroy();
-      }
+      window.removeEventListener("resize", handleResize);
+      containerRef.current.removeChild(renderer.domElement);
+      renderer.dispose();
     };
   }, [url]);
 

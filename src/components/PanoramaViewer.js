@@ -1,4 +1,3 @@
-// src/components/PanoramaViewer.js
 import React, { useEffect, useRef, useCallback, useState } from "react";
 import * as THREE from "three";
 
@@ -8,17 +7,22 @@ const PanoramaViewer = ({ url }) => {
   const cameraRef = useRef(null);
   const rendererRef = useRef(null);
   const sphereRef = useRef(null);
+  const isUserInteractingRef = useRef(false);
+  const onPointerDownMouseXRef = useRef(0);
+  const onPointerDownMouseYRef = useRef(0);
+  const lonRef = useRef(0);
+  const latRef = useRef(0);
+  const phiRef = useRef(0);
+  const thetaRef = useRef(0);
+  const distanceRef = useRef(50);
   const [isPinching, setIsPinching] = useState(false);
   const [pinchDistance, setPinchDistance] = useState(0);
 
   const handleWheel = useCallback((e) => {
-    if (cameraRef.current) {
-      cameraRef.current.fov = Math.max(
-        30,
-        Math.min(90, cameraRef.current.fov + e.deltaY * 0.05)
-      );
-      cameraRef.current.updateProjectionMatrix();
-    }
+    distanceRef.current = Math.max(
+      1,
+      Math.min(1000, distanceRef.current + e.deltaY * 0.05)
+    );
   }, []);
 
   const getDistance = useCallback((touch1, touch2) => {
@@ -28,9 +32,17 @@ const PanoramaViewer = ({ url }) => {
     );
   }, []);
 
-  const handleTouchStart = useCallback(
+  const onPointerDown = useCallback(
     (e) => {
-      if (e.touches.length === 2) {
+      isUserInteractingRef.current = true;
+
+      const clientX = e.clientX || (e.touches && e.touches[0].clientX);
+      const clientY = e.clientY || (e.touches && e.touches[0].clientY);
+
+      onPointerDownMouseXRef.current = clientX;
+      onPointerDownMouseYRef.current = clientY;
+
+      if (e.touches && e.touches.length === 2) {
         setIsPinching(true);
         setPinchDistance(getDistance(e.touches[0], e.touches[1]));
       }
@@ -38,27 +50,43 @@ const PanoramaViewer = ({ url }) => {
     [getDistance]
   );
 
-  const handleTouchMove = useCallback(
+  const onPointerMove = useCallback(
     (e) => {
-      if (isPinching && e.touches.length === 2) {
+      if (!isUserInteractingRef.current) return;
+
+      const clientX = e.clientX || (e.touches && e.touches[0].clientX);
+      const clientY = e.clientY || (e.touches && e.touches[0].clientY);
+
+      if (isPinching && e.touches && e.touches.length === 2) {
+        // Handle pinch-to-zoom
         const newDistance = getDistance(e.touches[0], e.touches[1]);
         const delta = newDistance - pinchDistance;
-
-        if (cameraRef.current) {
-          cameraRef.current.fov = Math.max(
-            30,
-            Math.min(90, cameraRef.current.fov - delta * 0.1)
-          );
-          cameraRef.current.updateProjectionMatrix();
-        }
-
+        distanceRef.current = Math.max(
+          1,
+          Math.min(1000, distanceRef.current - delta * 0.1)
+        );
         setPinchDistance(newDistance);
+      } else if (
+        (e.touches && e.touches.length === 2) ||
+        e.buttons === 1 ||
+        (e.touches && e.touches.length === 1)
+      ) {
+        // Handle two-finger movement or one-finger movement with pressed trackpad/touch
+        const movementX = (clientX - onPointerDownMouseXRef.current) * 0.1;
+        const movementY = (clientY - onPointerDownMouseYRef.current) * 0.1;
+
+        lonRef.current -= movementX;
+        latRef.current -= movementY;
+
+        onPointerDownMouseXRef.current = clientX;
+        onPointerDownMouseYRef.current = clientY;
       }
     },
     [isPinching, pinchDistance, getDistance]
   );
 
-  const handleTouchEnd = useCallback(() => {
+  const onPointerUp = useCallback(() => {
+    isUserInteractingRef.current = false;
     setIsPinching(false);
   }, []);
 
@@ -70,30 +98,13 @@ const PanoramaViewer = ({ url }) => {
       75,
       window.innerWidth / window.innerHeight,
       1,
-      1000
+      1100
     );
 
-    // Try to use WebGL 2
-    const canvas = containerRef.current;
-    const context =
-      canvas.getContext("webgl2", { antialias: true }) ||
-      canvas.getContext("webgl", { antialias: true });
-
     const renderer = new THREE.WebGLRenderer({
-      canvas: canvas,
-      context: context,
       antialias: true,
-      powerPreference: "high-performance",
+      canvas: containerRef.current,
     });
-
-    // Check if WebGL 2 is available
-    const isWebGL2 = renderer.capabilities.isWebGL2;
-    console.log("Using WebGL 2:", isWebGL2);
-
-    // Check max texture size
-    const gl = renderer.getContext();
-    const maxTextureSize = gl.getParameter(gl.MAX_TEXTURE_SIZE);
-    console.log("Max texture size:", maxTextureSize);
 
     sceneRef.current = scene;
     cameraRef.current = camera;
@@ -101,25 +112,11 @@ const PanoramaViewer = ({ url }) => {
 
     renderer.setSize(window.innerWidth, window.innerHeight);
 
-    // Load and process texture
     const textureLoader = new THREE.TextureLoader();
     textureLoader.load(url, (texture) => {
-      // If the texture is larger than the max size, log a warning
-      if (
-        texture.image.width > maxTextureSize ||
-        texture.image.height > maxTextureSize
-      ) {
-        console.warn(
-          `Texture size (${texture.image.width}x${texture.image.height}) exceeds maximum supported size (${maxTextureSize}x${maxTextureSize}). It may be automatically resized.`
-        );
-      }
-
-      // Disable mipmaps to prevent further automatic resizing
       texture.generateMipmaps = false;
       texture.minFilter = THREE.LinearFilter;
       texture.magFilter = THREE.LinearFilter;
-
-      // Use EquirectangularReflectionMapping for panoramic images
       texture.mapping = THREE.EquirectangularReflectionMapping;
 
       const geometry = new THREE.SphereGeometry(500, 60, 40);
@@ -129,17 +126,31 @@ const PanoramaViewer = ({ url }) => {
       sphereRef.current = sphere;
       scene.add(sphere);
 
-      // Start animation after texture is loaded
       animate();
     });
 
-    camera.position.set(0, 0, 0.1);
-
     const animate = () => {
       requestAnimationFrame(animate);
-      if (sphereRef.current) {
-        sphereRef.current.rotation.y += 0.0008; // Autorotate
+
+      if (!isUserInteractingRef.current) {
+        lonRef.current += 0.1;
       }
+
+      latRef.current = Math.max(-85, Math.min(85, latRef.current));
+      phiRef.current = THREE.MathUtils.degToRad(90 - latRef.current);
+      thetaRef.current = THREE.MathUtils.degToRad(lonRef.current);
+
+      camera.position.x =
+        distanceRef.current *
+        Math.sin(phiRef.current) *
+        Math.cos(thetaRef.current);
+      camera.position.y = distanceRef.current * Math.cos(phiRef.current);
+      camera.position.z =
+        distanceRef.current *
+        Math.sin(phiRef.current) *
+        Math.sin(thetaRef.current);
+
+      camera.lookAt(scene.position);
       renderer.render(scene, camera);
     };
 
@@ -161,10 +172,13 @@ const PanoramaViewer = ({ url }) => {
     <canvas
       ref={containerRef}
       style={{ width: "100%", height: "100%" }}
+      onMouseDown={onPointerDown}
+      onMouseMove={onPointerMove}
+      onMouseUp={onPointerUp}
+      onTouchStart={onPointerDown}
+      onTouchMove={onPointerMove}
+      onTouchEnd={onPointerUp}
       onWheel={handleWheel}
-      onTouchStart={handleTouchStart}
-      onTouchMove={handleTouchMove}
-      onTouchEnd={handleTouchEnd}
     />
   );
 };

@@ -7,6 +7,7 @@ const PanoramaViewer = ({ url }) => {
   const sceneRef = useRef(null);
   const cameraRef = useRef(null);
   const rendererRef = useRef(null);
+  const sphereRef = useRef(null);
   const [isPinching, setIsPinching] = useState(false);
   const [pinchDistance, setPinchDistance] = useState(0);
 
@@ -125,6 +126,7 @@ const PanoramaViewer = ({ url }) => {
       geometry.scale(-1, 1, 1);
       const material = new THREE.MeshBasicMaterial({ map: texture });
       const sphere = new THREE.Mesh(geometry, material);
+      sphereRef.current = sphere;
       scene.add(sphere);
 
       // Start animation after texture is loaded
@@ -135,6 +137,9 @@ const PanoramaViewer = ({ url }) => {
 
     const animate = () => {
       requestAnimationFrame(animate);
+      if (sphereRef.current) {
+        sphereRef.current.rotation.y += 0.0008; // Autorotate
+      }
       renderer.render(scene, camera);
     };
 

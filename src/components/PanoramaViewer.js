@@ -1,3 +1,4 @@
+// src/components/PanoramaViewer.js
 import React, { useEffect, useRef, useCallback, useState } from "react";
 import * as THREE from "three";
 

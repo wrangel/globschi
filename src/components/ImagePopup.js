@@ -1,3 +1,4 @@
+// src/components/imagePopup.js
 import React, { useEffect, useRef, useCallback, useState } from "react";
 import { useSwipeable } from "react-swipeable";
 import PanoramaViewer from "./PanoramaViewer";

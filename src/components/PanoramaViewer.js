@@ -1,4 +1,3 @@
-// src/components/PanoramaViewer.js
 import React, { useEffect, useRef, useCallback, useState } from "react";
 import * as THREE from "three";
 
@@ -19,6 +18,8 @@ const PanoramaViewer = ({ url, onInteractionStart, onInteractionEnd }) => {
   const [isPinching, setIsPinching] = useState(false);
   const [pinchDistance, setPinchDistance] = useState(0);
   const interactionTimeoutRef = useRef(null);
+  const [isAutoRotating, setIsAutoRotating] = useState(true);
+  const lastClickTimeRef = useRef(0);
 
   const startInteraction = useCallback(() => {
     if (!isUserInteractingRef.current) {
@@ -40,7 +41,7 @@ const PanoramaViewer = ({ url, onInteractionStart, onInteractionEnd }) => {
       startInteraction();
     },
     [startInteraction]
-  ); // Add startInteraction to the dependency array
+  );
 
   const getDistance = useCallback((touch1, touch2) => {
     return Math.sqrt(
@@ -56,6 +57,19 @@ const PanoramaViewer = ({ url, onInteractionStart, onInteractionEnd }) => {
       onInteractionEnd();
     }, 200);
   }, [onInteractionEnd]);
+
+  const handleDoubleClick = useCallback((e) => {
+    e.preventDefault();
+    const currentTime = new Date().getTime();
+    const timeSinceLastClick = currentTime - lastClickTimeRef.current;
+
+    if (timeSinceLastClick < 300) {
+      // 300ms threshold for double-click
+      setIsAutoRotating((prev) => !prev);
+    }
+
+    lastClickTimeRef.current = currentTime;
+  }, []);
 
   const onPointerDown = useCallback(
     (e) => {
@@ -160,7 +174,7 @@ const PanoramaViewer = ({ url, onInteractionStart, onInteractionEnd }) => {
     const animate = () => {
       requestAnimationFrame(animate);
 
-      if (!isUserInteractingRef.current) {
+      if (!isUserInteractingRef.current && isAutoRotating) {
         lonRef.current += 0.03; // Autorotation
       }
 
@@ -194,7 +208,7 @@ const PanoramaViewer = ({ url, onInteractionStart, onInteractionEnd }) => {
       window.removeEventListener("resize", handleResize);
       renderer.dispose();
     };
-  }, [url]);
+  }, [url, isAutoRotating]);
 
   return (
     <canvas
@@ -208,6 +222,7 @@ const PanoramaViewer = ({ url, onInteractionStart, onInteractionEnd }) => {
       onTouchMove={onPointerMove}
       onTouchEnd={onPointerUp}
       onWheel={handleWheel}
+      onDoubleClick={handleDoubleClick}
     />
   );
 };

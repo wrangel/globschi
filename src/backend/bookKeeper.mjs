@@ -1,7 +1,7 @@
 import { ListObjectsCommand, DeleteObjectCommand } from "@aws-sdk/client-s3";
 import { s3Client } from "./awsConfigurator.mjs";
 import * as Constants from "./constants.mjs";
-import { connectDB, Island } from "./server.mjs";
+import { queryAllIslands } from "./mongoDebugger.mjs";
 
 const helpers = await import("./helpers.mjs");
 const { getId } = helpers;
@@ -38,13 +38,14 @@ async function getCurrentStatus() {
     (siteFile) => siteFile.path.indexOf(Constants.THUMBNAIL_ID) > -1
   );
   // Await Island collection entries (for outdated entries)
-  await connectDB();
-  console.log("Connected to MongoDB");
-  //const islandDocs1 = (await Island.find({}, "name -_id").lean()).map((doc) => doc.name);
+  const islandDocs = await queryAllIslands().catch(console.error);
+  const islandNames = islandDocs.map((doc) => doc.name);
+
+  console.log(islandDocs);
   return Promise.all([
     originalMedia,
     actualSiteMedia,
     thumbnailSiteMedia,
-    //islandDocs1,
+    islandNames,
   ]);
 }

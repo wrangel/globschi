@@ -2,7 +2,18 @@
 
 import fs from "fs";
 import path from "path";
+import { loadEnv } from "./loadEnv.mjs";
 
-/// 1) Prepare
+loadEnv();
+
+const inputDirectory = process.env.INPUT_DIRECTORY;
+
+console.log(inputDirectory);
+process.exit(0);
+if (!inputDirectory) {
+  console.error("INPUT_DIRECTORY environment variable is not set");
+  process.exit(1);
+}
+
 // Get basic infos about the new media files
-const files = fs.readdirSync(process.env.INPUT_DIRECTORY);
+const files = fs.readdirSync(inputDirectory);

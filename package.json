@@ -29,6 +29,7 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "keep-books": "node ./src/backend/_bookKeeper.mjs",
+    "upload": "node ./src/backend/_uploader.mjs",
     "debug-mongo": "node ./src/backend/_mongoDebugger.mjs",
     "test-aws": "node ./src/backend/_awsLoginTester.mjs",
     "start:backend": "node ./src/backend/server.mjs",

@@ -3,6 +3,8 @@
 import ExifReader from "exifreader";
 import fs from "fs";
 import path from "path";
+import { Island } from "./server.mjs";
+import { executeMongoQuery } from "./queryHelpers.mjs";
 import * as Constants from "./constants.mjs";
 import { loadEnv } from "./loadEnv.mjs";
 import {
@@ -154,11 +156,15 @@ if (noMedia == 0) {
     };
   });
 
+  /// B) Update MongoDB
+
+  await executeMongoQuery(async () => {
+    await Island.insertMany(newIslands);
+    return null; // Return null to indicate no value
+  });
+
   console.log(newIslands);
   process.exit(0); /////////////////7
-
-  /// B) Update MongoDB
-  await Island.insertMany(newIslands);
 
   /// C) Convert file to .jpeg, copy .jpeg to OneDrive, move .tif to 'done' folder
   await Promise.all(

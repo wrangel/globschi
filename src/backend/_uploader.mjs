@@ -9,6 +9,7 @@ import {
   generateExtendedString,
   getAltitude,
   getCoordinates,
+  getDate,
   question,
   runCli,
 } from "./helpers.mjs";
@@ -110,9 +111,6 @@ if (noMedia == 0) {
       process.env.ACCESS_TOKEN
   );
 
-  console.log(reverseUrls);
-  process.exit(0); /////////////////7
-
   // Get the jsons from the reverse engineering call (Wait on all promises to be resolved)
   const jsons = await Promise.all(
     reverseUrls.map(async (reverseUrl) => {
@@ -133,13 +131,13 @@ if (noMedia == 0) {
   });
 
   /*  Combine everything into the Mongoose compatible metadata (one for each document)
-Note that name, type and author are provided by helper.mjs, and name is used for id'ing the correct document
-*/
+  Note that name, type and author are provided by helper.mjs, and name is used for id'ing the correct document
+  */
   const newIslands = media.map(function (medium, i) {
     const b = base[i];
     const rgcd = reverseGeocodingData[i];
     return {
-      name: medium.name,
+      name: b.key,
       type: medium.mediaType,
       author: medium.author,
       dateTimeString: b.exif_datetime,
@@ -155,6 +153,9 @@ Note that name, type and author are provided by helper.mjs, and name is used for
       noViews: 0,
     };
   });
+
+  console.log(newIslands);
+  process.exit(0); /////////////////7
 
   /// B) Update MongoDB
   await Island.insertMany(newIslands);

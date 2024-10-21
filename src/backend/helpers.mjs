@@ -53,6 +53,14 @@ export const getCoordinates = (coordString, orientation) => {
   return coordinate;
 };
 
+/*  Converts the timestamp string into a GMT / Local date (that is what exifr is doing wrong!)
+    https://stackoverflow.com/questions/43083993/javascript-how-to-convert-exif-date-time-data-to-timestamp
+*/
+export const getDate = (str) => {
+  const [year, month, date, hour, min, sec] = str.split(/\D/);
+  return new Date(year, month - 1, date, hour, min, sec);
+};
+
 export const getId = (path) => {
   return path.substring(path.lastIndexOf("/") + 1, path.lastIndexOf("."));
 };

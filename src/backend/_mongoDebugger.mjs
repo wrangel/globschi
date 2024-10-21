@@ -30,7 +30,7 @@ export async function executeMongoQuery(queryCallback) {
   }
 }
 
-const docs = await executeQuery(async () => {
+const docs = await executeMongoQuery(async () => {
   return await Island.find().sort({ dateTime: -1 }).lean();
 });
 

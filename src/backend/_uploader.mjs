@@ -1,10 +1,17 @@
 // src/backend/_uploader.mjs
 
+import ExifReader from "exifreader";
 import fs from "fs";
 import path from "path";
 import * as Constants from "./constants.mjs";
 import { loadEnv } from "./loadEnv.mjs";
-import { question, runCli, getId } from "./src/middleware/functions.mjs";
+import {
+  generateExtendedString,
+  getAltitude,
+  getCoordinates,
+  question,
+  runCli,
+} from "./helpers.mjs";
 
 loadEnv();
 
@@ -35,6 +42,7 @@ const media = files
   });
 
 const noMedia = media.length;
+
 if (noMedia == 0) {
   console.log("No media to manage");
   process.exit(0);
@@ -66,16 +74,18 @@ if (noMedia == 0) {
     idx += 1;
   }
 
-  process.exit(0); /////////////////7
-
   // Get exif data for the new files
   const base = await Promise.all(
     media.map(async (medium) => {
+      console.log(medium);
       const exif = await ExifReader.load(
         path.join(process.env.INPUT_DIRECTORY, medium.sourceFile)
       );
       return {
-        key: medium.key,
+        key: generateExtendedString(
+          medium.name,
+          exif.DateTimeOriginal.description
+        ),
         exif_datetime: exif.DateTimeOriginal.description,
         exif_longitude: getCoordinates(
           exif.GPSLongitude.description,
@@ -89,6 +99,9 @@ if (noMedia == 0) {
       };
     })
   );
+
+  console.log(base);
+  process.exit(0); /////////////////7
 
   // Get the urls for the reverse engineering call
   const reverseUrls = base.map(

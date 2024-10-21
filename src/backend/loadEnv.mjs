@@ -6,7 +6,7 @@ import { dirname, resolve } from "path";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-export function loadEnv(forceReload = false) {
+export function loadEnv(forceReload = false, printVars = false) {
   const envPath = resolve(__dirname, "..", "..", ".env"); // Adjust this path as needed
 
   console.log(`Loading .env file from: ${envPath}`);
@@ -18,6 +18,8 @@ export function loadEnv(forceReload = false) {
     throw result.error;
   } else {
     console.log(".env file loaded successfully");
-    console.log("Loaded environment variables:", Object.keys(result.parsed));
+    if (printVars) {
+      console.log("Loaded environment variables:", Object.keys(result.parsed));
+    }
   }
 }

@@ -1,6 +1,11 @@
 // helpers.mjs
 
+import { exec } from "child_process";
 import readline from "readline";
+import util from "util";
+
+// Promisify child process
+export const execPromise = util.promisify(exec);
 
 // Generate name suffix
 export function generateExtendedString(initialString, dateString) {
@@ -21,13 +26,8 @@ export function generateExtendedString(initialString, dateString) {
     String(inputDate.getMinutes()).padStart(2, "0") +
     String(inputDate.getSeconds()).padStart(2, "0");
 
-  // Generate a random 5-digit hex code
-  const hexCode = Math.floor(Math.random() * 0x100000)
-    .toString(16)
-    .padStart(5, "0");
-
   // Combine all parts
-  return `${initialString}_${timestamp}_${hexCode}`;
+  return `${initialString}_${timestamp}`;
 }
 
 // Converts the altitude into meter-above-sea

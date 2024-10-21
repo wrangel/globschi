@@ -3,11 +3,13 @@
 import ExifReader from "exifreader";
 import fs from "fs";
 import path from "path";
+import sharp from "sharp";
 import { Island } from "./server.mjs";
 import { executeMongoQuery } from "./queryHelpers.mjs";
 import * as Constants from "./constants.mjs";
 import { loadEnv } from "./loadEnv.mjs";
 import {
+  execPromise,
   generateExtendedString,
   getAltitude,
   getCoordinates,
@@ -18,15 +20,8 @@ import {
 
 loadEnv();
 
-const inputDirectory = process.env.INPUT_DIRECTORY;
-
-if (!inputDirectory) {
-  console.error("INPUT_DIRECTORY environment variable is not set");
-  process.exit(1);
-}
-
 // Get basic infos about the new media files
-const files = fs.readdirSync(inputDirectory);
+const files = fs.readdirSync(process.env.INPUT_DIRECTORY);
 const media = files
   .filter((sourceFile) => !sourceFile.startsWith("."))
   .map((sourceFile) => {
@@ -162,9 +157,6 @@ if (noMedia == 0) {
     await Island.insertMany(newIslands);
     return null; // Return null to indicate no value
   });
-
-  console.log(newIslands);
-  process.exit(0); /////////////////7
 
   /// C) Convert file to .jpeg, copy .jpeg to OneDrive, move .tif to 'done' folder
   await Promise.all(

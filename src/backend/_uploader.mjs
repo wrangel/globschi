@@ -77,7 +77,6 @@ if (noMedia == 0) {
   // Get exif data for the new files
   const base = await Promise.all(
     media.map(async (medium) => {
-      console.log(medium);
       const exif = await ExifReader.load(
         path.join(process.env.INPUT_DIRECTORY, medium.sourceFile)
       );
@@ -100,9 +99,6 @@ if (noMedia == 0) {
     })
   );
 
-  console.log(base);
-  process.exit(0); /////////////////7
-
   // Get the urls for the reverse engineering call
   const reverseUrls = base.map(
     (exif) =>
@@ -113,6 +109,9 @@ if (noMedia == 0) {
       Constants.REVERSE_GEO_URL_ELEMENTS[1] +
       process.env.ACCESS_TOKEN
   );
+
+  console.log(reverseUrls);
+  process.exit(0); /////////////////7
 
   // Get the jsons from the reverse engineering call (Wait on all promises to be resolved)
   const jsons = await Promise.all(

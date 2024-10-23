@@ -1,5 +1,6 @@
 import { S3Client } from "@aws-sdk/client-s3";
 import { loadEnv } from "./loadEnv.mjs";
+
 loadEnv();
 
 const s3Client = new S3Client({

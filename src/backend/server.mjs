@@ -1,8 +1,8 @@
 import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
-import { loadEnv } from "./loadEnv.mjs";
 import combinedDataRoute from "./routes/combinedDataRoute.mjs";
+import { loadEnv } from "./loadEnv.mjs";
 
 loadEnv();
 

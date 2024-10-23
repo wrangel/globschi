@@ -48,6 +48,32 @@ export async function enhanceMediaWithGeoData(mediaArray) {
   }));
 }
 
+export async function listBucketContents(bucketName, adapt = false) {
+  try {
+    const command = new ListObjectsCommand({ Bucket: bucketName });
+    const response = await s3Client.send(command);
+
+    if (!response.Contents) {
+      console.log(`No contents found in bucket: ${bucketName}`);
+      return [];
+    }
+
+    if (adapt) {
+      // Adapt: true - Transform the response
+      return response.Contents.map((file) => {
+        let path = file.Key;
+        return { key: getId(path), path: path };
+      });
+    } else {
+      // Adapt: false - Return the raw response
+      return response.Contents;
+    }
+  } catch (error) {
+    console.error(`Error listing contents of bucket ${bucketName}:`, error);
+    throw error;
+  }
+}
+
 // Promisify child process
 export const execPromise = util.promisify(exec);
 

@@ -3,6 +3,7 @@ import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { s3Client } from "./awsConfigurator.mjs";
 import { THUMBNAIL_ID, ACTUAL_ID } from "./constants.mjs";
 import { loadEnv } from "./loadEnv.mjs";
+
 loadEnv();
 
 const helpers = await import("./helpers.mjs");

@@ -1,10 +1,57 @@
 import { ListObjectsCommand, DeleteObjectCommand } from "@aws-sdk/client-s3";
 import { s3Client } from "../awsConfigurator.mjs";
 import * as Constants from "../constants.mjs";
-import { queryAllIslands } from "./mongoDebugger.mjs";
+import { getId } from "../helpers.mjs";
+import { loadEnv } from "../loadEnv.mjs";
 
-const helpers = await import("../helpers.mjs");
-const { getId } = helpers;
+loadEnv();
+
+async function listBucketContents(bucketName, adapt = false) {
+  try {
+    const command = new ListObjectsCommand({ Bucket: bucketName });
+    const response = await s3Client.send(command);
+
+    if (!response.Contents) {
+      console.log(`No contents found in bucket: ${bucketName}`);
+      return [];
+    }
+
+    if (adapt) {
+      // Adapt: true - Transform the response
+      return response.Contents.map((file) => {
+        let path = file.Key;
+        return { key: getId(path), path: path };
+      });
+    } else {
+      // Adapt: false - Return the raw response
+      return response.Contents;
+    }
+  } catch (error) {
+    console.error(`Error listing contents of bucket ${bucketName}:`, error);
+    throw error;
+  }
+}
+
+const originalMedia = await listBucketContents(
+  process.env.ORIGINALS_BUCKET,
+  true
+);
+const siteFiles = await listBucketContents(process.env.SITE_BUCKET, true);
+
+// Get actual image Site files
+const actualSiteMedia = siteFiles.filter(
+  (siteFile) => siteFile.path.indexOf(Constants.THUMBNAIL_ID) == -1
+);
+
+// Get thumbnail image Site files
+const thumbnailSiteMedia = siteFiles.filter(
+  (siteFile) => siteFile.path.indexOf(Constants.THUMBNAIL_ID) > -1
+);
+
+console.log(actualSiteMedia);
+process.exit(0);
+
+///////////
 
 const a = await getCurrentStatus();
 console.log(a);
@@ -20,23 +67,17 @@ async function getCurrentStatus() {
     let path = originalFile.Key;
     return { key: getId(path), path: path };
   });
-  // Get Site files - Await for Promise
-  const siteFiles = (
-    await s3Client.send(
-      new ListObjectsCommand({ Bucket: process.env.SITE_BUCKET })
-    )
-  ).Contents.map((siteFile) => {
-    let path = siteFile.Key;
-    return { key: getId(path), path: path };
-  });
+
   // Get actual image Site files
   const actualSiteMedia = siteFiles.filter(
     (siteFile) => siteFile.path.indexOf(Constants.THUMBNAIL_ID) == -1
   );
+
   // Get thumbnail image Site files
   const thumbnailSiteMedia = siteFiles.filter(
     (siteFile) => siteFile.path.indexOf(Constants.THUMBNAIL_ID) > -1
   );
+
   // Await Island collection entries (for outdated entries)
   const islandDocs = await queryAllIslands().catch(console.error);
   const islandNames = islandDocs.map((doc) => doc.name);

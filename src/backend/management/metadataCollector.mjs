@@ -4,10 +4,10 @@ import ExifReader from "exifreader";
 import fs from "fs";
 import path from "path";
 import sharp from "sharp";
-import { Island } from "./server.mjs";
-import { executeMongoQuery } from "./queryHelpers.mjs";
-import * as Constants from "./constants.mjs";
-import { loadEnv } from "./loadEnv.mjs";
+import { Island } from "../server.mjs";
+import { executeMongoQuery } from "../queryHelpers.mjs";
+import * as Constants from "../constants.mjs";
+import { loadEnv } from "../loadEnv.mjs";
 import {
   enhanceMediaWithGeoData,
   execPromise,
@@ -18,13 +18,11 @@ import {
   question,
   runCli,
   splitFileName,
-} from "./helpers.mjs";
+} from "../helpers.mjs";
 
 loadEnv();
 
-/// A) Collect and upload the metadata
-
-// A1) Collect the media
+// 1) Collect the media
 const media0 = fs
   .readdirSync(process.env.INPUT_DIRECTORY)
   .filter((medium) => !medium.startsWith("."))
@@ -37,7 +35,7 @@ const media0 = fs
     };
   });
 
-// A2) Enhance the media with user inputs
+// 2) Enhance the media with user inputs
 const noMedia = media0.length;
 if (noMedia == 0) {
   console.log("No media to manage");
@@ -70,19 +68,20 @@ if (noMedia == 0) {
     idx += 1;
   }
 
-  // A3) Enhance the media with exif data
+  // 3) Enhance the media with exif data
   const media1 = await Promise.all(
     media0.map(async (medium) => {
       const exif = await ExifReader.load(
         path.join(process.env.INPUT_DIRECTORY, medium.originalMedium)
       );
+      let newName = generateExtendedString(
+        medium.originalName,
+        exif.DateTimeOriginal.description
+      );
       return {
         ...medium,
-        newName:
-          generateExtendedString(
-            medium.originalName,
-            exif.DateTimeOriginal.description
-          ) + medium.originalSuffix,
+        newName: newName,
+        newMedium: newName + medium.originalSuffix,
         exif_datetime: exif.DateTimeOriginal.description,
         exif_longitude: getCoordinates(
           exif.GPSLongitude.description,
@@ -97,10 +96,10 @@ if (noMedia == 0) {
     })
   );
 
-  // A4) Enhance the media with geo coded data
+  // 4) Enhance the media with geo coded data
   const media2 = await enhanceMediaWithGeoData(media1);
 
-  // A5) Combine everything into the Mongoose compatible metadata (one for each document)
+  // 5) Combine everything into the Mongoose compatible metadata (one for each document)
   const media3 = media2.map(function (medium) {
     return {
       name: medium.newName,
@@ -120,7 +119,7 @@ if (noMedia == 0) {
     };
   });
 
-  // A6) Update documents to MongoDB
+  // 6) Update documents to MongoDB
 
   await executeMongoQuery(async () => {
     await Island.insertMany(media3);
@@ -128,7 +127,6 @@ if (noMedia == 0) {
   });
 
   process.exit(0);
-
   /////////
 
   /// C) Convert file to .jpeg, copy .jpeg to OneDrive, move .tif to 'done' folder

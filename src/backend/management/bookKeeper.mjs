@@ -1,9 +1,9 @@
 import { ListObjectsCommand, DeleteObjectCommand } from "@aws-sdk/client-s3";
-import { s3Client } from "./awsConfigurator.mjs";
-import * as Constants from "./constants.mjs";
+import { s3Client } from "../awsConfigurator.mjs";
+import * as Constants from "../constants.mjs";
 import { queryAllIslands } from "./mongoDebugger.mjs";
 
-const helpers = await import("./helpers.mjs");
+const helpers = await import("../helpers.mjs");
 const { getId } = helpers;
 
 const a = await getCurrentStatus();

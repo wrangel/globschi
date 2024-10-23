@@ -1,7 +1,7 @@
 // testAwsLogin.mjs
 import { ListObjectsV2Command } from "@aws-sdk/client-s3";
-import { s3Client } from "./awsConfigurator.mjs";
-import { loadEnv } from "./loadEnv.mjs";
+import { s3Client } from "../awsConfigurator.mjs";
+import { loadEnv } from "../loadEnv.mjs";
 
 // Load environment variables
 loadEnv();

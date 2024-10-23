@@ -6,7 +6,7 @@ import { loadEnv } from "./loadEnv.mjs";
 
 loadEnv();
 
-const helpers = await import("./helpers.mjs");
+const helpers = await import("./helpers/helpers.mjs");
 const { getId } = helpers;
 
 export async function getUrls() {

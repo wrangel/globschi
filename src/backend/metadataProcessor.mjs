@@ -1,7 +1,7 @@
 // metadataProcessor.mjs
 
 import { AUTHOR_PICTURES_PATH, MEDIA_PAGES } from "./constants.mjs";
-import { prepareDate } from "./helpers.mjs";
+import { prepareDate } from "./helpers/helpers.mjs";
 
 export const beautify = async (mongoData, presignedUrls) => {
   // Create an intersection based on the 'name' property

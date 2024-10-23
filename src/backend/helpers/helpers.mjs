@@ -8,107 +8,114 @@ import { loadEnv } from "../loadEnv.mjs";
 
 loadEnv();
 
+/**
+ * Enhances media array with geocoding data.
+ * @param {Array} mediaArray - Array of media items with longitude and latitude.
+ * @returns {Promise<Array>} - Enhanced media array with geocoding data.
+ */
 export async function enhanceMediaWithGeoData(mediaArray) {
-  // Function to create reverse geocoding URL
   const createReverseGeoUrl = (longitude, latitude) =>
     `${Constants.REVERSE_GEO_URL_ELEMENTS[0]}${longitude},${latitude}${Constants.REVERSE_GEO_URL_ELEMENTS[1]}${process.env.ACCESS_TOKEN}`;
 
-  // Function to fetch JSON from URL
   const fetchJson = async (url) => {
     const response = await fetch(url);
-    return await response.json();
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    return response.json();
   };
 
-  // Function to extract address components from JSON
   const extractAddressComponents = (json) => {
-    let data = {};
-    Constants.REVERSE_GEO_ADDRESS_COMPONENTS.forEach((component) => {
-      data[component] = json.features
-        .filter((doc) => doc.id.startsWith(component))
-        .map((doc) => doc.text)[0];
-    });
-    return data;
+    return Constants.REVERSE_GEO_ADDRESS_COMPONENTS.reduce(
+      (data, component) => {
+        data[component] = json.features.find((doc) =>
+          doc.id.startsWith(component)
+        )?.text;
+        return data;
+      },
+      {}
+    );
   };
 
-  // Generate URLs for reverse geocoding
   const reverseUrls = mediaArray.map((item) =>
     createReverseGeoUrl(item.exif_longitude, item.exif_latitude)
   );
 
-  // Fetch all geocoding data
   const geoJsons = await Promise.all(reverseUrls.map(fetchJson));
-
-  // Process geocoding data
   const geoData = geoJsons.map(extractAddressComponents);
 
-  // Combine original media data with geocoding data
   return mediaArray.map((item, index) => ({
     ...item,
     geoData: geoData[index],
   }));
 }
 
-// Promisify child process
 export const execPromise = util.promisify(exec);
 
-// Generate name suffix
+/**
+ * Generates an extended string with timestamp.
+ * @param {string} initialString - The initial string.
+ * @param {string} dateString - The date string in "YYYY:MM:DD HH:MM:SS" format.
+ * @returns {string} - Extended string with timestamp.
+ */
 export function generateExtendedString(initialString, dateString) {
-  // Parse the input date string
   const [datePart, timePart] = dateString.split(" ");
   const [year, month, day] = datePart.split(":");
   const [hours, minutes, seconds] = timePart.split(":");
 
-  // Create a Date object
   const inputDate = new Date(year, month - 1, day, hours, minutes, seconds);
+  const timestamp = inputDate.toISOString().replace(/[-:T]/g, "").slice(0, 14);
 
-  // Format the timestamp
-  const timestamp =
-    inputDate.getFullYear() +
-    String(inputDate.getMonth() + 1).padStart(2, "0") +
-    String(inputDate.getDate()).padStart(2, "0") +
-    String(inputDate.getHours()).padStart(2, "0") +
-    String(inputDate.getMinutes()).padStart(2, "0") +
-    String(inputDate.getSeconds()).padStart(2, "0");
-
-  // Combine all parts
   return `${initialString}_${timestamp}`;
 }
 
-// Converts the altitude into meter-above-sea
+/**
+ * Converts altitude string to meters above sea level.
+ * @param {string} altitudeString - Altitude string.
+ * @returns {number} - Altitude in meters.
+ */
 export const getAltitude = (altitudeString) => {
-  let altitude;
   if (altitudeString.endsWith("m")) {
-    altitude = parseFloat(altitudeString.replace("m", ""));
-  } else {
-    const components = altitudeString
-      .split("/")
-      .map((component) => parseFloat(component));
-    altitude = components[0] / components[1];
+    return parseFloat(altitudeString);
   }
-  return altitude;
+  const [numerator, denominator] = altitudeString.split("/").map(Number);
+  return numerator / denominator;
 };
 
-// Get decimal GPS coordinates
+/**
+ * Converts GPS coordinates to decimal format.
+ * @param {string} coordString - Coordinate string.
+ * @param {string} orientation - Orientation (N, S, E, W).
+ * @returns {number} - Decimal coordinate.
+ */
 export const getCoordinates = (coordString, orientation) => {
   let coordinate = parseFloat(coordString);
-  if (["S", "W"].indexOf(orientation) > -1) {
-    coordinate = -coordinate;
-  }
-  return coordinate;
+  return ["S", "W"].includes(orientation) ? -coordinate : coordinate;
 };
 
-/*  Converts the timestamp string into a GMT / Local date (that is what exifr is doing wrong!)
-    https://stackoverflow.com/questions/43083993/javascript-how-to-convert-exif-date-time-data-to-timestamp
-*/
+/**
+ * Converts timestamp string to Date object.
+ * @param {string} str - Timestamp string.
+ * @returns {Date} - Date object.
+ */
 export const getDate = (str) => {
   const [year, month, date, hour, min, sec] = str.split(/\D/);
   return new Date(year, month - 1, date, hour, min, sec);
 };
 
-export const getId = (path) => {
-  return path.substring(path.lastIndexOf("/") + 1, path.lastIndexOf("."));
-};
+/**
+ * Extracts ID from file path.
+ * @param {string} path - File path.
+ * @returns {string} - Extracted ID.
+ */
+export const getId = (path) =>
+  path.substring(path.lastIndexOf("/") + 1, path.lastIndexOf("."));
 
+/**
+ * Formats date for display.
+ * @param {Date} date - Date object.
+ * @returns {string} - Formatted date string.
+ */
 export const prepareDate = (date) => {
   const options = {
     year: "numeric",
@@ -125,43 +132,46 @@ export const prepareDate = (date) => {
   return new Intl.DateTimeFormat("en-US", options).format(date);
 };
 
-// Create a readline question
-export const question = function (q) {
-  // Create a readline interface
+/**
+ * Prompts user with a question and returns the answer.
+ * @param {string} q - Question to ask.
+ * @returns {Promise<string>} - User's answer.
+ */
+export const question = (q) => {
   const cl = readline.createInterface(process.stdin, process.stdout);
-  return new Promise((res, rej) => {
+  return new Promise((resolve) => {
     cl.question(q, (answer) => {
-      res(answer);
+      cl.close();
+      resolve(answer);
     });
   });
 };
 
-// Run command against Mongo Atlas
-export const runCli = (cmd) => {
-  execPromise(cmd, (error, stdout, stderr) => {
-    if (error) {
-      console.log(`error: ${error.message}`);
-      return;
-    }
-    if (stderr) {
-      console.log(`stderr: ${stderr}`);
-      return;
-    }
+/**
+ * Runs a command against Mongo Atlas.
+ * @param {string} cmd - Command to run.
+ */
+export const runCli = async (cmd) => {
+  try {
+    const { stdout, stderr } = await execPromise(cmd);
+    if (stderr) console.error(`stderr: ${stderr}`);
     console.log(stdout);
-  });
+  } catch (error) {
+    console.error(`error: ${error.message}`);
+  }
 };
 
+/**
+ * Splits a file name into name and suffix.
+ * @param {string} fileName - File name to split.
+ * @returns {Object} - Object with name and suffix.
+ */
 export function splitFileName(fileName) {
-  // Find the last dot in the file name
   const lastDotIndex = fileName.lastIndexOf(".");
-
-  // If there's no dot, return the whole file name as the name and null as the suffix
-  if (lastDotIndex === -1) {
-    return { name: fileName, suffix: null };
-  }
-
-  // Extract the name and the suffix
-  const name = fileName.substring(0, lastDotIndex);
-  const suffix = fileName.substring(lastDotIndex);
-  return { name, suffix };
+  return lastDotIndex === -1
+    ? { name: fileName, suffix: null }
+    : {
+        name: fileName.substring(0, lastDotIndex),
+        suffix: fileName.substring(lastDotIndex),
+      };
 }

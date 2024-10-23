@@ -1,72 +1,97 @@
+// src/backend/signedUrlServer.mjs
+
 import { GetObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { listBucketContents } from "./helpers/awsHelpers.mjs";
 import { s3Client } from "./awsConfigurator.mjs";
 import { THUMBNAIL_ID, ACTUAL_ID } from "./constants.mjs";
 import { loadEnv } from "./loadEnv.mjs";
+import { getId } from "./helpers/helpers.mjs";
 
 loadEnv();
 
-const helpers = await import("./helpers/helpers.mjs");
-const { getId } = helpers;
+const EXPIRATION_TIME = 95040; // 1.1 days in seconds
 
+/**
+ * Generates signed URLs for S3 objects.
+ * @returns {Promise<Array>} Array of objects with name and URLs.
+ */
 export async function getUrls() {
-  // Wait for Promise to resolve to get all the files in the bucket
-  const array0 = await listBucketContents(process.env.SITE_BUCKET);
+  try {
+    const bucketContents = await listBucketContents(process.env.SITE_BUCKET);
+    const signedUrls = await generateSignedUrls(bucketContents);
+    const groupedUrls = groupUrlsById(signedUrls);
+    const sortedUrls = sortUrlsByType(groupedUrls);
+    return formatUrls(sortedUrls);
+  } catch (error) {
+    console.error("Error in getUrls:", error);
+    throw new Error("Failed to generate signed URLs");
+  }
+}
 
-  // Provide Promises to get presigned urls
-  const array1 = await Promise.all(
-    array0.map(async (content) => {
+/**
+ * Generates signed URLs for each object in the bucket.
+ * @param {Array} contents - Bucket contents.
+ * @returns {Promise<Array>} Array of objects with id, type, and signed URL.
+ */
+async function generateSignedUrls(contents) {
+  return Promise.all(
+    contents.map(async (content) => {
       const key = content.Key;
-      const type =
-        key.substring(0, key.indexOf("/")) === THUMBNAIL_ID
-          ? THUMBNAIL_ID
-          : ACTUAL_ID;
+      const type = key.startsWith(THUMBNAIL_ID) ? THUMBNAIL_ID : ACTUAL_ID;
       return {
         id: getId(key),
         type,
-        // Allow access for 1.1 days
         sigUrl: await getSignedUrl(
           s3Client,
-          new GetObjectCommand({
-            Bucket: process.env.SITE_BUCKET,
-            Key: key,
-          }),
-          { expiresIn: 95040 }
+          new GetObjectCommand({ Bucket: process.env.SITE_BUCKET, Key: key }),
+          { expiresIn: EXPIRATION_TIME }
         ),
       };
     })
   );
+}
 
-  // Reduce the info on the id
-  const array2 = array1.reduce((acc, d) => {
-    const found = acc.find((a) => a.id === d.id);
-    const value = { type: d.type, sigUrl: d.sigUrl };
+/**
+ * Groups URLs by their ID.
+ * @param {Array} urls - Array of URL objects.
+ * @returns {Array} Grouped URL objects.
+ */
+function groupUrlsById(urls) {
+  return urls.reduce((acc, url) => {
+    const found = acc.find((a) => a.id === url.id);
     if (!found) {
-      acc.push({ id: d.id, data: [value] });
+      acc.push({ id: url.id, data: [{ type: url.type, sigUrl: url.sigUrl }] });
     } else {
-      found.data.push(value);
+      found.data.push({ type: url.type, sigUrl: url.sigUrl });
     }
     return acc;
   }, []);
+}
 
-  // Sort urls based on type (first: actual, second: thumbnail)
-  const array3 = array2.map((r) => {
-    const sorted = r.data.sort((a, b) => {
-      if (a.type < b.type) return -1;
-      if (a.type > b.type) return 1;
-      return 0;
-    });
-    return { id: r.id, data: sorted };
-  });
+/**
+ * Sorts URLs based on type (actual first, thumbnail second).
+ * @param {Array} groupedUrls - Grouped URL objects.
+ * @returns {Array} Sorted URL objects.
+ */
+function sortUrlsByType(groupedUrls) {
+  return groupedUrls.map((item) => ({
+    ...item,
+    data: item.data.sort((a, b) => a.type.localeCompare(b.type)),
+  }));
+}
 
-  // Create new key value pair
-  return array3.map((elem) => {
-    let actual_url = elem.data[0].sigUrl;
-    let thumbnail_url = elem.data[1]?.sigUrl;
-    return {
-      name: elem.id,
-      urls: { actual: actual_url, thumbnail: thumbnail_url },
-    };
-  });
+/**
+ * Formats the URLs into the final structure.
+ * @param {Array} sortedUrls - Sorted URL objects.
+ * @returns {Array} Formatted URL objects.
+ */
+function formatUrls(sortedUrls) {
+  return sortedUrls.map((elem) => ({
+    name: elem.id,
+    urls: {
+      actual: elem.data.find((d) => d.type === ACTUAL_ID)?.sigUrl,
+      thumbnail: elem.data.find((d) => d.type === THUMBNAIL_ID)?.sigUrl,
+    },
+  }));
 }

@@ -1,4 +1,10 @@
-import React, { useEffect, useRef, useCallback, useState } from "react";
+import React, {
+  useEffect,
+  useRef,
+  useCallback,
+  useState,
+  useMemo,
+} from "react";
 import * as THREE from "three";
 
 const PanoramaViewer = ({ url, onInteractionStart, onInteractionEnd }) => {
@@ -26,9 +32,7 @@ const PanoramaViewer = ({ url, onInteractionStart, onInteractionEnd }) => {
       isUserInteractingRef.current = true;
       onInteractionStart();
     }
-    if (interactionTimeoutRef.current) {
-      clearTimeout(interactionTimeoutRef.current);
-    }
+    clearTimeout(interactionTimeoutRef.current);
   }, [onInteractionStart]);
 
   const handleWheel = useCallback(
@@ -44,9 +48,9 @@ const PanoramaViewer = ({ url, onInteractionStart, onInteractionEnd }) => {
   );
 
   const getDistance = useCallback((touch1, touch2) => {
-    return Math.sqrt(
-      Math.pow(touch1.clientX - touch2.clientX, 2) +
-        Math.pow(touch1.clientY - touch2.clientY, 2)
+    return Math.hypot(
+      touch1.clientX - touch2.clientX,
+      touch1.clientY - touch2.clientY
     );
   }, []);
 
@@ -60,14 +64,10 @@ const PanoramaViewer = ({ url, onInteractionStart, onInteractionEnd }) => {
 
   const handleDoubleClick = useCallback((e) => {
     e.preventDefault();
-    const currentTime = new Date().getTime();
-    const timeSinceLastClick = currentTime - lastClickTimeRef.current;
-
-    if (timeSinceLastClick < 300) {
-      // 300ms threshold for double-click
+    const currentTime = Date.now();
+    if (currentTime - lastClickTimeRef.current < 300) {
       setIsAutoRotating((prev) => !prev);
     }
-
     lastClickTimeRef.current = currentTime;
   }, []);
 
@@ -142,7 +142,6 @@ const PanoramaViewer = ({ url, onInteractionStart, onInteractionEnd }) => {
       1,
       1100
     );
-
     const renderer = new THREE.WebGLRenderer({
       antialias: true,
       canvas: containerRef.current,
@@ -175,22 +174,18 @@ const PanoramaViewer = ({ url, onInteractionStart, onInteractionEnd }) => {
       requestAnimationFrame(animate);
 
       if (!isUserInteractingRef.current && isAutoRotating) {
-        lonRef.current += 0.03; // Autorotation
+        lonRef.current += 0.03;
       }
 
       latRef.current = Math.max(-85, Math.min(85, latRef.current));
       phiRef.current = THREE.MathUtils.degToRad(90 - latRef.current);
       thetaRef.current = THREE.MathUtils.degToRad(lonRef.current);
 
-      camera.position.x =
-        distanceRef.current *
-        Math.sin(phiRef.current) *
-        Math.cos(thetaRef.current);
-      camera.position.y = distanceRef.current * Math.cos(phiRef.current);
-      camera.position.z =
-        distanceRef.current *
-        Math.sin(phiRef.current) *
-        Math.sin(thetaRef.current);
+      camera.position.setFromSphericalCoords(
+        distanceRef.current,
+        phiRef.current,
+        thetaRef.current
+      );
 
       camera.lookAt(scene.position);
       renderer.render(scene, camera);
@@ -210,21 +205,23 @@ const PanoramaViewer = ({ url, onInteractionStart, onInteractionEnd }) => {
     };
   }, [url, isAutoRotating]);
 
-  return (
-    <canvas
-      ref={containerRef}
-      style={{ width: "100%", height: "100%", touchAction: "none" }}
-      onMouseDown={onPointerDown}
-      onMouseMove={onPointerMove}
-      onMouseUp={onPointerUp}
-      onMouseLeave={onPointerUp}
-      onTouchStart={onPointerDown}
-      onTouchMove={onPointerMove}
-      onTouchEnd={onPointerUp}
-      onWheel={handleWheel}
-      onDoubleClick={handleDoubleClick}
-    />
+  const canvasProps = useMemo(
+    () => ({
+      style: { width: "100%", height: "100%", touchAction: "none" },
+      onMouseDown: onPointerDown,
+      onMouseMove: onPointerMove,
+      onMouseUp: onPointerUp,
+      onMouseLeave: onPointerUp,
+      onTouchStart: onPointerDown,
+      onTouchMove: onPointerMove,
+      onTouchEnd: onPointerUp,
+      onWheel: handleWheel,
+      onDoubleClick: handleDoubleClick,
+    }),
+    [onPointerDown, onPointerMove, onPointerUp, handleWheel, handleDoubleClick]
   );
+
+  return <canvas ref={containerRef} {...canvasProps} />;
 };
 
 export default PanoramaViewer;

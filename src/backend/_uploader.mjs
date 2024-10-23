@@ -98,7 +98,27 @@ if (noMedia == 0) {
   // 4) Enhance the media with geo coded data
   const media2 = await enhanceMediaWithGeoData(media1);
 
-  console.log(media2);
+  //  5) Combine everything into the Mongoose compatible metadata (one for each document)
+  const media3 = media2.map(function (medium) {
+    return {
+      name: medium.newName,
+      type: medium.mediaType,
+      author: medium.author,
+      dateTimeString: medium.exif_datetime,
+      dateTime: getDate(medium.exif_datetime),
+      latitude: medium.exif_latitude,
+      longitude: medium.exif_longitude,
+      altitude: medium.exif_altitude,
+      country: medium.geoData.country,
+      region: medium.geoData.region,
+      location: medium.geoData.place,
+      postalCode: medium.geoData.postcode,
+      road: medium.geoData.address,
+      noViews: 0,
+    };
+  });
+
+  console.log(media3);
   process.exit(0);
 
   /////////
@@ -185,7 +205,7 @@ if (noMedia == 0) {
   /*  Combine everything into the Mongoose compatible metadata (one for each document)
   Note that name, type and author are provided by helper.mjs, and name is used for id'ing the correct document
   */
-  const newIslands = media.map(function (medium, i) {
+  const newIslands1 = media.map(function (medium, i) {
     const b = base[i];
     const rgcd = reverseGeocodingData[i];
     return {

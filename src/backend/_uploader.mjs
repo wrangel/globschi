@@ -22,6 +22,7 @@ loadEnv();
 
 // Get basic infos about the new media files
 const files = fs.readdirSync(process.env.INPUT_DIRECTORY);
+
 const media = files
   .filter((sourceFile) => !sourceFile.startsWith("."))
   .map((sourceFile) => {
@@ -96,6 +97,10 @@ if (noMedia == 0) {
       };
     })
   );
+
+  console.log(media);
+  console.log(base);
+  process.exit(0);
 
   // Get the urls for the reverse engineering call
   const reverseUrls = base.map(

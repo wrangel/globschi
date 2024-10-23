@@ -14,6 +14,9 @@ export const AUTHOR_PICTURES_PATH = "media/author_pictures/";
 /** List of contributors */
 export const CONTRIBUTORS = Object.freeze(["wrangel", "beat_maker", "dance"]);
 
+/** Expiration date */
+export const EXPIRATION_TIME = 95040; // 1.1 days in seconds
+
 /** Media format extensions */
 export const MEDIA_FORMATS = Object.freeze({
   site: ".webp",

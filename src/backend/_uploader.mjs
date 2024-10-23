@@ -75,15 +75,22 @@ if (noMedia == 0) {
 
   // Get exif data for the new files
   const base = await Promise.all(
-    media.map(async (medium) => {
+    media.map(async (medium, index) => {
       const exif = await ExifReader.load(
         path.join(process.env.INPUT_DIRECTORY, medium.sourceFile)
       );
+
+      // Generate the new medium name
+      const key = generateExtendedString(
+        medium.name,
+        exif.DateTimeOriginal.description
+      );
+
+      // Update the name in the media array
+      media[index].name = key;
+
       return {
-        key: generateExtendedString(
-          medium.name,
-          exif.DateTimeOriginal.description
-        ),
+        key: key,
         exif_datetime: exif.DateTimeOriginal.description,
         exif_longitude: getCoordinates(
           exif.GPSLongitude.description,

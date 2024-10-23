@@ -174,7 +174,7 @@ const PanoramaViewer = ({ url, onInteractionStart, onInteractionEnd }) => {
       requestAnimationFrame(animate);
 
       if (!isUserInteractingRef.current && isAutoRotating) {
-        lonRef.current += 0.03;
+        lonRef.current += 0.02; // Set the rotation speed
       }
 
       latRef.current = Math.max(-85, Math.min(85, latRef.current));

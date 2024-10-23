@@ -1,7 +1,15 @@
 /* src/styles/main.css */
+
+:root {
+  --background-color: black;
+  --text-color: white;
+  --gutter-size: 20px;
+  --transition-duration: 0.3s;
+}
+
 body {
-  background-color: black;
-  color: white;
+  background-color: var(--background-color);
+  color: var(--text-color);
   margin: 0;
   padding: 0;
   font-family: Arial, sans-serif;
@@ -13,27 +21,27 @@ body {
 
 .home-page {
   text-align: center;
-  padding: 20px;
+  padding: var(--gutter-size);
 }
 
 h1 {
-  color: white;
-  margin-bottom: 30px;
+  color: var(--text-color);
+  margin-bottom: calc(var(--gutter-size) * 1.5);
 }
 
 .masonry-grid {
   display: flex;
-  margin-left: -20px; /* gutter size offset */
+  margin-left: calc(var(--gutter-size) * -1); /* gutter size offset */
   width: auto;
 }
 
 .masonry-grid_column {
-  padding-left: 20px; /* gutter size */
+  padding-left: var(--gutter-size); /* gutter size */
   background-clip: padding-box;
 }
 
 .portfolio-item {
-  margin-bottom: 20px;
+  margin-bottom: var(--gutter-size);
   overflow: hidden; /* This will contain the zoomed image */
 }
 
@@ -41,15 +49,12 @@ h1 {
   width: 100%;
   height: auto;
   display: block;
-  transition: transform 0.3s ease;
+  transition: transform var(--transition-duration) ease;
 }
 
 .portfolio-item:hover img {
   transform: scale(1.08);
 }
-
-/* src/styles/main.css */
-/* ... (keep all other styles the same) ... */
 
 .image-popup {
   position: fixed;
@@ -76,49 +81,33 @@ h1 {
   object-fit: contain;
 }
 
-/* Revert close button styles to be more subtle */
-.close-button {
+.close-button,
+.nav-button {
   position: absolute;
-  top: 10px;
-  right: 10px;
   background-color: transparent;
-  color: white;
+  color: var(--text-color);
   border: none;
-  font-size: 30px;
   cursor: pointer;
   opacity: 0.7;
-  transition: opacity 0.3s ease;
+  transition: opacity var(--transition-duration) ease;
 }
 
-.close-button:hover {
+.close-button:hover,
+.nav-button:hover {
   opacity: 1;
 }
 
-/* Responsive adjustments */
-@media (max-width: 768px) {
-  .close-button {
-    top: 20px;
-    right: 20px;
-    font-size: 40px;
-  }
+.close-button {
+  top: 10px;
+  right: 10px;
+  font-size: 30px;
 }
 
 .nav-button {
-  position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  background-color: transparent;
-  color: white;
-  border: none;
   font-size: 48px;
-  cursor: pointer;
-  padding: 20px;
-  opacity: 0.7;
-  transition: opacity 0.3s ease;
-}
-
-.nav-button:hover {
-  opacity: 1;
+  padding: var(--gutter-size);
 }
 
 .nav-button.prev {
@@ -127,4 +116,13 @@ h1 {
 
 .nav-button.next {
   right: 10px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .close-button {
+    top: var(--gutter-size);
+    right: var(--gutter-size);
+    font-size: 40px;
+  }
 }

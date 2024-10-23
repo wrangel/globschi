@@ -1,14 +1,21 @@
 // src/App.js
-import React from "react";
-import HomePage from "./views/HomePage";
+import React, { Suspense } from "react";
+import ErrorBoundary from "./components/ErrorBoundary";
 import "./styles/main.css";
+
+// Lazy load the HomePage component
+const HomePage = React.lazy(() => import("./views/HomePage"));
 
 function App() {
   return (
     <div className="App">
-      <HomePage />
+      <ErrorBoundary>
+        <Suspense fallback={<div>Loading...</div>}>
+          <HomePage />
+        </Suspense>
+      </ErrorBoundary>
     </div>
   );
 }
 
-export default App;
+export default React.memo(App);

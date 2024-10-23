@@ -1,88 +1,118 @@
 // src/backend/server.mjs
 
-// src/backend/server.mjs
-
 import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
-import combinedDataRoute from "./routes/combinedDataRoute.mjs";
 import { loadEnv } from "./loadEnv.mjs";
-import { islandSchema } from "./models/islandModel.mjs";
+import combinedDataRoute from "./routes/combinedDataRoute.mjs";
 
 loadEnv();
 
-console.log("Initializing server...");
+console.log("Starting server...");
 
 const app = express();
 const PORT = process.env.PORT || 8081;
 
-// Middleware
+// Enable CORS
 app.use(cors());
-app.use(express.json());
 
-// MongoDB Connection
+// Connect to MongoDB
 mongoose.set("strictQuery", false);
+const connectDB = () =>
+  mongoose.connect(
+    `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@${process.env.SERVER}/${process.env.DB}?retryWrites=true&w=majority`
+  );
 
-export const connectDB = async () => {
-  try {
-    await mongoose.connect(
-      `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@${process.env.SERVER}/${process.env.DB}?retryWrites=true&w=majority`,
-      {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-      }
-    );
-    console.log("Successfully connected to MongoDB");
-  } catch (error) {
-    console.error("MongoDB connection error:", error);
-    process.exit(1);
-  }
-};
+// Create Mongoose Island Schema
+const islandSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: true,
+    unique: true,
+  },
+  type: {
+    required: true,
+    type: String,
+  },
+  author: {
+    type: String,
+    required: true,
+  },
+  dateTimeString: {
+    required: true,
+    type: String,
+  },
+  dateTime: {
+    required: true,
+    type: Date,
+  },
+  latitude: {
+    required: true,
+    type: Number,
+  },
+  longitude: {
+    required: true,
+    type: Number,
+  },
+  altitude: {
+    required: true,
+    type: Number,
+  },
+  country: {
+    required: true,
+    type: String,
+  },
+  region: {
+    required: true,
+    type: String,
+  },
+  location: {
+    required: true,
+    type: String,
+  },
+  postalCode: {
+    type: String,
+  },
+  road: String,
+  noViews: {
+    required: true,
+    type: Number,
+    min: 0,
+  },
+});
 
 // Create Mongoose Island Model
-export const Island = mongoose.model("Island", islandSchema);
+const Island = mongoose.model("Island", islandSchema);
 
-// Routes
+// Basic route
 app.get("/", (req, res) => {
   res.send("Server is running");
 });
 
+// API route to test MongoDB connection
 app.get("/api/test-mongo", async (req, res) => {
-  try {
-    await mongoose.connection.db.admin().ping();
-    res.json({ message: "MongoDB connection successful" });
-  } catch (error) {
-    console.error("MongoDB connection test failed:", error);
-    res.status(500).json({ error: "MongoDB connection test failed" });
-  }
+  // ... (your existing code)
 });
 
+// Use the combined data route
 app.use("/api", combinedDataRoute);
-
-// Error handling middleware
-app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).send("Something broke!");
-});
 
 // Check if this module is the main module
 const isMainModule = import.meta.url === `file://${process.argv[1]}`;
 
 // Start server if this is the main module
 if (isMainModule) {
-  const startServer = async () => {
-    try {
-      await connectDB();
+  connectDB()
+    .then(() => {
+      console.log("Successfully connected to MongoDB");
       app.listen(PORT, () => {
         console.log(`Server is running on port ${PORT}`);
       });
-    } catch (error) {
-      console.error("Failed to start server:", error);
+    })
+    .catch((err) => {
+      console.error("Could not connect to MongoDB:", err);
       process.exit(1);
-    }
-  };
-
-  startServer();
+    });
 }
 
-export { app };
+export { connectDB, Island };

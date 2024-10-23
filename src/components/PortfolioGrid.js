@@ -1,7 +1,14 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useMemo } from "react";
 import Masonry from "react-masonry-css";
 import PortfolioItem from "./PortfolioItem";
 import ImagePopup from "./ImagePopup";
+
+const breakpointColumnsObj = {
+  default: 4,
+  1100: 3,
+  700: 2,
+  500: 1,
+};
 
 function PortfolioGrid({ items }) {
   const [selectedItemId, setSelectedItemId] = useState(null);
@@ -30,14 +37,22 @@ function PortfolioGrid({ items }) {
     });
   }, [items]);
 
-  const breakpointColumnsObj = {
-    default: 4,
-    1100: 3,
-    700: 2,
-    500: 1,
-  };
+  const selectedItem = useMemo(
+    () => items.find((item) => item.id === selectedItemId) || null,
+    [items, selectedItemId]
+  );
 
-  const selectedItem = items.find((item) => item.id === selectedItemId) || null;
+  const masonryItems = useMemo(
+    () =>
+      items.map((item) => (
+        <PortfolioItem
+          key={item.id}
+          item={item}
+          onItemClick={handleItemClick}
+        />
+      )),
+    [items, handleItemClick]
+  );
 
   return (
     <>
@@ -46,13 +61,7 @@ function PortfolioGrid({ items }) {
         className="masonry-grid"
         columnClassName="masonry-grid_column"
       >
-        {items.map((item) => (
-          <PortfolioItem
-            key={item.id}
-            item={item}
-            onItemClick={handleItemClick}
-          />
-        ))}
+        {masonryItems}
       </Masonry>
       <ImagePopup
         item={selectedItem}
@@ -64,4 +73,4 @@ function PortfolioGrid({ items }) {
   );
 }
 
-export default PortfolioGrid;
+export default React.memo(PortfolioGrid);

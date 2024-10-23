@@ -1,6 +1,6 @@
 // src/backend/management/mongoDebugger.mjs
 import { Island } from "../server.mjs";
-import { executeMongoQuery } from "../helpers/queryHelpers.mjs";
+import { executeMongoQuery } from "../helpers/mongoHelpers.mjs";
 
 /**
  * Fetches and logs Island documents from MongoDB.

@@ -5,6 +5,7 @@ import mongoose from "mongoose";
 import cors from "cors";
 import { loadEnv } from "./loadEnv.mjs";
 import combinedDataRoute from "./routes/combinedDataRoute.mjs";
+import { Island } from "./models/islandModel.mjs";
 
 loadEnv();
 
@@ -23,67 +24,6 @@ const connectDB = () =>
     `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@${process.env.SERVER}/${process.env.DB}?retryWrites=true&w=majority`
   );
 
-// Create Mongoose Island Schema
-const islandSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: true,
-    unique: true,
-  },
-  type: {
-    required: true,
-    type: String,
-  },
-  author: {
-    type: String,
-    required: true,
-  },
-  dateTimeString: {
-    required: true,
-    type: String,
-  },
-  dateTime: {
-    required: true,
-    type: Date,
-  },
-  latitude: {
-    required: true,
-    type: Number,
-  },
-  longitude: {
-    required: true,
-    type: Number,
-  },
-  altitude: {
-    required: true,
-    type: Number,
-  },
-  country: {
-    required: true,
-    type: String,
-  },
-  region: {
-    required: true,
-    type: String,
-  },
-  location: {
-    required: true,
-    type: String,
-  },
-  postalCode: {
-    type: String,
-  },
-  road: String,
-  noViews: {
-    required: true,
-    type: Number,
-    min: 0,
-  },
-});
-
-// Create Mongoose Island Model
-const Island = mongoose.model("Island", islandSchema);
-
 // Basic route
 app.get("/", (req, res) => {
   res.send("Server is running");
@@ -91,11 +31,23 @@ app.get("/", (req, res) => {
 
 // API route to test MongoDB connection
 app.get("/api/test-mongo", async (req, res) => {
-  // ... (your existing code)
+  try {
+    await mongoose.connection.db.admin().ping();
+    res.json({ message: "MongoDB connection successful" });
+  } catch (error) {
+    console.error("MongoDB connection test failed:", error);
+    res.status(500).json({ error: "MongoDB connection test failed" });
+  }
 });
 
 // Use the combined data route
 app.use("/api", combinedDataRoute);
+
+// Error handling middleware
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).send("Something broke!");
+});
 
 // Check if this module is the main module
 const isMainModule = import.meta.url === `file://${process.argv[1]}`;

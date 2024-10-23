@@ -20,8 +20,46 @@ import {
 
 loadEnv();
 
-// Get basic infos about the new media files
-const files = fs.readdirSync(process.env.INPUT_DIRECTORY);
+const media0 = fs
+  .readdirSync(process.env.INPUT_DIRECTORY)
+  .filter((medium) => !medium.startsWith("."))
+  .map((medium) => {
+    return {
+      originalName: medium.substring(0, medium.lastIndexOf(".")),
+      originalMedium: medium,
+    };
+  });
+
+// Get exif data for the new files
+const media1 = await Promise.all(
+  media0.map(async (medium) => {
+    const exif = await ExifReader.load(
+      path.join(process.env.INPUT_DIRECTORY, medium.originalMedium)
+    );
+    return {
+      ...medium,
+      newName: generateExtendedString(
+        medium.originalName,
+        exif.DateTimeOriginal.description
+      ),
+      exif_datetime: exif.DateTimeOriginal.description,
+      exif_longitude: getCoordinates(
+        exif.GPSLongitude.description,
+        exif.GPSLongitudeRef.value[0]
+      ),
+      exif_latitude: getCoordinates(
+        exif.GPSLatitude.description,
+        exif.GPSLatitudeRef.value[0]
+      ),
+      exif_altitude: getAltitude(exif.GPSAltitude.description),
+    };
+  })
+);
+
+console.log(media1);
+process.exit(0);
+
+/////////
 
 const media = files
   .filter((sourceFile) => !sourceFile.startsWith("."))
@@ -87,7 +125,7 @@ if (noMedia == 0) {
       );
 
       // Update the name in the media array
-      media[index].name = key;
+      media[index].targetFile = key;
 
       return {
         key: key,
@@ -169,7 +207,6 @@ if (noMedia == 0) {
   /// C) Convert file to .jpeg, copy .jpeg to OneDrive, move .tif to 'done' folder
   await Promise.all(
     media.map(async (fi) => {
-      console.log(fi);
       const inputFile = path.join(process.env.INPUT_DIRECTORY, fi.sourceFile);
       // Handle jpegs
       await sharp(inputFile)

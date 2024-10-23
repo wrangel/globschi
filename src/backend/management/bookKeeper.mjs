@@ -5,8 +5,9 @@
 import { DeleteObjectCommand } from "@aws-sdk/client-s3";
 import { s3Client } from "../awsConfigurator.mjs";
 import * as Constants from "../constants.mjs";
-import { getId } from "../helpers/helpers.mjs";
+import { Island } from "../models/islandModel.mjs";
 import { listBucketContents } from "../helpers/awsHelpers.mjs";
+import { executeMongoQuery } from "../helpers/mongoHelpers.mjs";
 import { loadEnv } from "../loadEnv.mjs";
 
 loadEnv();
@@ -29,11 +30,12 @@ const thumbnailSiteMedia = siteMedia.filter(
   (siteMedium) => siteMedium.path.indexOf(Constants.THUMBNAIL_ID) > -1
 );
 
-console.log(actualSiteMedia);
+// Get the Mongo DB docs
+const mongoDocs = await executeMongoQuery(async () => {
+  return await Island.find().lean();
+}, "Island");
+
+const mongoDocMedia = mongoDocs.map((doc) => doc.name);
+
+console.log(mongoDocMedia);
 process.exit(0);
-
-///////////
-
-// Await Island collection entries (for outdated entries)
-const islandDocs = await queryAllIslands().catch(console.error);
-const islandNames = islandDocs.map((doc) => doc.name);

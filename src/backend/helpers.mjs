@@ -3,6 +3,50 @@
 import { exec } from "child_process";
 import readline from "readline";
 import util from "util";
+import * as Constants from "./constants.mjs";
+import { loadEnv } from "./loadEnv.mjs";
+
+loadEnv();
+
+export async function enhanceMediaWithGeoData(mediaArray) {
+  // Function to create reverse geocoding URL
+  const createReverseGeoUrl = (longitude, latitude) =>
+    `${Constants.REVERSE_GEO_URL_ELEMENTS[0]}${longitude},${latitude}${Constants.REVERSE_GEO_URL_ELEMENTS[1]}${process.env.ACCESS_TOKEN}`;
+
+  // Function to fetch JSON from URL
+  const fetchJson = async (url) => {
+    const response = await fetch(url);
+    return await response.json();
+  };
+
+  // Function to extract address components from JSON
+  const extractAddressComponents = (json) => {
+    let data = {};
+    Constants.REVERSE_GEO_ADDRESS_COMPONENTS.forEach((component) => {
+      data[component] = json.features
+        .filter((doc) => doc.id.startsWith(component))
+        .map((doc) => doc.text)[0];
+    });
+    return data;
+  };
+
+  // Generate URLs for reverse geocoding
+  const reverseUrls = mediaArray.map((item) =>
+    createReverseGeoUrl(item.exif_longitude, item.exif_latitude)
+  );
+
+  // Fetch all geocoding data
+  const geoJsons = await Promise.all(reverseUrls.map(fetchJson));
+
+  // Process geocoding data
+  const geoData = geoJsons.map(extractAddressComponents);
+
+  // Combine original media data with geocoding data
+  return mediaArray.map((item, index) => ({
+    ...item,
+    geoData: geoData[index],
+  }));
+}
 
 // Promisify child process
 export const execPromise = util.promisify(exec);

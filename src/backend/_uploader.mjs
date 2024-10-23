@@ -9,6 +9,7 @@ import { executeMongoQuery } from "./queryHelpers.mjs";
 import * as Constants from "./constants.mjs";
 import { loadEnv } from "./loadEnv.mjs";
 import {
+  enhanceMediaWithGeoData,
   execPromise,
   generateExtendedString,
   getAltitude,
@@ -21,7 +22,7 @@ import {
 
 loadEnv();
 
-// Collect the media
+// 1) Collect the media
 const media0 = fs
   .readdirSync(process.env.INPUT_DIRECTORY)
   .filter((medium) => !medium.startsWith("."))
@@ -34,7 +35,7 @@ const media0 = fs
     };
   });
 
-// Add user input to the media
+// 2) Enhance the media with user inputs
 const noMedia = media0.length;
 if (noMedia == 0) {
   console.log("No media to manage");
@@ -67,7 +68,7 @@ if (noMedia == 0) {
     idx += 1;
   }
 
-  // Get exif data
+  // 3) Enhance the media with exif data
   const media1 = await Promise.all(
     media0.map(async (medium) => {
       const exif = await ExifReader.load(
@@ -94,7 +95,10 @@ if (noMedia == 0) {
     })
   );
 
-  console.log(media1);
+  // 4) Enhance the media with geo coded data
+  const media2 = await enhanceMediaWithGeoData(media1);
+
+  console.log(media2);
   process.exit(0);
 
   /////////
@@ -149,7 +153,7 @@ if (noMedia == 0) {
   );
 
   // Get the urls for the reverse engineering call
-  const reverseUrls = base.map(
+  const reverseUrls1 = base.map(
     (exif) =>
       Constants.REVERSE_GEO_URL_ELEMENTS[0] +
       exif.exif_longitude +
@@ -160,7 +164,7 @@ if (noMedia == 0) {
   );
 
   // Get the jsons from the reverse engineering call (Wait on all promises to be resolved)
-  const jsons = await Promise.all(
+  const jsons1 = await Promise.all(
     reverseUrls.map(async (reverseUrl) => {
       const resp = await fetch(reverseUrl);
       return await resp.json();
@@ -168,7 +172,7 @@ if (noMedia == 0) {
   );
 
   // Get the reverse geocoding data
-  const reverseGeocodingData = jsons.map((json) => {
+  const reverseGeocodingData1 = jsons.map((json) => {
     let data = {};
     Constants.REVERSE_GEO_ADDRESS_COMPONENTS.forEach((addressComponent) => {
       data[addressComponent] = json.features

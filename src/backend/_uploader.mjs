@@ -21,6 +21,7 @@ import {
 
 loadEnv();
 
+// Collect the media
 const media0 = fs
   .readdirSync(process.env.INPUT_DIRECTORY)
   .filter((medium) => !medium.startsWith("."))
@@ -33,57 +34,8 @@ const media0 = fs
     };
   });
 
-// Get exif data for the new files
-const media1 = await Promise.all(
-  media0.map(async (medium) => {
-    const exif = await ExifReader.load(
-      path.join(process.env.INPUT_DIRECTORY, medium.originalMedium)
-    );
-    return {
-      ...medium,
-      newName:
-        generateExtendedString(
-          medium.originalName,
-          exif.DateTimeOriginal.description
-        ) + medium.originalSuffix,
-      exif_datetime: exif.DateTimeOriginal.description,
-      exif_longitude: getCoordinates(
-        exif.GPSLongitude.description,
-        exif.GPSLongitudeRef.value[0]
-      ),
-      exif_latitude: getCoordinates(
-        exif.GPSLatitude.description,
-        exif.GPSLatitudeRef.value[0]
-      ),
-      exif_altitude: getAltitude(exif.GPSAltitude.description),
-    };
-  })
-);
-
-console.log(media1);
-process.exit(0);
-
-/////////
-
-const media = files
-  .filter((sourceFile) => !sourceFile.startsWith("."))
-  .map((sourceFile) => {
-    let name = sourceFile.substring(0, sourceFile.lastIndexOf("."));
-    // Rename file if needed
-    if (name.endsWith(Constants.RENAME_IDS[1])) {
-      name = name
-        .replace(Constants.RENAME_IDS[1], "")
-        .replace(Constants.RENAME_IDS[0], Constants.REPLACEMENT);
-    }
-    return {
-      name: name,
-      sourceFile: sourceFile,
-      targetFile: name + Constants.MEDIA_FORMATS.large,
-    };
-  });
-
-const noMedia = media.length;
-
+// Add user input to the media
+const noMedia = media0.length;
 if (noMedia == 0) {
   console.log("No media to manage");
   process.exit(0);
@@ -91,8 +43,8 @@ if (noMedia == 0) {
   console.log(`${noMedia} media to manage`);
   // Collect user input about authors and type of the media (while is async by nature!)
   let idx = 0;
-  while (idx < media.length) {
-    const name = media[idx].name;
+  while (idx < noMedia) {
+    const name = media0[idx].name;
     const answer = await question(
       `Author and media type of --> ${name} <-- (comma separated) : `
     );
@@ -110,10 +62,59 @@ if (noMedia == 0) {
       );
     }
     // Add the new info to the media object
-    media[idx].author = author;
-    media[idx].mediaType = mediaType;
+    media0[idx].author = author;
+    media0[idx].mediaType = mediaType;
     idx += 1;
   }
+
+  // Get exif data
+  const media1 = await Promise.all(
+    media0.map(async (medium) => {
+      const exif = await ExifReader.load(
+        path.join(process.env.INPUT_DIRECTORY, medium.originalMedium)
+      );
+      return {
+        ...medium,
+        newName:
+          generateExtendedString(
+            medium.originalName,
+            exif.DateTimeOriginal.description
+          ) + medium.originalSuffix,
+        exif_datetime: exif.DateTimeOriginal.description,
+        exif_longitude: getCoordinates(
+          exif.GPSLongitude.description,
+          exif.GPSLongitudeRef.value[0]
+        ),
+        exif_latitude: getCoordinates(
+          exif.GPSLatitude.description,
+          exif.GPSLatitudeRef.value[0]
+        ),
+        exif_altitude: getAltitude(exif.GPSAltitude.description),
+      };
+    })
+  );
+
+  console.log(media1);
+  process.exit(0);
+
+  /////////
+
+  const media = files
+    .filter((sourceFile) => !sourceFile.startsWith("."))
+    .map((sourceFile) => {
+      let name = sourceFile.substring(0, sourceFile.lastIndexOf("."));
+      // Rename file if needed
+      if (name.endsWith(Constants.RENAME_IDS[1])) {
+        name = name
+          .replace(Constants.RENAME_IDS[1], "")
+          .replace(Constants.RENAME_IDS[0], Constants.REPLACEMENT);
+      }
+      return {
+        name: name,
+        sourceFile: sourceFile,
+        targetFile: name + Constants.MEDIA_FORMATS.large,
+      };
+    });
 
   // Get exif data for the new files
   const base = await Promise.all(

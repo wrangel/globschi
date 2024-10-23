@@ -118,6 +118,6 @@ export function splitFileName(fileName) {
 
   // Extract the name and the suffix
   const name = fileName.substring(0, lastDotIndex);
-  const suffix = fileName.substring(lastDotIndex); // Get the substring after the dot
+  const suffix = fileName.substring(lastDotIndex);
   return { name, suffix };
 }

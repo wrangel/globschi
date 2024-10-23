@@ -16,19 +16,29 @@ import {
   getDate,
   question,
   runCli,
+  splitFileName,
 } from "./helpers.mjs";
 
 loadEnv();
+
+/////
+
+//////
 
 const media0 = fs
   .readdirSync(process.env.INPUT_DIRECTORY)
   .filter((medium) => !medium.startsWith("."))
   .map((medium) => {
+    let { name: originalName, suffix: originalSuffix } = splitFileName(medium);
     return {
-      originalName: medium.substring(0, medium.lastIndexOf(".")),
+      originalName: originalName,
+      originalSuffix: originalSuffix,
       originalMedium: medium,
     };
   });
+
+console.log(media0);
+process.exit(0);
 
 // Get exif data for the new files
 const media1 = await Promise.all(

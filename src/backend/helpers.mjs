@@ -106,3 +106,18 @@ export const runCli = (cmd) => {
     console.log(stdout);
   });
 };
+
+export function splitFileName(fileName) {
+  // Find the last dot in the file name
+  const lastDotIndex = fileName.lastIndexOf(".");
+
+  // If there's no dot, return the whole file name as the name and null as the suffix
+  if (lastDotIndex === -1) {
+    return { name: fileName, suffix: null };
+  }
+
+  // Extract the name and the suffix
+  const name = fileName.substring(0, lastDotIndex);
+  const suffix = fileName.substring(lastDotIndex + 1); // Get the substring after the dot
+  return { name, suffix };
+}

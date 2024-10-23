@@ -2,7 +2,7 @@ import { DeleteObjectCommand } from "@aws-sdk/client-s3";
 import { s3Client } from "../awsConfigurator.mjs";
 import * as Constants from "../constants.mjs";
 import { getId } from "../helpers/helpers.mjs";
-import { listBucketContents } from "../helpers/queryHelpers.mjs";
+import { listBucketContents } from "../helpers/awsHelpers.mjs";
 import { loadEnv } from "../loadEnv.mjs";
 
 loadEnv();

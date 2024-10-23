@@ -5,7 +5,7 @@ import fs from "fs";
 import path from "path";
 import sharp from "sharp";
 import { Island } from "../server.mjs";
-import { executeMongoQuery } from "../helpers/queryHelpers.mjs";
+import { executeMongoQuery } from "../helpers/mongoHelpers.mjs";
 import * as Constants from "../constants.mjs";
 import { loadEnv } from "../loadEnv.mjs";
 import {

@@ -1,10 +1,12 @@
+// TODO Improve
+
 // src/backend/management/metadataCollector.mjs
 
 import ExifReader from "exifreader";
 import fs from "fs";
 import path from "path";
 import sharp from "sharp";
-import { Island } from "../server.mjs";
+import { Island } from "../models/islandModel.mjs";
 import { executeMongoQuery } from "../helpers/mongoHelpers.mjs";
 import * as Constants from "../constants.mjs";
 import { loadEnv } from "../loadEnv.mjs";

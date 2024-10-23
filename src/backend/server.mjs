@@ -67,4 +67,4 @@ if (isMainModule) {
     });
 }
 
-export { connectDB, Island };
+export { connectDB };

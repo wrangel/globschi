@@ -21,10 +21,6 @@ import {
 
 loadEnv();
 
-/////
-
-//////
-
 const media0 = fs
   .readdirSync(process.env.INPUT_DIRECTORY)
   .filter((medium) => !medium.startsWith("."))
@@ -37,9 +33,6 @@ const media0 = fs
     };
   });
 
-console.log(media0);
-process.exit(0);
-
 // Get exif data for the new files
 const media1 = await Promise.all(
   media0.map(async (medium) => {
@@ -48,10 +41,11 @@ const media1 = await Promise.all(
     );
     return {
       ...medium,
-      newName: generateExtendedString(
-        medium.originalName,
-        exif.DateTimeOriginal.description
-      ),
+      newName:
+        generateExtendedString(
+          medium.originalName,
+          exif.DateTimeOriginal.description
+        ) + medium.originalSuffix,
       exif_datetime: exif.DateTimeOriginal.description,
       exif_longitude: getCoordinates(
         exif.GPSLongitude.description,

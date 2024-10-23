@@ -1,4 +1,5 @@
-// src/components/imagePopup.js
+// src/components/ImagePopup.js
+
 import React, { useEffect, useRef, useCallback, useState } from "react";
 import { useSwipeable } from "react-swipeable";
 import PanoramaViewer from "./PanoramaViewer";
@@ -10,19 +11,12 @@ function ImagePopup({ item, onClose, onNext, onPrevious }) {
   const handleKeyDown = useCallback(
     (event) => {
       if (isPanoramaInteracting) return;
-      switch (event.key) {
-        case "Escape":
-          onClose();
-          break;
-        case "ArrowLeft":
-          onPrevious();
-          break;
-        case "ArrowRight":
-          onNext();
-          break;
-        default:
-          break;
-      }
+      const keyActions = {
+        Escape: onClose,
+        ArrowLeft: onPrevious,
+        ArrowRight: onNext,
+      };
+      if (keyActions[event.key]) keyActions[event.key]();
     },
     [onClose, onPrevious, onNext, isPanoramaInteracting]
   );
@@ -45,14 +39,21 @@ function ImagePopup({ item, onClose, onNext, onPrevious }) {
   }, []);
 
   useEffect(() => {
-    document.addEventListener("keydown", handleKeyDown);
-    document.addEventListener("mousedown", handleClickOutside);
-    document.addEventListener("touchstart", handleClickOutside);
+    const events = ["keydown", "mousedown", "touchstart"];
+    events.forEach((event) =>
+      document.addEventListener(
+        event,
+        event === "keydown" ? handleKeyDown : handleClickOutside
+      )
+    );
 
     return () => {
-      document.removeEventListener("keydown", handleKeyDown);
-      document.removeEventListener("mousedown", handleClickOutside);
-      document.removeEventListener("touchstart", handleClickOutside);
+      events.forEach((event) =>
+        document.removeEventListener(
+          event,
+          event === "keydown" ? handleKeyDown : handleClickOutside
+        )
+      );
     };
   }, [handleKeyDown, handleClickOutside]);
 
@@ -65,21 +66,18 @@ function ImagePopup({ item, onClose, onNext, onPrevious }) {
 
   if (!item) return null;
 
-  const renderContent = () => {
-    if (item.type === "pan") {
-      return (
-        <div className="panorama-container">
-          <PanoramaViewer
-            url={item.actualUrl}
-            onInteractionStart={handlePanoramaInteractionStart}
-            onInteractionEnd={handlePanoramaInteractionEnd}
-          />
-        </div>
-      );
-    } else {
-      return <img src={item.actualUrl} alt={item.name} />;
-    }
-  };
+  const renderContent = () =>
+    item.type === "pan" ? (
+      <div className="panorama-container">
+        <PanoramaViewer
+          url={item.actualUrl}
+          onInteractionStart={handlePanoramaInteractionStart}
+          onInteractionEnd={handlePanoramaInteractionEnd}
+        />
+      </div>
+    ) : (
+      <img src={item.actualUrl} alt={item.name} />
+    );
 
   return (
     <div className="image-popup" {...swipeHandlers}>

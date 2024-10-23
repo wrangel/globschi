@@ -22,7 +22,9 @@ import {
 
 loadEnv();
 
-// 1) Collect the media
+/// A) Collect and upload the metadata
+
+// A1) Collect the media
 const media0 = fs
   .readdirSync(process.env.INPUT_DIRECTORY)
   .filter((medium) => !medium.startsWith("."))
@@ -35,7 +37,7 @@ const media0 = fs
     };
   });
 
-// 2) Enhance the media with user inputs
+// A2) Enhance the media with user inputs
 const noMedia = media0.length;
 if (noMedia == 0) {
   console.log("No media to manage");
@@ -68,7 +70,7 @@ if (noMedia == 0) {
     idx += 1;
   }
 
-  // 3) Enhance the media with exif data
+  // A3) Enhance the media with exif data
   const media1 = await Promise.all(
     media0.map(async (medium) => {
       const exif = await ExifReader.load(
@@ -95,10 +97,10 @@ if (noMedia == 0) {
     })
   );
 
-  // 4) Enhance the media with geo coded data
+  // A4) Enhance the media with geo coded data
   const media2 = await enhanceMediaWithGeoData(media1);
 
-  //  5) Combine everything into the Mongoose compatible metadata (one for each document)
+  // A5) Combine everything into the Mongoose compatible metadata (one for each document)
   const media3 = media2.map(function (medium) {
     return {
       name: medium.newName,
@@ -118,120 +120,16 @@ if (noMedia == 0) {
     };
   });
 
-  console.log(media3);
+  // A6) Update documents to MongoDB
+
+  await executeMongoQuery(async () => {
+    await Island.insertMany(media3);
+    return null; // Return null to indicate no value
+  });
+
   process.exit(0);
 
   /////////
-
-  const media = files
-    .filter((sourceFile) => !sourceFile.startsWith("."))
-    .map((sourceFile) => {
-      let name = sourceFile.substring(0, sourceFile.lastIndexOf("."));
-      // Rename file if needed
-      if (name.endsWith(Constants.RENAME_IDS[1])) {
-        name = name
-          .replace(Constants.RENAME_IDS[1], "")
-          .replace(Constants.RENAME_IDS[0], Constants.REPLACEMENT);
-      }
-      return {
-        name: name,
-        sourceFile: sourceFile,
-        targetFile: name + Constants.MEDIA_FORMATS.large,
-      };
-    });
-
-  // Get exif data for the new files
-  const base = await Promise.all(
-    media.map(async (medium, index) => {
-      const exif = await ExifReader.load(
-        path.join(process.env.INPUT_DIRECTORY, medium.sourceFile)
-      );
-
-      // Generate the new medium name
-      const key = generateExtendedString(
-        medium.name,
-        exif.DateTimeOriginal.description
-      );
-
-      // Update the name in the media array
-      media[index].targetFile = key;
-
-      return {
-        key: key,
-        exif_datetime: exif.DateTimeOriginal.description,
-        exif_longitude: getCoordinates(
-          exif.GPSLongitude.description,
-          exif.GPSLongitudeRef.value[0]
-        ),
-        exif_latitude: getCoordinates(
-          exif.GPSLatitude.description,
-          exif.GPSLatitudeRef.value[0]
-        ),
-        exif_altitude: getAltitude(exif.GPSAltitude.description),
-      };
-    })
-  );
-
-  // Get the urls for the reverse engineering call
-  const reverseUrls1 = base.map(
-    (exif) =>
-      Constants.REVERSE_GEO_URL_ELEMENTS[0] +
-      exif.exif_longitude +
-      ", " +
-      exif.exif_latitude +
-      Constants.REVERSE_GEO_URL_ELEMENTS[1] +
-      process.env.ACCESS_TOKEN
-  );
-
-  // Get the jsons from the reverse engineering call (Wait on all promises to be resolved)
-  const jsons1 = await Promise.all(
-    reverseUrls.map(async (reverseUrl) => {
-      const resp = await fetch(reverseUrl);
-      return await resp.json();
-    })
-  );
-
-  // Get the reverse geocoding data
-  const reverseGeocodingData1 = jsons.map((json) => {
-    let data = {};
-    Constants.REVERSE_GEO_ADDRESS_COMPONENTS.forEach((addressComponent) => {
-      data[addressComponent] = json.features
-        .filter((doc) => doc.id.startsWith(addressComponent))
-        .map((doc) => doc.text)[0];
-    });
-    return data;
-  });
-
-  /*  Combine everything into the Mongoose compatible metadata (one for each document)
-  Note that name, type and author are provided by helper.mjs, and name is used for id'ing the correct document
-  */
-  const newIslands1 = media.map(function (medium, i) {
-    const b = base[i];
-    const rgcd = reverseGeocodingData[i];
-    return {
-      name: b.key,
-      type: medium.mediaType,
-      author: medium.author,
-      dateTimeString: b.exif_datetime,
-      dateTime: getDate(b.exif_datetime),
-      latitude: b.exif_latitude,
-      longitude: b.exif_longitude,
-      altitude: b.exif_altitude,
-      country: rgcd.country,
-      region: rgcd.region,
-      location: rgcd.place,
-      postalCode: rgcd.postcode,
-      road: rgcd.address,
-      noViews: 0,
-    };
-  });
-
-  /// B) Update MongoDB
-
-  await executeMongoQuery(async () => {
-    await Island.insertMany(newIslands);
-    return null; // Return null to indicate no value
-  });
 
   /// C) Convert file to .jpeg, copy .jpeg to OneDrive, move .tif to 'done' folder
   await Promise.all(

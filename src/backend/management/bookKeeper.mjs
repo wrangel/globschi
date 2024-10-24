@@ -57,8 +57,10 @@ function compareArrays(A, B) {
 // Compare originals with non-originals
 const compareAB = compareArrays(originalMedia, siteMediaActuals);
 const compareAC = compareArrays(originalMedia, siteMediaThumbnails);
-const compareAD = compareArrays(originalMedia, mongoDocMedia);
 
-console.log(compareAB);
-console.log(compareAC);
-console.log(compareAD);
+compareAB.onlyInB;
+compareAC.onlyInB;
+
+process.exit(0);
+
+const compareAD = compareArrays(originalMedia, mongoDocMedia);

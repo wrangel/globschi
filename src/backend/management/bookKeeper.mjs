@@ -46,18 +46,22 @@ const compareSiteMediaThumbnails = compareArrays(
   siteMediaThumbnails
 );
 
-// Delete all media which are not present in originals
+// Delete all site media which are not present in originals
 await deleteS3Objects(process.env.SITE_BUCKET, compareSiteMediaActuals.onlyInB);
 await deleteS3Objects(
   process.env.SITE_BUCKET,
   compareSiteMediaThumbnails.onlyInB
 );
 
+// Delete all mongo documents which are not present in originals
 const compareMongoDocMedia = compareArrays(originalMedia, mongoDocMedia);
 console.log(compareMongoDocMedia);
 const keysToDelete = compareMongoDocMedia.onlyInB.map((item) => item.key);
-console.log(keysToDelete);
 
-Island.deleteMany({ name: { $in: keysToDelete } });
+await executeMongoQuery(async () => {
+  return await Island.deleteMany({ name: { $in: keysToDelete } });
+}, "Island");
+
+// Collect all the keys which are only in the originals
 
 process.exit(0);

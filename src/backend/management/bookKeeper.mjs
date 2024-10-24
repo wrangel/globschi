@@ -45,23 +45,41 @@ const compareSiteMediaThumbnails = compareArrays(
   originalMedia,
   siteMediaThumbnails
 );
+const compareMongoDocMedia = compareArrays(originalMedia, mongoDocMedia);
+
+//////
 
 // Delete all site media which are not present in originals
-await deleteS3Objects(process.env.SITE_BUCKET, compareSiteMediaActuals.onlyInB);
 await deleteS3Objects(
   process.env.SITE_BUCKET,
-  compareSiteMediaThumbnails.onlyInB
+  compareSiteMediaActuals.onlyInB.concat(compareSiteMediaThumbnails.onlyInB)
 );
 
 // Delete all mongo documents which are not present in originals
-const compareMongoDocMedia = compareArrays(originalMedia, mongoDocMedia);
-console.log(compareMongoDocMedia);
 const keysToDelete = compareMongoDocMedia.onlyInB.map((item) => item.key);
-
 await executeMongoQuery(async () => {
   return await Island.deleteMany({ name: { $in: keysToDelete } });
 }, "Island");
 
+//////
+
 // Collect all the keys which are only in the originals
 
-process.exit(0);
+const originalArray = [
+  ...compareSiteMediaActuals.onlyInA,
+  ...compareSiteMediaThumbnails.onlyInA,
+  ...compareMongoDocMedia.onlyInA,
+];
+
+const transformedArray = originalArray.map((item) => ({
+  key: item.key,
+  paths: [
+    item.path.replace(
+      Constants.MEDIA_FORMATS.large,
+      Constants.MEDIA_FORMATS.site
+    ),
+    `${Constants.THUMBNAIL_ID}/${item.key}${Constants.MEDIA_FORMATS.site}`,
+  ],
+}));
+
+console.log(transformedArray);

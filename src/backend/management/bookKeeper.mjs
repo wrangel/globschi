@@ -2,12 +2,12 @@
 
 // src/backend/management/bookKeeper.mjs
 
-import { DeleteObjectCommand } from "@aws-sdk/client-s3";
-import { s3Client } from "../awsConfigurator.mjs";
 import * as Constants from "../constants.mjs";
 import { Island } from "../models/islandModel.mjs";
-import { listBucketContents } from "../helpers/awsHelpers.mjs";
+import { deleteS3Objects, listBucketContents } from "../helpers/awsHelpers.mjs";
+import { compareArrays } from "../helpers/helpers.mjs";
 import { executeMongoQuery } from "../helpers/mongoHelpers.mjs";
+
 import { loadEnv } from "../loadEnv.mjs";
 
 loadEnv();
@@ -39,28 +39,25 @@ const mongoDocMedia = mongoDocs.map((doc) => ({ key: doc.name }));
 
 /////
 
-function compareArrays(A, B) {
-  const onlyInA = A.filter(
-    (itemA) => !B.some((itemB) => itemB.key === itemA.key)
-  );
-
-  const onlyInB = B.filter(
-    (itemB) => !A.some((itemA) => itemA.key === itemB.key)
-  );
-
-  return {
-    onlyInA,
-    onlyInB,
-  };
-}
-
 // Compare originals with non-originals
-const compareAB = compareArrays(originalMedia, siteMediaActuals);
-const compareAC = compareArrays(originalMedia, siteMediaThumbnails);
+const compareSiteMediaActuals = compareArrays(originalMedia, siteMediaActuals);
+const compareSiteMediaThumbnails = compareArrays(
+  originalMedia,
+  siteMediaThumbnails
+);
 
-compareAB.onlyInB;
-compareAC.onlyInB;
+// Delete all media which are not present in originals
+await deleteS3Objects(process.env.SITE_BUCKET, compareSiteMediaActuals.onlyInB);
+await deleteS3Objects(
+  process.env.SITE_BUCKET,
+  compareSiteMediaThumbnails.onlyInB
+);
+
+const compareMongoDocMedia = compareArrays(originalMedia, mongoDocMedia);
+console.log(compareMongoDocMedia);
+const keysToDelete = compareMongoDocMedia.onlyInB.map((item) => item.key);
+console.log(keysToDelete);
+
+Island.deleteMany({ name: { $in: keysToDelete } });
 
 process.exit(0);
-
-const compareAD = compareArrays(originalMedia, mongoDocMedia);

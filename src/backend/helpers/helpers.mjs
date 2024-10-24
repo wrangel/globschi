@@ -6,7 +6,27 @@ import util from "util";
 import * as Constants from "../constants.mjs";
 import { loadEnv } from "../loadEnv.mjs";
 
+// Load environment variables
 loadEnv();
+
+// Utility to promisify exec for async/await usage
+export const execPromise = util.promisify(exec);
+
+/**
+ * Compares two arrays and returns the items that are only in one of them.
+ * @param {Array} A - First array.
+ * @param {Array} B - Second array.
+ * @returns {Object} - Object containing items only in A and only in B.
+ */
+export function compareArrays(A, B) {
+  const bKeys = new Set(B.map((item) => item.key));
+  const onlyInA = A.filter((itemA) => !bKeys.has(itemA.key));
+
+  const aKeys = new Set(A.map((item) => item.key));
+  const onlyInB = B.filter((itemB) => !aKeys.has(itemB.key));
+
+  return { onlyInA, onlyInB };
+}
 
 /**
  * Enhances media array with geocoding data.
@@ -37,20 +57,23 @@ export async function enhanceMediaWithGeoData(mediaArray) {
     );
   };
 
-  const reverseUrls = mediaArray.map((item) =>
-    createReverseGeoUrl(item.exif_longitude, item.exif_latitude)
-  );
+  try {
+    const reverseUrls = mediaArray.map((item) =>
+      createReverseGeoUrl(item.exif_longitude, item.exif_latitude)
+    );
 
-  const geoJsons = await Promise.all(reverseUrls.map(fetchJson));
-  const geoData = geoJsons.map(extractAddressComponents);
+    const geoJsons = await Promise.all(reverseUrls.map(fetchJson));
+    const geoData = geoJsons.map(extractAddressComponents);
 
-  return mediaArray.map((item, index) => ({
-    ...item,
-    geoData: geoData[index],
-  }));
+    return mediaArray.map((item, index) => ({
+      ...item,
+      geoData: geoData[index],
+    }));
+  } catch (error) {
+    console.error("Error enhancing media with geo data:", error);
+    throw error;
+  }
 }
-
-export const execPromise = util.promisify(exec);
 
 /**
  * Generates an extended string with timestamp.
@@ -59,14 +82,22 @@ export const execPromise = util.promisify(exec);
  * @returns {string} - Extended string with timestamp.
  */
 export function generateExtendedString(initialString, dateString) {
-  const [datePart, timePart] = dateString.split(" ");
-  const [year, month, day] = datePart.split(":");
-  const [hours, minutes, seconds] = timePart.split(":");
+  try {
+    const [datePart, timePart] = dateString.split(" ");
+    const [year, month, day] = datePart.split(":");
+    const [hours, minutes, seconds] = timePart.split(":");
 
-  const inputDate = new Date(year, month - 1, day, hours, minutes, seconds);
-  const timestamp = inputDate.toISOString().replace(/[-:T]/g, "").slice(0, 14);
+    const inputDate = new Date(year, month - 1, day, hours, minutes, seconds);
+    const timestamp = inputDate
+      .toISOString()
+      .replace(/[-:T]/g, "")
+      .slice(0, 14);
 
-  return `${initialString}_${timestamp}`;
+    return `${initialString}_${timestamp}`;
+  } catch (error) {
+    console.error("Error generating extended string:", error);
+    throw error;
+  }
 }
 
 /**
@@ -137,7 +168,7 @@ export const prepareDate = (date) => {
  * @param {string} q - Question to ask.
  * @returns {Promise<string>} - User's answer.
  */
-export const question = (q) => {
+export const question = async (q) => {
   const cl = readline.createInterface(process.stdin, process.stdout);
   return new Promise((resolve) => {
     cl.question(q, (answer) => {
@@ -148,7 +179,7 @@ export const question = (q) => {
 };
 
 /**
- * Runs a command against Mongo Atlas.
+ * Runs a command against Mongo Atlas using the CLI.
  * @param {string} cmd - Command to run.
  */
 export const runCli = async (cmd) => {
@@ -157,14 +188,14 @@ export const runCli = async (cmd) => {
     if (stderr) console.error(`stderr: ${stderr}`);
     console.log(stdout);
   } catch (error) {
-    console.error(`error: ${error.message}`);
+    console.error(`Error executing command: ${error.message}`);
   }
 };
 
 /**
- * Splits a file name into name and suffix.
+ * Splits a file name into name and suffix components.
  * @param {string} fileName - File name to split.
- * @returns {Object} - Object with name and suffix.
+ * @returns {{name: string, suffix: string|null}} - Object with name and suffix properties.
  */
 export function splitFileName(fileName) {
   const lastDotIndex = fileName.lastIndexOf(".");

@@ -1,5 +1,3 @@
-// TODO Improve
-
 // src/backend/management/bookKeeper.mjs
 
 import * as Constants from "../constants.mjs";
@@ -7,74 +5,74 @@ import { Island } from "../models/islandModel.mjs";
 import { deleteS3Objects, listBucketContents } from "../helpers/awsHelpers.mjs";
 import { compareArrays } from "../helpers/helpers.mjs";
 import { executeMongoQuery } from "../helpers/mongoHelpers.mjs";
-
 import { loadEnv } from "../loadEnv.mjs";
 
 loadEnv();
 
-// a) Get original media (master media)
+// Function to fetch and filter media files
+async function fetchAndFilterMedia(bucketName, isThumbnail = false) {
+  const mediaFiles = await listBucketContents(bucketName, true);
+  return mediaFiles.filter((file) =>
+    isThumbnail
+      ? file.path.includes(Constants.THUMBNAIL_ID)
+      : !file.path.includes(Constants.THUMBNAIL_ID)
+  );
+}
+
+// Function to delete non-original media from S3
+async function deleteNonOriginalMedia(nonOriginalMedia) {
+  await deleteS3Objects(process.env.SITE_BUCKET, nonOriginalMedia);
+}
+
+// Function to delete non-original documents from MongoDB
+async function deleteNonOriginalDocuments(nonOriginalKeys) {
+  await executeMongoQuery(async () => {
+    return await Island.deleteMany({ name: { $in: nonOriginalKeys } });
+  }, "Island");
+}
+
+// Fetch original and site media
 const originalMedia = await listBucketContents(
   process.env.ORIGINALS_BUCKET,
   true
 );
-
-const siteMedia = await listBucketContents(process.env.SITE_BUCKET, true);
-
-// b) Get actual image Site files
-const siteMediaActuals = siteMedia.filter(
-  (siteMedium) => siteMedium.path.indexOf(Constants.THUMBNAIL_ID) == -1
-);
-
-// c) Get thumbnail image Site files
-const siteMediaThumbnails = siteMedia.filter(
-  (siteMedium) => siteMedium.path.indexOf(Constants.THUMBNAIL_ID) > -1
-);
-
-// d) Get the Mongo DB docs
-const mongoDocs = await executeMongoQuery(async () => {
-  return await Island.find().lean();
-}, "Island");
-
-const mongoDocMedia = mongoDocs.map((doc) => ({ key: doc.name }));
-
-/////
-
-// Compare originals with non-originals
-const compareSiteMediaActuals = compareArrays(originalMedia, siteMediaActuals);
-const compareSiteMediaThumbnails = compareArrays(
-  originalMedia,
-  siteMediaThumbnails
-);
-const compareMongoDocMedia = compareArrays(originalMedia, mongoDocMedia);
-
-//////
-
-// Delete all site media which are not present in originals
-await deleteS3Objects(
+const actualSiteMedia = await fetchAndFilterMedia(process.env.SITE_BUCKET);
+const thumbnailSiteMedia = await fetchAndFilterMedia(
   process.env.SITE_BUCKET,
-  compareSiteMediaActuals.onlyInB.concat(compareSiteMediaThumbnails.onlyInB)
+  true
 );
 
-// Delete all mongo documents which are not present in originals
-const keysToDelete = compareMongoDocMedia.onlyInB.map((item) => item.key);
-await executeMongoQuery(async () => {
-  return await Island.deleteMany({ name: { $in: keysToDelete } });
-}, "Island");
+// Fetch MongoDB documents
+const mongoDocuments = await executeMongoQuery(
+  () => Island.find().lean(),
+  "Island"
+);
+const mongoDocMedia = mongoDocuments.map((doc) => ({ key: doc.name }));
 
-//////
+// Compare originals with site media and MongoDB documents
+const actualsComparison = compareArrays(originalMedia, actualSiteMedia);
+const thumbnailsComparison = compareArrays(originalMedia, thumbnailSiteMedia);
+const mongoDocsComparison = compareArrays(originalMedia, mongoDocMedia);
 
-// Delete exhaustive list of all elements missing anywhere in non-originals
+// Delete site media not present in originals
+await deleteNonOriginalMedia(
+  actualsComparison.onlyInB.concat(thumbnailsComparison.onlyInB)
+);
 
-// Collect all the keys which are only in the originals
-const originalArray = [
-  ...compareSiteMediaActuals.onlyInA,
-  ...compareSiteMediaThumbnails.onlyInA,
-  ...compareMongoDocMedia.onlyInA,
+// Delete MongoDB documents not present in originals
+await deleteNonOriginalDocuments(
+  mongoDocsComparison.onlyInB.map((item) => item.key)
+);
+
+// Collect all keys only present in originals for deletion
+const uniqueOriginalKeys = [
+  ...actualsComparison.onlyInA,
+  ...thumbnailsComparison.onlyInA,
+  ...mongoDocsComparison.onlyInA,
 ];
 
-console.log(originalArray);
-
-const transformedArray = originalArray.flatMap((item) => [
+// Transform keys for deletion paths
+const transformedDeletionPaths = uniqueOriginalKeys.flatMap((item) => [
   {
     key: item.key,
     path: item.path.replace(
@@ -88,11 +86,8 @@ const transformedArray = originalArray.flatMap((item) => [
   },
 ]);
 
-// Create an array of keys
-const keysToDelete2 = transformedArray.map((item) => item.key);
-
-// Delete all media which are not present in originals (anywhere)
-await deleteS3Objects(process.env.SITE_BUCKET, transformedArray);
-await executeMongoQuery(async () => {
-  return await Island.deleteMany({ name: { $in: keysToDelete2 } });
-}, "Island");
+// Delete exhaustive list of all elements missing anywhere in non-originals
+await deleteNonOriginalMedia(transformedDeletionPaths);
+await deleteNonOriginalDocuments(
+  transformedDeletionPaths.map((item) => item.key)
+);

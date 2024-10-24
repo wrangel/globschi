@@ -1,6 +1,6 @@
 // src/backend/helpers/awsHelpers.mjs
 
-import { DeleteObjectCommand, ListObjectsCommand } from "@aws-sdk/client-s3";
+import { DeleteObjectsCommand, ListObjectsCommand } from "@aws-sdk/client-s3";
 import { s3Client } from "../awsConfigurator.mjs";
 import { getId } from "../helpers/helpers.mjs";
 
@@ -24,7 +24,7 @@ export async function deleteS3Objects(bucketName, objectList) {
     };
 
     try {
-      const data = await s3Client.send(new DeleteObjectCommand(deleteParams));
+      const data = await s3Client.send(new DeleteObjectsCommand(deleteParams));
       console.log(`Successfully deleted ${data.Deleted.length} objects`);
       if (data.Errors && data.Errors.length > 0) {
         console.error("Errors during deletion:", data.Errors);

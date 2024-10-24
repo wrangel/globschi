@@ -63,23 +63,36 @@ await executeMongoQuery(async () => {
 
 //////
 
-// Collect all the keys which are only in the originals
+// Delete exhaustive list of all elements missing anywhere in non-originals
 
+// Collect all the keys which are only in the originals
 const originalArray = [
   ...compareSiteMediaActuals.onlyInA,
   ...compareSiteMediaThumbnails.onlyInA,
   ...compareMongoDocMedia.onlyInA,
 ];
 
-const transformedArray = originalArray.map((item) => ({
-  key: item.key,
-  paths: [
-    item.path.replace(
+console.log(originalArray);
+
+const transformedArray = originalArray.flatMap((item) => [
+  {
+    key: item.key,
+    path: item.path.replace(
       Constants.MEDIA_FORMATS.large,
       Constants.MEDIA_FORMATS.site
     ),
-    `${Constants.THUMBNAIL_ID}/${item.key}${Constants.MEDIA_FORMATS.site}`,
-  ],
-}));
+  },
+  {
+    key: item.key,
+    path: `${Constants.THUMBNAIL_ID}/${item.key}${Constants.MEDIA_FORMATS.site}`,
+  },
+]);
 
-console.log(transformedArray);
+// Create an array of keys
+const keysToDelete2 = transformedArray.map((item) => item.key);
+
+// Delete all media which are not present in originals (anywhere)
+await deleteS3Objects(process.env.SITE_BUCKET, transformedArray);
+await executeMongoQuery(async () => {
+  return await Island.deleteMany({ name: { $in: keysToDelete2 } });
+}, "Island");

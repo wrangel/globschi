@@ -39,7 +39,7 @@ const mongoDocMedia = mongoDocs.map((doc) => ({ key: doc.name }));
 
 /////
 
-function compareArrays(A, nameA, B, nameB) {
+function compareArrays(A, B) {
   const onlyInA = A.filter(
     (itemA) => !B.some((itemB) => itemB.key === itemA.key)
   );
@@ -49,32 +49,15 @@ function compareArrays(A, nameA, B, nameB) {
   );
 
   return {
-    [`only in ${nameA}`]: onlyInA,
-    [`only in ${nameB}`]: onlyInB,
+    onlyInA,
+    onlyInB,
   };
 }
 
-// Compare A with B, C, and D
-const compareAB = compareArrays(
-  originalMedia,
-  "originalMedia",
-  siteMediaActuals,
-  "siteMediaActuals"
-);
-
-const compareAC = compareArrays(
-  originalMedia,
-  "originalMedia",
-  siteMediaThumbnails,
-  "siteMediaThumbnails"
-);
-
-const compareAD = compareArrays(
-  originalMedia,
-  "originalMedia",
-  mongoDocMedia,
-  "mongoDocMedia"
-);
+// Compare originals with non-originals
+const compareAB = compareArrays(originalMedia, siteMediaActuals);
+const compareAC = compareArrays(originalMedia, siteMediaThumbnails);
+const compareAD = compareArrays(originalMedia, mongoDocMedia);
 
 console.log(compareAB);
 console.log(compareAC);

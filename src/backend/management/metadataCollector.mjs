@@ -110,12 +110,12 @@ async function enhanceMediaWithExifData(media) {
 }
 
 /**
- * Creates Mongoose-compatible metadata from enhanced media objects.
+ * Creates Mongoose-compatible metadata and media file information from enhanced media objects.
  * @param {Array} media - Array of enhanced media objects.
- * @returns {Array} Mongoose-compatible metadata objects.
+ * @returns {Object} Object containing Mongoose-compatible metadata and media file information.
  */
-function createMongooseCompatibleMetadata(media) {
-  return media.map((medium) => ({
+function createProcessedMediaData(media) {
+  const mongooseCompatibleMetadata = media.map((medium) => ({
     name: medium.newName,
     type: medium.mediaType,
     author: medium.author,
@@ -131,18 +131,30 @@ function createMongooseCompatibleMetadata(media) {
     road: medium.geoData.address,
     noViews: 0,
   }));
+
+  const mediaFileInfo = media.map((medium) => ({
+    originalMedium: medium.originalMedium,
+    newMediumOriginal: medium.newMediumOriginal,
+    newMediumSite: medium.newMediumSite,
+    newMediumSmall: medium.newMediumSmall,
+  }));
+
+  return {
+    mongooseCompatibleMetadata,
+    mediaFileInfo,
+  };
 }
 
 /**
  * Processes media files through collection, user input, EXIF data extraction, and geo-data enhancement.
- * @returns {Promise<Array>} Processed media metadata ready for Mongoose.
+ * @returns {Promise<Object>} Processed media data including Mongoose-compatible metadata and media file information.
  */
 async function processMedia() {
   const media = await collectMedia();
 
   if (media.length === 0) {
     console.log("No media to manage");
-    return [];
+    return { mongooseCompatibleMetadata: [], mediaFileInfo: [] };
   }
 
   console.log(`${media.length} media to manage`);
@@ -150,10 +162,7 @@ async function processMedia() {
   const mediaWithUserInput = await enhanceMediaWithUserInput(media);
   const mediaWithExifData = await enhanceMediaWithExifData(mediaWithUserInput);
   const mediaWithGeoData = await enhanceMediaWithGeoData(mediaWithExifData);
-  console.log(mediaWithGeoData);
-  return createMongooseCompatibleMetadata(mediaWithGeoData);
+  return createProcessedMediaData(mediaWithGeoData);
 }
 
-export const processedMedia = await processMedia();
-
-//originalMedium: '001_0001.tif',
+export const processedMediaData = await processMedia();

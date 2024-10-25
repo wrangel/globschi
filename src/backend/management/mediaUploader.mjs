@@ -2,9 +2,9 @@
 
 import { Island } from "../models/islandModel.mjs";
 import { executeMongoQuery } from "../helpers/mongoHelpers.mjs";
-import { processedMedia } from "./metadataCollector.mjs";
+import { processedMediaData } from "./metadataCollector.mjs";
 
-console.log(processedMedia);
+console.log(processedMediaData);
 
 process.exit(0);
 

@@ -4,6 +4,7 @@ import sharp from "sharp";
 import fs from "fs/promises";
 import path from "path";
 import { processedMediaData } from "./metadataCollector.mjs";
+import { uploadFileToS3 } from "./helpers/awsHelpers.mjs";
 
 // Function to convert images to WebP with lossless compression
 async function convertToWebP(inputFile, outputFile) {

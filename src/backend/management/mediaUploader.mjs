@@ -3,8 +3,6 @@
 import sharp from "sharp";
 import fs from "fs/promises";
 import path from "path";
-import { Island } from "../models/islandModel.mjs";
-import { executeMongoQuery } from "../helpers/mongoHelpers.mjs";
 import { processedMediaData } from "./metadataCollector.mjs";
 
 // Function to convert images to WebP with lossless compression
@@ -29,22 +27,32 @@ async function convertToWebP(inputFile, outputFile) {
 
 // Function to convert images to JPEG with high quality
 async function convertToJPEG(inputFile, outputFile) {
-  await sharp(inputFile)
-    .jpeg({
-      quality: 100, // Set quality to maximum
-      progressive: true, // Use progressive loading
-    })
-    .withMetadata() // Preserve metadata if needed
-    .toFile(outputFile);
+  try {
+    await sharp(inputFile)
+      .jpeg({
+        quality: 100, // Set quality to maximum
+        progressive: true, // Use progressive loading
+      })
+      .withMetadata() // Preserve metadata if needed
+      .toFile(outputFile);
+  } catch (error) {
+    console.error(`Error converting ${inputFile} to JPEG:`, error);
+    throw error; // Rethrow error for further handling
+  }
 }
 
 // Main function to process media files
 async function processMediaFiles(mediaFileInfo) {
   return Promise.all(
     mediaFileInfo.map(async (fi) => {
+      console.log("Processing " + fi.originalMedium);
       const inputFile = path.join(
         process.env.INPUT_DIRECTORY,
         fi.originalMedium
+      );
+      const originalCopy = path.join(
+        process.env.INPUT_DIRECTORY,
+        fi.newMediumOriginal
       );
       const siteFile = path.join(process.env.INPUT_DIRECTORY, fi.newMediumSite);
       const smallFile = path.join(
@@ -53,6 +61,10 @@ async function processMediaFiles(mediaFileInfo) {
       );
 
       try {
+        // Copy originalMedium to newMediumOriginal
+        await fs.copyFile(inputFile, originalCopy);
+        console.log(`Copied ${fi.originalMedium} to ${fi.newMediumOriginal}`);
+
         // Convert to WebP
         await convertToWebP(inputFile, siteFile);
 
@@ -65,10 +77,11 @@ async function processMediaFiles(mediaFileInfo) {
           conversionPaths: {
             site: siteFile,
             small: smallFile,
+            originalCopy: originalCopy,
           },
         };
       } catch (error) {
-        console.error(`Error converting file ${fi.originalMedium}:`, error);
+        console.error(`Error processing file ${fi.originalMedium}:`, error);
         return {
           ...fi,
           converted: false,

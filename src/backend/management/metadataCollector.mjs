@@ -1,88 +1,99 @@
-// TODO Improve
-
 // src/backend/management/metadataCollector.mjs
 
 import ExifReader from "exifreader";
-import fs from "fs";
+import fs from "fs/promises";
 import path from "path";
-import sharp from "sharp";
 import { Island } from "../models/islandModel.mjs";
 import { executeMongoQuery } from "../helpers/mongoHelpers.mjs";
 import * as Constants from "../constants.mjs";
 import { loadEnv } from "../loadEnv.mjs";
 import {
   enhanceMediaWithGeoData,
-  execPromise,
   generateExtendedString,
   getAltitude,
   getCoordinates,
   getDate,
   question,
-  runCli,
   splitFileName,
 } from "../helpers/helpers.mjs";
 
 loadEnv();
 
-// 1) Collect the media
-const media0 = fs
-  .readdirSync(process.env.INPUT_DIRECTORY)
-  .filter((medium) => !medium.startsWith("."))
-  .map((medium) => {
-    let { name: originalName, suffix: originalSuffix } = splitFileName(medium);
-    return {
-      originalName: originalName,
-      originalSuffix: originalSuffix,
-      originalMedium: medium,
-    };
-  });
+/**
+ * Collects media files from the input directory.
+ * @returns {Promise<Array>} An array of objects containing information about each media file.
+ */
+async function collectMedia() {
+  const files = await fs.readdir(process.env.INPUT_DIRECTORY);
+  return files
+    .filter((medium) => !medium.startsWith("."))
+    .map((medium) => {
+      const { name: originalName, suffix: originalSuffix } =
+        splitFileName(medium);
+      return { originalName, originalSuffix, originalMedium: medium };
+    });
+}
 
-// 2) Enhance the media with user inputs
-const noMedia = media0.length;
-if (noMedia == 0) {
-  console.log("No media to manage");
-  process.exit(0);
-} else {
-  console.log(`${noMedia} media to manage`);
-  // Collect user input about authors and type of the media (while is async by nature!)
-  let idx = 0;
-  while (idx < noMedia) {
-    const name = media0[idx].name;
+/**
+ * Enhances media objects with user input for author and media type.
+ * @param {Array} media - Array of media objects.
+ * @returns {Promise<Array>} Enhanced media objects with author and media type.
+ */
+async function enhanceMediaWithUserInput(media) {
+  for (const medium of media) {
     const answer = await question(
-      `Author and media type of --> ${name} <-- (comma separated) : `
+      `Author and media type of --> ${medium.originalName} <-- (comma separated) : `
     );
     let [author, mediaType] = answer.split(",").map((x) => x.trim());
-    // Allow only known authors
-    while (!Constants.CONTRIBUTORS.includes(author)) {
-      author = await question(
-        `Please choose one of (${Constants.CONTRIBUTORS}) as author for --> ${name}  <-- : `
-      );
-    }
-    // Allow only known media types
-    while (!Constants.MEDIA_PAGES.includes(mediaType)) {
-      mediaType = await question(
-        `Please choose one of (${Constants.MEDIA_PAGES}) as media type for --> ${name} <-- : `
-      );
-    }
-    // Add the new info to the media object
-    media0[idx].author = author;
-    media0[idx].mediaType = mediaType;
-    idx += 1;
-  }
 
-  // 3) Enhance the media with exif data
-  const media1 = await Promise.all(
-    media0.map(async (medium) => {
+    medium.author = await validateInput(
+      author,
+      Constants.CONTRIBUTORS,
+      "author"
+    );
+    medium.mediaType = await validateInput(
+      mediaType,
+      Constants.MEDIA_PAGES,
+      "media type"
+    );
+  }
+  return media;
+}
+
+/**
+ * Validates user input against a list of valid options.
+ * @param {string} input - User input to validate.
+ * @param {Array} validOptions - Array of valid options.
+ * @param {string} inputType - Type of input being validated.
+ * @returns {Promise<string>} Validated input.
+ */
+async function validateInput(input, validOptions, inputType) {
+  while (!validOptions.includes(input)) {
+    input = await question(
+      `Please choose one of (${validOptions}) as ${inputType}: `
+    );
+  }
+  return input;
+}
+
+/**
+ * Enhances media objects with EXIF data.
+ * @param {Array} media - Array of media objects.
+ * @returns {Promise<Array>} Enhanced media objects with EXIF data.
+ */
+async function enhanceMediaWithExifData(media) {
+  return Promise.all(
+    media.map(async (medium) => {
       const exif = await ExifReader.load(
         path.join(process.env.INPUT_DIRECTORY, medium.originalMedium)
       );
-      let newName = generateExtendedString(
+      const newName = generateExtendedString(
         medium.originalName,
         exif.DateTimeOriginal.description
       );
       return {
         ...medium,
-        newName: newName,
+        newName,
         newMedium: newName + medium.originalSuffix,
         exif_datetime: exif.DateTimeOriginal.description,
         exif_longitude: getCoordinates(
@@ -97,78 +108,50 @@ if (noMedia == 0) {
       };
     })
   );
-
-  // 4) Enhance the media with geo coded data
-  const media2 = await enhanceMediaWithGeoData(media1);
-
-  // 5) Combine everything into the Mongoose compatible metadata (one for each document)
-  const media3 = media2.map(function (medium) {
-    return {
-      name: medium.newName,
-      type: medium.mediaType,
-      author: medium.author,
-      dateTimeString: medium.exif_datetime,
-      dateTime: getDate(medium.exif_datetime),
-      latitude: medium.exif_latitude,
-      longitude: medium.exif_longitude,
-      altitude: medium.exif_altitude,
-      country: medium.geoData.country,
-      region: medium.geoData.region,
-      location: medium.geoData.place,
-      postalCode: medium.geoData.postcode,
-      road: medium.geoData.address,
-      noViews: 0,
-    };
-  });
-
-  // 6) Update documents to MongoDB
-
-  await executeMongoQuery(async () => {
-    await Island.insertMany(media3);
-    return null; // Return null to indicate no value
-  });
-
-  process.exit(0);
-  /////////
-
-  /// C) Convert file to .jpeg, copy .jpeg to OneDrive, move .tif to 'done' folder
-  await Promise.all(
-    media.map(async (fi) => {
-      const inputFile = path.join(process.env.INPUT_DIRECTORY, fi.sourceFile);
-      // Handle jpegs
-      await sharp(inputFile)
-        .jpeg({ quality: 100 })
-        .withMetadata()
-        .toFile(
-          path.join(
-            process.env.ONEDRIVE_DIRECTORY,
-            fi.sourceFile.replace(
-              Constants.MEDIA_FORMATS.large,
-              Constants.MEDIA_FORMATS.small
-            )
-          )
-        );
-      // Handle .tifs
-      fs.rename(
-        inputFile,
-        path.join(process.env.OUTPUT_DIRECTORY, fi.sourceFile),
-        function (err) {
-          if (err) {
-            throw err;
-          } else {
-            console.log(`Successfully moved ${inputFile}`);
-          }
-        }
-      );
-    })
-  );
-
-  /// D) Upload media to AWS S3 (requires AWS CLI with proper authentication: Alternative would be an S3 client)
-  await Promise.all(
-    media.map((fi) =>
-      runCli(
-        `aws s3 cp ${process.env.OUTPUT_DIRECTORY}${fi.sourceFile} s3://${process.env.ORIGINALS_BUCKET}/${fi.mediaType}/${fi.targetFile}`
-      )
-    )
-  );
 }
+
+/**
+ * Creates Mongoose-compatible metadata from enhanced media objects.
+ * @param {Array} media - Array of enhanced media objects.
+ * @returns {Array} Mongoose-compatible metadata objects.
+ */
+function createMongooseCompatibleMetadata(media) {
+  return media.map((medium) => ({
+    name: medium.newName,
+    type: medium.mediaType,
+    author: medium.author,
+    dateTimeString: medium.exif_datetime,
+    dateTime: getDate(medium.exif_datetime),
+    latitude: medium.exif_latitude,
+    longitude: medium.exif_longitude,
+    altitude: medium.exif_altitude,
+    country: medium.geoData.country,
+    region: medium.geoData.region,
+    location: medium.geoData.place,
+    postalCode: medium.geoData.postcode,
+    road: medium.geoData.address,
+    noViews: 0,
+  }));
+}
+
+/**
+ * Processes media files through collection, user input, EXIF data extraction, and geo-data enhancement.
+ * @returns {Promise<Array>} Processed media metadata ready for Mongoose.
+ */
+async function processMedia() {
+  const media = await collectMedia();
+
+  if (media.length === 0) {
+    console.log("No media to manage");
+    return [];
+  }
+
+  console.log(`${media.length} media to manage`);
+
+  const mediaWithUserInput = await enhanceMediaWithUserInput(media);
+  const mediaWithExifData = await enhanceMediaWithExifData(mediaWithUserInput);
+  const mediaWithGeoData = await enhanceMediaWithGeoData(mediaWithExifData);
+  return createMongooseCompatibleMetadata(mediaWithGeoData);
+}
+
+export const processedMedia = await processMedia();

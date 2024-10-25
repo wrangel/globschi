@@ -91,3 +91,5 @@ await deleteNonOriginalMedia(transformedDeletionPaths);
 await deleteNonOriginalDocuments(
   transformedDeletionPaths.map((item) => item.key)
 );
+
+console.log(actualsComparison);

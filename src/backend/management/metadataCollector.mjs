@@ -12,7 +12,7 @@ import {
   getCoordinates,
   getDate,
   question,
-  splitFileName,
+  getFileNameWithoutExtension,
 } from "../helpers/helpers.mjs";
 
 loadEnv();
@@ -26,9 +26,8 @@ async function collectMedia() {
   return files
     .filter((medium) => !medium.startsWith("."))
     .map((medium) => {
-      const { name: originalName, suffix: originalSuffix } =
-        splitFileName(medium);
-      return { originalName, originalSuffix, originalMedium: medium };
+      const originalName = getFileNameWithoutExtension(medium);
+      return { originalName, originalMedium: medium };
     });
 }
 
@@ -92,7 +91,9 @@ async function enhanceMediaWithExifData(media) {
       return {
         ...medium,
         newName,
-        newMedium: newName + medium.originalSuffix,
+        newMediumOriginal: newName + Constants.MEDIA_FORMATS.large,
+        newMediumSite: newName + Constants.MEDIA_FORMATS.site,
+        newMediumSmall: newName + Constants.MEDIA_FORMATS.small,
         exif_datetime: exif.DateTimeOriginal.description,
         exif_longitude: getCoordinates(
           exif.GPSLongitude.description,
@@ -149,7 +150,10 @@ async function processMedia() {
   const mediaWithUserInput = await enhanceMediaWithUserInput(media);
   const mediaWithExifData = await enhanceMediaWithExifData(mediaWithUserInput);
   const mediaWithGeoData = await enhanceMediaWithGeoData(mediaWithExifData);
+  console.log(mediaWithGeoData);
   return createMongooseCompatibleMetadata(mediaWithGeoData);
 }
 
 export const processedMedia = await processMedia();
+
+//originalMedium: '001_0001.tif',

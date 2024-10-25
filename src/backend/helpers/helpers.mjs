@@ -135,6 +135,16 @@ export const getDate = (str) => {
 };
 
 /**
+ * Extracts the name of a file without its extension.
+ * @param {string} fileName - File name to process.
+ * @returns {string} - The file name without extension.
+ */
+export function getFileNameWithoutExtension(fileName) {
+  const lastDotIndex = fileName.lastIndexOf(".");
+  return lastDotIndex === -1 ? fileName : fileName.substring(0, lastDotIndex);
+}
+
+/**
  * Extracts ID from file path.
  * @param {string} path - File path.
  * @returns {string} - Extracted ID.
@@ -191,18 +201,3 @@ export const runCli = async (cmd) => {
     console.error(`Error executing command: ${error.message}`);
   }
 };
-
-/**
- * Splits a file name into name and suffix components.
- * @param {string} fileName - File name to split.
- * @returns {{name: string, suffix: string|null}} - Object with name and suffix properties.
- */
-export function splitFileName(fileName) {
-  const lastDotIndex = fileName.lastIndexOf(".");
-  return lastDotIndex === -1
-    ? { name: fileName, suffix: null }
-    : {
-        name: fileName.substring(0, lastDotIndex),
-        suffix: fileName.substring(lastDotIndex),
-      };
-}

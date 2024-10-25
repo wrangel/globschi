@@ -137,6 +137,7 @@ function createProcessedMediaData(media) {
     newMediumOriginal: medium.newMediumOriginal,
     newMediumSite: medium.newMediumSite,
     newMediumSmall: medium.newMediumSmall,
+    mediaType: medium.mediaType,
   }));
 
   return {

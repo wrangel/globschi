@@ -93,3 +93,7 @@ await deleteNonOriginalDocuments(
 );
 
 console.log(actualsComparison);
+
+console.log(
+  "If there are any media only in the originals bucket, please download them, delte themn in the originals bucket and uplooad them again"
+);

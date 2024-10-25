@@ -1,3 +1,13 @@
+// src/backend/management/mediaUploader.mjs
+
+import { Island } from "../models/islandModel.mjs";
+import { executeMongoQuery } from "../helpers/mongoHelpers.mjs";
+import { processedMedia } from "./metadataCollector.mjs";
+
+console.log(processedMedia);
+
+process.exit(0);
+
 // 6) Update documents to MongoDB
 
 await executeMongoQuery(async () => {

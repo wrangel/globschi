@@ -3,8 +3,6 @@
 import ExifReader from "exifreader";
 import fs from "fs/promises";
 import path from "path";
-import { Island } from "../models/islandModel.mjs";
-import { executeMongoQuery } from "../helpers/mongoHelpers.mjs";
 import * as Constants from "../constants.mjs";
 import { loadEnv } from "../loadEnv.mjs";
 import {

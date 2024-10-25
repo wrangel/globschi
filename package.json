@@ -30,6 +30,7 @@
     "eject": "react-scripts eject",
     "keep-books": "node ./src/backend/management/bookKeeper.mjs",
     "collect-metadata": "node ./src/backend/management/metadataCollector.mjs",
+    "upload-media": "node ./src/backend/management/mediaUploader.mjs",
     "debug-mongo": "node ./src/backend/management/mongoDebugger.mjs",
     "test-aws": "node ./src/backend/management/awsLoginTester.mjs",
     "start:backend": "node ./src/backend/server.mjs",

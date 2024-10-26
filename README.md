@@ -69,6 +69,15 @@ To get started with this project, follow these steps:
 
 Once the application is running, you can explore the gallery of images. Click on any image to view it in detail, along with its metadata. You can also interact with the site by providing feedback or sharing your favorite images.
 
+7. Helper functions:
+
+   ```bash
+   pnpm debug-mongo # Test the connection to MongoDB
+   pnpm test-aws # Test the connection to AWS S3
+   pnpm keep-books # Synchronize you data and metadata
+   pnpm upload-media # Upload new media
+   ```
+
 ## Contributing
 
 Contributions are welcome! If you would like to contribute to this project, please follow these steps:

@@ -11,9 +11,6 @@ import { loadEnv } from "../loadEnv.mjs";
 
 loadEnv();
 
-console.log(processedMediaData.mongooseCompatibleMetadata);
-process.exit(0);
-
 const MAX_WEBP_DIMENSION = 16383;
 
 async function processMediaFile(fileInfo) {
@@ -25,12 +22,13 @@ async function processMediaFile(fileInfo) {
     newMediumSmall,
     mediaType,
   } = fileInfo;
-  console.log(`Processing ${originalMedium}`);
+  console.log(`Starting to process ${originalMedium}`);
 
   const inputPath = path.join(process.env.INPUT_DIRECTORY, originalMedium);
+  console.log(`Input path: ${inputPath}`);
 
   try {
-    // Step 1: Upload original TIF to S3
+    console.log("Step 1: Uploading original TIF to S3");
     const tifStream = fs.createReadStream(inputPath);
     await uploadStreamToS3(
       process.env.ORIGINALS_BUCKET,
@@ -41,15 +39,19 @@ async function processMediaFile(fileInfo) {
       `Uploaded ${originalMedium} to ${mediaType}/${newMediumOriginal} in bucket ${process.env.ORIGINALS_BUCKET}`
     );
 
-    // Step 2: Process and upload lossless WebP
+    console.log("Step 2: Processing and uploading lossless WebP");
+    console.log("Creating Sharp instance");
     const image = sharp(inputPath);
+    console.log("Getting image metadata");
     const metadata = await image.metadata();
+    console.log(`Image metadata: ${JSON.stringify(metadata)}`);
 
     let resizedImage = image;
     if (
       metadata.width > MAX_WEBP_DIMENSION ||
       metadata.height > MAX_WEBP_DIMENSION
     ) {
+      console.log("Image exceeds maximum WebP dimensions, resizing");
       const aspectRatio = metadata.width / metadata.height;
       let newWidth = Math.min(metadata.width, MAX_WEBP_DIMENSION);
       let newHeight = Math.round(newWidth / aspectRatio);
@@ -65,10 +67,13 @@ async function processMediaFile(fileInfo) {
       );
     }
 
+    console.log("Converting to lossless WebP");
     const losslessWebpBuffer = await resizedImage
       .webp({ lossless: true, effort: 6 })
       .toBuffer();
+    console.log("Lossless WebP conversion complete");
 
+    console.log("Uploading lossless WebP to S3");
     await uploadStreamToS3(
       process.env.SITE_BUCKET,
       `${mediaType}/${newMediumSite}`,
@@ -78,9 +83,10 @@ async function processMediaFile(fileInfo) {
       `Uploaded lossless WebP to ${mediaType}/${newMediumSite} in bucket ${process.env.SITE_BUCKET}`
     );
 
-    // Step 3: Process and upload lossy WebP
+    console.log("Step 3: Processing and uploading lossy WebP");
     let lossyTransformer = resizedImage.webp({ lossless: false, quality: 80 });
     if (mediaType !== "hdr") {
+      console.log("Applying additional resize for non-HDR image");
       lossyTransformer = lossyTransformer.resize({
         width: 2000,
         height: 1300,
@@ -88,8 +94,11 @@ async function processMediaFile(fileInfo) {
         position: sharp.strategy.attention,
       });
     }
+    console.log("Converting to lossy WebP");
     const lossyWebpBuffer = await lossyTransformer.toBuffer();
+    console.log("Lossy WebP conversion complete");
 
+    console.log("Uploading lossy WebP to S3");
     await uploadStreamToS3(
       process.env.SITE_BUCKET,
       `${Constants.THUMBNAIL_ID}/${newMediumSite}`,
@@ -99,11 +108,12 @@ async function processMediaFile(fileInfo) {
       `Uploaded lossy WebP to ${Constants.THUMBNAIL_ID}/${newMediumSite} in bucket ${process.env.SITE_BUCKET}`
     );
 
-    // Step 4: Convert to JPEG and save to OneDrive
+    console.log("Step 4: Converting to JPEG and saving to OneDrive");
     const onedrivePath = path.join(
       process.env.ONEDRIVE_DIRECTORY,
       newMediumSmall
     );
+    console.log(`OneDrive path: ${onedrivePath}`);
     await sharp(inputPath)
       .jpeg({
         quality: 100,
@@ -113,10 +123,16 @@ async function processMediaFile(fileInfo) {
       .toFile(onedrivePath);
     console.log(`Saved JPEG to ${onedrivePath}`);
 
-    // Step 5: Delete the original file
-    fs.unlink(inputPath);
-    console.log(`Deleted original file: ${inputPath}`);
+    console.log("Step 5: Deleting the original file");
+    fs.unlink(inputPath, (err) => {
+      if (err) {
+        console.error(`Error deleting file ${inputPath}:`, err);
+      } else {
+        console.log(`Deleted original file: ${inputPath}`);
+      }
+    });
 
+    console.log(`Completed processing ${originalMedium}`);
     return {
       success: true,
       message: `Processed ${originalMedium} successfully`,
@@ -131,6 +147,7 @@ async function processMediaFile(fileInfo) {
 }
 
 async function uploadStreamToS3(bucketName, key, stream) {
+  console.log(`Starting S3 upload: ${bucketName}/${key}`);
   const upload = new Upload({
     client: s3Client,
     params: {
@@ -142,21 +159,23 @@ async function uploadStreamToS3(bucketName, key, stream) {
 
   try {
     const result = await upload.done();
-    console.log(`Uploaded to S3: ${key}`);
+    console.log(`Completed S3 upload: ${bucketName}/${key}`);
     return result;
   } catch (error) {
-    console.error(`Error uploading to S3: ${key}`, error);
+    console.error(`Error uploading to S3: ${bucketName}/${key}`, error);
     throw error;
   }
 }
 
-async function processAllMediaFiles(mediaFileInfoArray) {
-  const results = await Promise.all(mediaFileInfoArray.map(processMediaFile));
+async function processAllMediaFiles(mediaFileInfo) {
+  console.log("Starting to process all media files");
+  const results = await Promise.all(mediaFileInfo.map(processMediaFile));
   console.log("All media files processed:");
   console.log(results);
 }
 
 // Usage
+console.log("Script started");
 processAllMediaFiles(processedMediaData.mediaFileInfo)
   .then(() => console.log("Processing complete"))
   .catch((error) => console.error("Error in processing:", error));

@@ -113,6 +113,10 @@ async function processMediaFile(fileInfo) {
       .toFile(onedrivePath);
     console.log(`Saved JPEG to ${onedrivePath}`);
 
+    // Step 5: Delete the original file
+    fs.unlink(inputPath);
+    console.log(`Deleted original file: ${inputPath}`);
+
     return {
       success: true,
       message: `Processed ${originalMedium} successfully`,

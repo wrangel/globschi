@@ -1,11 +1,10 @@
 // src/backend/management/bookKeeper.mjs
 
+import { DeleteObjectsCommand } from "@aws-sdk/client-s3";
+import { s3Client } from "../awsConfigurator.mjs";
 import * as Constants from "../constants.mjs";
 import { Island } from "../models/islandModel.mjs";
-import {
-  deleteS3Objects,
-  listS3BucketContents,
-} from "../helpers/awsHelpers.mjs";
+import { listS3BucketContents } from "../helpers/awsHelpers.mjs";
 import { executeMongoQuery } from "../helpers/mongoHelpers.mjs";
 import { loadEnv } from "../loadEnv.mjs";
 
@@ -21,12 +20,12 @@ async function synchronizeMedia() {
       process.env.ORIGINALS_BUCKET,
       true
     );
-    const actualSiteMedia = await fetchAndFilterMedia(process.env.SITE_BUCKET);
-    const thumbnailSiteMedia = await fetchAndFilterMedia(
+    const actualSiteMedia = fetchAndFilterMedia(process.env.SITE_BUCKET);
+    const thumbnailSiteMedia = fetchAndFilterMedia(
       process.env.SITE_BUCKET,
       true
     );
-    const mongoDocuments = await fetchMongoDocuments();
+    const mongoDocuments = fetchMongoDocuments();
 
     // Compare media across sources
     const comparisons = compareMediaSources(
@@ -177,6 +176,47 @@ function compareArrays(A, B) {
   const onlyInB = B.filter((itemB) => !aKeys.has(itemB.key));
 
   return { onlyInA, onlyInB };
+}
+
+/**
+ * Deletes multiple objects from an S3 bucket.
+ * @param {string} bucketName - The name of the S3 bucket.
+ * @param {Array<{path: string}>} objectList - Array of objects with 'path' property to be deleted.
+ * @returns {Promise<Object>} - Result of the delete operation.
+ */
+export async function deleteS3Objects(bucketName, objectList) {
+  if (!bucketName || !Array.isArray(objectList)) {
+    throw new Error(
+      "Invalid input for deleteS3Objects: bucketName must be a string and objectList must be an array."
+    );
+  }
+
+  if (objectList.length === 0) {
+    console.warn("No objects to delete.");
+    return { Deleted: [], Errors: [] }; // Return empty result if no objects
+  }
+
+  const deleteParams = {
+    Bucket: bucketName,
+    Delete: {
+      Objects: objectList.map((item) => ({ Key: item.path })),
+      Quiet: false,
+    },
+  };
+
+  try {
+    const data = await s3Client.send(new DeleteObjectsCommand(deleteParams));
+    console.log(`Successfully deleted ${data.Deleted.length} objects`);
+
+    if (data.Errors && data.Errors.length > 0) {
+      console.error("Errors during deletion:", data.Errors);
+    }
+
+    return data;
+  } catch (error) {
+    console.error("Error deleting objects from S3:", error);
+    throw error; // Rethrow error for further handling
+  }
 }
 
 // Execute the main function

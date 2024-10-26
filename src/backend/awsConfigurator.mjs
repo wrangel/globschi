@@ -3,7 +3,6 @@
 import { S3Client } from "@aws-sdk/client-s3";
 import { loadEnv } from "./loadEnv.mjs";
 
-// Load environment variables
 loadEnv();
 
 // Validate required environment variables
@@ -38,8 +37,3 @@ function createS3Client() {
 const s3Client = createS3Client();
 
 export { s3Client };
-
-// Optional: Export a function to create new client instances if needed
-export function getNewS3Client() {
-  return createS3Client();
-}

@@ -49,31 +49,3 @@ export async function executeMongoQuery(
     }
   }
 }
-
-/**
- * Executes multiple MongoDB queries in a single connection session.
- * @param {Function[]} queryCallbacks - Array of async functions containing queries to execute.
- * @returns {Promise<any[]>} - Array of results from the queries.
- * @throws {Error} If there's an issue with any database operation.
- */
-export async function executeBatchMongoQueries(queryCallbacks) {
-  let connection;
-  try {
-    connection = await connectDB();
-    console.log("Connected to MongoDB");
-
-    const results = await Promise.all(
-      queryCallbacks.map((callback) => callback())
-    );
-
-    return results;
-  } catch (error) {
-    console.error("Error executing batch queries:", error);
-    throw error;
-  } finally {
-    if (connection) {
-      await mongoose.disconnect();
-      console.log("Disconnected from MongoDB");
-    }
-  }
-}

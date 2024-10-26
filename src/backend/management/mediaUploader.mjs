@@ -180,18 +180,30 @@ async function uploadStreamToS3(bucketName, key, body) {
   }
 }
 
-async function processAllMediaFiles(mediaFileInfo) {
+async function processAllMediaFiles(processedMediaData) {
   console.log("Starting to process all media files");
 
+  const mediaFileInfo = processedMediaData.mediaFileInfo;
+
+  // Process each media file
   const results = await Promise.all(mediaFileInfo.map(processMediaFile));
 
   console.log("All media files processed:");
 
   console.log(results);
+
+  // Insert mongooseCompatibleMetadata into MongoDB
+  if (processedMediaData.mongooseCompatibleMetadata) {
+    await executeMongoQuery(async () => {
+      await Island.insertMany(processedMediaData.mongooseCompatibleMetadata);
+      return null; // Return null to indicate no value
+    });
+    console.log("Inserted mongooseCompatibleMetadata into MongoDB.");
+  }
 }
 
 // Usage
 console.log("Script started");
-processAllMediaFiles(processedMediaData.mediaFileInfo)
+processAllMediaFiles(processedMediaData)
   .then(() => console.log("Processing complete"))
   .catch((error) => console.error("Error in processing:", error));

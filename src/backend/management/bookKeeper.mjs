@@ -20,12 +20,18 @@ async function synchronizeMedia() {
       process.env.ORIGINALS_BUCKET,
       true
     );
-    const actualSiteMedia = fetchAndFilterMedia(process.env.SITE_BUCKET);
-    const thumbnailSiteMedia = fetchAndFilterMedia(
+    const actualSiteMedia = await fetchAndFilterMedia(process.env.SITE_BUCKET);
+    const thumbnailSiteMedia = await fetchAndFilterMedia(
       process.env.SITE_BUCKET,
       true
     );
-    const mongoDocuments = fetchMongoDocuments();
+    const mongoDocuments = await fetchMongoDocuments();
+
+    // Log the fetched media for debugging
+    console.log("Original Media:", originalMedia);
+    console.log("Actual Site Media:", actualSiteMedia);
+    console.log("Thumbnail Site Media:", thumbnailSiteMedia);
+    console.log("Mongo Documents:", mongoDocuments);
 
     // Compare media across sources
     const comparisons = compareMediaSources(
@@ -91,6 +97,16 @@ function compareMediaSources(
   thumbnailSiteMedia,
   mongoDocuments
 ) {
+  // Ensure all inputs are arrays before proceeding
+  if (
+    !Array.isArray(originalMedia) ||
+    !Array.isArray(actualSiteMedia) ||
+    !Array.isArray(thumbnailSiteMedia) ||
+    !Array.isArray(mongoDocuments)
+  ) {
+    throw new TypeError("All inputs must be arrays.");
+  }
+
   return {
     actuals: compareArrays(originalMedia, actualSiteMedia),
     thumbnails: compareArrays(originalMedia, thumbnailSiteMedia),
@@ -107,6 +123,7 @@ async function deleteNonOriginalContent(comparisons) {
     ...comparisons.actuals.onlyInB,
     ...comparisons.thumbnails.onlyInB,
   ];
+
   await deleteS3Objects(process.env.SITE_BUCKET, nonOriginalMedia);
 
   const nonOriginalDocs = comparisons.mongoDocs.onlyInB.map((item) => item.key);
@@ -206,6 +223,7 @@ export async function deleteS3Objects(bucketName, objectList) {
 
   try {
     const data = await s3Client.send(new DeleteObjectsCommand(deleteParams));
+
     console.log(`Successfully deleted ${data.Deleted.length} objects`);
 
     if (data.Errors && data.Errors.length > 0) {
@@ -215,6 +233,7 @@ export async function deleteS3Objects(bucketName, objectList) {
     return data;
   } catch (error) {
     console.error("Error deleting objects from S3:", error);
+
     throw error; // Rethrow error for further handling
   }
 }

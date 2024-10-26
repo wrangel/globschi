@@ -5,6 +5,8 @@ import { PassThrough } from "stream";
 import * as Constants from "../constants.mjs";
 import { processedMediaData } from "./metadataCollector.mjs";
 import { s3Client } from "../helpers/awsHelpers.mjs";
+import { Island } from "../models/islandModel.mjs";
+import { executeMongoQuery } from "../helpers/mongoHelpers.mjs";
 import { Upload } from "@aws-sdk/lib-storage";
 import { loadEnv } from "../loadEnv.mjs";
 

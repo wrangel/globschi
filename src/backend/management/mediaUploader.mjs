@@ -28,6 +28,7 @@ async function processMediaFile(fileInfo) {
   console.log(`Input path: ${inputPath}`);
 
   try {
+    /*
     console.log("Step 1: Uploading original TIF to S3");
     const tifStream = fs.createReadStream(inputPath);
     await uploadStreamToS3(
@@ -38,7 +39,7 @@ async function processMediaFile(fileInfo) {
     console.log(
       `Uploaded ${originalMedium} to ${mediaType}/${newMediumOriginal} in bucket ${process.env.ORIGINALS_BUCKET}`
     );
-
+*/
     console.log("Step 2: Processing and uploading lossless WebP");
     console.log("Creating Sharp instance");
     const image = sharp(inputPath);
@@ -146,8 +147,14 @@ async function processMediaFile(fileInfo) {
   }
 }
 
-async function uploadStreamToS3(bucketName, key, stream) {
+async function uploadStreamToS3(bucketName, key, stream, timeout = 300000) {
   console.log(`Starting S3 upload: ${bucketName}/${key}`);
+
+  // Validate the stream
+  if (!stream || typeof stream.pipe !== "function") {
+    throw new Error("Invalid stream provided");
+  }
+
   const upload = new Upload({
     client: s3Client,
     params: {
@@ -155,14 +162,23 @@ async function uploadStreamToS3(bucketName, key, stream) {
       Key: key,
       Body: stream,
     },
+    queueSize: 4, // number of concurrent uploads
+    partSize: 5 * 1024 * 1024, // 5 MB per part
   });
 
   try {
-    const result = await upload.done();
+    const uploadPromise = upload.done();
+    const timeoutPromise = new Promise((_, reject) =>
+      setTimeout(() => reject(new Error("Upload timed out")), timeout)
+    );
+
+    const result = await Promise.race([uploadPromise, timeoutPromise]);
     console.log(`Completed S3 upload: ${bucketName}/${key}`);
     return result;
   } catch (error) {
-    console.error(`Error uploading to S3: ${bucketName}/${key}`, error);
+    console.error(
+      `Error uploading to S3: ${bucketName}/${key} - ${error.message}`
+    );
     throw error;
   }
 }

@@ -1,7 +1,7 @@
 // src/backend/management/bookKeeper.mjs
 
 import { DeleteObjectsCommand } from "@aws-sdk/client-s3";
-import { s3Client } from "../awsConfigurator.mjs";
+import { s3Client } from "../helpers/awsHelpers.mjs";
 import * as Constants from "../constants.mjs";
 import { Island } from "../models/islandModel.mjs";
 import { listS3BucketContents } from "../helpers/awsHelpers.mjs";

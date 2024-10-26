@@ -4,7 +4,7 @@ import sharp from "sharp";
 import { PassThrough } from "stream";
 import * as Constants from "../constants.mjs";
 import { processedMediaData } from "./metadataCollector.mjs";
-import { s3Client } from "../awsConfigurator.mjs";
+import { s3Client } from "../helpers/awsHelpers.mjs";
 import { Upload } from "@aws-sdk/lib-storage";
 import { loadEnv } from "../loadEnv.mjs";
 

@@ -1,7 +1,7 @@
 import fs from "fs";
 import path from "path";
 import sharp from "sharp";
-import { PassThrough } from "stream"; // Import PassThrough
+import { PassThrough } from "stream";
 import * as Constants from "../constants.mjs";
 import { processedMediaData } from "./metadataCollector.mjs";
 import { s3Client } from "../awsConfigurator.mjs";
@@ -166,7 +166,7 @@ async function uploadStreamToS3(bucketName, key, body) {
   });
 
   try {
-    const result = await upload.done(); // Wait for the upload to complete
+    const result = await upload.done();
 
     console.log(`Completed S3 upload: ${bucketName}/${key}`);
 

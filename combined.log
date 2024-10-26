@@ -227,3 +227,187 @@ Total number of Islands retrieved: 5
 2024-10-26T19:54:08.509Z [[32minfo[39m]:   Intersected elements: 184
 2024-10-26T19:54:08.509Z [[32minfo[39m]:   Elements only in MongoDB: 0
 2024-10-26T19:54:08.509Z [[32minfo[39m]:   Elements only in AWS S3: 0
+2024-10-26T19:55:19.493Z [[32minfo[39m]: Attempting to load .env file from: /Users/matthiaswettstein/SynologyDrive/Matthias/Programming/globschi/.env
+2024-10-26T19:55:19.495Z [[32minfo[39m]: .env file loaded successfully.
+2024-10-26T19:55:19.495Z [[32minfo[39m]: Attempting to load .env file from: /Users/matthiaswettstein/SynologyDrive/Matthias/Programming/globschi/.env
+2024-10-26T19:55:19.496Z [[32minfo[39m]: .env file loaded successfully.
+2024-10-26T19:55:19.498Z [[32minfo[39m]: Attempting to load .env file from: /Users/matthiaswettstein/SynologyDrive/Matthias/Programming/globschi/.env
+2024-10-26T19:55:19.498Z [[32minfo[39m]: .env file loaded successfully.
+2024-10-26T19:55:19.498Z [[32minfo[39m]: Attempting to load .env file from: /Users/matthiaswettstein/SynologyDrive/Matthias/Programming/globschi/.env
+2024-10-26T19:55:19.499Z [[32minfo[39m]: .env file loaded successfully.
+2024-10-26T19:55:19.499Z [[32minfo[39m]: Starting server...
+2024-10-26T19:55:20.284Z [[32minfo[39m]: Retrieved 5 Island documents:
+2024-10-26T19:55:20.284Z [[32minfo[39m]: 
+Island 1:
+2024-10-26T19:55:20.285Z [[32minfo[39m]: {
+  "_id": "671d403865ae1e23de6af55d",
+  "name": "001_0027_20240729104734",
+  "type": "pan",
+  "author": "wrangel",
+  "dateTimeString": "2024:07:29 12:47:34",
+  "dateTime": "2024-07-29T10:47:34.000Z",
+  "latitude": 47.80020833333333,
+  "longitude": -3.728265,
+  "altitude": 88.9617141078901,
+  "country": "France",
+  "region": "Finistère",
+  "location": "Riec-sur-Bélon",
+  "postalCode": "29350",
+  "road": "Penn Ar Marc'heg",
+  "noViews": 0,
+  "__v": 0
+}
+2024-10-26T19:55:20.285Z [[32minfo[39m]: 
+Island 2:
+2024-10-26T19:55:20.285Z [[32minfo[39m]: {
+  "_id": "6641c89ecc440ecb7fa2665d",
+  "name": "100_0089",
+  "type": "pan",
+  "author": "wrangel",
+  "dateTimeString": "2024:05:12 15:06:12",
+  "dateTime": "2024-05-12T13:06:12.000Z",
+  "latitude": 47.13628166666667,
+  "longitude": 9.163033333333333,
+  "altitude": 744.6154606578256,
+  "country": "Switzerland",
+  "region": "St. Gallen",
+  "location": "Weesen",
+  "postalCode": "8872",
+  "road": "Seeren",
+  "noViews": 0,
+  "__v": 0
+}
+2024-10-26T19:55:20.285Z [[32minfo[39m]: 
+Island 3:
+2024-10-26T19:55:20.285Z [[32minfo[39m]: {
+  "_id": "66363398fc59dd8b674fb698",
+  "name": "100_0085",
+  "type": "wide_angle",
+  "author": "wrangel",
+  "dateTimeString": "2024:04:30 17:51:06",
+  "dateTime": "2024-04-30T15:51:06.000Z",
+  "latitude": 47.870919,
+  "longitude": 8.133854,
+  "altitude": 1345.2,
+  "country": "Germany",
+  "region": "Baden-Württemberg",
+  "location": "Feldberg",
+  "postalCode": "79868",
+  "road": "Lenzkircher Weg",
+  "noViews": 0,
+  "__v": 0
+}
+2024-10-26T19:55:20.285Z [[32minfo[39m]: 
+Island 4:
+2024-10-26T19:55:20.285Z [[32minfo[39m]: {
+  "_id": "66363398fc59dd8b674fb697",
+  "name": "100_0084",
+  "type": "pan",
+  "author": "wrangel",
+  "dateTimeString": "2024:04:30 17:49:07",
+  "dateTime": "2024-04-30T15:49:07.000Z",
+  "latitude": 47.87202333333333,
+  "longitude": 8.13511,
+  "altitude": 1344.5756662196193,
+  "country": "Germany",
+  "region": "Baden-Württemberg",
+  "location": "Feldberg",
+  "postalCode": "79868",
+  "road": "Haslachbrückenweg",
+  "noViews": 0,
+  "__v": 0
+}
+2024-10-26T19:55:20.285Z [[32minfo[39m]: 
+Island 5:
+2024-10-26T19:55:20.285Z [[32minfo[39m]: {
+  "_id": "6612e679252c885339311ab2",
+  "name": "100_0082",
+  "type": "pan",
+  "author": "wrangel",
+  "dateTimeString": "2024:04:07 15:29:38",
+  "dateTime": "2024-04-07T13:29:38.000Z",
+  "latitude": 47.442083333333336,
+  "longitude": 8.100673333333333,
+  "altitude": 818.2314585815511,
+  "country": "Switzerland",
+  "region": "Aargau",
+  "location": "Thalheim",
+  "postalCode": "5112",
+  "road": "Rosenrain",
+  "noViews": 0,
+  "__v": 0
+}
+2024-10-26T19:55:20.285Z [[32minfo[39m]: 
+Total number of Islands retrieved: 5
+2024-10-26T19:55:22.358Z [[32minfo[39m]: Attempting to load .env file from: /Users/matthiaswettstein/SynologyDrive/Matthias/Programming/globschi/.env
+2024-10-26T19:55:22.360Z [[32minfo[39m]: .env file loaded successfully.
+2024-10-26T19:55:22.360Z [[32minfo[39m]: Attempting to load .env file from: /Users/matthiaswettstein/SynologyDrive/Matthias/Programming/globschi/.env
+2024-10-26T19:55:22.360Z [[32minfo[39m]: .env file loaded successfully.
+2024-10-26T19:55:22.364Z [[32minfo[39m]: Attempting to load .env file from: /Users/matthiaswettstein/SynologyDrive/Matthias/Programming/globschi/.env
+2024-10-26T19:55:22.365Z [[32minfo[39m]: .env file loaded successfully.
+2024-10-26T19:55:22.365Z [[32minfo[39m]: Attempting to access bucket: melville-island
+2024-10-26T19:55:22.512Z [[32minfo[39m]: Successfully connected to AWS and accessed the bucket.
+2024-10-26T19:55:22.512Z [[32minfo[39m]: Found at least one object in the bucket:
+2024-10-26T19:55:22.513Z [[32minfo[39m]: Key: hdr/100_0002-3.webp
+2024-10-26T19:55:22.513Z [[32minfo[39m]: Last Modified: Tue Jan 16 2024 00:02:39 GMT+0100 (Central European Standard Time)
+2024-10-26T19:55:22.513Z [[32minfo[39m]: Size: 9130392 bytes
+2024-10-26T19:55:22.513Z [[32minfo[39m]: Bucket Name: melville-island
+2024-10-26T19:55:22.513Z [[32minfo[39m]: Prefix: None
+2024-10-26T19:55:22.513Z [[32minfo[39m]: MaxKeys: 1
+2024-10-26T19:55:22.513Z [[32minfo[39m]: IsTruncated: true
+2024-10-26T19:55:27.524Z [[32minfo[39m]: Attempting to load .env file from: /Users/matthiaswettstein/SynologyDrive/Matthias/Programming/globschi/.env
+2024-10-26T19:55:27.526Z [[32minfo[39m]: .env file loaded successfully.
+2024-10-26T19:55:27.526Z [[32minfo[39m]: Attempting to load .env file from: /Users/matthiaswettstein/SynologyDrive/Matthias/Programming/globschi/.env
+2024-10-26T19:55:27.527Z [[32minfo[39m]: .env file loaded successfully.
+2024-10-26T19:55:27.636Z [[32minfo[39m]: Attempting to load .env file from: /Users/matthiaswettstein/SynologyDrive/Matthias/Programming/globschi/.env
+2024-10-26T19:55:27.636Z [[32minfo[39m]: .env file loaded successfully.
+2024-10-26T19:55:27.636Z [[32minfo[39m]: Attempting to load .env file from: /Users/matthiaswettstein/SynologyDrive/Matthias/Programming/globschi/.env
+2024-10-26T19:55:27.636Z [[32minfo[39m]: .env file loaded successfully.
+2024-10-26T19:55:27.636Z [[32minfo[39m]: Starting server...
+2024-10-26T19:55:27.637Z [[32minfo[39m]: Attempting to load .env file from: /Users/matthiaswettstein/SynologyDrive/Matthias/Programming/globschi/.env
+2024-10-26T19:55:27.637Z [[32minfo[39m]: .env file loaded successfully.
+2024-10-26T19:55:28.896Z [[32minfo[39m]: Original Media:
+2024-10-26T19:55:28.897Z [[32minfo[39m]: Actual Site Media:
+2024-10-26T19:55:28.897Z [[32minfo[39m]: Thumbnail Site Media:
+2024-10-26T19:55:28.897Z [[32minfo[39m]: Mongo Documents:
+2024-10-26T19:55:28.898Z [[33mwarn[39m]: No objects to delete.
+2024-10-26T19:55:29.625Z [[32minfo[39m]: Successfully deleted 2 objects
+2024-10-26T19:55:30.271Z [[32minfo[39m]: Media synchronization complete.
+2024-10-26T19:55:30.271Z [[32minfo[39m]: If there are any media only in the originals bucket, please download them, delete them in the originals bucket and upload them again.
+2024-10-26T19:55:51.854Z [[32minfo[39m]: Attempting to load .env file from: /Users/matthiaswettstein/SynologyDrive/Matthias/Programming/globschi/.env
+2024-10-26T19:55:51.856Z [[32minfo[39m]: .env file loaded successfully.
+2024-10-26T19:55:51.917Z [[32minfo[39m]: Attempting to load .env file from: /Users/matthiaswettstein/SynologyDrive/Matthias/Programming/globschi/.env
+2024-10-26T19:55:51.917Z [[32minfo[39m]: .env file loaded successfully.
+2024-10-26T19:55:51.917Z [[32minfo[39m]: Attempting to load .env file from: /Users/matthiaswettstein/SynologyDrive/Matthias/Programming/globschi/.env
+2024-10-26T19:55:51.918Z [[32minfo[39m]: .env file loaded successfully.
+2024-10-26T19:55:52.037Z [[32minfo[39m]: Attempting to load .env file from: /Users/matthiaswettstein/SynologyDrive/Matthias/Programming/globschi/.env
+2024-10-26T19:55:52.038Z [[32minfo[39m]: .env file loaded successfully.
+2024-10-26T19:55:52.038Z [[32minfo[39m]: Attempting to load .env file from: /Users/matthiaswettstein/SynologyDrive/Matthias/Programming/globschi/.env
+2024-10-26T19:55:52.038Z [[32minfo[39m]: .env file loaded successfully.
+2024-10-26T19:55:52.039Z [[32minfo[39m]: Starting server...
+2024-10-26T19:55:52.045Z [[32minfo[39m]: 1 media to manage
+2024-10-26T19:56:01.581Z [[32minfo[39m]: Attempting to load .env file from: /Users/matthiaswettstein/SynologyDrive/Matthias/Programming/globschi/.env
+2024-10-26T19:56:01.582Z [[32minfo[39m]: .env file loaded successfully.
+2024-10-26T19:56:01.582Z [[32minfo[39m]: Script started
+2024-10-26T19:56:01.582Z [[32minfo[39m]: Starting to process all media files
+2024-10-26T19:56:01.582Z [[32minfo[39m]: Starting to process 100_0502.tif
+2024-10-26T19:56:01.582Z [[32minfo[39m]: Step 1: Uploading original TIF to S3
+2024-10-26T19:56:01.582Z [[32minfo[39m]: Starting S3 upload: prince-patrick-island/wide_angle/100_0502_20230218170931.tif
+2024-10-26T19:56:02.749Z [[32minfo[39m]: Completed S3 upload: prince-patrick-island/wide_angle/100_0502_20230218170931.tif
+2024-10-26T19:56:02.750Z [[32minfo[39m]: Uploaded 100_0502.tif to wide_angle/100_0502_20230218170931.tif
+2024-10-26T19:56:02.751Z [[32minfo[39m]: Step 2: Processing and uploading lossless WebP
+2024-10-26T19:56:08.056Z [[32minfo[39m]: Starting S3 upload: melville-island/wide_angle/100_0502_20230218170931.webp
+2024-10-26T19:56:09.489Z [[32minfo[39m]: Completed S3 upload: melville-island/wide_angle/100_0502_20230218170931.webp
+2024-10-26T19:56:09.490Z [[32minfo[39m]: Step 3: Processing and uploading lossy WebP
+2024-10-26T19:56:09.885Z [[32minfo[39m]: Starting S3 upload: melville-island/thumbnails/100_0502_20230218170931.webp
+2024-10-26T19:56:09.936Z [[32minfo[39m]: Completed S3 upload: melville-island/thumbnails/100_0502_20230218170931.webp
+2024-10-26T19:56:09.936Z [[32minfo[39m]: Step 4: Converting to JPEG and saving to OneDrive
+2024-10-26T19:56:09.936Z [[32minfo[39m]: OneDrive path: /Users/matthiaswettstein/Library/CloudStorage/OneDrive-Persönlich/Bilder/Video/100_0502_20230218170931.jpg
+2024-10-26T19:56:10.328Z [[32minfo[39m]: Saved JPEG to /Users/matthiaswettstein/Library/CloudStorage/OneDrive-Persönlich/Bilder/Video/100_0502_20230218170931.jpg
+2024-10-26T19:56:10.328Z [[32minfo[39m]: Step 5: Deleting the original file
+2024-10-26T19:56:10.328Z [[32minfo[39m]: Completed processing 100_0502.tif
+2024-10-26T19:56:10.328Z [[32minfo[39m]: All media files processed:
+2024-10-26T19:56:10.328Z [[32minfo[39m]: [object Object]
+2024-10-26T19:56:10.335Z [[32minfo[39m]: Deleted original file: /Users/matthiaswettstein/Downloads/export/100_0502.tif
+2024-10-26T19:56:11.038Z [[32minfo[39m]: Inserted mongooseCompatibleMetadata into MongoDB.
+2024-10-26T19:56:11.039Z [[32minfo[39m]: Processing complete

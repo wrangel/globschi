@@ -1,3 +1,5 @@
+// src/backend/management/bookKeeper.mjs
+
 import fs from "fs";
 import path from "path";
 import sharp from "sharp";
@@ -12,8 +14,14 @@ import { loadEnv } from "../loadEnv.mjs";
 
 loadEnv();
 
+// Maximum dimensions for WebP images
 const MAX_WEBP_DIMENSION = 16383;
 
+/**
+ * Processes a single media file: uploads original TIF, converts to WebP, and saves JPEG.
+ * @param {Object} fileInfo - Information about the media file.
+ * @returns {Object} Result of the processing operation.
+ */
 async function processMediaFile(fileInfo) {
   const {
     key,
@@ -44,11 +52,12 @@ async function processMediaFile(fileInfo) {
 
     // Step 2: Prepare WebP processing
     console.log("Step 2: Processing and uploading lossless WebP");
-    const image = sharp(inputPath); // Initialize image here
+    const image = sharp(inputPath); // Initialize image processing
 
-    const metadata = await image.metadata();
-    let resizedImage = image;
+    const metadata = await image.metadata(); // Get image metadata
+    let resizedImage = image; // Initialize resizedImage
 
+    // Resize if dimensions exceed maximum allowed size
     if (
       metadata.width > MAX_WEBP_DIMENSION ||
       metadata.height > MAX_WEBP_DIMENSION
@@ -97,7 +106,7 @@ async function processMediaFile(fileInfo) {
       lossyWebpBuffer
     );
 
-    // Step 4: Converting to JPEG and saving to OneDrive
+    // Step 4: Convert to JPEG and save to OneDrive
     console.log("Step 4: Converting to JPEG and saving to OneDrive");
 
     const onedrivePath = path.join(
@@ -108,16 +117,13 @@ async function processMediaFile(fileInfo) {
     console.log(`OneDrive path: ${onedrivePath}`);
 
     await sharp(inputPath)
-      .jpeg({
-        quality: 100,
-        progressive: true,
-      })
+      .jpeg({ quality: 100, progressive: true })
       .withMetadata()
       .toFile(onedrivePath);
 
     console.log(`Saved JPEG to ${onedrivePath}`);
 
-    // Step 5: Delete the original file
+    // Step 5: Delete the original file after processing is complete
     console.log("Step 5: Deleting the original file");
 
     fs.unlink(inputPath, (err) => {
@@ -144,6 +150,13 @@ async function processMediaFile(fileInfo) {
   }
 }
 
+/**
+ * Uploads a stream or buffer to an S3 bucket.
+ * @param {string} bucketName - The name of the S3 bucket.
+ * @param {string} key - The key (filename) under which the file will be stored.
+ * @param {Buffer|stream.Readable} body - The content of the file to be uploaded.
+ * @returns {Promise<Object>} Result of the upload operation.
+ */
 async function uploadStreamToS3(bucketName, key, body) {
   console.log(`Starting S3 upload: ${bucketName}/${key}`);
 
@@ -163,12 +176,12 @@ async function uploadStreamToS3(bucketName, key, body) {
       Key: key,
       Body: stream,
     },
-    queueSize: 4, // number of concurrent uploads
-    partSize: 5 * 1024 * 1024, // 5 MB per part
+    queueSize: 4, // Number of concurrent uploads
+    partSize: 5 * 1024 * 1024, // Size of each part in bytes (5 MB)
   });
 
   try {
-    const result = await upload.done();
+    const result = await upload.done(); // Wait for the upload to complete
 
     console.log(`Completed S3 upload: ${bucketName}/${key}`);
 
@@ -178,23 +191,27 @@ async function uploadStreamToS3(bucketName, key, body) {
       `Error uploading to S3: ${bucketName}/${key} - ${error.message}`
     );
 
-    throw error;
+    throw error; // Rethrow error for further handling
   }
 }
 
+/**
+ * Processes all media files based on provided data.
+ * @param {Object} processedMediaData - Data containing media file information and metadata.
+ */
 async function processAllMediaFiles(processedMediaData) {
   console.log("Starting to process all media files");
 
   const mediaFileInfo = processedMediaData.mediaFileInfo;
 
-  // Process each media file
+  // Process each media file concurrently using Promise.all
   const results = await Promise.all(mediaFileInfo.map(processMediaFile));
 
   console.log("All media files processed:");
 
   console.log(results);
 
-  // Insert mongooseCompatibleMetadata into MongoDB
+  // Insert mongooseCompatibleMetadata into MongoDB if available
   if (processedMediaData.mongooseCompatibleMetadata) {
     await executeMongoQuery(async () => {
       await Island.insertMany(processedMediaData.mongooseCompatibleMetadata);
@@ -204,7 +221,7 @@ async function processAllMediaFiles(processedMediaData) {
   }
 }
 
-// Usage
+// Usage of the script starts here
 console.log("Script started");
 processAllMediaFiles(processedMediaData)
   .then(() => console.log("Processing complete"))

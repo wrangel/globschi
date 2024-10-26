@@ -4,6 +4,7 @@ import fs from "fs";
 import path from "path";
 import sharp from "sharp";
 import { PassThrough } from "stream";
+import logger from "../helpers/logger.mjs";
 import * as Constants from "../constants.mjs";
 import { processedMediaData } from "./metadataCollector.mjs";
 import { s3Client } from "../helpers/awsHelpers.mjs";

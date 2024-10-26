@@ -3,9 +3,9 @@
 import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
-import { loadEnv } from "./loadEnv.mjs";
+import logger from "./helpers/logger.mjs";
 import combinedDataRoute from "./routes/combinedDataRoute.mjs";
-import { Island } from "./models/islandModel.mjs";
+import { loadEnv } from "./loadEnv.mjs";
 
 loadEnv();
 

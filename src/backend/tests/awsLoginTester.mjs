@@ -1,6 +1,7 @@
 // src/backend/management/awsLoginTester.mjs
 
 import { ListObjectsV2Command } from "@aws-sdk/client-s3";
+import logger from "../helpers/logger.mjs";
 import { s3Client } from "../helpers/awsHelpers.mjs";
 import { loadEnv } from "../loadEnv.mjs";
 

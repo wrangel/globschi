@@ -3,6 +3,7 @@
 import { DeleteObjectsCommand } from "@aws-sdk/client-s3";
 import { s3Client } from "../helpers/awsHelpers.mjs";
 import * as Constants from "../constants.mjs";
+import logger from "../helpers/logger.mjs";
 import { Island } from "../models/islandModel.mjs";
 import { listS3BucketContents } from "../helpers/awsHelpers.mjs";
 import { executeMongoQuery } from "../helpers/mongoHelpers.mjs";

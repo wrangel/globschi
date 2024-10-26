@@ -1,6 +1,7 @@
 // src/backend/metadataProcessor.mjs
 
 import { AUTHOR_PICTURES_PATH, MEDIA_PAGES } from "./constants.mjs";
+import logger from "./helpers/logger.mjs";
 
 /**
  * Beautifies and combines MongoDB data with presigned URLs.

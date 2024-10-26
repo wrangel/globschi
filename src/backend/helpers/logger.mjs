@@ -6,8 +6,11 @@ import { createLogger, format, transports } from "winston";
 const logger = createLogger({
   level: "info", // Set the default logging level
   format: format.combine(
+    format.colorize(), // Add color to log messages
     format.timestamp(), // Add timestamp to logs
-    format.json() // Format logs as JSON
+    format.printf(({ timestamp, level, message }) => {
+      return `${timestamp} [${level}]: ${message}`; // Custom log format
+    })
   ),
   transports: [
     new transports.Console(), // Log to console

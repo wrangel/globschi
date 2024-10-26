@@ -1,5 +1,6 @@
 // src/backend/management/mongoDebugger.mjs
 
+import logger from "../helpers/logger.mjs";
 import { Island } from "../models/islandModel.mjs";
 import { executeMongoQuery } from "../helpers/mongoHelpers.mjs";
 

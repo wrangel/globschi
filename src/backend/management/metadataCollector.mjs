@@ -4,6 +4,7 @@ import ExifReader from "exifreader";
 import fs from "fs/promises";
 import path from "path";
 import readline from "readline";
+import logger from "../helpers/logger.mjs";
 import * as Constants from "../constants.mjs";
 import { loadEnv } from "../loadEnv.mjs";
 

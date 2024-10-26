@@ -2,6 +2,7 @@
 
 import { S3Client } from "@aws-sdk/client-s3";
 import { ListObjectsCommand } from "@aws-sdk/client-s3";
+import logger from "../helpers/logger.mjs";
 import { getId } from "./helpers.mjs";
 import { loadEnv } from "../loadEnv.mjs";
 

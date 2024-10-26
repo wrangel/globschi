@@ -1,4 +1,5 @@
 // src/components/PortfolioItem.js
+
 import React, { useCallback, memo } from "react";
 
 function PortfolioItem({ item, onItemClick }) {

@@ -5,11 +5,14 @@ import path from "path";
 import sharp from "sharp";
 import * as Constants from "../constants.mjs";
 import { processedMediaData } from "./metadataCollector.mjs";
-import { loadEnv } from "../loadEnv.mjs";
 import { s3Client } from "../awsConfigurator.mjs";
 import { Upload } from "@aws-sdk/lib-storage";
+import { loadEnv } from "../loadEnv.mjs";
 
 loadEnv();
+
+console.log(processedMediaData.mongooseCompatibleMetadata);
+process.exit(0);
 
 const MAX_WEBP_DIMENSION = 16383;
 

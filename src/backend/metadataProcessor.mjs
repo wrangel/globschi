@@ -1,7 +1,6 @@
 // src/backend/metadataProcessor.mjs
 
 import { AUTHOR_PICTURES_PATH, MEDIA_PAGES } from "./constants.mjs";
-import { prepareDate } from "./helpers/helpers.mjs";
 
 /**
  * Beautifies and combines MongoDB data with presigned URLs.
@@ -11,23 +10,12 @@ import { prepareDate } from "./helpers/helpers.mjs";
  * @throws {Error} If there's an issue processing the data.
  */
 export const beautify = async (mongoData, presignedUrls) => {
-  if (!Array.isArray(mongoData) || !Array.isArray(presignedUrls)) {
-    throw new Error(
-      "Invalid input: mongoData and presignedUrls must be arrays"
-    );
-  }
+  validateInput(mongoData, presignedUrls);
 
-  const mongoNames = new Set(mongoData.map((item) => item.name));
-  const awsNames = new Set(presignedUrls.map((item) => item.name));
-
-  // Create an intersection based on the 'name' property
-  const intersectedData = mongoData.filter((mongoItem) =>
-    awsNames.has(mongoItem.name)
+  const { intersectedData, onlyInMongo, onlyInAWS } = intersectData(
+    mongoData,
+    presignedUrls
   );
-
-  // Perform bookkeeping
-  const onlyInMongo = [...mongoNames].filter((name) => !awsNames.has(name));
-  const onlyInAWS = [...awsNames].filter((name) => !mongoNames.has(name));
 
   logBookkeepingInfo(
     mongoData,
@@ -46,6 +34,39 @@ export const beautify = async (mongoData, presignedUrls) => {
 };
 
 /**
+ * Validates input arrays for the beautify function.
+ * @param {Array} mongoData - Data from MongoDB.
+ * @param {Array} presignedUrls - Presigned URLs from AWS S3.
+ * @throws {Error} If inputs are not arrays.
+ */
+function validateInput(mongoData, presignedUrls) {
+  if (!Array.isArray(mongoData) || !Array.isArray(presignedUrls)) {
+    throw new Error(
+      "Invalid input: mongoData and presignedUrls must be arrays"
+    );
+  }
+}
+
+/**
+ * Intersects MongoDB data with presigned URLs data.
+ * @param {Array} mongoData - Data from MongoDB.
+ * @param {Array} presignedUrls - Presigned URLs from AWS S3.
+ * @returns {Object} Intersected data and items unique to each source.
+ */
+function intersectData(mongoData, presignedUrls) {
+  const mongoNames = new Set(mongoData.map((item) => item.name));
+  const awsNames = new Set(presignedUrls.map((item) => item.name));
+
+  const intersectedData = mongoData.filter((mongoItem) =>
+    awsNames.has(mongoItem.name)
+  );
+  const onlyInMongo = [...mongoNames].filter((name) => !awsNames.has(name));
+  const onlyInAWS = [...awsNames].filter((name) => !mongoNames.has(name));
+
+  return { intersectedData, onlyInMongo, onlyInAWS };
+}
+
+/**
  * Processes a single document, combining it with presigned URL data.
  * @param {Object} doc - MongoDB document.
  * @param {Array} presignedUrls - Presigned URLs from AWS S3.
@@ -56,7 +77,7 @@ function processDocument(doc, presignedUrls) {
     presignedUrls.find((element) => element.name === doc.name)?.urls || {};
 
   return {
-    id: doc._id.toString(), // Convert ObjectId to string
+    id: doc._id.toString(),
     name: doc.name,
     type: doc.type,
     viewer: doc.type === MEDIA_PAGES[1] ? "pano" : "img",
@@ -105,3 +126,24 @@ function logBookkeepingInfo(
     console.log("Elements missing from MongoDB:", onlyInAWS);
   }
 }
+
+/**
+ * Formats date for display.
+ * @param {Date} date - Date object.
+ * @returns {string} - Formatted date string.
+ */
+export const prepareDate = (date) => {
+  const options = {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    weekday: "long",
+    hour: "numeric",
+    minute: "numeric",
+    second: "numeric",
+    hour12: false,
+    timeZone: "CET",
+    timeZoneName: "short",
+  };
+  return new Intl.DateTimeFormat("en-US", options).format(date);
+};

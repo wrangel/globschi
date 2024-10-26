@@ -1,3 +1,5 @@
+// src/components/PanoramaViewer.js
+
 import React, {
   useEffect,
   useRef,

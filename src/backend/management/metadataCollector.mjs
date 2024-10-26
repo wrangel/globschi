@@ -1,5 +1,3 @@
-// src/backend/management/metadataCollector.mjs
-
 import ExifReader from "exifreader";
 import fs from "fs/promises";
 import path from "path";
@@ -54,7 +52,7 @@ const generateExtendedString = (initialString, dateString) => {
       .replace(/[-:T]/g, "")
       .slice(0, 14)}`;
   } catch (error) {
-    console.error("Error generating extended string:", error);
+    logger.error("Error generating extended string:", { error });
     throw error;
   }
 };
@@ -115,7 +113,7 @@ async function collectMedia() {
 async function enhanceMediaWithUserInput(media) {
   for (const medium of media) {
     const answer = await question(
-      `Author and media type of --> ${medium.originalName} <-- (comma separated) : `
+      `Author and media type of --> ${medium.originalName} <-- (comma separated): `
     );
     let [author, mediaType] = answer.split(",").map((x) => x.trim());
 
@@ -216,7 +214,9 @@ async function enhanceMediaWithGeoData(mediaArray) {
     const reverseUrls = mediaArray.map((item) =>
       createReverseGeoUrl(item.exif_longitude, item.exif_latitude)
     );
+
     const geoJsons = await Promise.all(reverseUrls.map(fetchJson));
+
     const geoData = geoJsons.map(extractAddressComponents);
 
     return mediaArray.map((item, index) => ({
@@ -224,7 +224,7 @@ async function enhanceMediaWithGeoData(mediaArray) {
       geoData: geoData[index],
     }));
   } catch (error) {
-    console.error("Error enhancing media with geo data:", error);
+    logger.error("Error enhancing media with geo data:", { error });
     throw error;
   }
 }
@@ -279,8 +279,11 @@ async function processMedia() {
   logger.info(`${media.length} media to manage`);
 
   const mediaWithUserInput = await enhanceMediaWithUserInput(media);
+
   const mediaWithExifData = await enhanceMediaWithExifData(mediaWithUserInput);
+
   const mediaWithGeoData = await enhanceMediaWithGeoData(mediaWithExifData);
+
   return createProcessedMediaData(mediaWithGeoData);
 }
 
@@ -306,5 +309,6 @@ export const prepareDate = (date) => {
     timeZone: "CET",
     timeZoneName: "short",
   };
+
   return new Intl.DateTimeFormat("en-US", options).format(date);
 };

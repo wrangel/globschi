@@ -1,5 +1,3 @@
-// src/backend/management/bookKeeper.mjs
-
 import fs from "fs";
 import path from "path";
 import sharp from "sharp";
@@ -129,7 +127,7 @@ async function processMediaFile(fileInfo) {
 
     fs.unlink(inputPath, (err) => {
       if (err) {
-        console.error(`Error deleting file ${inputPath}:`, err);
+        logger.error(`Error deleting file ${inputPath}:`, { error: err });
       } else {
         logger.info(`Deleted original file: ${inputPath}`);
       }
@@ -142,7 +140,7 @@ async function processMediaFile(fileInfo) {
       message: `Processed ${originalMedium} successfully`,
     };
   } catch (error) {
-    console.error(`Error processing ${originalMedium}:`, error);
+    logger.error(`Error processing ${originalMedium}:`, { error });
 
     return {
       success: false,
@@ -188,7 +186,7 @@ async function uploadStreamToS3(bucketName, key, body) {
 
     return result;
   } catch (error) {
-    console.error(
+    logger.error(
       `Error uploading to S3: ${bucketName}/${key} - ${error.message}`
     );
 
@@ -218,6 +216,7 @@ async function processAllMediaFiles(processedMediaData) {
       await Island.insertMany(processedMediaData.mongooseCompatibleMetadata);
       return null; // Return null to indicate no value
     });
+
     logger.info("Inserted mongooseCompatibleMetadata into MongoDB.");
   }
 }
@@ -226,4 +225,4 @@ async function processAllMediaFiles(processedMediaData) {
 logger.info("Script started");
 processAllMediaFiles(processedMediaData)
   .then(() => logger.info("Processing complete"))
-  .catch((error) => console.error("Error in processing:", error));
+  .catch((error) => logger.error("Error in processing:", { error }));

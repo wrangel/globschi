@@ -1,5 +1,3 @@
-// src/backend/metadataProcessor.mjs
-
 import { AUTHOR_PICTURES_PATH, MEDIA_PAGES } from "./constants.mjs";
 import logger from "./helpers/logger.mjs";
 
@@ -29,7 +27,7 @@ export const beautify = async (mongoData, presignedUrls) => {
   try {
     return intersectedData.map((doc) => processDocument(doc, presignedUrls));
   } catch (error) {
-    console.error("Error in beautify function:", error);
+    logger.error("Error in beautify function:", { error });
     throw new Error("Failed to process and beautify data");
   }
 };
@@ -123,6 +121,7 @@ function logBookkeepingInfo(
   if (onlyInMongo.length > 0) {
     logger.info("Elements missing from AWS S3:", onlyInMongo);
   }
+
   if (onlyInAWS.length > 0) {
     logger.info("Elements missing from MongoDB:", onlyInAWS);
   }
@@ -146,5 +145,6 @@ export const prepareDate = (date) => {
     timeZone: "CET",
     timeZoneName: "short",
   };
+
   return new Intl.DateTimeFormat("en-US", options).format(date);
 };

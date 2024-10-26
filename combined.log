@@ -57,3 +57,173 @@
 2024-10-26T19:39:40.714Z [[32minfo[39m]: Successfully deleted 2 objects
 2024-10-26T19:39:41.356Z [[32minfo[39m]: Media synchronization complete.
 2024-10-26T19:39:41.357Z [[32minfo[39m]: If there are any media only in the originals bucket, please download them, delete them in the originals bucket and upload them again.
+2024-10-26T19:46:56.509Z [[32minfo[39m]: Attempting to load .env file from: /Users/matthiaswettstein/SynologyDrive/Matthias/Programming/globschi/.env
+2024-10-26T19:46:56.512Z [[32minfo[39m]: .env file loaded successfully.
+2024-10-26T19:46:56.512Z [[32minfo[39m]: Attempting to load .env file from: /Users/matthiaswettstein/SynologyDrive/Matthias/Programming/globschi/.env
+2024-10-26T19:46:56.512Z [[32minfo[39m]: .env file loaded successfully.
+2024-10-26T19:46:56.694Z [[32minfo[39m]: Attempting to load .env file from: /Users/matthiaswettstein/SynologyDrive/Matthias/Programming/globschi/.env
+2024-10-26T19:46:56.695Z [[32minfo[39m]: .env file loaded successfully.
+2024-10-26T19:46:56.695Z [[32minfo[39m]: Attempting to load .env file from: /Users/matthiaswettstein/SynologyDrive/Matthias/Programming/globschi/.env
+2024-10-26T19:46:56.695Z [[32minfo[39m]: .env file loaded successfully.
+2024-10-26T19:46:56.695Z [[32minfo[39m]: Starting server...
+2024-10-26T19:46:56.696Z [[32minfo[39m]: Attempting to load .env file from: /Users/matthiaswettstein/SynologyDrive/Matthias/Programming/globschi/.env
+2024-10-26T19:46:56.696Z [[32minfo[39m]: .env file loaded successfully.
+2024-10-26T19:46:57.824Z [[32minfo[39m]: Original Media:
+2024-10-26T19:46:57.824Z [[32minfo[39m]: Actual Site Media:
+2024-10-26T19:46:57.825Z [[32minfo[39m]: Thumbnail Site Media:
+2024-10-26T19:46:57.825Z [[32minfo[39m]: Mongo Documents:
+2024-10-26T19:46:57.826Z [[33mwarn[39m]: No objects to delete.
+2024-10-26T19:46:58.559Z [[32minfo[39m]: Successfully deleted 2 objects
+2024-10-26T19:46:59.229Z [[32minfo[39m]: Media synchronization complete.
+2024-10-26T19:46:59.229Z [[32minfo[39m]: If there are any media only in the originals bucket, please download them, delete them in the originals bucket and upload them again.
+2024-10-26T19:49:31.350Z [[32minfo[39m]: Attempting to load .env file from: /Users/matthiaswettstein/SynologyDrive/Matthias/Programming/globschi/.env
+2024-10-26T19:49:31.352Z [[32minfo[39m]: .env file loaded successfully.
+2024-10-26T19:49:31.353Z [[32minfo[39m]: Attempting to load .env file from: /Users/matthiaswettstein/SynologyDrive/Matthias/Programming/globschi/.env
+2024-10-26T19:49:31.353Z [[32minfo[39m]: .env file loaded successfully.
+2024-10-26T19:49:31.357Z [[32minfo[39m]: Attempting to load .env file from: /Users/matthiaswettstein/SynologyDrive/Matthias/Programming/globschi/.env
+2024-10-26T19:49:31.357Z [[32minfo[39m]: .env file loaded successfully.
+2024-10-26T19:49:31.358Z [[32minfo[39m]: Attempting to access bucket: melville-island
+2024-10-26T19:49:31.472Z [[32minfo[39m]: Successfully connected to AWS and accessed the bucket.
+2024-10-26T19:49:31.473Z [[32minfo[39m]: Found at least one object in the bucket:
+2024-10-26T19:49:31.473Z [[32minfo[39m]: Key: hdr/100_0002-3.webp
+2024-10-26T19:49:31.473Z [[32minfo[39m]: Last Modified: Tue Jan 16 2024 00:02:39 GMT+0100 (Central European Standard Time)
+2024-10-26T19:49:31.473Z [[32minfo[39m]: Size: 9130392 bytes
+2024-10-26T19:49:31.473Z [[32minfo[39m]: Bucket Name: melville-island
+2024-10-26T19:49:31.473Z [[32minfo[39m]: Prefix: None
+2024-10-26T19:49:31.473Z [[32minfo[39m]: MaxKeys: 1
+2024-10-26T19:49:31.473Z [[32minfo[39m]: IsTruncated: true
+2024-10-26T19:50:06.510Z [[32minfo[39m]: Attempting to load .env file from: /Users/matthiaswettstein/SynologyDrive/Matthias/Programming/globschi/.env
+2024-10-26T19:50:06.512Z [[32minfo[39m]: .env file loaded successfully.
+2024-10-26T19:50:06.513Z [[32minfo[39m]: Attempting to load .env file from: /Users/matthiaswettstein/SynologyDrive/Matthias/Programming/globschi/.env
+2024-10-26T19:50:06.513Z [[32minfo[39m]: .env file loaded successfully.
+2024-10-26T19:50:06.515Z [[32minfo[39m]: Attempting to load .env file from: /Users/matthiaswettstein/SynologyDrive/Matthias/Programming/globschi/.env
+2024-10-26T19:50:06.515Z [[32minfo[39m]: .env file loaded successfully.
+2024-10-26T19:50:06.516Z [[32minfo[39m]: Attempting to load .env file from: /Users/matthiaswettstein/SynologyDrive/Matthias/Programming/globschi/.env
+2024-10-26T19:50:06.516Z [[32minfo[39m]: .env file loaded successfully.
+2024-10-26T19:50:06.516Z [[32minfo[39m]: Starting server...
+2024-10-26T19:50:07.240Z [[32minfo[39m]: Retrieved 5 Island documents:
+2024-10-26T19:50:07.241Z [[32minfo[39m]: 
+Island 1:
+2024-10-26T19:50:07.241Z [[32minfo[39m]: {
+  "_id": "671d403865ae1e23de6af55d",
+  "name": "001_0027_20240729104734",
+  "type": "pan",
+  "author": "wrangel",
+  "dateTimeString": "2024:07:29 12:47:34",
+  "dateTime": "2024-07-29T10:47:34.000Z",
+  "latitude": 47.80020833333333,
+  "longitude": -3.728265,
+  "altitude": 88.9617141078901,
+  "country": "France",
+  "region": "Finistère",
+  "location": "Riec-sur-Bélon",
+  "postalCode": "29350",
+  "road": "Penn Ar Marc'heg",
+  "noViews": 0,
+  "__v": 0
+}
+2024-10-26T19:50:07.241Z [[32minfo[39m]: 
+Island 2:
+2024-10-26T19:50:07.241Z [[32minfo[39m]: {
+  "_id": "6641c89ecc440ecb7fa2665d",
+  "name": "100_0089",
+  "type": "pan",
+  "author": "wrangel",
+  "dateTimeString": "2024:05:12 15:06:12",
+  "dateTime": "2024-05-12T13:06:12.000Z",
+  "latitude": 47.13628166666667,
+  "longitude": 9.163033333333333,
+  "altitude": 744.6154606578256,
+  "country": "Switzerland",
+  "region": "St. Gallen",
+  "location": "Weesen",
+  "postalCode": "8872",
+  "road": "Seeren",
+  "noViews": 0,
+  "__v": 0
+}
+2024-10-26T19:50:07.242Z [[32minfo[39m]: 
+Island 3:
+2024-10-26T19:50:07.242Z [[32minfo[39m]: {
+  "_id": "66363398fc59dd8b674fb698",
+  "name": "100_0085",
+  "type": "wide_angle",
+  "author": "wrangel",
+  "dateTimeString": "2024:04:30 17:51:06",
+  "dateTime": "2024-04-30T15:51:06.000Z",
+  "latitude": 47.870919,
+  "longitude": 8.133854,
+  "altitude": 1345.2,
+  "country": "Germany",
+  "region": "Baden-Württemberg",
+  "location": "Feldberg",
+  "postalCode": "79868",
+  "road": "Lenzkircher Weg",
+  "noViews": 0,
+  "__v": 0
+}
+2024-10-26T19:50:07.242Z [[32minfo[39m]: 
+Island 4:
+2024-10-26T19:50:07.242Z [[32minfo[39m]: {
+  "_id": "66363398fc59dd8b674fb697",
+  "name": "100_0084",
+  "type": "pan",
+  "author": "wrangel",
+  "dateTimeString": "2024:04:30 17:49:07",
+  "dateTime": "2024-04-30T15:49:07.000Z",
+  "latitude": 47.87202333333333,
+  "longitude": 8.13511,
+  "altitude": 1344.5756662196193,
+  "country": "Germany",
+  "region": "Baden-Württemberg",
+  "location": "Feldberg",
+  "postalCode": "79868",
+  "road": "Haslachbrückenweg",
+  "noViews": 0,
+  "__v": 0
+}
+2024-10-26T19:50:07.242Z [[32minfo[39m]: 
+Island 5:
+2024-10-26T19:50:07.242Z [[32minfo[39m]: {
+  "_id": "6612e679252c885339311ab2",
+  "name": "100_0082",
+  "type": "pan",
+  "author": "wrangel",
+  "dateTimeString": "2024:04:07 15:29:38",
+  "dateTime": "2024-04-07T13:29:38.000Z",
+  "latitude": 47.442083333333336,
+  "longitude": 8.100673333333333,
+  "altitude": 818.2314585815511,
+  "country": "Switzerland",
+  "region": "Aargau",
+  "location": "Thalheim",
+  "postalCode": "5112",
+  "road": "Rosenrain",
+  "noViews": 0,
+  "__v": 0
+}
+2024-10-26T19:50:07.242Z [[32minfo[39m]: 
+Total number of Islands retrieved: 5
+2024-10-26T19:54:04.847Z [[32minfo[39m]: Attempting to load .env file from: /Users/matthiaswettstein/SynologyDrive/Matthias/Programming/globschi/.env
+2024-10-26T19:54:04.849Z [[32minfo[39m]: .env file loaded successfully.
+2024-10-26T19:54:04.849Z [[32minfo[39m]: Attempting to load .env file from: /Users/matthiaswettstein/SynologyDrive/Matthias/Programming/globschi/.env
+2024-10-26T19:54:04.850Z [[32minfo[39m]: .env file loaded successfully.
+2024-10-26T19:54:04.852Z [[32minfo[39m]: Attempting to load .env file from: /Users/matthiaswettstein/SynologyDrive/Matthias/Programming/globschi/.env
+2024-10-26T19:54:04.853Z [[32minfo[39m]: .env file loaded successfully.
+2024-10-26T19:54:04.853Z [[32minfo[39m]: Attempting to load .env file from: /Users/matthiaswettstein/SynologyDrive/Matthias/Programming/globschi/.env
+2024-10-26T19:54:04.853Z [[32minfo[39m]: .env file loaded successfully.
+2024-10-26T19:54:04.853Z [[32minfo[39m]: Starting server...
+2024-10-26T19:54:05.286Z [[32minfo[39m]: Successfully connected to MongoDB
+2024-10-26T19:54:05.287Z [[32minfo[39m]: Server is running on port 8081
+2024-10-26T19:54:08.322Z [[32minfo[39m]: Data Processing Summary:
+2024-10-26T19:54:08.322Z [[32minfo[39m]:   MongoDB elements: 184
+2024-10-26T19:54:08.322Z [[32minfo[39m]:   AWS S3 elements: 184
+2024-10-26T19:54:08.322Z [[32minfo[39m]:   Intersected elements: 184
+2024-10-26T19:54:08.322Z [[32minfo[39m]:   Elements only in MongoDB: 0
+2024-10-26T19:54:08.322Z [[32minfo[39m]:   Elements only in AWS S3: 0
+2024-10-26T19:54:08.509Z [[32minfo[39m]: Data Processing Summary:
+2024-10-26T19:54:08.509Z [[32minfo[39m]:   MongoDB elements: 184
+2024-10-26T19:54:08.509Z [[32minfo[39m]:   AWS S3 elements: 184
+2024-10-26T19:54:08.509Z [[32minfo[39m]:   Intersected elements: 184
+2024-10-26T19:54:08.509Z [[32minfo[39m]:   Elements only in MongoDB: 0
+2024-10-26T19:54:08.509Z [[32minfo[39m]:   Elements only in AWS S3: 0

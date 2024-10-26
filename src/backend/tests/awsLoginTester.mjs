@@ -1,5 +1,3 @@
-// src/backend/management/awsLoginTester.mjs
-
 import { ListObjectsV2Command } from "@aws-sdk/client-s3";
 import logger from "../helpers/logger.mjs";
 import { s3Client } from "../helpers/awsHelpers.mjs";
@@ -15,7 +13,7 @@ async function testAwsLogin() {
   const bucketName = process.env.SITE_BUCKET;
 
   if (!bucketName) {
-    console.error("SITE_BUCKET environment variable is not set.");
+    logger.error("SITE_BUCKET environment variable is not set.");
     process.exit(1);
   }
 
@@ -47,13 +45,15 @@ async function testAwsLogin() {
     logger.info(`MaxKeys: ${response.MaxKeys}`);
     logger.info(`IsTruncated: ${response.IsTruncated}`);
   } catch (error) {
-    console.error("Error connecting to AWS or accessing the bucket:");
+    logger.error("Error connecting to AWS or accessing the bucket:");
+
     if (error.Code) {
-      console.error(`Error Code: ${error.Code}`);
-      console.error(`Error Message: ${error.Message}`);
+      logger.error(`Error Code: ${error.Code}`);
+      logger.error(`Error Message: ${error.Message}`);
     } else {
-      console.error(error);
+      logger.error(error);
     }
+
     process.exit(1);
   }
 }
@@ -63,7 +63,7 @@ async function testAwsLogin() {
   try {
     await testAwsLogin();
   } catch (error) {
-    console.error("Unexpected error occurred:", error);
+    logger.error("Unexpected error occurred:", { error });
     process.exit(1);
   }
 })();

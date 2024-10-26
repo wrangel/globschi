@@ -1,5 +1,3 @@
-// src/backend/management/bookKeeper.mjs
-
 import { DeleteObjectsCommand } from "@aws-sdk/client-s3";
 import { s3Client } from "../helpers/awsHelpers.mjs";
 import * as Constants from "../constants.mjs";
@@ -53,7 +51,7 @@ async function synchronizeMedia() {
       "If there are any media only in the originals bucket, please download them, delete them in the originals bucket and upload them again."
     );
   } catch (error) {
-    console.error("Error during media synchronization:", error);
+    logger.error("Error during media synchronization:", { error });
   }
 }
 
@@ -210,7 +208,7 @@ export async function deleteS3Objects(bucketName, objectList) {
   }
 
   if (objectList.length === 0) {
-    console.warn("No objects to delete.");
+    logger.warn("No objects to delete.");
     return { Deleted: [], Errors: [] }; // Return empty result if no objects
   }
 
@@ -228,12 +226,12 @@ export async function deleteS3Objects(bucketName, objectList) {
     logger.info(`Successfully deleted ${data.Deleted.length} objects`);
 
     if (data.Errors && data.Errors.length > 0) {
-      console.error("Errors during deletion:", data.Errors);
+      logger.error("Errors during deletion:", { errors: data.Errors });
     }
 
     return data;
   } catch (error) {
-    console.error("Error deleting objects from S3:", error);
+    logger.error("Error deleting objects from S3:", { error });
 
     throw error; // Rethrow error for further handling
   }

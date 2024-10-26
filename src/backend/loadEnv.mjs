@@ -1,5 +1,3 @@
-// src/backend/loadEnv.mjs
-
 import dotenv from "dotenv";
 import { fileURLToPath } from "url";
 import { dirname, resolve } from "path";
@@ -22,7 +20,9 @@ export function loadEnv(forceReload = false, printVars = false) {
   const result = dotenv.config({ path: envPath, override: forceReload });
 
   if (result.error) {
-    console.error("Failed to load .env file:", result.error.message);
+    logger.error("Failed to load .env file:", {
+      message: result.error.message,
+    });
     throw new Error(
       "Could not load .env file. Please check the file path and format."
     );

@@ -1,5 +1,3 @@
-// src/backend/management/mongoDebugger.mjs
-
 import logger from "../helpers/logger.mjs";
 import { Island } from "../models/islandModel.mjs";
 import { executeMongoQuery } from "../helpers/mongoHelpers.mjs";
@@ -30,7 +28,7 @@ async function debugIslands(options = {}) {
 
     logger.info(`\nTotal number of Islands retrieved: ${docs.length}`);
   } catch (error) {
-    console.error("Error fetching Island documents:", error);
+    logger.error("Error fetching Island documents:", { error });
   }
 }
 
@@ -43,7 +41,7 @@ async function debugIslands(options = {}) {
       sortOrder: -1, // Sort in descending order
     });
   } catch (error) {
-    console.error("An unexpected error occurred:", error);
+    logger.error("An unexpected error occurred:", { error });
     process.exit(1);
   }
 })();

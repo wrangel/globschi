@@ -1,5 +1,3 @@
-// src/backend/server.mjs
-
 import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
@@ -35,7 +33,7 @@ app.get("/api/test-mongo", async (req, res) => {
     await mongoose.connection.db.admin().ping();
     res.json({ message: "MongoDB connection successful" });
   } catch (error) {
-    console.error("MongoDB connection test failed:", error);
+    logger.error("MongoDB connection test failed:", { error });
     res.status(500).json({ error: "MongoDB connection test failed" });
   }
 });
@@ -45,7 +43,7 @@ app.use("/api", combinedDataRoute);
 
 // Error handling middleware
 app.use((err, req, res, next) => {
-  console.error(err.stack);
+  logger.error(err.stack);
   res.status(500).send("Something broke!");
 });
 
@@ -62,7 +60,7 @@ if (isMainModule) {
       });
     })
     .catch((err) => {
-      console.error("Could not connect to MongoDB:", err);
+      logger.error("Could not connect to MongoDB:", { error: err });
       process.exit(1);
     });
 }

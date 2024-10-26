@@ -1,5 +1,3 @@
-// src/backend/helpers/mongoHelpers.mjs
-
 import mongoose from "mongoose";
 import logger from "../helpers/logger.mjs";
 import { connectDB } from "../server.mjs";
@@ -41,7 +39,11 @@ export async function executeMongoQuery(
 
     return result;
   } catch (error) {
-    if (output) console.error(`Error executing ${modelName} query:`, error);
+    if (output) {
+      logger.error(`Error executing ${modelName} query: ${error.message}`, {
+        error,
+      });
+    }
     throw error;
   } finally {
     if (connection) {

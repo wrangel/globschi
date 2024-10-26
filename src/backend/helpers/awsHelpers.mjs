@@ -1,5 +1,3 @@
-// src/backend/helpers/awsHelpers.mjs
-
 import { S3Client } from "@aws-sdk/client-s3";
 import { ListObjectsCommand } from "@aws-sdk/client-s3";
 import logger from "../helpers/logger.mjs";
@@ -56,7 +54,7 @@ export async function listS3BucketContents(bucketName, adapt = false) {
     const response = await s3Client.send(command);
 
     if (!response?.Contents?.length) {
-      logger.info(`No contents found in bucket: ${bucketName}`);
+      logger.warn(`No contents found in bucket: ${bucketName}`);
       return [];
     }
 
@@ -67,7 +65,10 @@ export async function listS3BucketContents(bucketName, adapt = false) {
         }))
       : response.Contents; // Return raw response if not adapting
   } catch (error) {
-    console.error(`Error listing contents of bucket ${bucketName}:`, error);
+    logger.error(
+      `Error listing contents of bucket ${bucketName}: ${error.message}`,
+      { error }
+    );
     throw error;
   }
 }

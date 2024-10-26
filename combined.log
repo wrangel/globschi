@@ -434,3 +434,115 @@ Total number of Islands retrieved: 5
 2024-10-26T19:57:37.204Z [[32minfo[39m]:   Intersected elements: 185
 2024-10-26T19:57:37.204Z [[32minfo[39m]:   Elements only in MongoDB: 0
 2024-10-26T19:57:37.204Z [[32minfo[39m]:   Elements only in AWS S3: 0
+2024-10-26T20:03:22.995Z [[32minfo[39m]: Attempting to load .env file from: /Users/matthiaswettstein/SynologyDrive/Matthias/Programming/globschi/.env
+2024-10-26T20:03:22.998Z [[32minfo[39m]: .env file loaded successfully.
+2024-10-26T20:03:22.998Z [[32minfo[39m]: Attempting to load .env file from: /Users/matthiaswettstein/SynologyDrive/Matthias/Programming/globschi/.env
+2024-10-26T20:03:22.998Z [[32minfo[39m]: .env file loaded successfully.
+2024-10-26T20:03:23.000Z [[32minfo[39m]: Attempting to load .env file from: /Users/matthiaswettstein/SynologyDrive/Matthias/Programming/globschi/.env
+2024-10-26T20:03:23.001Z [[32minfo[39m]: .env file loaded successfully.
+2024-10-26T20:03:23.001Z [[32minfo[39m]: Attempting to load .env file from: /Users/matthiaswettstein/SynologyDrive/Matthias/Programming/globschi/.env
+2024-10-26T20:03:23.001Z [[32minfo[39m]: .env file loaded successfully.
+2024-10-26T20:03:23.001Z [[32minfo[39m]: Starting server...
+2024-10-26T20:03:23.681Z [[32minfo[39m]: Retrieved 5 Island documents:
+2024-10-26T20:03:23.682Z [[32minfo[39m]: 
+Island 1:
+2024-10-26T20:03:23.682Z [[32minfo[39m]: {
+  "_id": "671d403865ae1e23de6af55d",
+  "name": "001_0027_20240729104734",
+  "type": "pan",
+  "author": "wrangel",
+  "dateTimeString": "2024:07:29 12:47:34",
+  "dateTime": "2024-07-29T10:47:34.000Z",
+  "latitude": 47.80020833333333,
+  "longitude": -3.728265,
+  "altitude": 88.9617141078901,
+  "country": "France",
+  "region": "Finistère",
+  "location": "Riec-sur-Bélon",
+  "postalCode": "29350",
+  "road": "Penn Ar Marc'heg",
+  "noViews": 0,
+  "__v": 0
+}
+2024-10-26T20:03:23.682Z [[32minfo[39m]: 
+Island 2:
+2024-10-26T20:03:23.682Z [[32minfo[39m]: {
+  "_id": "6641c89ecc440ecb7fa2665d",
+  "name": "100_0089",
+  "type": "pan",
+  "author": "wrangel",
+  "dateTimeString": "2024:05:12 15:06:12",
+  "dateTime": "2024-05-12T13:06:12.000Z",
+  "latitude": 47.13628166666667,
+  "longitude": 9.163033333333333,
+  "altitude": 744.6154606578256,
+  "country": "Switzerland",
+  "region": "St. Gallen",
+  "location": "Weesen",
+  "postalCode": "8872",
+  "road": "Seeren",
+  "noViews": 0,
+  "__v": 0
+}
+2024-10-26T20:03:23.682Z [[32minfo[39m]: 
+Island 3:
+2024-10-26T20:03:23.682Z [[32minfo[39m]: {
+  "_id": "66363398fc59dd8b674fb698",
+  "name": "100_0085",
+  "type": "wide_angle",
+  "author": "wrangel",
+  "dateTimeString": "2024:04:30 17:51:06",
+  "dateTime": "2024-04-30T15:51:06.000Z",
+  "latitude": 47.870919,
+  "longitude": 8.133854,
+  "altitude": 1345.2,
+  "country": "Germany",
+  "region": "Baden-Württemberg",
+  "location": "Feldberg",
+  "postalCode": "79868",
+  "road": "Lenzkircher Weg",
+  "noViews": 0,
+  "__v": 0
+}
+2024-10-26T20:03:23.682Z [[32minfo[39m]: 
+Island 4:
+2024-10-26T20:03:23.682Z [[32minfo[39m]: {
+  "_id": "66363398fc59dd8b674fb697",
+  "name": "100_0084",
+  "type": "pan",
+  "author": "wrangel",
+  "dateTimeString": "2024:04:30 17:49:07",
+  "dateTime": "2024-04-30T15:49:07.000Z",
+  "latitude": 47.87202333333333,
+  "longitude": 8.13511,
+  "altitude": 1344.5756662196193,
+  "country": "Germany",
+  "region": "Baden-Württemberg",
+  "location": "Feldberg",
+  "postalCode": "79868",
+  "road": "Haslachbrückenweg",
+  "noViews": 0,
+  "__v": 0
+}
+2024-10-26T20:03:23.682Z [[32minfo[39m]: 
+Island 5:
+2024-10-26T20:03:23.682Z [[32minfo[39m]: {
+  "_id": "6612e679252c885339311ab2",
+  "name": "100_0082",
+  "type": "pan",
+  "author": "wrangel",
+  "dateTimeString": "2024:04:07 15:29:38",
+  "dateTime": "2024-04-07T13:29:38.000Z",
+  "latitude": 47.442083333333336,
+  "longitude": 8.100673333333333,
+  "altitude": 818.2314585815511,
+  "country": "Switzerland",
+  "region": "Aargau",
+  "location": "Thalheim",
+  "postalCode": "5112",
+  "road": "Rosenrain",
+  "noViews": 0,
+  "__v": 0
+}
+2024-10-26T20:03:23.682Z [[32minfo[39m]: 
+Total number of Islands retrieved: 5

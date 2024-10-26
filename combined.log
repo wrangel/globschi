@@ -411,3 +411,26 @@ Total number of Islands retrieved: 5
 2024-10-26T19:56:10.335Z [[32minfo[39m]: Deleted original file: /Users/matthiaswettstein/Downloads/export/100_0502.tif
 2024-10-26T19:56:11.038Z [[32minfo[39m]: Inserted mongooseCompatibleMetadata into MongoDB.
 2024-10-26T19:56:11.039Z [[32minfo[39m]: Processing complete
+2024-10-26T19:57:33.924Z [[32minfo[39m]: Attempting to load .env file from: /Users/matthiaswettstein/SynologyDrive/Matthias/Programming/globschi/.env
+2024-10-26T19:57:33.926Z [[32minfo[39m]: .env file loaded successfully.
+2024-10-26T19:57:33.926Z [[32minfo[39m]: Attempting to load .env file from: /Users/matthiaswettstein/SynologyDrive/Matthias/Programming/globschi/.env
+2024-10-26T19:57:33.927Z [[32minfo[39m]: .env file loaded successfully.
+2024-10-26T19:57:33.929Z [[32minfo[39m]: Attempting to load .env file from: /Users/matthiaswettstein/SynologyDrive/Matthias/Programming/globschi/.env
+2024-10-26T19:57:33.929Z [[32minfo[39m]: .env file loaded successfully.
+2024-10-26T19:57:33.930Z [[32minfo[39m]: Attempting to load .env file from: /Users/matthiaswettstein/SynologyDrive/Matthias/Programming/globschi/.env
+2024-10-26T19:57:33.930Z [[32minfo[39m]: .env file loaded successfully.
+2024-10-26T19:57:33.930Z [[32minfo[39m]: Starting server...
+2024-10-26T19:57:34.351Z [[32minfo[39m]: Successfully connected to MongoDB
+2024-10-26T19:57:34.352Z [[32minfo[39m]: Server is running on port 8081
+2024-10-26T19:57:36.903Z [[32minfo[39m]: Data Processing Summary:
+2024-10-26T19:57:36.903Z [[32minfo[39m]:   MongoDB elements: 185
+2024-10-26T19:57:36.904Z [[32minfo[39m]:   AWS S3 elements: 185
+2024-10-26T19:57:36.904Z [[32minfo[39m]:   Intersected elements: 185
+2024-10-26T19:57:36.904Z [[32minfo[39m]:   Elements only in MongoDB: 0
+2024-10-26T19:57:36.904Z [[32minfo[39m]:   Elements only in AWS S3: 0
+2024-10-26T19:57:37.204Z [[32minfo[39m]: Data Processing Summary:
+2024-10-26T19:57:37.204Z [[32minfo[39m]:   MongoDB elements: 185
+2024-10-26T19:57:37.204Z [[32minfo[39m]:   AWS S3 elements: 185
+2024-10-26T19:57:37.204Z [[32minfo[39m]:   Intersected elements: 185
+2024-10-26T19:57:37.204Z [[32minfo[39m]:   Elements only in MongoDB: 0
+2024-10-26T19:57:37.204Z [[32minfo[39m]:   Elements only in AWS S3: 0

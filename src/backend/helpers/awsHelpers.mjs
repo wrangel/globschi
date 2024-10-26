@@ -81,24 +81,3 @@ export async function listS3BucketContents(bucketName, adapt = false) {
     throw error;
   }
 }
-
-// TODO Add desc
-export async function uploadStreamToS3(bucketName, key, stream) {
-  const upload = new Upload({
-    client: s3Client,
-    params: {
-      Bucket: bucketName,
-      Key: key,
-      Body: stream,
-    },
-  });
-
-  try {
-    const result = await upload.done();
-    console.log(`Uploaded to S3: ${key}`);
-    return result;
-  } catch (error) {
-    console.error(`Error uploading to S3: ${key}`, error);
-    throw error;
-  }
-}

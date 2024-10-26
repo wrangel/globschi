@@ -6,9 +6,8 @@ import sharp from "sharp";
 import * as Constants from "../constants.mjs";
 import { processedMediaData } from "./metadataCollector.mjs";
 import { loadEnv } from "../loadEnv.mjs";
-import { PutObjectCommand } from "@aws-sdk/client-s3";
 import { s3Client } from "../awsConfigurator.mjs";
-import { Readable } from "node:stream";
+import { Upload } from "@aws-sdk/lib-storage";
 
 loadEnv();
 
@@ -70,7 +69,7 @@ async function processMediaFile(fileInfo) {
     await uploadStreamToS3(
       process.env.SITE_BUCKET,
       `${mediaType}/${newMediumSite}`,
-      Readable.from(losslessWebpBuffer)
+      losslessWebpBuffer // Use buffer directly
     );
     console.log(
       `Uploaded lossless WebP to ${mediaType}/${newMediumSite} in bucket ${process.env.SITE_BUCKET}`
@@ -91,7 +90,7 @@ async function processMediaFile(fileInfo) {
     await uploadStreamToS3(
       process.env.SITE_BUCKET,
       `${Constants.THUMBNAIL_ID}/${newMediumSite}`,
-      Readable.from(lossyWebpBuffer)
+      lossyWebpBuffer // Use buffer directly
     );
     console.log(
       `Uploaded lossy WebP to ${Constants.THUMBNAIL_ID}/${newMediumSite} in bucket ${process.env.SITE_BUCKET}`
@@ -125,17 +124,19 @@ async function processMediaFile(fileInfo) {
 }
 
 async function uploadStreamToS3(bucketName, key, stream) {
-  const uploadParams = {
-    Bucket: bucketName,
-    Key: key,
-    Body: stream,
-  };
+  const upload = new Upload({
+    client: s3Client,
+    params: {
+      Bucket: bucketName,
+      Key: key,
+      Body: stream,
+    },
+  });
 
   try {
-    const command = new PutObjectCommand(uploadParams);
-    const response = await s3Client.send(command);
+    const result = await upload.done();
     console.log(`Uploaded to S3: ${key}`);
-    return response;
+    return result;
   } catch (error) {
     console.error(`Error uploading to S3: ${key}`, error);
     throw error;

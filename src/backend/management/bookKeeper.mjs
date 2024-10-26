@@ -6,7 +6,6 @@ import {
   deleteS3Objects,
   listS3BucketContents,
 } from "../helpers/awsHelpers.mjs";
-import { compareArrays } from "../helpers/helpers.mjs";
 import { executeMongoQuery } from "../helpers/mongoHelpers.mjs";
 import { loadEnv } from "../loadEnv.mjs";
 
@@ -100,3 +99,19 @@ console.log(actualsComparison);
 console.log(
   "If there are any media only in the originals bucket, please download them, delte themn in the originals bucket and uplooad them again"
 );
+
+/**
+ * Compares two arrays and returns the items that are only in one of them.
+ * @param {Array} A - First array.
+ * @param {Array} B - Second array.
+ * @returns {Object} - Object containing items only in A and only in B.
+ */
+function compareArrays(A, B) {
+  const bKeys = new Set(B.map((item) => item.key));
+  const onlyInA = A.filter((itemA) => !bKeys.has(itemA.key));
+
+  const aKeys = new Set(A.map((item) => item.key));
+  const onlyInB = B.filter((itemB) => !aKeys.has(itemB.key));
+
+  return { onlyInA, onlyInB };
+}

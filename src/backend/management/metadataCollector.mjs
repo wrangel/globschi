@@ -6,8 +6,6 @@ import path from "path";
 import * as Constants from "../constants.mjs";
 import { loadEnv } from "../loadEnv.mjs";
 import {
-  enhanceMediaWithGeoData,
-  generateExtendedString,
   getAltitude,
   getCoordinates,
   getDate,
@@ -168,3 +166,75 @@ async function processMedia() {
 }
 
 export const processedMediaData = await processMedia();
+
+/**
+ * Enhances media array with geocoding data.
+ * @param {Array} mediaArray - Array of media items with longitude and latitude.
+ * @returns {Promise<Array>} - Enhanced media array with geocoding data.
+ */
+async function enhanceMediaWithGeoData(mediaArray) {
+  const createReverseGeoUrl = (longitude, latitude) =>
+    `${Constants.REVERSE_GEO_URL_ELEMENTS[0]}${longitude},${latitude}${Constants.REVERSE_GEO_URL_ELEMENTS[1]}${process.env.ACCESS_TOKEN}`;
+
+  const fetchJson = async (url) => {
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    return response.json();
+  };
+
+  const extractAddressComponents = (json) => {
+    return Constants.REVERSE_GEO_ADDRESS_COMPONENTS.reduce(
+      (data, component) => {
+        data[component] = json.features.find((doc) =>
+          doc.id.startsWith(component)
+        )?.text;
+        return data;
+      },
+      {}
+    );
+  };
+
+  try {
+    const reverseUrls = mediaArray.map((item) =>
+      createReverseGeoUrl(item.exif_longitude, item.exif_latitude)
+    );
+
+    const geoJsons = await Promise.all(reverseUrls.map(fetchJson));
+    const geoData = geoJsons.map(extractAddressComponents);
+
+    return mediaArray.map((item, index) => ({
+      ...item,
+      geoData: geoData[index],
+    }));
+  } catch (error) {
+    console.error("Error enhancing media with geo data:", error);
+    throw error;
+  }
+}
+
+/**
+ * Generates an extended string with timestamp.
+ * @param {string} initialString - The initial string.
+ * @param {string} dateString - The date string in "YYYY:MM:DD HH:MM:SS" format.
+ * @returns {string} - Extended string with timestamp.
+ */
+function generateExtendedString(initialString, dateString) {
+  try {
+    const [datePart, timePart] = dateString.split(" ");
+    const [year, month, day] = datePart.split(":");
+    const [hours, minutes, seconds] = timePart.split(":");
+
+    const inputDate = new Date(year, month - 1, day, hours, minutes, seconds);
+    const timestamp = inputDate
+      .toISOString()
+      .replace(/[-:T]/g, "")
+      .slice(0, 14);
+
+    return `${initialString}_${timestamp}`;
+  } catch (error) {
+    console.error("Error generating extended string:", error);
+    throw error;
+  }
+}

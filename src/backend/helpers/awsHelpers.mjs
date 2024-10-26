@@ -57,7 +57,7 @@ export async function deleteS3Objects(bucketName, objectList) {
  * @returns {Promise<Array>} - The bucket contents or an empty array if none found.
  * @throws {Error} If there's an issue listing the bucket contents.
  */
-export async function listBucketContents(bucketName, adapt = false) {
+export async function listS3BucketContents(bucketName, adapt = false) {
   if (typeof adapt !== "boolean") {
     throw new TypeError("adapt parameter must be a boolean");
   }

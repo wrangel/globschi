@@ -4,7 +4,7 @@ import sharp from "sharp";
 import fs from "fs/promises";
 import path from "path";
 import { processedMediaData } from "./metadataCollector.mjs";
-import { uploadFileToS3 } from "./helpers/awsHelpers.mjs";
+import { uploadFileToS3 } from "../helpers/awsHelpers.mjs";
 
 // Function to convert images to WebP with lossless compression
 async function convertToWebP(inputFile, outputFile) {
@@ -20,6 +20,7 @@ async function convertToWebP(inputFile, outputFile) {
         lossless: true, // Enable lossless compression
       })
       .toFile(outputFile);
+    console.log(`Converted ${inputFile} to ${outputFile}`);
   } catch (error) {
     console.error(`Error converting ${inputFile} to WebP:`, error);
     throw error; // Rethrow error for further handling
@@ -36,6 +37,7 @@ async function convertToJPEG(inputFile, outputFile) {
       })
       .withMetadata() // Preserve metadata if needed
       .toFile(outputFile);
+    console.log(`Converted ${inputFile} to ${outputFile}`);
   } catch (error) {
     console.error(`Error converting ${inputFile} to JPEG:`, error);
     throw error; // Rethrow error for further handling

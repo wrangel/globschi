@@ -1,8 +1,7 @@
-// src/backend/management/mediaUploader.mjs
-
 import fs from "fs";
 import path from "path";
 import sharp from "sharp";
+import { PassThrough } from "stream"; // Import PassThrough
 import * as Constants from "../constants.mjs";
 import { processedMediaData } from "./metadataCollector.mjs";
 import { s3Client } from "../awsConfigurator.mjs";
@@ -41,13 +40,13 @@ async function processMediaFile(fileInfo) {
       `Uploaded ${originalMedium} to ${mediaType}/${newMediumOriginal}`
     );
 
-    // Step 2: Process and upload lossless WebP
+    // Step 2: Prepare WebP processing
     console.log("Step 2: Processing and uploading lossless WebP");
-    const image = sharp(inputPath);
+    const image = sharp(inputPath); // Initialize image here
 
     const metadata = await image.metadata();
-
     let resizedImage = image;
+
     if (
       metadata.width > MAX_WEBP_DIMENSION ||
       metadata.height > MAX_WEBP_DIMENSION
@@ -75,6 +74,8 @@ async function processMediaFile(fileInfo) {
     );
 
     // Step 3: Process and upload lossy WebP
+    console.log("Step 3: Processing and uploading lossy WebP");
+
     let lossyTransformer = resizedImage.webp({ lossless: false, quality: 80 });
 
     if (mediaType !== "hdr") {
@@ -94,12 +95,16 @@ async function processMediaFile(fileInfo) {
       lossyWebpBuffer
     );
 
+    // Step 4: Converting to JPEG and saving to OneDrive
     console.log("Step 4: Converting to JPEG and saving to OneDrive");
+
     const onedrivePath = path.join(
       process.env.ONEDRIVE_DIRECTORY,
       newMediumSmall
     );
+
     console.log(`OneDrive path: ${onedrivePath}`);
+
     await sharp(inputPath)
       .jpeg({
         quality: 100,
@@ -107,9 +112,12 @@ async function processMediaFile(fileInfo) {
       })
       .withMetadata()
       .toFile(onedrivePath);
+
     console.log(`Saved JPEG to ${onedrivePath}`);
 
+    // Step 5: Delete the original file
     console.log("Step 5: Deleting the original file");
+
     fs.unlink(inputPath, (err) => {
       if (err) {
         console.error(`Error deleting file ${inputPath}:`, err);
@@ -119,12 +127,14 @@ async function processMediaFile(fileInfo) {
     });
 
     console.log(`Completed processing ${originalMedium}`);
+
     return {
       success: true,
       message: `Processed ${originalMedium} successfully`,
     };
   } catch (error) {
     console.error(`Error processing ${originalMedium}:`, error);
+
     return {
       success: false,
       message: `Error processing ${originalMedium}: ${error.message}`,
@@ -132,11 +142,17 @@ async function processMediaFile(fileInfo) {
   }
 }
 
-async function uploadStreamToS3(bucketName, key, body, timeout = 300000) {
+async function uploadStreamToS3(bucketName, key, body) {
   console.log(`Starting S3 upload: ${bucketName}/${key}`);
 
   // If body is a buffer, convert it to a readable stream
-  const stream = Buffer.isBuffer(body) ? stream.PassThrough().end(body) : body;
+  const stream = Buffer.isBuffer(body)
+    ? (() => {
+        const passThroughStream = new PassThrough();
+        passThroughStream.end(body);
+        return passThroughStream;
+      })()
+    : body;
 
   const upload = new Upload({
     client: s3Client,
@@ -150,26 +166,27 @@ async function uploadStreamToS3(bucketName, key, body, timeout = 300000) {
   });
 
   try {
-    const uploadPromise = upload.done();
-    const timeoutPromise = new Promise((_, reject) =>
-      setTimeout(() => reject(new Error("Upload timed out")), timeout)
-    );
+    const result = await upload.done(); // Wait for the upload to complete
 
-    const result = await Promise.race([uploadPromise, timeoutPromise]);
     console.log(`Completed S3 upload: ${bucketName}/${key}`);
+
     return result;
   } catch (error) {
     console.error(
       `Error uploading to S3: ${bucketName}/${key} - ${error.message}`
     );
+
     throw error;
   }
 }
 
 async function processAllMediaFiles(mediaFileInfo) {
   console.log("Starting to process all media files");
+
   const results = await Promise.all(mediaFileInfo.map(processMediaFile));
+
   console.log("All media files processed:");
+
   console.log(results);
 }
 

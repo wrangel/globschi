@@ -72,7 +72,7 @@ async function processMediaFile(fileInfo) {
     await uploadStreamToS3(
       process.env.SITE_BUCKET,
       `${mediaType}/${newMediumSite}`,
-      losslessWebpBuffer // Use buffer directly
+      losslessWebpBuffer
     );
     console.log(
       `Uploaded lossless WebP to ${mediaType}/${newMediumSite} in bucket ${process.env.SITE_BUCKET}`
@@ -93,7 +93,7 @@ async function processMediaFile(fileInfo) {
     await uploadStreamToS3(
       process.env.SITE_BUCKET,
       `${Constants.THUMBNAIL_ID}/${newMediumSite}`,
-      lossyWebpBuffer // Use buffer directly
+      lossyWebpBuffer
     );
     console.log(
       `Uploaded lossy WebP to ${Constants.THUMBNAIL_ID}/${newMediumSite} in bucket ${process.env.SITE_BUCKET}`

@@ -1,10 +1,7 @@
 // src/backend/helpers/awsHelpers.mjs
 
-import {
-  DeleteObjectsCommand,
-  ListObjectsCommand,
-  Upload,
-} from "@aws-sdk/client-s3";
+import { DeleteObjectsCommand, ListObjectsCommand } from "@aws-sdk/client-s3";
+import { Upload } from "@aws-sdk/lib-storage";
 import { s3Client } from "../awsConfigurator.mjs";
 import { getId } from "../helpers/helpers.mjs";
 

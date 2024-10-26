@@ -8,6 +8,7 @@ import { processedMediaData } from "./metadataCollector.mjs";
 import { loadEnv } from "../loadEnv.mjs";
 import { PutObjectCommand } from "@aws-sdk/client-s3";
 import { s3Client } from "../awsConfigurator.mjs";
+import { Readable } from "node:stream";
 
 loadEnv();
 

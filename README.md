@@ -57,19 +57,7 @@ To get started with this project, follow these steps:
 
    - Create a `.env` file in the root directory and add your configuration (e.g., database credentials, AWS keys).
 
-5. Start the server:
-
-   ```bash
-   pnpm run start
-   ```
-
-6. Open your browser and navigate to `http://localhost:3000` to view the application.
-
-## Usage
-
-Once the application is running, you can explore the gallery of images. Click on any image to view it in detail, along with its metadata. You can also interact with the site by providing feedback or sharing your favorite images.
-
-7. Helper functions:
+5. Use the helper functions:
 
    ```bash
    pnpm debug-mongo # Test the connection to MongoDB
@@ -77,6 +65,18 @@ Once the application is running, you can explore the gallery of images. Click on
    pnpm keep-books # Synchronize you data and metadata
    pnpm upload-media # Upload new media
    ```
+
+6. Start the server:
+
+   ```bash
+   pnpm run start
+   ```
+
+7. Open your browser and navigate to `http://localhost:3000` to view the application.
+
+## Usage
+
+Once the application is running, you can explore the gallery of images. Click on any image to view it in detail, along with its metadata. You can also interact with the site by providing feedback or sharing your favorite images.
 
 ## Contributing
 

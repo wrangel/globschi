@@ -2,7 +2,7 @@
 
 import { GetObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
-import { listBucketContents } from "./helpers/awsHelpers.mjs";
+import { listS3BucketContents } from "./helpers/awsHelpers.mjs";
 import { s3Client } from "./awsConfigurator.mjs";
 import { ACTUAL_ID, THUMBNAIL_ID, EXPIRATION_TIME } from "./constants.mjs";
 import { loadEnv } from "./loadEnv.mjs";
@@ -16,7 +16,7 @@ loadEnv();
  */
 export async function getUrls() {
   try {
-    const bucketContents = await listBucketContents(process.env.SITE_BUCKET);
+    const bucketContents = await listS3BucketContents(process.env.SITE_BUCKET);
     const signedUrls = await generateSignedUrls(bucketContents);
     const groupedUrls = groupUrlsById(signedUrls);
     const sortedUrls = sortUrlsByType(groupedUrls);

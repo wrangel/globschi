@@ -74,6 +74,17 @@ async function processMediaFiles(mediaFileInfo) {
         // Convert to JPEG for small version
         await convertToJPEG(inputFile, smallFile);
 
+        // Upload the WebP file to S3
+        const s3UploadResult = await uploadFileToS3(
+          process.env.SITE_BUCKET,
+          fi.key,
+          siteFile
+        );
+
+        console.log(
+          `Uploaded ${fi.newMediumSite} to S3 bucket ${process.env.SITE_BUCKET}`
+        );
+
         return {
           ...fi,
           converted: true,
@@ -82,6 +93,10 @@ async function processMediaFiles(mediaFileInfo) {
             small: smallFile,
             originalCopy: originalCopy,
           },
+          s3Upload: {
+            success: true,
+            result: s3UploadResult,
+          },
         };
       } catch (error) {
         console.error(`Error processing file ${fi.originalMedium}:`, error);
@@ -89,16 +104,22 @@ async function processMediaFiles(mediaFileInfo) {
           ...fi,
           converted: false,
           error: error.message,
+          s3Upload: {
+            success: false,
+            error: error.message,
+          },
         };
       }
     })
   );
 }
 
+// Main execution
 processMediaFiles(processedMediaData.mediaFileInfo)
-  .then(() => {
-    console.log("All media files processed successfully.");
+  .then((results) => {
+    console.log("All media files processed and uploaded successfully.");
+    console.log(results);
   })
   .catch((error) => {
-    console.error("Error processing media files:", error);
+    console.error("Error processing and uploading media files:", error);
   });

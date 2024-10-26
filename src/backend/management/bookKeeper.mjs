@@ -2,7 +2,10 @@
 
 import * as Constants from "../constants.mjs";
 import { Island } from "../models/islandModel.mjs";
-import { deleteS3Objects, listBucketContents } from "../helpers/awsHelpers.mjs";
+import {
+  deleteS3Objects,
+  listS3BucketContents,
+} from "../helpers/awsHelpers.mjs";
 import { compareArrays } from "../helpers/helpers.mjs";
 import { executeMongoQuery } from "../helpers/mongoHelpers.mjs";
 import { loadEnv } from "../loadEnv.mjs";
@@ -11,7 +14,7 @@ loadEnv();
 
 // Function to fetch and filter media files
 async function fetchAndFilterMedia(bucketName, isThumbnail = false) {
-  const mediaFiles = await listBucketContents(bucketName, true);
+  const mediaFiles = await listS3BucketContents(bucketName, true);
   return mediaFiles.filter((file) =>
     isThumbnail
       ? file.path.includes(Constants.THUMBNAIL_ID)
@@ -32,7 +35,7 @@ async function deleteNonOriginalDocuments(nonOriginalKeys) {
 }
 
 // Fetch original and site media
-const originalMedia = await listBucketContents(
+const originalMedia = await listS3BucketContents(
   process.env.ORIGINALS_BUCKET,
   true
 );

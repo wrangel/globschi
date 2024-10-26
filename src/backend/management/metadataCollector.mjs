@@ -133,6 +133,7 @@ function createProcessedMediaData(media) {
   }));
 
   const mediaFileInfo = media.map((medium) => ({
+    key: medium.originalName,
     originalMedium: medium.originalMedium,
     newMediumOriginal: medium.newMediumOriginal,
     newMediumSite: medium.newMediumSite,

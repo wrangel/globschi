@@ -1,125 +1,144 @@
 // src/backend/management/mediaUploader.mjs
 
 import sharp from "sharp";
-import fs from "fs/promises";
+import sharp from "sharp";
 import path from "path";
+import { PutObjectCommand, GetObjectCommand } from "@aws-sdk/client-s3";
 import { processedMediaData } from "./metadataCollector.mjs";
-import { uploadFileToS3 } from "../helpers/awsHelpers.mjs";
+import * as Constants from "../constants.mjs";
+import { s3Client } from "../awsConfigurator.mjs";
+IM;
 
-// Function to convert images to WebP with lossless compression
-async function convertToWebP(inputFile, outputFile) {
+async function processMediaFile(fileInfo) {
+  const {
+    key,
+    originalMedium,
+    newMediumOriginal,
+    newMediumSite,
+    newMediumSmall,
+    mediaType,
+  } = fileInfo;
+
+  const inputPath = path.join(process.env.INPUT_DIRECTORY, originalMedium);
+
   try {
-    await sharp(inputFile)
-      .resize({
-        width: 16380, // Set width just below the max dimension for webp
-        height: 16380, // Set height just below the max dimension for webp
+    // Step 1: Get the TIF file as a stream
+    const tifStream = await getFileAsStream(inputPath);
+
+    // Step 2: Upload original TIF to S3
+    await uploadStreamToS3(
+      process.env.ORIGINALS_BUCKET,
+      `${mediaType}/${newMediumOriginal}`,
+      tifStream
+    );
+
+    // Step 3: Process and upload lossless WebP
+    const losslessWebpStream = sharp().webp({ lossless: true }).pipe();
+
+    tifStream.pipe(losslessWebpStream);
+
+    await uploadStreamToS3(
+      process.env.SITE_BUCKET,
+      `${mediaType}/${newMediumSite}`,
+      losslessWebpStream
+    );
+
+    // Step 4: Process and upload lossy WebP
+    const lossyTransformer = sharp().webp({ lossless: false });
+    if (mediaType !== "hdr") {
+      lossyTransformer.resize({
+        width: 2000,
+        height: 1300,
         fit: "inside",
         position: sharp.strategy.attention,
-      })
-      .webp({
-        lossless: true, // Enable lossless compression
-      })
-      .toFile(outputFile);
-    console.log(`Converted ${inputFile} to ${outputFile}`);
-  } catch (error) {
-    console.error(`Error converting ${inputFile} to WebP:`, error);
-    throw error; // Rethrow error for further handling
-  }
-}
+      });
+    }
+    const lossyWebpStream = lossyTransformer.pipe();
 
-// Function to convert images to JPEG with high quality
-async function convertToJPEG(inputFile, outputFile) {
-  try {
-    await sharp(inputFile)
+    tifStream.pipe(lossyTransformer);
+
+    await uploadStreamToS3(
+      process.env.SITE_BUCKET,
+      `${Constants.THUMBNAIL_ID}/${newMediumSite}`,
+      lossyWebpStream
+    );
+
+    // Step 5: Convert to JPEG and save to OneDrive
+    const onedrivePath = path.join(
+      process.env.ONEDRIVE_DIRECTORY,
+      newMediumSmall
+    );
+    await sharp(await getFileBuffer(inputPath))
       .jpeg({
-        quality: 100, // Set quality to maximum
-        progressive: true, // Use progressive loading
+        quality: 100,
+        progressive: true,
       })
-      .withMetadata() // Preserve metadata if needed
-      .toFile(outputFile);
-    console.log(`Converted ${inputFile} to ${outputFile}`);
+      .withMetadata()
+      .toFile(onedrivePath);
+
+    return {
+      success: true,
+      message: `Processed ${originalMedium} successfully`,
+    };
   } catch (error) {
-    console.error(`Error converting ${inputFile} to JPEG:`, error);
-    throw error; // Rethrow error for further handling
+    console.error(`Error processing ${originalMedium}:`, error);
+    return {
+      success: false,
+      message: `Error processing ${originalMedium}: ${error.message}`,
+    };
   }
 }
 
-// Main function to process media files
-async function processMediaFiles(mediaFileInfo) {
-  return Promise.all(
-    mediaFileInfo.map(async (fi) => {
-      console.log("Processing " + fi.originalMedium);
-      const inputFile = path.join(
-        process.env.INPUT_DIRECTORY,
-        fi.originalMedium
-      );
-      const originalCopy = path.join(
-        process.env.INPUT_DIRECTORY,
-        fi.newMediumOriginal
-      );
-      const siteFile = path.join(process.env.INPUT_DIRECTORY, fi.newMediumSite);
-      const smallFile = path.join(
-        process.env.INPUT_DIRECTORY,
-        fi.newMediumSmall
-      );
+async function getFileAsStream(filePath) {
+  const command = new GetObjectCommand({
+    Bucket: process.env.INPUT_BUCKET,
+    Key: filePath,
+  });
 
-      try {
-        // Copy originalMedium to newMediumOriginal
-        await fs.copyFile(inputFile, originalCopy);
-        console.log(`Copied ${fi.originalMedium} to ${fi.newMediumOriginal}`);
-
-        // Convert to WebP
-        await convertToWebP(inputFile, siteFile);
-
-        // Convert to JPEG for small version
-        await convertToJPEG(inputFile, smallFile);
-
-        // Upload the WebP file to S3
-        const s3UploadResult = await uploadFileToS3(
-          process.env.SITE_BUCKET,
-          fi.key,
-          siteFile
-        );
-
-        console.log(
-          `Uploaded ${fi.newMediumSite} to S3 bucket ${process.env.SITE_BUCKET}`
-        );
-
-        return {
-          ...fi,
-          converted: true,
-          conversionPaths: {
-            site: siteFile,
-            small: smallFile,
-            originalCopy: originalCopy,
-          },
-          s3Upload: {
-            success: true,
-            result: s3UploadResult,
-          },
-        };
-      } catch (error) {
-        console.error(`Error processing file ${fi.originalMedium}:`, error);
-        return {
-          ...fi,
-          converted: false,
-          error: error.message,
-          s3Upload: {
-            success: false,
-            error: error.message,
-          },
-        };
-      }
-    })
-  );
+  const response = await s3Client.send(command);
+  return response.Body;
 }
 
-// Main execution
-processMediaFiles(processedMediaData.mediaFileInfo)
-  .then((results) => {
-    console.log("All media files processed and uploaded successfully.");
-    console.log(results);
-  })
-  .catch((error) => {
-    console.error("Error processing and uploading media files:", error);
+async function getFileBuffer(filePath) {
+  const stream = await getFileAsStream(filePath);
+  return streamToBuffer(stream);
+}
+
+function streamToBuffer(stream) {
+  return new Promise((resolve, reject) => {
+    const chunks = [];
+    stream.on("data", (chunk) => chunks.push(chunk));
+    stream.on("error", reject);
+    stream.on("end", () => resolve(Buffer.concat(chunks)));
   });
+}
+
+async function uploadStreamToS3(bucketName, key, stream) {
+  const uploadParams = {
+    Bucket: bucketName,
+    Key: key,
+    Body: stream,
+  };
+
+  try {
+    const command = new PutObjectCommand(uploadParams);
+    const response = await s3Client.send(command);
+    console.log(`Uploaded stream to S3: ${key}`);
+    return response;
+  } catch (error) {
+    console.error(`Error uploading stream to S3: ${key}`, error);
+    throw error;
+  }
+}
+
+async function processAllMediaFiles(mediaFileInfoArray) {
+  const results = await Promise.all(mediaFileInfoArray.map(processMediaFile));
+
+  console.log("All media files processed:");
+  console.log(results);
+}
+
+// Usage
+processAllMediaFiles(processedMediaData.mediaFileInfo)
+  .then(() => console.log("Processing complete"))
+  .catch((error) => console.error("Error in processing:", error));

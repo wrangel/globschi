@@ -3,11 +3,10 @@
 import {
   DeleteObjectsCommand,
   ListObjectsCommand,
-  PutObjectCommand,
+  Upload,
 } from "@aws-sdk/client-s3";
 import { s3Client } from "../awsConfigurator.mjs";
 import { getId } from "../helpers/helpers.mjs";
-import fs from "fs/promises";
 
 /**
  * Deletes multiple objects from an S3 bucket.
@@ -83,29 +82,23 @@ export async function listS3BucketContents(bucketName, adapt = false) {
   }
 }
 
-/**
- * Uploads a file to S3.
- * @param {string} bucketName - The name of the S3 bucket.
- * @param {string} key - The key under which to store the file in S3.
- * @param {string} filePath - The local path of the file to upload.
- * @returns {Promise<Object>} - Result of the upload operation.
- */
-export async function uploadFileToS3(bucketName, key, filePath) {
-  try {
-    const fileContent = await fs.readFile(filePath); // Read file content
-    const uploadParams = {
+// TODO Add desc
+export async function uploadStreamToS3(bucketName, key, stream) {
+  const upload = new Upload({
+    client: s3Client,
+    params: {
       Bucket: bucketName,
       Key: key,
-      Body: fileContent,
-    };
+      Body: stream,
+    },
+  });
 
-    const command = new PutObjectCommand(uploadParams);
-    const response = await s3Client.send(command); // Use the existing s3Client
-    console.log("File uploaded successfully:", response);
-
-    return response; // Return response for further handling if needed
+  try {
+    const result = await upload.done();
+    console.log(`Uploaded to S3: ${key}`);
+    return result;
   } catch (error) {
-    console.error("Error uploading file to S3:", error);
-    throw error; // Rethrow error for further handling
+    console.error(`Error uploading to S3: ${key}`, error);
+    throw error;
   }
 }

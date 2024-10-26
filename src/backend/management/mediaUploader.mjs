@@ -8,7 +8,6 @@ import { processedMediaData } from "./metadataCollector.mjs";
 import { loadEnv } from "../loadEnv.mjs";
 import { PutObjectCommand } from "@aws-sdk/client-s3";
 import { s3Client } from "../awsConfigurator.mjs";
-import { Readable } from "stream";
 
 loadEnv();
 
@@ -28,7 +27,6 @@ async function processMediaFile(fileInfo) {
   const inputPath = path.join(process.env.INPUT_DIRECTORY, originalMedium);
 
   try {
-    /*
     // Step 1: Upload original TIF to S3
     const tifStream = fs.createReadStream(inputPath);
     await uploadStreamToS3(
@@ -39,7 +37,6 @@ async function processMediaFile(fileInfo) {
     console.log(
       `Uploaded ${originalMedium} to ${mediaType}/${newMediumOriginal} in bucket ${process.env.ORIGINALS_BUCKET}`
     );
-    */
 
     // Step 2: Process and upload lossless WebP
     const image = sharp(inputPath);
@@ -66,7 +63,7 @@ async function processMediaFile(fileInfo) {
     }
 
     const losslessWebpBuffer = await resizedImage
-      .webp({ lossless: true, effort: 6 }) // Increased effort for better compression
+      .webp({ lossless: true, effort: 6 })
       .toBuffer();
 
     await uploadStreamToS3(

@@ -271,11 +271,11 @@ async function processMedia() {
   const media = await collectMedia();
 
   if (media.length === 0) {
-    console.log("No media to manage");
+    logger.info("No media to manage");
     return { mongooseCompatibleMetadata: [], mediaFileInfo: [] };
   }
 
-  console.log(`${media.length} media to manage`);
+  logger.info(`${media.length} media to manage`);
 
   const mediaWithUserInput = await enhanceMediaWithUserInput(media);
   const mediaWithExifData = await enhanceMediaWithExifData(mediaWithUserInput);

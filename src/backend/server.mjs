@@ -9,7 +9,7 @@ import { Island } from "./models/islandModel.mjs";
 
 loadEnv();
 
-console.log("Starting server...");
+logger.info("Starting server...");
 
 const app = express();
 const PORT = process.env.PORT || 8081;
@@ -56,9 +56,9 @@ const isMainModule = import.meta.url === `file://${process.argv[1]}`;
 if (isMainModule) {
   connectDB()
     .then(() => {
-      console.log("Successfully connected to MongoDB");
+      logger.info("Successfully connected to MongoDB");
       app.listen(PORT, () => {
-        console.log(`Server is running on port ${PORT}`);
+        logger.info(`Server is running on port ${PORT}`);
       });
     })
     .catch((err) => {

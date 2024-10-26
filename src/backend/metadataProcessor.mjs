@@ -112,18 +112,18 @@ function logBookkeepingInfo(
   onlyInMongo,
   onlyInAWS
 ) {
-  console.log("Data Processing Summary:");
-  console.log(`  MongoDB elements: ${mongoData.length}`);
-  console.log(`  AWS S3 elements: ${presignedUrls.length}`);
-  console.log(`  Intersected elements: ${intersectedData.length}`);
-  console.log(`  Elements only in MongoDB: ${onlyInMongo.length}`);
-  console.log(`  Elements only in AWS S3: ${onlyInAWS.length}`);
+  logger.info("Data Processing Summary:");
+  logger.info(`  MongoDB elements: ${mongoData.length}`);
+  logger.info(`  AWS S3 elements: ${presignedUrls.length}`);
+  logger.info(`  Intersected elements: ${intersectedData.length}`);
+  logger.info(`  Elements only in MongoDB: ${onlyInMongo.length}`);
+  logger.info(`  Elements only in AWS S3: ${onlyInAWS.length}`);
 
   if (onlyInMongo.length > 0) {
-    console.log("Elements missing from AWS S3:", onlyInMongo);
+    logger.info("Elements missing from AWS S3:", onlyInMongo);
   }
   if (onlyInAWS.length > 0) {
-    console.log("Elements missing from MongoDB:", onlyInAWS);
+    logger.info("Elements missing from MongoDB:", onlyInAWS);
   }
 }
 

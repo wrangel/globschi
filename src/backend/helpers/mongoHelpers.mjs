@@ -19,22 +19,22 @@ export async function executeMongoQuery(
   let connection;
   try {
     connection = await connectDB();
-    if (output) console.log("Connected to MongoDB");
+    if (output) logger.info("Connected to MongoDB");
 
     const result = await queryCallback();
 
     if (output) {
       if (Array.isArray(result)) {
-        console.log(`\nAll ${modelName}s in MongoDB:`);
+        logger.info(`\nAll ${modelName}s in MongoDB:`);
         result.forEach((doc, index) => {
-          console.log(`${modelName} ${index + 1}:`);
-          console.log(JSON.stringify(doc, null, 2));
-          console.log("-------------------");
+          logger.info(`${modelName} ${index + 1}:`);
+          logger.info(JSON.stringify(doc, null, 2));
+          logger.info("-------------------");
         });
-        console.log(`Total number of ${modelName}s: ${result.length}`);
+        logger.info(`Total number of ${modelName}s: ${result.length}`);
       } else if (result && typeof result === "object") {
-        console.log(`\n${modelName} operation result:`);
-        console.log(JSON.stringify(result, null, 2));
+        logger.info(`\n${modelName} operation result:`);
+        logger.info(JSON.stringify(result, null, 2));
       }
     }
 
@@ -45,7 +45,7 @@ export async function executeMongoQuery(
   } finally {
     if (connection) {
       await mongoose.disconnect();
-      if (output) console.log("Disconnected from MongoDB");
+      if (output) logger.info("Disconnected from MongoDB");
     }
   }
 }

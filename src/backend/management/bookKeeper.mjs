@@ -28,10 +28,10 @@ async function synchronizeMedia() {
     const mongoDocuments = await fetchMongoDocuments();
 
     // Log the fetched media for debugging
-    console.log("Original Media:", originalMedia);
-    console.log("Actual Site Media:", actualSiteMedia);
-    console.log("Thumbnail Site Media:", thumbnailSiteMedia);
-    console.log("Mongo Documents:", mongoDocuments);
+    logger.info("Original Media:", originalMedia);
+    logger.info("Actual Site Media:", actualSiteMedia);
+    logger.info("Thumbnail Site Media:", thumbnailSiteMedia);
+    logger.info("Mongo Documents:", mongoDocuments);
 
     // Compare media across sources
     const comparisons = compareMediaSources(
@@ -47,8 +47,8 @@ async function synchronizeMedia() {
     // Handle media only present in originals
     await handleUniqueOriginals(comparisons);
 
-    console.log("Media synchronization complete.");
-    console.log(
+    logger.info("Media synchronization complete.");
+    logger.info(
       "If there are any media only in the originals bucket, please download them, delete them in the originals bucket and upload them again."
     );
   } catch (error) {
@@ -224,7 +224,7 @@ export async function deleteS3Objects(bucketName, objectList) {
   try {
     const data = await s3Client.send(new DeleteObjectsCommand(deleteParams));
 
-    console.log(`Successfully deleted ${data.Deleted.length} objects`);
+    logger.info(`Successfully deleted ${data.Deleted.length} objects`);
 
     if (data.Errors && data.Errors.length > 0) {
       console.error("Errors during deletion:", data.Errors);

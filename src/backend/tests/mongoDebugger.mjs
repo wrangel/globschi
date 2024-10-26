@@ -21,13 +21,13 @@ async function debugIslands(options = {}) {
         .lean();
     }, "Island");
 
-    console.log(`Retrieved ${docs.length} Island documents:`);
+    logger.info(`Retrieved ${docs.length} Island documents:`);
     docs.forEach((doc, index) => {
-      console.log(`\nIsland ${index + 1}:`);
-      console.log(JSON.stringify(doc, null, 2));
+      logger.info(`\nIsland ${index + 1}:`);
+      logger.info(JSON.stringify(doc, null, 2));
     });
 
-    console.log(`\nTotal number of Islands retrieved: ${docs.length}`);
+    logger.info(`\nTotal number of Islands retrieved: ${docs.length}`);
   } catch (error) {
     console.error("Error fetching Island documents:", error);
   }

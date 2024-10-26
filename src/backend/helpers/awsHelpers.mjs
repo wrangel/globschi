@@ -55,7 +55,7 @@ export async function listS3BucketContents(bucketName, adapt = false) {
     const response = await s3Client.send(command);
 
     if (!response?.Contents?.length) {
-      console.log(`No contents found in bucket: ${bucketName}`);
+      logger.info(`No contents found in bucket: ${bucketName}`);
       return [];
     }
 

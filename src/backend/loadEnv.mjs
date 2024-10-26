@@ -16,7 +16,7 @@ const __dirname = dirname(__filename);
 export function loadEnv(forceReload = false, printVars = false) {
   const envPath = resolve(__dirname, "..", "..", ".env"); // Adjust this path as needed
 
-  console.log(`Attempting to load .env file from: ${envPath}`);
+  logger.info(`Attempting to load .env file from: ${envPath}`);
 
   const result = dotenv.config({ path: envPath, override: forceReload });
 
@@ -27,12 +27,12 @@ export function loadEnv(forceReload = false, printVars = false) {
     );
   }
 
-  console.log(".env file loaded successfully.");
+  logger.info(".env file loaded successfully.");
 
   if (printVars && result.parsed) {
-    console.log("Loaded environment variables:");
+    logger.info("Loaded environment variables:");
     Object.entries(result.parsed).forEach(([key, value]) => {
-      console.log(`  ${key}: ${value}`);
+      logger.info(`  ${key}: ${value}`);
     });
   }
 }

@@ -120,11 +120,21 @@ async function processMediaFile(fileInfo) {
 
     logger.info(`Saved JPEG to ${onedrivePath}`);
 
-    // Step 5: Delete the original file after processing is complete
-    logger.info("Step 5: Deleting the original file");
-
-    await fs.promises.unlink(inputPath);
-    logger.info(`Deleted original file: ${inputPath}`);
+    // Step 5: Delete the original file after processing is complete (only if not HDR)
+    if (mediaType !== "hdr") {
+      logger.info("Step 5: Deleting the original file");
+      try {
+        await fs.promises.unlink(inputPath);
+        logger.info(`Deleted original file: ${inputPath}`);
+      } catch (unlinkError) {
+        logger.warn(`Failed to delete original file: ${inputPath}`, {
+          error: unlinkError.stack,
+        });
+        // We don't throw here to allow the process to continue even if deletion fails
+      }
+    } else {
+      logger.info(`Skipping deletion of HDR file: ${inputPath}`);
+    }
 
     logger.info(`Completed processing ${originalMedium}`);
 

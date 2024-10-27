@@ -51,12 +51,10 @@ async function processMediaFile(fileInfo) {
 
     // Step 2: Prepare WebP processing
     logger.info("Step 2: Processing and uploading lossless WebP");
-    const image = sharp(inputPath); // Initialize image processing
+    const image = sharp(inputPath);
+    const metadata = await image.metadata();
+    let resizedImage = image;
 
-    const metadata = await image.metadata(); // Get image metadata
-    let resizedImage = image; // Initialize resizedImage
-
-    // Resize if dimensions exceed maximum allowed size
     if (
       metadata.width > MAX_WEBP_DIMENSION ||
       metadata.height > MAX_WEBP_DIMENSION
@@ -121,17 +119,12 @@ async function processMediaFile(fileInfo) {
       .toFile(onedrivePath);
 
     logger.info(`Saved JPEG to ${onedrivePath}`);
-    p;
+
     // Step 5: Delete the original file after processing is complete
     logger.info("Step 5: Deleting the original file");
 
-    fs.unlink(inputPath, (err) => {
-      if (err) {
-        logger.error(`Error deleting file ${inputPath}:`, { error: err });
-      } else {
-        logger.info(`Deleted original file: ${inputPath}`);
-      }
-    });
+    await fs.promises.unlink(inputPath);
+    logger.info(`Deleted original file: ${inputPath}`);
 
     logger.info(`Completed processing ${originalMedium}`);
 
@@ -140,11 +133,12 @@ async function processMediaFile(fileInfo) {
       message: `Processed ${originalMedium} successfully`,
     };
   } catch (error) {
-    logger.error(`Error processing ${originalMedium}:`, { error });
+    logger.error(`Error processing ${originalMedium}:`, { error: error.stack });
 
     return {
       success: false,
       message: `Error processing ${originalMedium}: ${error.message}`,
+      error: error.stack,
     };
   }
 }
@@ -159,7 +153,6 @@ async function processMediaFile(fileInfo) {
 async function uploadStreamToS3(bucketName, key, body) {
   logger.info(`Starting S3 upload: ${bucketName}/${key}`);
 
-  // If body is a buffer, convert it to a readable stream
   const stream = Buffer.isBuffer(body)
     ? (() => {
         const passThroughStream = new PassThrough();
@@ -175,49 +168,80 @@ async function uploadStreamToS3(bucketName, key, body) {
       Key: key,
       Body: stream,
     },
-    queueSize: 4, // Number of concurrent uploads
-    partSize: 5 * 1024 * 1024, // Size of each part in bytes (5 MB)
+    queueSize: 4,
+    partSize: 5 * 1024 * 1024,
   });
 
   try {
-    const result = await upload.done(); // Wait for the upload to complete
-
+    const result = await upload.done();
     logger.info(`Completed S3 upload: ${bucketName}/${key}`);
-
     return result;
   } catch (error) {
-    logger.error(
-      `Error uploading to S3: ${bucketName}/${key} - ${error.message}`
-    );
-
-    throw error; // Rethrow error for further handling
+    logger.error(`Error uploading to S3: ${bucketName}/${key}`, {
+      error: error.stack,
+    });
+    throw error;
   }
 }
 
 /**
- * Processes all media files based on provided data.
- * @param {Object} processedMediaData - Data containing media file information and metadata.
+ * Processes all media files and updates/inserts their metadata into MongoDB.
+ *
+ * This function performs the following operations:
+ * 1. Processes each media file concurrently using the processMediaFile function.
+ * 2. Logs the success or failure of each file processing operation.
+ * 3. If mongooseCompatibleMetadata is provided, it updates existing documents
+ *    or inserts new ones in the MongoDB database using the Island model.
+ *
+ * The function uses an upsert operation for each document, which means:
+ * - If a document with the same name exists, it updates the existing document.
+ * - If no document with the given name exists, it inserts a new document.
+ *
+ * @param {Object} processedMediaData - An object containing:
+ *   @property {Array} mediaFileInfo - Array of objects with information about each media file to process.
+ *   @property {Array} [mongooseCompatibleMetadata] - Array of metadata objects to be inserted/updated in MongoDB.
+ *
+ * @returns {Promise<void>} - A promise that resolves when all operations are complete.
+ *
+ * @throws Will log an error if there's an issue with processing files or updating/inserting data in MongoDB.
  */
 async function processAllMediaFiles(processedMediaData) {
   logger.info("Starting to process all media files");
 
   const mediaFileInfo = processedMediaData.mediaFileInfo;
 
-  // Process each media file concurrently using Promise.all
   const results = await Promise.all(mediaFileInfo.map(processMediaFile));
 
-  logger.info("All media files processed:");
+  results.forEach((result, index) => {
+    if (result.success) {
+      logger.info(`Successfully processed file ${index + 1}:`, result.message);
+    } else {
+      logger.error(
+        `Failed to process file ${index + 1}:`,
+        result.message,
+        result.error
+      );
+    }
+  });
 
-  logger.info(results);
-
-  // Insert mongooseCompatibleMetadata into MongoDB if available
   if (processedMediaData.mongooseCompatibleMetadata) {
-    await executeMongoQuery(async () => {
-      await Island.insertMany(processedMediaData.mongooseCompatibleMetadata);
-      return null; // Return null to indicate no value
-    });
-
-    logger.info("Inserted mongooseCompatibleMetadata into MongoDB.");
+    try {
+      await executeMongoQuery(async () => {
+        for (const doc of processedMediaData.mongooseCompatibleMetadata) {
+          await Island.updateOne(
+            { name: doc.name }, // Find the document by name
+            { $set: doc }, // Update with the new data
+            { upsert: true } // Create a new document if it doesn't exist
+          );
+        }
+        return null;
+      });
+      logger.info("Updated/inserted mongooseCompatibleMetadata into MongoDB.");
+    } catch (error) {
+      logger.error("Error updating/inserting data into MongoDB:", {
+        error: error.stack,
+      });
+    }
   }
 }
 
@@ -225,4 +249,6 @@ async function processAllMediaFiles(processedMediaData) {
 logger.info("Script started");
 processAllMediaFiles(processedMediaData)
   .then(() => logger.info("Processing complete"))
-  .catch((error) => logger.error("Error in processing:", { error }));
+  .catch((error) =>
+    logger.error("Error in processing:", { error: error.stack })
+  );

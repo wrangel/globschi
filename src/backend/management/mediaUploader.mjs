@@ -121,8 +121,7 @@ async function processMediaFile(fileInfo) {
       .toFile(onedrivePath);
 
     logger.info(`Saved JPEG to ${onedrivePath}`);
-
-    /*
+    p;
     // Step 5: Delete the original file after processing is complete
     logger.info("Step 5: Deleting the original file");
 
@@ -133,7 +132,6 @@ async function processMediaFile(fileInfo) {
         logger.info(`Deleted original file: ${inputPath}`);
       }
     });
-    */
 
     logger.info(`Completed processing ${originalMedium}`);
 

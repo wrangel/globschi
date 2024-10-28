@@ -146,11 +146,11 @@ h1 {
   position: absolute;
   top: 60px;
   left: 10px;
-  background-color: rgba(0, 0, 0, 0.7);
+  background-color: rgba(0, 0, 0, 0.5);
   color: var(--text-color);
-  padding: 15px;
+  padding: 12px;
   border-radius: 5px;
-  font-size: 0.9em; /* This sets the font size for all text in this popup */
+  font-size: 0.95em; /* This sets the font size for all text in this popup */
   max-width: 300px;
   z-index: 1001;
   opacity: 0;
@@ -163,7 +163,7 @@ h1 {
 
 .metadata-popup .map-link {
   display: inline-block;
-  margin-top: 8px;
+  margin-top: 6px;
   color: var(--text-color); /* Set color explicitly */
   text-decoration: none;
   font-size: inherit; /* Inherit font size from parent */

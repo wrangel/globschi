@@ -8,14 +8,14 @@ const About = () => {
     <div className="about-container">
       <h2>That's us!</h2>
 
-      <h1>Drone</h1>
+      <h1>Drones</h1>
       <p>
         <a
           target="_blank"
           rel="noopener noreferrer"
           href="https://www.dji.com/ch/mini-4-pro"
         >
-          DJI Mini 4 Pro
+          DJI Mini 4 Pro XXXX 2 previously
         </a>
       </p>
 

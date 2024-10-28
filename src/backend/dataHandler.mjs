@@ -44,15 +44,3 @@ async function fetchMongoData() {
     throw new Error("Failed to fetch data from MongoDB");
   }
 }
-
-/**
- * Validates the combined data.
- * @param {Array} data - The combined data to validate.
- * @throws {Error} If the data is invalid.
- */
-function validateCombinedData(data) {
-  if (!Array.isArray(data) || data.length === 0) {
-    throw new Error("Invalid combined data structure");
-  }
-  // Add more specific validation checks as needed
-}

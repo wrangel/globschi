@@ -30,16 +30,6 @@ const About = () => {
         <a
           target="_blank"
           rel="noopener noreferrer"
-          href="https://stuvel.eu/software/skyfill/"
-        >
-          Skyfill
-        </a>{" "}
-        for the remaining skyfills
-      </p>
-      <p>
-        <a
-          target="_blank"
-          rel="noopener noreferrer"
           href="https://www.adobe.com/products/photoshop-lightroom.html"
         >
           Adobe Lightroom{" "}

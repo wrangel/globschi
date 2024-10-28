@@ -1,0 +1,28 @@
+/* src/components/about.css */
+
+.about-container {
+  background-color: black; /* Set background color to black */
+  color: white; /* Set text color to white */
+  padding: 20px; /* Add some padding */
+  font-family: var(--font-family); /* Use the same font as in main.css */
+}
+
+h2 {
+  margin-bottom: 15px; /* Add some space below the h2 heading */
+}
+
+h1 {
+  margin-top: 20px; /* Add space above each h1 */
+  margin-bottom: 10px; /* Add space below each h1 */
+}
+
+a {
+  color: #4da6ff; /* Link color */
+  text-decoration: none; /* Remove underline from links */
+}
+
+a:hover {
+  text-decoration: underline; /* Underline on hover */
+}
+
+/* Additional styles for responsiveness or layout adjustments can be added here */

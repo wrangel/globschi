@@ -42,7 +42,7 @@ const About = () => {
           rel="noopener noreferrer"
           href="https://photo-sphere-viewer.js.org/"
         >
-          Photo Sphere Viewer XXXXXX
+          Photo Sphere Viewer
         </a>{" "}
         for the fantastic 360&deg; panorama display
       </p>

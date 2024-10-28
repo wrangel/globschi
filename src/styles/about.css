@@ -5,6 +5,7 @@
   color: white; /* Set text color to white */
   padding: 20px; /* Add some padding */
   font-family: var(--font-family); /* Use the same font as in main.css */
+  text-align: center; /* Center align all text */
 }
 
 h2 {
@@ -24,5 +25,3 @@ a {
 a:hover {
   text-decoration: underline; /* Underline on hover */
 }
-
-/* Additional styles for responsiveness or layout adjustments can be added here */

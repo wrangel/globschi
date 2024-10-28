@@ -1,4 +1,4 @@
-// src/components/About.js
+// src/views/About.js
 
 import React from "react";
 import "../styles/about.css"; // Import your specific CSS for this component
@@ -13,9 +13,9 @@ const About = () => {
         <a
           target="_blank"
           rel="noopener noreferrer"
-          href="https://www.dji.com/en/mini-2"
+          href="https://www.dji.com/ch/mini-4-pro"
         >
-          DJI Mini 2
+          DJI Mini 4 Pro
         </a>
       </p>
 
@@ -52,7 +52,7 @@ const About = () => {
           rel="noopener noreferrer"
           href="https://photo-sphere-viewer.js.org/"
         >
-          Photo Sphere Viewer
+          Photo Sphere Viewer XXXXXX
         </a>{" "}
         for the fantastic 360&deg; panorama display
       </p>
@@ -66,7 +66,6 @@ const About = () => {
         </a>{" "}
         for ramping my network knowledge up very quickly
       </p>
-      <p>We don't do image postprocessing</p>
 
       <h1>Personnel</h1>
       <p>

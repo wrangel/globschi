@@ -1,8 +1,8 @@
 // src/App.js
 import React, { Suspense } from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom"; // Import Routes instead of Switch
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom"; // Import Router components
 import ErrorBoundary from "./components/ErrorBoundary";
-import Navbar from "./components/Navbar"; // Import the Navbar component
+import HamburgerMenu from "./components/HamburgerMenu"; // Import the Hamburger Menu component
 import "./styles/main.css";
 
 // Lazy load the HomePage and About components
@@ -13,16 +13,12 @@ function App() {
   return (
     <Router>
       <div className="App">
-        <Navbar /> {/* Render the Navbar */}
+        <HamburgerMenu /> {/* Render the Hamburger Menu */}
         <ErrorBoundary>
           <Suspense fallback={<div>Loading...</div>}>
             <Routes>
-              {" "}
-              {/* Use Routes instead of Switch */}
-              <Route path="/about" element={<AboutPage />} />{" "}
-              {/* Route for About page */}
-              <Route path="/" element={<HomePage />} />{" "}
-              {/* Route for Home page */}
+              <Route path="/about" element={<AboutPage />} />
+              <Route path="/" element={<HomePage />} />
             </Routes>
           </Suspense>
         </ErrorBoundary>

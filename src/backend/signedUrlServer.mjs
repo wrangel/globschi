@@ -20,9 +20,9 @@ export async function getUrls() {
     const signedUrls = await generateSignedUrls(bucketContents);
     const groupedUrls = groupUrlsById(signedUrls);
     const sortedUrls = sortUrlsByType(groupedUrls);
+    console.log(formatUrls(sortedUrls));
     return formatUrls(sortedUrls);
   } catch (error) {
-    console.error("Error in getUrls:", error);
     throw new Error("Failed to generate signed URLs");
   }
 }

@@ -79,7 +79,7 @@ function processDocument(doc, presignedUrls) {
 
   return {
     id: doc._id.toString(),
-    type: doc.type,
+    viewer: doc.type === MEDIA_PAGES[1] ? "pano" : "img",
     author: `${AUTHOR_PICTURES_PATH}${doc.author}.svg`,
     metadata: formatMetadata(doc),
     latitude: doc.latitude,

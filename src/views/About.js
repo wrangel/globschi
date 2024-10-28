@@ -19,12 +19,12 @@ const About = () => {
         </a>
       </p>
 
-      <h1>Image and Net Works</h1>
+      <h1>Acknowledgements</h1>
       <p>
         <a target="_blank" rel="noopener noreferrer" href="https://ptgui.com">
           PTGui Pro
         </a>{" "}
-        for equirectangular 360&deg; panorama stitching and most skyfills
+        for equirectangular 360&deg; panorama stitching
       </p>
       <p>
         <a
@@ -42,7 +42,7 @@ const About = () => {
           rel="noopener noreferrer"
           href="https://photo-sphere-viewer.js.org/"
         >
-          Photo Sphere Viewer
+          Photo Sphere Viewer XXXXXXX
         </a>{" "}
         for the fantastic 360&deg; panorama display
       </p>
@@ -55,6 +55,17 @@ const About = () => {
           Marius Hosting
         </a>{" "}
         for ramping my network knowledge up very quickly
+      </p>
+
+      <p>
+        <a
+          target="_blank"
+          rel="noopener noreferrer"
+          href="https://www.perplexity.ai/"
+        >
+          Perplexity AI
+        </a>{" "}
+        for providing advanced AI capabilities that enhance our project
       </p>
 
       <h1>Personnel</h1>

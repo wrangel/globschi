@@ -159,6 +159,7 @@ h1 {
   opacity: 0;
   transition: opacity var(--transition-duration) ease;
   text-align: center; /* Centering the text */
+  font-family: var(--font-family); /* Use the original font */
 }
 
 .metadata-popup.visible {

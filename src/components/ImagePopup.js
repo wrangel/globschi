@@ -29,9 +29,13 @@ function ImagePopup({ item, onClose, onNext, onPrevious }) {
         } else {
           onClose();
         }
+      } else if (event.key === "ArrowLeft") {
+        onPrevious(); // Navigate to the previous image
+      } else if (event.key === "ArrowRight") {
+        onNext(); // Navigate to the next image
       }
     },
-    [onClose, showMetadata]
+    [onClose, showMetadata, onNext, onPrevious]
   );
 
   useEffect(() => {

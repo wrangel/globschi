@@ -1,3 +1,5 @@
+// src/backend/metadataProcessor.mjs
+
 import { AUTHOR_PICTURES_PATH, MEDIA_PAGES } from "./constants.mjs";
 import logger from "./helpers/logger.mjs";
 
@@ -81,19 +83,47 @@ function processDocument(doc, presignedUrls) {
     type: doc.type,
     viewer: doc.type === MEDIA_PAGES[1] ? "pano" : "img",
     author: `${AUTHOR_PICTURES_PATH}${doc.author}.svg`,
-    dateTime: prepareDate(doc.dateTime),
+    metadata: formatMetadata(doc),
     latitude: doc.latitude,
     longitude: doc.longitude,
-    altitude: `${doc.altitude.toFixed(1)}m`,
-    country: doc.country,
-    region: doc.region,
-    location: doc.location,
-    postalCode: doc.postalCode,
-    road: doc.road ? `, above ${doc.road}` : "",
-    noViews: 0,
     thumbnailUrl: urls.thumbnail || "",
     actualUrl: urls.actual || "",
   };
+}
+
+/**
+ * Formats metadata into a single string.
+ * @param {Object} doc - MongoDB document.
+ * @returns {string} Formatted metadata string.
+ */
+function formatMetadata(doc) {
+  const dateTime = new Date(doc.dateTime);
+  const formattedDate = dateTime.toLocaleDateString("en-US", {
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+  const formattedTime = dateTime.toLocaleTimeString("en-US", {
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: false,
+    timeZoneName: "short",
+  });
+
+  const road = doc.road ? doc.road.replace(/^,\s*/, "") : "";
+  const location = `${doc.postalCode} ${doc.location}, ${doc.region}, ${doc.country}`;
+
+  return [
+    formattedDate,
+    formattedTime,
+    `in ${doc.altitude.toFixed(1)}m altitude`,
+    road,
+    location,
+  ]
+    .filter(Boolean)
+    .join("\n");
 }
 
 /**

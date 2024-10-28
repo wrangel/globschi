@@ -50,24 +50,12 @@ function ImagePopup({ item, onClose, onNext, onPrevious }) {
 
   const renderMetadata = () => (
     <div className={`metadata-popup ${showMetadata ? "visible" : ""}`}>
-      <ul>
-        <li>Date: {item.dateTime}</li>
-        <li>
-          Location: {item.location}, {item.region}, {item.country}
-        </li>
-        <li>
-          Coordinates: {item.latitude.toFixed(6)}, {item.longitude.toFixed(6)}
-        </li>
-        <li>Altitude: {item.altitude}</li>
-        <li>Postal Code: {item.postalCode}</li>
-        {item.road && <li>Road: {item.road}</li>}
-        <li>Views: {item.noViews}</li>
-      </ul>
+      <pre>{item.metadata}</pre>
     </div>
   );
 
   const renderContent = () =>
-    item.type === "pan" ? (
+    item.viewer === "pano" ? (
       <div className="panorama-container">
         <PanoramaViewer
           url={item.actualUrl}

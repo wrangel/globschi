@@ -1,7 +1,5 @@
 /* src/styles/main.css */
 
-/* src/styles/main.css */
-
 :root {
   --background-color: black;
   --text-color: white;
@@ -26,21 +24,6 @@ body {
 
 code {
   font-family: var(--code-font-family);
-}
-
-:root {
-  --background-color: black;
-  --text-color: white;
-  --gutter-size: 20px;
-  --transition-duration: 0.3s;
-}
-
-body {
-  background-color: var(--background-color);
-  color: var(--text-color);
-  margin: 0;
-  padding: 0;
-  font-family: Arial, sans-serif;
 }
 
 .App {
@@ -84,6 +67,7 @@ h1 {
   transform: scale(1.08);
 }
 
+/* Image Popup Styles */
 .image-popup {
   position: fixed;
   top: 0;
@@ -101,41 +85,53 @@ h1 {
   position: relative;
   max-width: 95%;
   max-height: 95%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-.image-popup-content img {
+.image-popup-content img,
+.panorama-container {
   max-width: 100%;
   max-height: 100%;
   object-fit: contain;
 }
 
-.close-button,
-.nav-button {
+.popup-button {
   position: absolute;
   background-color: transparent;
-  color: var(--text-color);
+  color: rgba(255, 255, 255, 0.7);
   border: none;
   cursor: pointer;
-  opacity: 0.7;
-  transition: opacity var(--transition-duration) ease;
+  font-size: 24px;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: all var(--transition-duration) ease;
+  opacity: 0.5;
+  text-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
 }
 
-.close-button:hover,
-.nav-button:hover {
+.popup-button:hover {
+  color: rgba(255, 255, 255, 1);
   opacity: 1;
 }
 
 .close-button {
   top: 10px;
   right: 10px;
-  font-size: 30px;
+}
+
+.metadata-button {
+  top: 10px;
+  left: 10px;
 }
 
 .nav-button {
   top: 50%;
   transform: translateY(-50%);
-  font-size: 48px;
-  padding: var(--gutter-size);
 }
 
 .nav-button.prev {
@@ -146,35 +142,9 @@ h1 {
   right: 10px;
 }
 
-/* Responsive adjustments */
-@media (max-width: 768px) {
-  .close-button {
-    top: var(--gutter-size);
-    right: var(--gutter-size);
-    font-size: 40px;
-  }
-}
-
-.metadata-button {
-  position: absolute;
-  top: 10px;
-  left: 10px;
-  background-color: transparent;
-  color: var(--text-color);
-  border: none;
-  cursor: pointer;
-  font-size: 24px;
-  opacity: 0.7;
-  transition: opacity var(--transition-duration) ease;
-}
-
-.metadata-button:hover {
-  opacity: 1;
-}
-
 .metadata-popup {
   position: absolute;
-  top: 50px;
+  top: 60px;
   left: 10px;
   background-color: rgba(0, 0, 0, 0.7);
   color: var(--text-color);
@@ -183,21 +153,24 @@ h1 {
   font-size: 0.9em;
   max-width: 300px;
   z-index: 1001;
+  opacity: 0;
+  transition: opacity var(--transition-duration) ease;
 }
 
-.metadata-popup ul {
-  list-style-type: none;
-  padding: 0;
-  margin: 0;
+.metadata-popup.visible {
+  opacity: 1;
 }
 
-.metadata-popup li {
-  margin-bottom: 5px;
-}
-
+/* Responsive adjustments */
 @media (max-width: 768px) {
+  .popup-button {
+    font-size: 20px;
+    width: 30px;
+    height: 30px;
+  }
+
   .metadata-popup {
-    top: 70px;
+    top: 50px;
     left: 50%;
     transform: translateX(-50%);
     width: 80%;

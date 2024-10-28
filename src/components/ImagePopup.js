@@ -1,4 +1,6 @@
-import React, { useRef, useCallback, useState } from "react";
+// src/components/ImagePopup.js
+
+import React, { useRef, useCallback, useState, useEffect } from "react";
 import { useSwipeable } from "react-swipeable";
 import PanoramaViewer from "./PanoramaViewer";
 
@@ -19,6 +21,26 @@ function ImagePopup({ item, onClose, onNext, onPrevious }) {
     setShowMetadata((prev) => !prev);
   }, []);
 
+  const handleKeyDown = useCallback(
+    (event) => {
+      if (event.key === "Escape") {
+        if (showMetadata) {
+          setShowMetadata(false);
+        } else {
+          onClose();
+        }
+      }
+    },
+    [onClose, showMetadata]
+  );
+
+  useEffect(() => {
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [handleKeyDown]);
+
   const swipeHandlers = useSwipeable({
     onSwipedLeft: isPanoramaInteracting ? null : onNext,
     onSwipedRight: isPanoramaInteracting ? null : onPrevious,
@@ -27,7 +49,7 @@ function ImagePopup({ item, onClose, onNext, onPrevious }) {
   });
 
   const renderMetadata = () => (
-    <div className="metadata-popup">
+    <div className={`metadata-popup ${showMetadata ? "visible" : ""}`}>
       <ul>
         <li>Date: {item.dateTime}</li>
         <li>
@@ -63,33 +85,37 @@ function ImagePopup({ item, onClose, onNext, onPrevious }) {
     <div className="image-popup" {...swipeHandlers}>
       <div className="image-popup-content" ref={popupRef}>
         {renderContent()}
-        <button className="close-button" onClick={onClose} aria-label="Close">
-          &times;
+        <button
+          className="popup-button close-button"
+          onClick={onClose}
+          aria-label="Close"
+        >
+          ×
         </button>
         <button
-          className="nav-button prev"
+          className="popup-button nav-button prev"
           onClick={onPrevious}
           aria-label="Previous"
           disabled={isPanoramaInteracting}
         >
-          &#8249;
+          ‹
         </button>
         <button
-          className="nav-button next"
+          className="popup-button nav-button next"
           onClick={onNext}
           aria-label="Next"
           disabled={isPanoramaInteracting}
         >
-          &#8250;
+          ›
         </button>
         <button
-          className="metadata-button"
+          className="popup-button metadata-button"
           onClick={toggleMetadata}
           aria-label="Toggle Metadata"
         >
-          &#9432;
+          i
         </button>
-        {showMetadata && renderMetadata()}
+        {renderMetadata()}
       </div>
     </div>
   );

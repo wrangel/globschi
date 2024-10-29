@@ -112,14 +112,17 @@ function formatMetadata(doc) {
   });
 
   const road = doc.road ? doc.road.replace(/^,\s*/, "") : "";
-  const location = `${doc.postalCode} ${doc.location}, ${doc.region}, ${doc.country}`;
+  const location1 = `${doc.postalCode} ${doc.location}`;
+  const location2 = `${doc.region}, ${doc.country}`;
 
   return [
     formattedDate,
     formattedTime,
     `${doc.altitude.toFixed(1)}m above ground`,
     road,
-    location,
+    location1,
+    location2,
+    `Drone: ${doc.drone}`,
   ]
     .filter(Boolean)
     .join("\n");

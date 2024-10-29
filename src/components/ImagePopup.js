@@ -56,7 +56,7 @@ function ImagePopup({ item, onClose, onNext, onPrevious }) {
     <div className={`metadata-popup ${showMetadata ? "visible" : ""}`}>
       <pre>{item.metadata}</pre>
       <a
-        href={`https://www.google.com/maps/search/?api=1&query=${item.latitude},${item.longitude}`}
+        href={`https://www.google.com/maps/search/?api=1&query=${item.latitude},${item.longitude}&maptype=satellite`}
         target="_blank"
         rel="noopener noreferrer"
         className="map-link"

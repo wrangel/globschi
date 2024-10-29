@@ -1,229 +1,104 @@
-// src/components/PanoramaViewer.js
+import React, { useEffect, useRef } from "react";
+import { Viewer } from "@photo-sphere-viewer/core";
+import { AutorotatePlugin } from "@photo-sphere-viewer/autorotate-plugin";
 
-import React, {
-  useEffect,
-  useRef,
-  useCallback,
-  useState,
-  useMemo,
-} from "react";
-import * as THREE from "three";
+import "@photo-sphere-viewer/core/index.css";
+import "@photo-sphere-viewer/autorotate-plugin/dist/index.css";
 
-const PanoramaViewer = ({ url, onInteractionStart, onInteractionEnd }) => {
+const PanoramaViewer = ({ url }) => {
   const containerRef = useRef(null);
-  const sceneRef = useRef(null);
-  const cameraRef = useRef(null);
-  const rendererRef = useRef(null);
-  const sphereRef = useRef(null);
-  const isUserInteractingRef = useRef(false);
-  const onPointerDownMouseXRef = useRef(0);
-  const onPointerDownMouseYRef = useRef(0);
-  const lonRef = useRef(0);
-  const latRef = useRef(0);
-  const phiRef = useRef(0);
-  const thetaRef = useRef(0);
-  const distanceRef = useRef(50);
-  const [isPinching, setIsPinching] = useState(false);
-  const [pinchDistance, setPinchDistance] = useState(0);
-  const interactionTimeoutRef = useRef(null);
-  const [isAutoRotating, setIsAutoRotating] = useState(true);
-  const lastClickTimeRef = useRef(0);
-
-  const startInteraction = useCallback(() => {
-    if (!isUserInteractingRef.current) {
-      isUserInteractingRef.current = true;
-      onInteractionStart();
-    }
-    clearTimeout(interactionTimeoutRef.current);
-  }, [onInteractionStart]);
-
-  const handleWheel = useCallback(
-    (e) => {
-      e.preventDefault();
-      distanceRef.current = Math.max(
-        1,
-        Math.min(1000, distanceRef.current + e.deltaY * 0.05)
-      );
-      startInteraction();
-    },
-    [startInteraction]
-  );
-
-  const getDistance = useCallback((touch1, touch2) => {
-    return Math.hypot(
-      touch1.clientX - touch2.clientX,
-      touch1.clientY - touch2.clientY
-    );
-  }, []);
-
-  const endInteraction = useCallback(() => {
-    interactionTimeoutRef.current = setTimeout(() => {
-      isUserInteractingRef.current = false;
-      setIsPinching(false);
-      onInteractionEnd();
-    }, 200);
-  }, [onInteractionEnd]);
-
-  const handleDoubleClick = useCallback((e) => {
-    e.preventDefault();
-    const currentTime = Date.now();
-    if (currentTime - lastClickTimeRef.current < 300) {
-      setIsAutoRotating((prev) => !prev);
-    }
-    lastClickTimeRef.current = currentTime;
-  }, []);
-
-  const onPointerDown = useCallback(
-    (e) => {
-      e.preventDefault();
-      startInteraction();
-
-      const clientX = e.clientX || (e.touches && e.touches[0].clientX);
-      const clientY = e.clientY || (e.touches && e.touches[0].clientY);
-
-      onPointerDownMouseXRef.current = clientX;
-      onPointerDownMouseYRef.current = clientY;
-
-      if (e.touches && e.touches.length === 2) {
-        setIsPinching(true);
-        setPinchDistance(getDistance(e.touches[0], e.touches[1]));
-      }
-    },
-    [getDistance, startInteraction]
-  );
-
-  const onPointerMove = useCallback(
-    (e) => {
-      e.preventDefault();
-      if (!isUserInteractingRef.current) return;
-
-      const clientX = e.clientX || (e.touches && e.touches[0].clientX);
-      const clientY = e.clientY || (e.touches && e.touches[0].clientY);
-
-      if (isPinching && e.touches && e.touches.length === 2) {
-        const newDistance = getDistance(e.touches[0], e.touches[1]);
-        const delta = newDistance - pinchDistance;
-        distanceRef.current = Math.max(
-          1,
-          Math.min(1000, distanceRef.current - delta * 0.1)
-        );
-        setPinchDistance(newDistance);
-      } else if (
-        (e.touches && e.touches.length === 2) ||
-        e.buttons === 1 ||
-        (e.touches && e.touches.length === 1)
-      ) {
-        const movementX = (clientX - onPointerDownMouseXRef.current) * 0.1;
-        const movementY = (clientY - onPointerDownMouseYRef.current) * 0.1;
-
-        lonRef.current -= movementX;
-        latRef.current -= movementY;
-
-        onPointerDownMouseXRef.current = clientX;
-        onPointerDownMouseYRef.current = clientY;
-      }
-    },
-    [isPinching, pinchDistance, getDistance]
-  );
-
-  const onPointerUp = useCallback(
-    (e) => {
-      e.preventDefault();
-      endInteraction();
-    },
-    [endInteraction]
-  );
+  const viewerRef = useRef(null);
 
   useEffect(() => {
     if (!containerRef.current) return;
 
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(
-      75,
-      window.innerWidth / window.innerHeight,
-      1,
-      1100
-    );
-    const renderer = new THREE.WebGLRenderer({
-      antialias: true,
-      canvas: containerRef.current,
-    });
+    const panoMaxFov = 110;
+    const panoMinFov = 10;
 
-    sceneRef.current = scene;
-    cameraRef.current = camera;
-    rendererRef.current = renderer;
-
-    renderer.setSize(window.innerWidth, window.innerHeight);
-
-    const textureLoader = new THREE.TextureLoader();
-    textureLoader.load(url, (texture) => {
-      texture.generateMipmaps = false;
-      texture.minFilter = THREE.LinearFilter;
-      texture.magFilter = THREE.LinearFilter;
-      texture.mapping = THREE.EquirectangularReflectionMapping;
-
-      const geometry = new THREE.SphereGeometry(500, 60, 40);
-      geometry.scale(-1, 1, 1);
-      const material = new THREE.MeshBasicMaterial({ map: texture });
-      const sphere = new THREE.Mesh(geometry, material);
-      sphereRef.current = sphere;
-      scene.add(sphere);
-
-      animate();
-    });
-
-    const animate = () => {
-      requestAnimationFrame(animate);
-
-      if (!isUserInteractingRef.current && isAutoRotating) {
-        lonRef.current += 0.02; // Set the rotation speed
-      }
-
-      latRef.current = Math.max(-85, Math.min(85, latRef.current));
-      phiRef.current = THREE.MathUtils.degToRad(90 - latRef.current);
-      thetaRef.current = THREE.MathUtils.degToRad(lonRef.current);
-
-      camera.position.setFromSphericalCoords(
-        distanceRef.current,
-        phiRef.current,
-        thetaRef.current
-      );
-
-      camera.lookAt(scene.position);
-      renderer.render(scene, camera);
+    const animatedValues = {
+      pitch: { start: -Math.PI / 2, end: -0.1 },
+      yaw: { start: Math.PI, end: 0 },
+      zoom: { start: 0, end: 50 },
+      fisheye: { start: 2, end: 0 },
     };
 
-    const handleResize = () => {
-      camera.aspect = window.innerWidth / window.innerHeight;
-      camera.updateProjectionMatrix();
-      renderer.setSize(window.innerWidth, window.innerHeight);
-    };
+    const viewer = new Viewer({
+      container: containerRef.current,
+      panorama: url,
+      maxFov: panoMaxFov,
+      minFov: panoMinFov,
+      defaultPitch: animatedValues.pitch.start,
+      defaultYaw: animatedValues.yaw.start,
+      defaultZoomLvl: animatedValues.zoom.end,
+      fisheye: animatedValues.fisheye.start,
+      navbar: [
+        "autorotate",
+        "zoom",
+        "fullscreen",
+        {
+          id: "fisheye",
+          content: "🐟",
+          title: "Fisheye view",
+          className: "fisheye-button",
+          onClick: (viewer) => {
+            autorotate.stop();
+            viewer.setOptions({
+              fisheye: true,
+              maxFov: 160,
+            });
+          },
+        },
+        {
+          id: "panorama",
+          content: "🌐",
+          title: "Panorama view",
+          className: "panorama-button",
+          onClick: () => intro(),
+        },
+      ],
+      plugins: [
+        [
+          AutorotatePlugin,
+          {
+            autostartDelay: null,
+            autostartOnIdle: false,
+            autorotatePitch: animatedValues.pitch.end,
+            autorotateSpeed: 0.11,
+          },
+        ],
+      ],
+    });
 
-    window.addEventListener("resize", handleResize);
+    viewerRef.current = viewer;
+
+    const autorotate = viewer.getPlugin(AutorotatePlugin);
+
+    function intro() {
+      autorotate.stop();
+      viewer
+        .animate({
+          properties: animatedValues,
+          duration: 6000,
+          easing: "inOutQuad",
+          onTick: (properties) => {
+            viewer.setOption("fisheye", properties.fisheye);
+            viewer.rotate({ yaw: properties.yaw, pitch: properties.pitch });
+            viewer.zoom(properties.zoom);
+          },
+        })
+        .then(() => {
+          autorotate.start();
+        });
+    }
+
+    viewer.addEventListener("ready", intro, { once: true });
 
     return () => {
-      window.removeEventListener("resize", handleResize);
-      renderer.dispose();
+      viewer.destroy();
     };
-  }, [url, isAutoRotating]);
+  }, [url]);
 
-  const canvasProps = useMemo(
-    () => ({
-      style: { width: "100%", height: "100%", touchAction: "none" },
-      onMouseDown: onPointerDown,
-      onMouseMove: onPointerMove,
-      onMouseUp: onPointerUp,
-      onMouseLeave: onPointerUp,
-      onTouchStart: onPointerDown,
-      onTouchMove: onPointerMove,
-      onTouchEnd: onPointerUp,
-      onWheel: handleWheel,
-      onDoubleClick: handleDoubleClick,
-    }),
-    [onPointerDown, onPointerMove, onPointerUp, handleWheel, handleDoubleClick]
-  );
-
-  return <canvas ref={containerRef} {...canvasProps} />;
+  return <div ref={containerRef} style={{ width: "100%", height: "100%" }} />;
 };
 
 export default PanoramaViewer;

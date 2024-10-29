@@ -36,6 +36,7 @@
     "keep-books": "node ./src/backend/management/bookKeeper.mjs",
     "collect-metadata": "node ./src/backend/management/metadataCollector.mjs",
     "upload-media": "node ./src/backend/management/mediaUploader.mjs",
+    "add-field": "node ./src/backend/mongoManagement/newFieldAdder.mjs",
     "debug-mongo": "node ./src/backend/tests/mongoDebugger.mjs",
     "test-aws": "node ./src/backend/tests/awsLoginTester.mjs",
     "start:backend": "node ./src/backend/server.mjs",

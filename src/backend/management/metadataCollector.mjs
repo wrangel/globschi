@@ -3,7 +3,13 @@ import fs from "fs/promises";
 import path from "path";
 import readline from "readline";
 import logger from "../helpers/logger.mjs";
-import * as Constants from "../constants.mjs";
+import {
+  CONTRIBUTORS,
+  MEDIA_FORMATS,
+  MEDIA_PAGES,
+  REVERSE_GEO_ADDRESS_COMPONENTS,
+  REVERSE_GEO_URL_ELEMENTS,
+} from "../constants.mjs";
 import { loadEnv } from "../loadEnv.mjs";
 
 loadEnv();
@@ -117,14 +123,10 @@ async function enhanceMediaWithUserInput(media) {
     );
     let [author, mediaType] = answer.split(",").map((x) => x.trim());
 
-    medium.author = await validateInput(
-      author,
-      Constants.CONTRIBUTORS,
-      "author"
-    );
+    medium.author = await validateInput(author, CONTRIBUTORS, "author");
     medium.mediaType = await validateInput(
       mediaType,
-      Constants.MEDIA_PAGES,
+      MEDIA_PAGES,
       "media type"
     );
   }
@@ -165,9 +167,9 @@ async function enhanceMediaWithExifData(media) {
       return {
         ...medium,
         newName,
-        newMediumOriginal: newName + Constants.MEDIA_FORMATS.large,
-        newMediumSite: newName + Constants.MEDIA_FORMATS.site,
-        newMediumSmall: newName + Constants.MEDIA_FORMATS.small,
+        newMediumOriginal: newName + MEDIA_FORMATS.large,
+        newMediumSite: newName + MEDIA_FORMATS.site,
+        newMediumSmall: newName + MEDIA_FORMATS.small,
         exif_datetime: exif.DateTimeOriginal.description,
         exif_longitude: getCoordinates(
           exif.GPSLongitude.description,
@@ -190,7 +192,7 @@ async function enhanceMediaWithExifData(media) {
  */
 async function enhanceMediaWithGeoData(mediaArray) {
   const createReverseGeoUrl = (longitude, latitude) =>
-    `${Constants.REVERSE_GEO_URL_ELEMENTS[0]}${longitude},${latitude}${Constants.REVERSE_GEO_URL_ELEMENTS[1]}${process.env.ACCESS_TOKEN}`;
+    `${REVERSE_GEO_URL_ELEMENTS[0]}${longitude},${latitude}${REVERSE_GEO_URL_ELEMENTS[1]}${process.env.ACCESS_TOKEN}`;
 
   const fetchJson = async (url) => {
     const response = await fetch(url);
@@ -199,15 +201,12 @@ async function enhanceMediaWithGeoData(mediaArray) {
   };
 
   const extractAddressComponents = (json) => {
-    return Constants.REVERSE_GEO_ADDRESS_COMPONENTS.reduce(
-      (data, component) => {
-        data[component] = json.features.find((doc) =>
-          doc.id.startsWith(component)
-        )?.text;
-        return data;
-      },
-      {}
-    );
+    return REVERSE_GEO_ADDRESS_COMPONENTS.reduce((data, component) => {
+      data[component] = json.features.find((doc) =>
+        doc.id.startsWith(component)
+      )?.text;
+      return data;
+    }, {});
   };
 
   try {

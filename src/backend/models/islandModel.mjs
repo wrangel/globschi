@@ -1,7 +1,7 @@
 // src/backend/models/islandModel.mjs
 
 import mongoose from "mongoose";
-import * as Constants from "../constants.mjs";
+import { CONTRIBUTORS, MEDIA_PAGES, DRONES } from "../constants.mjs";
 
 const islandSchema = new mongoose.Schema({
   name: {
@@ -12,17 +12,17 @@ const islandSchema = new mongoose.Schema({
   type: {
     required: true,
     type: String,
-    enum: Constants.MEDIA_PAGES,
+    enum: MEDIA_PAGES,
   },
   author: {
     type: String,
     required: true,
-    enum: Constants.CONTRIBUTORS,
+    enum: CONTRIBUTORS,
   },
   drone: {
     type: String,
     required: true,
-    enum: Constants.DRONES,
+    enum: DRONES,
   },
   dateTimeString: {
     required: true,

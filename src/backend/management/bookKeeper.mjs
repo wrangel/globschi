@@ -1,6 +1,6 @@
 import { DeleteObjectsCommand } from "@aws-sdk/client-s3";
 import { s3Client } from "../helpers/awsHelpers.mjs";
-import * as Constants from "../constants.mjs";
+import { MEDIA_FORMATS, THUMBNAIL_ID } from "../constants.mjs";
 import logger from "../helpers/logger.mjs";
 import { Island } from "../models/islandModel.mjs";
 import { listS3BucketContents } from "../helpers/awsHelpers.mjs";
@@ -65,8 +65,8 @@ async function fetchAndFilterMedia(bucketName, isThumbnail = false) {
   const mediaFiles = await listS3BucketContents(bucketName, true);
   return mediaFiles.filter((file) =>
     isThumbnail
-      ? file.path.includes(Constants.THUMBNAIL_ID)
-      : !file.path.includes(Constants.THUMBNAIL_ID)
+      ? file.path.includes(THUMBNAIL_ID)
+      : !file.path.includes(THUMBNAIL_ID)
   );
 }
 
@@ -143,14 +143,11 @@ async function handleUniqueOriginals(comparisons) {
   const transformedDeletionPaths = uniqueOriginalKeys.flatMap((item) => [
     {
       key: item.key,
-      path: item.path.replace(
-        Constants.MEDIA_FORMATS.large,
-        Constants.MEDIA_FORMATS.site
-      ),
+      path: item.path.replace(MEDIA_FORMATS.large, MEDIA_FORMATS.site),
     },
     {
       key: item.key,
-      path: `${Constants.THUMBNAIL_ID}/${item.key}${Constants.MEDIA_FORMATS.site}`,
+      path: `${THUMBNAIL_ID}/${item.key}${MEDIA_FORMATS.site}`,
     },
   ]);
 

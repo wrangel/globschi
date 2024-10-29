@@ -15,7 +15,7 @@ export const AUTHOR_PICTURES_PATH = "media/author_pictures/";
 export const CONTRIBUTORS = Object.freeze(["wrangel", "beat_maker", "dance"]);
 
 /** List of drones */
-export const DRONES = Object.freeze(["DJI Mini 2", "DJI Mini 4 Pro"]);
+export const DRONES = Object.freeze(["DJI Mini 4 Pro", "DJI Mini 2"]); // NOTE: Newest drone must be first
 
 /** Expiration date */
 export const EXPIRATION_TIME = 95040; // 1.1 days in seconds

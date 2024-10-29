@@ -3,7 +3,7 @@ import path from "path";
 import sharp from "sharp";
 import { PassThrough } from "stream";
 import logger from "../helpers/logger.mjs";
-import * as Constants from "../constants.mjs";
+import { THUMBNAIL_ID } from "../constants.mjs";
 import { processedMediaData } from "./metadataCollector.mjs";
 import { s3Client } from "../helpers/awsHelpers.mjs";
 import { Island } from "../models/islandModel.mjs";
@@ -99,7 +99,7 @@ async function processMediaFile(fileInfo) {
 
     await uploadStreamToS3(
       process.env.SITE_BUCKET,
-      `${Constants.THUMBNAIL_ID}/${newMediumSite}`,
+      `${THUMBNAIL_ID}/${newMediumSite}`,
       lossyWebpBuffer
     );
 

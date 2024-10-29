@@ -34,3 +34,8 @@ error.log
 # IDE specific files
 .vscode/
 .idea/
+
+.env*
+.flaskenv*
+!.env.project
+!.env.vault

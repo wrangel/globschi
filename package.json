@@ -1,7 +1,7 @@
 {
   "name": "globschi",
   "version": "0.1.0",
-  "proxy": "http://localhost:8081",
+  "proxy": "http://localhost:3000",
   "private": true,
   "dependencies": {
     "@aws-sdk/client-s3": "^3.682.0",
@@ -9,12 +9,11 @@
     "@aws-sdk/s3-request-presigner": "^3.682.0",
     "@photo-sphere-viewer/autorotate-plugin": "^5.11.1",
     "@photo-sphere-viewer/core": "^5.11.1",
-    "@testing-library/jest-dom": "^5.17.0",
-    "@testing-library/react": "^13.4.0",
     "chalk": "^5.3.0",
     "concurrently": "^9.0.1",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
+    "dotenv-vault": "1.26.2",
     "eslint-config-react-app": "^7.0.1",
     "exifreader": "^4.25.0",
     "express": "^4.21.1",
@@ -72,6 +71,9 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.13.0",
+    "@testing-library/dom": "^10.4.0",
+    "@testing-library/jest-dom": "^6.6.2",
+    "@testing-library/react": "^16.0.1",
     "eslint": "^8.57.1",
     "eslint-config-airbnb": "^19.0.4",
     "eslint-plugin-import": "^2.31.0",

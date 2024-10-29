@@ -5,6 +5,7 @@ import readline from "readline";
 import logger from "../helpers/logger.mjs";
 import {
   CONTRIBUTORS,
+  DRONES,
   MEDIA_FORMATS,
   MEDIA_PAGES,
   REVERSE_GEO_ADDRESS_COMPONENTS,
@@ -112,9 +113,9 @@ async function collectMedia() {
 }
 
 /**
- * Enhances media objects with user input for author and media type.
+ * Enhances media objects with user input for author, media type, and drone.
  * @param {Array} media - Array of media objects.
- * @returns {Promise<Array>} Enhanced media objects with author and media type.
+ * @returns {Promise<Array>} Enhanced media objects with author, media type, and drone.
  */
 async function enhanceMediaWithUserInput(media) {
   for (const medium of media) {
@@ -129,8 +130,35 @@ async function enhanceMediaWithUserInput(media) {
       MEDIA_PAGES,
       "media type"
     );
+
+    // Prompt for drone selection
+    const droneOptions = DRONES.map(
+      (drone, index) => `${index} for ${drone}`
+    ).join(", ");
+    const droneAnswer = await question(`Choose drone type (${droneOptions}): `);
+    medium.drone = await validateDroneInput(droneAnswer, DRONES);
   }
   return media;
+}
+
+/**
+ * Validates drone input against the DRONES constant.
+ * @param {string} input - User input to validate.
+ * @param {Array} drones - Array of valid drone options.
+ * @returns {Promise<string>} Validated drone type.
+ */
+async function validateDroneInput(input, drones) {
+  while (true) {
+    const index = parseInt(input, 10);
+    if (!isNaN(index) && index >= 0 && index < drones.length) {
+      return drones[index];
+    }
+    input = await question(
+      `Invalid input. Please choose a number between 0 and ${
+        drones.length - 1
+      }: `
+    );
+  }
 }
 
 /**
@@ -238,6 +266,7 @@ function createProcessedMediaData(media) {
     name: medium.newName,
     type: medium.mediaType,
     author: medium.author,
+    drone: medium.drone, // Add this line
     dateTimeString: medium.exif_datetime,
     dateTime: getDate(medium.exif_datetime),
     latitude: medium.exif_latitude,

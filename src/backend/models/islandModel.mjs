@@ -16,6 +16,11 @@ const islandSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  drone: {
+    type: String,
+    required: true,
+    enum: ["DJI Mini 2", "DJI Mini 4 Pro"],
+  },
   dateTimeString: {
     required: true,
     type: String,

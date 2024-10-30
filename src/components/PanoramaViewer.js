@@ -4,8 +4,8 @@ import React, { useEffect, useRef } from "react";
 import { Viewer } from "@photo-sphere-viewer/core";
 import { AutorotatePlugin } from "@photo-sphere-viewer/autorotate-plugin";
 
-import "@photo-sphere-viewer/core/dist/index.cjs"; // Correct way to import CSS
-import "@photo-sphere-viewer/autorotate-plugin/dist/index.cjs"; // Correct way to import CSS
+//import "@photo-sphere-viewer/core/dist/index.cjs"; // Correct way to import CSS
+//import "@photo-sphere-viewer/autorotate-plugin/dist/index.cjs"; // Correct way to import CSS
 
 const PanoramaViewer = ({ url }) => {
   const containerRef = useRef(null);

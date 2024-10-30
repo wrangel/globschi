@@ -101,15 +101,34 @@ h1 {
   touch-action: none;
 }
 
+.thumbnail-container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 50%;
+  height: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.thumbnail {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
 .image-container img {
   max-width: 100%;
   max-height: 100%;
   object-fit: contain;
   transition: opacity 0.3s ease, transform 0.2s;
-  user-select: none;
+  -webkit-user-select: none; /* Safari */
+  user-select: none; /* Standard syntax */
 }
 
-.image-container img.loading {
+.image-container img.hidden {
   opacity: 0;
 }
 
@@ -125,7 +144,7 @@ h1 {
 .popup-button {
   position: absolute;
   background-color: transparent;
-  color: rgba(255, 255, 255, 0.7); /* More transparent */
+  color: rgba(255, 255, 255, 0.6); /* More transparent */
   border: none;
   cursor: pointer;
   font-size: 24px;

@@ -139,12 +139,21 @@ function ImagePopup({ item, onClose, onNext, onPrevious }) {
           );
         }}
       >
-        {isLoading && <div className="loading-spinner"></div>}
+        {isLoading && (
+          <div className="thumbnail-container">
+            <img
+              src={item.thumbnailUrl || item.actualUrl}
+              alt={item.name}
+              className="thumbnail"
+            />
+            <div className="loading-spinner"></div>
+          </div>
+        )}
         <img
           ref={imgRef}
-          src={item.thumbnailUrl || item.actualUrl}
+          src={item.actualUrl}
           alt={item.name}
-          className={isLoading ? "loading" : "loaded"}
+          className={isLoading ? "hidden" : "loaded"}
           style={{
             transform: `scale(${scale}) translate(${position.x}px, ${position.y}px)`,
             transition: isLoading ? "none" : "transform 0.2s",
@@ -153,7 +162,7 @@ function ImagePopup({ item, onClose, onNext, onPrevious }) {
           onLoad={() => {
             setIsLoading(false);
             if (imgRef.current) {
-              imgRef.current.classList.remove("loading");
+              imgRef.current.classList.remove("hidden");
               imgRef.current.classList.add("loaded");
             }
           }}

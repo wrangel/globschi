@@ -78,24 +78,51 @@ h1 {
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 1000;
 }
 
 .image-popup-content {
   position: relative;
   max-width: 95%;
   max-height: 95%;
+  background-color: black;
 }
 
-.image-popup-content img,
-.panorama-container {
+.image-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.image-container img {
   max-width: 100%;
-  max-height: auto; /* Corrected to auto */
+  max-height: 100%;
+  object-fit: contain;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.image-container img.loading {
+  opacity: 0.5;
+  transform: scale(0.8);
+}
+
+.image-container img.loaded {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.panorama-container {
+  width: 100%;
+  height: 100%;
 }
 
 .popup-button {
   position: absolute;
   background-color: transparent;
-  color: rgba(255, 255, 255, 0.4); /* Transparency of the icons */
+  color: rgba(255, 255, 255, 0.7); /* More transparent */
   border: none;
   cursor: pointer;
   font-size: 24px;
@@ -111,7 +138,7 @@ h1 {
 }
 
 .popup-button:hover {
-  opacity: 1; /* Increase opacity on hover */
+  opacity: 1;
 }
 
 .close-button {
@@ -167,6 +194,28 @@ h1 {
 
 .metadata-popup .map-link:hover {
   text-decoration: underline;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.loading-spinner {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 50px;
+  height: 50px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top: 3px solid #fff;
+  animation: spin 1s linear infinite;
+  z-index: 2;
 }
 
 /* Responsive adjustments */

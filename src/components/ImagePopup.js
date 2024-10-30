@@ -1,13 +1,30 @@
 // src/components/ImagePopup.js
 
-import React, { useRef, useCallback, useState, useEffect } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useSwipeable } from "react-swipeable";
 import PanoramaViewer from "./PanoramaViewer";
 
 function ImagePopup({ item, onClose, onNext, onPrevious }) {
-  const popupRef = useRef(null);
-  const [isPanoramaInteracting, setIsPanoramaInteracting] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [showMetadata, setShowMetadata] = useState(false);
+  const [isPanoramaInteracting, setIsPanoramaInteracting] = useState(false);
+  const imgRef = useRef(null);
+  const popupRef = useRef(null);
+
+  useEffect(() => {
+    if (item && item.viewer !== "pano") {
+      setIsLoading(true);
+      const img = new Image();
+      img.src = item.actualUrl;
+      img.onload = () => {
+        setIsLoading(false);
+        if (imgRef.current) {
+          imgRef.current.src = item.actualUrl;
+          imgRef.current.classList.add("loaded");
+        }
+      };
+    }
+  }, [item]);
 
   const handlePanoramaInteractionStart = useCallback(() => {
     setIsPanoramaInteracting(true);
@@ -30,9 +47,9 @@ function ImagePopup({ item, onClose, onNext, onPrevious }) {
           onClose();
         }
       } else if (event.key === "ArrowLeft") {
-        onPrevious(); // Navigate to the previous image
+        onPrevious();
       } else if (event.key === "ArrowRight") {
-        onNext(); // Navigate to the next image
+        onNext();
       }
     },
     [onClose, showMetadata, onNext, onPrevious]
@@ -76,7 +93,15 @@ function ImagePopup({ item, onClose, onNext, onPrevious }) {
         />
       </div>
     ) : (
-      <img src={item.actualUrl} alt={item.name} />
+      <div className="image-container">
+        {isLoading && <div className="loading-spinner"></div>}
+        <img
+          ref={imgRef}
+          src={item.thumbnailUrl || item.actualUrl}
+          alt={item.name}
+          className={isLoading ? "loading" : "loaded"}
+        />
+      </div>
     );
 
   if (!item) return null;

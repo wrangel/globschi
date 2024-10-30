@@ -1,19 +1,16 @@
 // src/components/PortfolioGrid.js
 
-import React, { useState, useCallback, useMemo } from "react";
+import React, { useState, useCallback, useMemo, useRef } from "react";
 import Masonry from "react-masonry-css";
+import { usePinch } from "@use-gesture/react";
 import PortfolioItem from "./PortfolioItem";
 import ImagePopup from "./ImagePopup";
 
-const breakpointColumnsObj = {
-  default: 4,
-  1100: 3,
-  700: 2,
-  500: 1,
-};
-
 function PortfolioGrid({ items }) {
   const [selectedItemId, setSelectedItemId] = useState(null);
+  const [columnCount, setColumnCount] = useState(4);
+  const [isPinching, setIsPinching] = useState(false);
+  const gridRef = useRef(null);
 
   const handleItemClick = useCallback((clickedItem) => {
     setSelectedItemId(clickedItem.id);
@@ -44,6 +41,29 @@ function PortfolioGrid({ items }) {
     [items, selectedItemId]
   );
 
+  usePinch(
+    ({ offset: [d] }) => {
+      const newColumnCount = Math.max(1, Math.min(8, Math.round(4 * (1 / d))));
+      setColumnCount(newColumnCount);
+      setIsPinching(true);
+    },
+    {
+      target: gridRef,
+      eventOptions: { passive: false },
+      onPinchEnd: () => setIsPinching(false),
+    }
+  );
+
+  const breakpointColumnsObj = useMemo(
+    () => ({
+      default: columnCount,
+      1100: Math.min(columnCount, 3),
+      700: Math.min(columnCount, 2),
+      500: 1,
+    }),
+    [columnCount]
+  );
+
   const masonryItems = useMemo(
     () =>
       items.map((item) => (
@@ -58,19 +78,26 @@ function PortfolioGrid({ items }) {
 
   return (
     <>
-      <Masonry
-        breakpointCols={breakpointColumnsObj}
-        className="masonry-grid"
-        columnClassName="masonry-grid_column"
-      >
-        {masonryItems}
-      </Masonry>
-      <ImagePopup
-        item={selectedItem}
-        onClose={handleClosePopup}
-        onNext={handleNextItem}
-        onPrevious={handlePreviousItem}
-      />
+      <div ref={gridRef}>
+        <Masonry
+          breakpointCols={breakpointColumnsObj}
+          className="masonry-grid"
+          columnClassName="masonry-grid_column"
+        >
+          {masonryItems}
+        </Masonry>
+      </div>
+      {selectedItem && (
+        <ImagePopup
+          item={selectedItem}
+          onClose={handleClosePopup}
+          onNext={handleNextItem}
+          onPrevious={handlePreviousItem}
+        />
+      )}
+      <div className={`pinch-indicator ${isPinching ? "visible" : ""}`}>
+        {columnCount} columns
+      </div>
     </>
   );
 }

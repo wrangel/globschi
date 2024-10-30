@@ -9,6 +9,7 @@
     "@aws-sdk/s3-request-presigner": "^3.682.0",
     "@photo-sphere-viewer/autorotate-plugin": "^5.11.1",
     "@photo-sphere-viewer/core": "^5.11.1",
+    "@use-gesture/react": "^10.3.1",
     "chalk": "^5.3.0",
     "concurrently": "^9.0.1",
     "cors": "^2.8.5",

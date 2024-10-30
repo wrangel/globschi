@@ -1,7 +1,6 @@
 // src/components/ImagePopup.js
 
 import React, { useState, useEffect, useRef, useCallback } from "react";
-import { useSwipeable } from "react-swipeable";
 import { useDrag, usePinch } from "@use-gesture/react";
 import PanoramaViewer from "./PanoramaViewer";
 
@@ -13,6 +12,11 @@ function ImagePopup({ item, onClose, onNext, onPrevious }) {
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const imgRef = useRef(null);
   const popupRef = useRef(null);
+
+  const [touchStart, setTouchStart] = useState(null);
+  const [touchEnd, setTouchEnd] = useState(null);
+
+  const minSwipeDistance = 50;
 
   useEffect(() => {
     if (item && item.viewer !== "pano") {
@@ -83,12 +87,21 @@ function ImagePopup({ item, onClose, onNext, onPrevious }) {
     };
   }, [handleKeyDown]);
 
-  const swipeHandlers = useSwipeable({
-    onSwipedLeft: isPanoramaInteracting || scale !== 1 ? null : onNext,
-    onSwipedRight: isPanoramaInteracting || scale !== 1 ? null : onPrevious,
-    preventDefaultTouchmoveEvent: true,
-    trackMouse: true,
-  });
+  const onTouchStart = (e) => {
+    setTouchEnd(null);
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const onTouchMove = (e) => setTouchEnd(e.targetTouches[0].clientX);
+
+  const onTouchEnd = () => {
+    if (!touchStart || !touchEnd) return;
+    const distance = touchStart - touchEnd;
+    const isLeftSwipe = distance > minSwipeDistance;
+    const isRightSwipe = distance < -minSwipeDistance;
+    if (isLeftSwipe && !isPanoramaInteracting && scale === 1) onNext();
+    if (isRightSwipe && !isPanoramaInteracting && scale === 1) onPrevious();
+  };
 
   const renderMetadata = () => (
     <div className={`metadata-popup ${showMetadata ? "visible" : ""}`}>
@@ -137,6 +150,13 @@ function ImagePopup({ item, onClose, onNext, onPrevious }) {
             transition: isLoading ? "none" : "transform 0.2s",
             transformOrigin: "0 0",
           }}
+          onLoad={() => {
+            setIsLoading(false);
+            if (imgRef.current) {
+              imgRef.current.classList.remove("loading");
+              imgRef.current.classList.add("loaded");
+            }
+          }}
         />
       </div>
     );
@@ -144,7 +164,12 @@ function ImagePopup({ item, onClose, onNext, onPrevious }) {
   if (!item) return null;
 
   return (
-    <div className="image-popup" {...swipeHandlers}>
+    <div
+      className="image-popup"
+      onTouchStart={onTouchStart}
+      onTouchMove={onTouchMove}
+      onTouchEnd={onTouchEnd}
+    >
       <div className="image-popup-content" ref={popupRef}>
         {renderContent()}
         <button

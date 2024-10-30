@@ -9,7 +9,6 @@ import ImagePopup from "./ImagePopup";
 function PortfolioGrid({ items }) {
   const [selectedItemId, setSelectedItemId] = useState(null);
   const [columnCount, setColumnCount] = useState(4);
-  const [isPinching, setIsPinching] = useState(false);
   const gridRef = useRef(null);
 
   const handleItemClick = useCallback((clickedItem) => {
@@ -45,12 +44,10 @@ function PortfolioGrid({ items }) {
     ({ offset: [d] }) => {
       const newColumnCount = Math.max(1, Math.min(8, Math.round(4 * (1 / d))));
       setColumnCount(newColumnCount);
-      setIsPinching(true);
     },
     {
       target: gridRef,
       eventOptions: { passive: false },
-      onPinchEnd: () => setIsPinching(false),
     }
   );
 
@@ -95,9 +92,6 @@ function PortfolioGrid({ items }) {
           onPrevious={handlePreviousItem}
         />
       )}
-      <div className={`pinch-indicator ${isPinching ? "visible" : ""}`}>
-        {columnCount} columns
-      </div>
     </>
   );
 }

@@ -1,11 +1,12 @@
 /* src/styles/about.css */
 
 .about-container {
-  background-color: black; /* Set background color to black */
-  color: white; /* Set text color to white */
-  padding: 20px; /* Add some padding */
-  font-family: var(--font-family); /* Use the same font as in main.css */
-  text-align: center; /* Center align all text */
+  display: flex;
+  flex-direction: column; /* Align items in a column */
+  justify-content: center; /* Center items vertically */
+  align-items: center; /* Center items horizontally */
+  height: 100vh; /* Full viewport height */
+  text-align: center; /* Center text */
 }
 
 h2 {

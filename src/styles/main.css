@@ -97,23 +97,16 @@ h1 {
   display: flex;
   justify-content: center;
   align-items: center;
+  overflow: hidden;
+  touch-action: none;
 }
 
 .image-container img {
   max-width: 100%;
   max-height: 100%;
   object-fit: contain;
-  transition: opacity 0.3s ease, transform 0.3s ease;
-}
-
-.image-container img.loading {
-  opacity: 0.5;
-  transform: scale(0.8);
-}
-
-.image-container img.loaded {
-  opacity: 1;
-  transform: scale(1);
+  transition: opacity 0.3s ease;
+  user-select: none;
 }
 
 .panorama-container {
@@ -218,26 +211,6 @@ h1 {
   border-top: 3px solid #fff;
   animation: spin 1s linear infinite;
   z-index: 2;
-}
-
-/* Pinch-to-zoom styles */
-.pinch-indicator {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background-color: rgba(0, 0, 0, 0.5);
-  color: white;
-  padding: 10px 20px;
-  border-radius: 20px;
-  font-size: 18px;
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
-.pinch-indicator.visible {
-  opacity: 1;
 }
 
 /* Responsive adjustments */

@@ -105,9 +105,9 @@ h1 {
   position: absolute;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%);
-  width: 50%;
-  height: 50%;
+  transform: translate(-50%, -50%); /* Centering */
+  width: 50%; /* Adjust as needed */
+  height: auto; /* Keep height auto to maintain aspect ratio */
   display: flex;
   justify-content: center;
   align-items: center;
@@ -116,7 +116,7 @@ h1 {
 .thumbnail {
   max-width: 100%;
   max-height: 100%;
-  object-fit: contain;
+  object-fit: contain; /* Ensure the image fits within the container */
 }
 
 .image-container img {

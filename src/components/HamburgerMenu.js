@@ -1,11 +1,11 @@
 // src/components/HamburgerMenu.js
 
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import "../styles/hamburger-menu.css";
+import { Link } from "react-router-dom"; // Import Link for navigation
+import "../styles/hamburger-menu.css"; // Create a CSS file for styles
 
 const HamburgerMenu = () => {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false); // State to manage menu visibility
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
@@ -18,15 +18,13 @@ const HamburgerMenu = () => {
       </button>
       {isOpen && (
         <div className="menu-dropdown">
-          <Link to="/" onClick={toggleMenu}>
+          <Link to="/" onClick={() => setIsOpen(false)}>
             Home
           </Link>
-          <Link to="/about" onClick={toggleMenu}>
+          <Link to="/about" onClick={() => setIsOpen(false)}>
             About
           </Link>
-          <Link to="/map" onClick={toggleMenu}>
-            {" "}
-            {/* Add link to Map */}
+          <Link to="/map" onClick={() => setIsOpen(false)}>
             Map
           </Link>
         </div>

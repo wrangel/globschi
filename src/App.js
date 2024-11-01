@@ -19,10 +19,10 @@ function App() {
         <ErrorBoundary>
           <Suspense fallback={<div>Loading...</div>}>
             <Routes>
+              <Route path="/" element={<HomePage />} />
               <Route path="/about" element={<AboutPage />} />
               <Route path="/map" element={<MapPage />} />{" "}
               {/* Add route for Map */}
-              <Route path="/" element={<HomePage />} />
             </Routes>
           </Suspense>
         </ErrorBoundary>

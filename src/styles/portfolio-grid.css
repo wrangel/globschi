@@ -1,1 +1,14 @@
 /* src/styles/portfolio-grid.css */
+
+.masonry-grid {
+  display: flex;
+  margin-left: calc(var(--gutter-size) * -1); /* gutter size offset */
+  width: auto;
+  transition: all 0.3s ease;
+}
+
+.masonry-grid_column {
+  padding-left: var(--gutter-size); /* gutter size */
+  background-clip: padding-box;
+  transition: all 0.3s ease;
+}

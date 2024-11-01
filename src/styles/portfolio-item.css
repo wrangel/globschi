@@ -11,3 +11,7 @@
   display: block;
   transition: transform var(--transition-duration) ease;
 }
+
+.portfolio-item:hover img {
+  transform: scale(1.08);
+}

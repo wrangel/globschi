@@ -1,0 +1,13 @@
+/* src/styles/portfolio-item.css */
+
+.portfolio-item {
+  margin-bottom: var(--gutter-size);
+  overflow: hidden; /* This will contain the zoomed image */
+}
+
+.portfolio-item img {
+  width: 100%;
+  height: auto;
+  display: block;
+  transition: transform var(--transition-duration) ease;
+}

@@ -4,6 +4,7 @@ import ReactDOM from "react-dom/client";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import "./styles/main.css";
+import "./styles/global.css";
 import "@photo-sphere-viewer/core/index.css";
 
 // Initialize the root element with React 18's createRoot

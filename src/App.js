@@ -3,7 +3,7 @@ import React, { Suspense } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom"; // Import Router components
 import ErrorBoundary from "./components/ErrorBoundary";
 import HamburgerMenu from "./components/HamburgerMenu"; // Import the Hamburger Menu component
-import "./styles/main.css";
+import "./styles/global.css";
 
 // Lazy load the HomePage and About components
 const HomePage = React.lazy(() => import("./views/HomePage"));

@@ -25,3 +25,56 @@ body {
 code {
   font-family: var(--code-font-family);
 }
+
+.App {
+  min-height: 100vh;
+}
+
+h1 {
+  color: var(--text-color);
+  margin-bottom: calc(var(--gutter-size) * 1.5);
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 1100px) {
+  .masonry-grid_column {
+    width: calc(100% / 3) !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .popup-button {
+    font-size: 20px;
+    width: 30px;
+    height: 30px;
+  }
+
+  .metadata-popup {
+    top: 50px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80%;
+    max-width: none;
+  }
+}
+
+@media (max-width: 700px) {
+  .masonry-grid_column {
+    width: 50% !important;
+  }
+}
+
+@media (max-width: 500px) {
+  .masonry-grid_column {
+    width: 100% !important;
+  }
+}

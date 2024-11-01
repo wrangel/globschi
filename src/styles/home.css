@@ -1,0 +1,6 @@
+/* src/styles/home.css */
+
+.home-page {
+  text-align: center;
+  padding: var(--gutter-size);
+}

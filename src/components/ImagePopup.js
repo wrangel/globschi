@@ -17,7 +17,6 @@ function ImagePopup({ item, onClose, onNext, onPrevious }) {
   const [touchEnd, setTouchEnd] = useState(null);
 
   const minSwipeDistance = 50;
-
   useEffect(() => {
     if (item && item.viewer !== "pano") {
       setIsLoading(true);

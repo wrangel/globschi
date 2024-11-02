@@ -1,6 +1,6 @@
 // src/backend/metadataProcessor.mjs
 
-import { AUTHOR_PICTURES_PATH, MEDIA_PAGES } from "./constants.mjs";
+import { MEDIA_PAGES } from "./constants.mjs";
 import logger from "./helpers/logger.mjs";
 
 /**
@@ -80,7 +80,7 @@ function processDocument(doc, presignedUrls) {
   return {
     id: doc._id.toString(),
     viewer: doc.type === MEDIA_PAGES[1] ? "pano" : "img",
-    author: `${AUTHOR_PICTURES_PATH}${doc.author}.svg`,
+    author: doc.author,
     drone: doc.drone,
     metadata: formatMetadata(doc),
     latitude: doc.latitude,

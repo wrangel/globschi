@@ -8,9 +8,6 @@
 /** ID used for actual content */
 export const ACTUAL_ID = "actual";
 
-/** Path to author pictures */
-export const AUTHOR_PICTURES_PATH = "media/author_pictures/";
-
 /** List of contributors */
 export const CONTRIBUTORS = Object.freeze(["wrangel", "beat_maker", "dance"]);
 

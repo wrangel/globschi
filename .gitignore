@@ -36,6 +36,3 @@ error.log
 .idea/
 
 .env*
-.flaskenv*
-!.env.project
-!.env.vault

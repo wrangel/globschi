@@ -15,7 +15,7 @@ COPY src ./src
 COPY public ./public 
 
 # Build the React app for production
-RUN pnpm run build
+RUN pnpm run build 
 
 # Use nginx to serve the build files
 FROM nginx:alpine

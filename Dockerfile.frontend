@@ -4,26 +4,27 @@ FROM node:18 AS build
 # Set the working directory inside the container
 WORKDIR /usr/src/app
 
-# Copy package.json and pnpm-lock.yaml (or package-lock.json)
+# Copy package.json and pnpm-lock.yaml (if applicable)
 COPY package.json pnpm-lock.yaml ./
 
-# Install dependencies for building the frontend
+# Install pnpm and dependencies
 RUN npm install -g pnpm && pnpm install --frozen-lockfile
 
-# Copy frontend source code into the container
-COPY src/frontend ./src/frontend
+# Copy all source code and public directory into the container
+COPY src ./src
+COPY public ./public 
 
 # Build the React app for production
-RUN pnpm run build --prefix ./src/frontend
+RUN pnpm run build
 
-# Serve the app using NGINX (or any other static server)
+# Use nginx to serve the build files
 FROM nginx:alpine
 
-# Copy built files from previous stage to NGINX's html directory
-COPY --from=build /usr/src/app/src/frontend/build /usr/share/nginx/html
+# Copy built frontend from the build stage (output will be in /usr/src/app/build)
+COPY --from=build /usr/src/app/build /usr/share/nginx/html
 
-# Expose port 80 for NGINX to serve the frontend app
+# Expose port 80
 EXPOSE 80
 
-# Command to run NGINX in the foreground
+# Command to run NGINX server
 CMD ["nginx", "-g", "daemon off;"]

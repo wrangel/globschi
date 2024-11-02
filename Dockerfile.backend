@@ -4,10 +4,10 @@ FROM node:18-alpine
 # Set the working directory inside the container
 WORKDIR /usr/src/app
 
-# Copy package.json and pnpm-lock.yaml (or package-lock.json)
+# Copy package.json and pnpm-lock.yaml (if applicable)
 COPY package.json pnpm-lock.yaml ./
 
-# Install dependencies
+# Install pnpm and dependencies
 RUN npm install -g pnpm && pnpm install --frozen-lockfile
 
 # Copy backend source code into the container
@@ -17,4 +17,4 @@ COPY src/backend ./src/backend
 EXPOSE 8081
 
 # Command to run the backend server in production mode
-CMD ["node", "./src/backend/server.mjs"]
+CMD ["node", "./src/backend/server.mjs"]  # Adjust if necessary based on your main file name.

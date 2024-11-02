@@ -2,12 +2,16 @@
 
 import React, { useState, useEffect } from "react";
 import { MapContainer, TileLayer, Marker } from "react-leaflet";
+import ImagePopup from "../components/ImagePopup";
 import "leaflet/dist/leaflet.css";
+import "../styles/map.css";
 
 const MapPage = () => {
   const [items, setItems] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [selectedItemIndex, setSelectedItemIndex] = useState(null);
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
 
   const fetchData = async () => {
     try {
@@ -29,31 +33,61 @@ const MapPage = () => {
     fetchData();
   }, []);
 
+  const handleMarkerClick = (index) => {
+    setSelectedItemIndex(index);
+    setIsPopupOpen(true);
+  };
+
+  const handleClosePopup = () => {
+    setIsPopupOpen(false);
+    setSelectedItemIndex(null);
+  };
+
+  const handleNext = () => {
+    setSelectedItemIndex((prevIndex) =>
+      prevIndex < items.length - 1 ? prevIndex + 1 : 0
+    );
+  };
+
+  const handlePrevious = () => {
+    setSelectedItemIndex((prevIndex) =>
+      prevIndex > 0 ? prevIndex - 1 : items.length - 1
+    );
+  };
+
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
 
   return (
-    <MapContainer
-      center={[0, 0]}
-      zoom={2}
-      style={{ height: "100vh", width: "100%" }}
-    >
-      <TileLayer
-        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-      />
-      {items.map((item) => (
-        <Marker
-          key={item.id}
-          position={[item.latitude, item.longitude]}
-          eventHandlers={{
-            click: () => {
-              window.open(item.actualUrl, "_blank");
-            },
-          }}
+    <>
+      <MapContainer
+        center={[0, 0]}
+        zoom={2}
+        style={{ height: "100vh", width: "100%" }}
+      >
+        <TileLayer
+          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
         />
-      ))}
-    </MapContainer>
+        {items.map((item, index) => (
+          <Marker
+            key={item.id}
+            position={[item.latitude, item.longitude]}
+            eventHandlers={{
+              click: () => handleMarkerClick(index),
+            }}
+          />
+        ))}
+      </MapContainer>
+      {isPopupOpen && selectedItemIndex !== null && (
+        <ImagePopup
+          item={items[selectedItemIndex]}
+          onClose={handleClosePopup}
+          onNext={handleNext}
+          onPrevious={handlePrevious}
+        />
+      )}
+    </>
   );
 };
 

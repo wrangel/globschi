@@ -12,7 +12,7 @@ RUN npm install -g pnpm && pnpm install --frozen-lockfile
 
 # Copy backend source code and .env.vault file into the container
 COPY src/backend ./src/backend
-COPY .env.vault ./.env.vault
+COPY .env.vault ./.env.vault 
 
 # Expose the necessary port for the backend (8081)
 EXPOSE 8081

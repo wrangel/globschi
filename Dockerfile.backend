@@ -17,4 +17,4 @@ COPY src/backend ./src/backend
 EXPOSE 8081
 
 # Command to run the backend server in production mode
-CMD ["node", "./src/backend/server.mjs"]  # Adjust if necessary based on your main file name.
+CMD ["node", "./src/backend/server.mjs"]

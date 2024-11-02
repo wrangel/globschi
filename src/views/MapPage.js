@@ -1,9 +1,8 @@
 // src/views/MapPage.js
 
 import React, { useState, useEffect } from "react";
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import { MapContainer, TileLayer, Marker } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
-import "../styles/map.css";
 
 const MapPage = () => {
   const [items, setItems] = useState([]);
@@ -44,14 +43,15 @@ const MapPage = () => {
         attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
       />
       {items.map((item) => (
-        <Marker key={item.id} position={[item.latitude, item.longitude]}>
-          <Popup>
-            <h2>{item.metadata}</h2>
-            <a href={item.actualUrl} target="_blank" rel="noopener noreferrer">
-              View Image
-            </a>
-          </Popup>
-        </Marker>
+        <Marker
+          key={item.id}
+          position={[item.latitude, item.longitude]}
+          eventHandlers={{
+            click: () => {
+              window.open(item.actualUrl, "_blank");
+            },
+          }}
+        />
       ))}
     </MapContainer>
   );

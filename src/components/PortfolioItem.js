@@ -1,4 +1,5 @@
 // PortfolioItem.js
+
 import React, { useState, useCallback, memo } from "react";
 
 const MetadataPopup = ({ item }) => {

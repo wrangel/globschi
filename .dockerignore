@@ -1,0 +1,29 @@
+# Node modules
+node_modules/
+
+# Build output
+build/
+dist/
+
+# Git
+.git/
+.gitignore
+
+# Environment variables
+.env*
+
+# Logs
+npm-debug.log
+
+# IDE configurations
+.vscode/
+.editorconfig
+
+# Coverage reports
+coverage/
+
+# Media management
+src/management/
+
+# Tests
+src/tests/

@@ -1,7 +1,7 @@
-# Stage 1: Build the React app and install backend dependencies
-FROM node:18 AS build
+# Stage 1: Build the React app
+FROM node:18 AS frontend
 
-# Install pnpm
+# Install pnpm globally
 RUN npm install -g pnpm
 
 # Set the working directory
@@ -10,38 +10,37 @@ WORKDIR /usr/src/app
 # Copy package.json and pnpm-lock.yaml
 COPY package.json pnpm-lock.yaml ./
 
-# Install dependencies
+# Install dependencies using pnpm
 RUN pnpm install --frozen-lockfile
 
-# Copy the rest of the application code
-COPY . .
+# Copy the frontend source code
+COPY ./src ./public ./
 
 # Build the frontend
 RUN pnpm run build
 
-# Create directories for input, output, and OneDrive
-RUN mkdir -p /usr/src/app/input /usr/src/app/output /usr/src/app/onedrive
+# Stage 2: Set up the Node backend
+FROM node:18-alpine AS backend
 
-# Stage 2: Create runtime image
-FROM node:18-alpine
-
-# Install pnpm
+# Install pnpm globally
 RUN npm install -g pnpm
 
 # Set the working directory
 WORKDIR /usr/src/app
 
-# Copy built frontend and backend from Stage 1
-COPY --from=build /usr/src/app ./
+# Copy package.json and pnpm-lock.yaml
+COPY package.json pnpm-lock.yaml ./
 
-# Install dotenv-vault globally
-RUN npm install -g dotenv-vault
+# Install dependencies using pnpm
+RUN pnpm install --frozen-lockfile
 
-# Copy .env.vault file
-COPY .env.vault .env.vault
+# Copy the backend source code
+COPY ./src/backend ./src/backend
 
-# Set DOTENV_KEY and start the application
-CMD ["sh", "-c", "DOTENV_KEY=$(dotenv-vault keys production) pnpm run start:backend"]
+# Copy the built frontend from the previous stage
+COPY --from=frontend /usr/src/app/build ./build
 
-# Expose the port your app runs on
-EXPOSE 8081
+# Expose the ports for backend and frontend
+EXPOSE 8081 3000
+
+# Start both backend

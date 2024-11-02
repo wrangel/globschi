@@ -4,16 +4,17 @@ services:
     build: .
     ports:
       - "8081:8081"
+      - "3000:3000"
     environment:
-      - NODE_ENV=production
+      - NODE_ENV=development
       - PORT=8081
-      - DOTENV_KEY=${DOTENV_KEY}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - SERVER=${SERVER}
+      - DB=${DB}
     volumes:
-      - ./input:/usr/src/app/input
-      - ./onedrive:/usr/src/app/onedrive
-      - ./.env.vault:/usr/src/app/.env.vault
-    depends_on:
-      - mongo
+      - .:/usr/src/app
+    command: ["pnpm", "run", "dev"]
 
   mongo:
     image: mongo:latest

@@ -1,0 +1,26 @@
+version: "3.8"
+services:
+  app:
+    build: .
+    ports:
+      - "8081:8081"
+    environment:
+      - NODE_ENV=production
+      - PORT=8081
+      - DOTENV_KEY=${DOTENV_KEY}
+    volumes:
+      - ./input:/usr/src/app/input
+      - ./onedrive:/usr/src/app/onedrive
+      - ./.env.vault:/usr/src/app/.env.vault
+    depends_on:
+      - mongo
+
+  mongo:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+
+volumes:
+  mongodb_data:

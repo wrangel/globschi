@@ -1,8 +1,8 @@
 // src/index.js
 import React from "react";
 import ReactDOM from "react-dom/client";
-import App from "./App";
-import reportWebVitals from "./reportWebVitals";
+import App from "./src/frontend/App";
+import reportWebVitals from "./src/frontend/reportWebVitals";
 import "./styles/global.css";
 import "./styles/home.css";
 import "./styles/error-boundary.css";

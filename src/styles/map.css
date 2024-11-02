@@ -1,0 +1,5 @@
+/* src/styles/map.css */
+
+.leaflet-container {
+  z-index: 1000; /* Ensure this is lower than the hamburger menu’s z-index */
+}

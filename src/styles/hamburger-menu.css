@@ -1,8 +1,9 @@
-/* src/components/hamburger-menu.css */
+/* src/styles/hamburger-menu.css */
 
 .hamburger-menu {
   position: relative; /* Position relative for dropdown */
   display: inline-block; /* Aligns it inline */
+  z-index: 1001; /* Ensure this is higher than the map’s z-index */
 }
 
 .menu-icon {
@@ -11,6 +12,7 @@
   color: white; /* Icon color */
   font-size: 24px; /* Size of the icon */
   cursor: pointer; /* Pointer cursor on hover */
+  z-index: 1001; /* Ensure this is higher than the map’s z-index */
 }
 
 .menu-dropdown {
@@ -20,6 +22,7 @@
   background-color: black; /* Background color for dropdown */
   padding: 10px; /* Padding around dropdown items */
   border-radius: 5px; /* Rounded corners */
+  z-index: 1001; /* Ensure this is higher than the map’s z-index */
 }
 
 .menu-dropdown a {

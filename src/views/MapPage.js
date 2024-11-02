@@ -3,8 +3,20 @@
 import React, { useState, useEffect } from "react";
 import { MapContainer, TileLayer, Marker } from "react-leaflet";
 import ImagePopup from "../components/ImagePopup";
+import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import "../styles/map.css";
+
+const redPinIcon = new L.Icon({
+  iconUrl:
+    "https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png",
+  shadowUrl:
+    "https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png",
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  shadowSize: [41, 41],
+});
 
 const MapPage = () => {
   const [items, setItems] = useState([]);
@@ -73,6 +85,7 @@ const MapPage = () => {
           <Marker
             key={item.id}
             position={[item.latitude, item.longitude]}
+            icon={redPinIcon}
             eventHandlers={{
               click: () => handleMarkerClick(index),
             }}

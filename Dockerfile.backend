@@ -10,12 +10,15 @@ COPY package.json pnpm-lock.yaml ./
 # Install pnpm and dependencies
 RUN npm install -g pnpm && pnpm install --frozen-lockfile
 
-# Copy backend source code and .env.vault file into the container
+# Install dotenv-vault
+RUN pnpm install dotenv-vault
+
+# Copy backend source code and dotenv-vault file into the container
 COPY src/backend ./src/backend
-COPY .env.vault ./.env.vault 
+COPY .env.vault ./
 
 # Expose the necessary port for the backend (8081)
 EXPOSE 8081
 
-# Command to run the backend server in production mode
+# Command to run the backend server with dotenv-vault
 CMD ["sh", "-c", "DOTENV_KEY=$(pnpx dotenv-vault keys production --yes) && node ./src/backend/server.mjs"]

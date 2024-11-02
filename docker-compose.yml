@@ -1,10 +1,10 @@
 services:
-  frontend:
-    build:
-      context: .
-      dockerfile: Dockerfile.frontend
-    ports:
-      - "3000:80" # Map local port 3000 to NGINX port 80
+  #  frontend:
+  #    build:
+  #      context: .
+  #      dockerfile: Dockerfile.frontend
+  #    ports:
+  #      - "3000:80" # Map local port 3000 to NGINX port 80
 
   backend:
     build:
@@ -13,12 +13,12 @@ services:
     ports:
       - "8081:8081" # Map local port 8081 to backend port 8081
 
-  mongo:
-    image: mongo:latest
-    ports:
-      - "27017:27017"
-    volumes:
-      - mongodb_data:/data/db
-
-volumes:
-  mongodb_data:
+#  mongo:
+#    image: mongo:latest
+#    ports:
+#      - "27017:27017"
+#    volumes:
+#      - mongodb_data:/data/db
+#
+#volumes:
+#  mongodb_data:

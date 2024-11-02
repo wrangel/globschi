@@ -41,7 +41,7 @@ RUN npm install -g dotenv-vault
 COPY .env.vault .env.vault
 
 # Set DOTENV_KEY and start the application
-CMD DOTENV_KEY=$(dotenv-vault keys production) pnpm run start:backend
+CMD ["sh", "-c", "DOTENV_KEY=$(dotenv-vault keys production) pnpm run start:backend"]
 
 # Expose the port your app runs on
 EXPOSE 8081

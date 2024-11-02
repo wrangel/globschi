@@ -27,3 +27,6 @@ src/backend/management/
 
 # Tests
 src/backend/tests/
+
+# Logs
+*.log

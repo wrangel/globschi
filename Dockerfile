@@ -13,8 +13,9 @@ COPY package.json pnpm-lock.yaml ./
 # Install dependencies using pnpm
 RUN pnpm install --frozen-lockfile
 
-# Copy the frontend source code
-COPY ./src ./public ./
+# Copy the frontend source code and the public directory
+COPY src ./src
+COPY public ./public
 
 # Build the frontend
 RUN pnpm run build
@@ -43,4 +44,6 @@ COPY --from=frontend /usr/src/app/build ./build
 # Expose the ports for backend and frontend
 EXPOSE 8081 3000
 
-# Start both backend
+# Start both backend and frontend using concurrently
+RUN pnpm install concurrently
+CMD ["pnpm", "run", "dev"]

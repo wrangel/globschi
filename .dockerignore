@@ -30,3 +30,7 @@ src/backend/tests/
 
 # Logs
 *.log
+
+.flaskenv*
+!.env.project
+!.env.vault

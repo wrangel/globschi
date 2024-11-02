@@ -80,7 +80,6 @@ function processDocument(doc, presignedUrls) {
   return {
     id: doc._id.toString(),
     viewer: doc.type === MEDIA_PAGES[1] ? "pano" : "img",
-    author: doc.author,
     drone: doc.drone,
     metadata: formatMetadata(doc),
     latitude: doc.latitude,
@@ -122,6 +121,7 @@ function formatMetadata(doc) {
     road,
     location1,
     location2,
+    `Author: ${doc.author}`,
     `Drone: ${doc.drone}`,
   ]
     .filter(Boolean)

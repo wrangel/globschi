@@ -23,7 +23,7 @@ npm-debug.log
 coverage/
 
 # Media management
-src/management/
+src/backend/management/
 
 # Tests
-src/tests/
+src/backend/tests/

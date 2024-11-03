@@ -5,6 +5,7 @@ dist/
 .env.vault
 .env.key
 .env.me
+.env.previous
 docker-compose.yml
 Dockerfile*
 .dockerignore

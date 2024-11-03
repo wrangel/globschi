@@ -17,6 +17,7 @@
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "dotenv-vault": "1.26.2",
+    "dotenv-vault-core": "^0.7.1",
     "eslint-config-react-app": "^7.0.1",
     "exifreader": "^4.25.0",
     "express": "^4.21.1",

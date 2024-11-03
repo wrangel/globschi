@@ -5,7 +5,21 @@ import logger from "./helpers/logger.mjs";
 import combinedDataRoute from "./routes/combinedDataRoute.mjs";
 import { loadEnv } from "./loadEnv.mjs";
 
-loadEnv();
+try {
+  loadEnv();
+} catch (error) {
+  logger.error("Failed to load environment variables:", error);
+  process.exit(1);
+}
+
+// Check for critical environment variables
+const requiredEnvVars = ["DB_USER", "DB_PASSWORD", "SERVER", "DB"];
+requiredEnvVars.forEach((varName) => {
+  if (!process.env[varName]) {
+    logger.error(`Missing required environment variable: ${varName}`);
+    process.exit(1);
+  }
+});
 
 logger.info("Starting server...");
 
@@ -18,9 +32,14 @@ app.use(cors());
 // Connect to MongoDB
 mongoose.set("strictQuery", false);
 const connectDB = () =>
-  mongoose.connect(
-    `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@${process.env.SERVER}/${process.env.DB}?retryWrites=true&w=majority`
-  );
+  mongoose
+    .connect(
+      `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@${process.env.SERVER}/${process.env.DB}?retryWrites=true&w=majority`
+    )
+    .catch((err) => {
+      logger.error("MongoDB connection error:", err);
+      throw err; // Rethrow to be caught in the main connection logic
+    });
 
 // Basic route
 app.get("/", (req, res) => {
@@ -43,8 +62,14 @@ app.use("/api", combinedDataRoute);
 
 // Error handling middleware
 app.use((err, req, res, next) => {
-  logger.error(err.stack);
-  res.status(500).send("Something broke!");
+  logger.error("Unhandled error:", err);
+  res.status(500).json({
+    error: "Internal Server Error",
+    message:
+      process.env.NODE_ENV === "production"
+        ? "Something went wrong"
+        : err.message,
+  });
 });
 
 // Check if this module is the main module
@@ -60,7 +85,7 @@ if (isMainModule) {
       });
     })
     .catch((err) => {
-      logger.error("Could not connect to MongoDB:", { error: err });
+      logger.error("Failed to start the server:", { error: err });
       process.exit(1);
     });
 }

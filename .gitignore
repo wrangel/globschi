@@ -2,7 +2,9 @@ node_modules/
 npm-debug.log
 dist/
 .env
-.env.*
+.env.me
+.env.previous
+.env.vault
 docker-compose.yml
 Dockerfile*
 .dockerignore

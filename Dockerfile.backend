@@ -13,7 +13,7 @@ RUN npm install -g pnpm && pnpm install --frozen-lockfile
 # Install dotenv-vault
 RUN pnpm install dotenv-vault
 
-# Copy backend source code and dotenv-vault files into the container
+# Copy backend source code and dotenv vault files into the container
 COPY src/backend ./src/backend
 COPY .env.vault ./
 COPY .env.me ./

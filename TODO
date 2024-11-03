@@ -1,0 +1,23 @@
+- functionality
+  - ! pano: full screen button, reset view button
+  - ! video
+  - number of views
+  - pages
+    - pagination
+    - AI to group images
+  - filter (map, homepage)
+    - number of views ranges, altitude, country, cantons, drones, yearmonths, authors
+- fixes
+  - thumbnail opening at the bottom
+- performance
+  - improve
+- deployment
+  - set up syn restarts 1x day (or better solution?): nur backend?
+  - get domain
+- media
+  - clean out media / keep a subselection
+- git
+  - improve README
+  - improve git About
+    - add website
+    

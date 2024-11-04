@@ -11,3 +11,13 @@ Dockerfile*
 combined.log
 error.log
 .DS_Store
+
+.env
+.env.development
+.env.me
+.env.previous
+.env.vault
+.flaskenv*
+!.env.project
+.env*
+!.env.vault

@@ -16,3 +16,7 @@ src/backend/management/
 src/backend/tests/
 
 .DS_Store
+.env*
+.flaskenv*
+!.env.project
+!.env.vault

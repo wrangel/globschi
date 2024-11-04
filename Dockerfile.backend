@@ -1,15 +1,22 @@
-FROM node:18-alpine
+FROM node:18
 
-WORKDIR /usr/src/app
+# Set working directory
+WORKDIR /app
 
-COPY package.json pnpm-lock.yaml ./
-RUN npm install -g pnpm && pnpm install --frozen-lockfile
+# Copy package.json and package-lock.json
+COPY package*.json ./
 
-COPY src/backend ./src/backend
-COPY .env.vault ./
+# Install dependencies
+RUN npm install
 
+# Copy the rest of the application code
+COPY . .
+
+# Copy the .env.vault file
+COPY .env.vault ./.env.vault
+
+# Expose the port the app runs on
 EXPOSE 8081
 
-ENV NODE_ENV=production
-
-CMD ["sh", "-c", "DOTENV_KEY=$(pnpx dotenv-vault keys production --yes) && node ./src/backend/server.mjs"]
+# Command to run the application
+CMD ["node", "src/backend/server.mjs"]

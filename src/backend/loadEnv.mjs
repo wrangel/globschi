@@ -1,3 +1,5 @@
+// src/backend/loadEnv.mjs
+
 import dotenv from "dotenv";
 import dotenvVault from "dotenv-vault-core";
 import { fileURLToPath } from "url";

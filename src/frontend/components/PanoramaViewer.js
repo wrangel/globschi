@@ -7,14 +7,14 @@ const panoMaxFov = 110; // Maximum field of view
 const panoMinFov = 10; // Minimum field of view
 
 const animatedValues = {
-  pitch: { start: -Math.PI / 2, end: -0.1 }, // Start at the bottom, end slightly above
-  yaw: { start: Math.PI, end: 0 }, // Start facing backward, end facing forward
-  zoom: { start: 0, end: 50 }, // Start zoomed out, end zoomed in
-  fisheye: { start: 2, end: 0 }, // Start with fisheye effect
+  pitch: { start: -Math.PI / 2, end: -0.1 },
+  yaw: { start: Math.PI, end: 0 },
+  zoom: { start: 0, end: 50 },
+  fisheye: { start: 2, end: 0 },
 };
 
 const PanoramaViewer = ({ url }) => {
-  console.log("HERE THE URL:" + url); // TODO Remove
+  // eslint-disable-next-line no-unused-vars
   const [viewer, setViewer] = useState(null);
 
   const handleReady = useCallback((instance) => {
@@ -22,20 +22,16 @@ const PanoramaViewer = ({ url }) => {
     instance.setOptions({
       fisheye: true,
     });
-
-    // Start the intro animation
     intro(instance);
   }, []);
 
   const intro = (viewer) => {
-    const duration = 6000; // Animation duration in milliseconds
+    const duration = 6000;
     const startTime = performance.now();
 
     const animate = (currentTime) => {
       const elapsed = currentTime - startTime;
-      const progress = Math.min(elapsed / duration, 1); // Normalize progress between 0 and 1
-
-      // Interpolate properties based on progress
+      const progress = Math.min(elapsed / duration, 1);
       const currentPitch =
         animatedValues.pitch.start +
         (animatedValues.pitch.end - animatedValues.pitch.start) * progress;
@@ -57,11 +53,11 @@ const PanoramaViewer = ({ url }) => {
       viewer.zoom(currentZoom);
 
       if (progress < 1) {
-        requestAnimationFrame(animate); // Continue animating until complete
+        requestAnimationFrame(animate);
       }
     };
 
-    requestAnimationFrame(animate); // Start the animation loop
+    requestAnimationFrame(animate);
   };
 
   return (

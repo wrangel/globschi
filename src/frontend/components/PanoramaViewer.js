@@ -14,6 +14,7 @@ const animatedValues = {
 };
 
 const PanoramaViewer = ({ url }) => {
+  console.log("HERE THE URL:" + url); // TODO Remove
   const [viewer, setViewer] = useState(null);
 
   const handleReady = useCallback((instance) => {

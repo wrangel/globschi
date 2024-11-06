@@ -22,8 +22,6 @@ function ImagePopup({ item, onClose, onNext, onPrevious }) {
   useEffect(() => {
     if (item && item.viewer !== "pano") {
       setIsLoading(true);
-      setScale(1);
-      setPosition({ x: 0, y: 0 });
       const img = new Image();
       img.src = item.actualUrl;
       img.onload = () => {

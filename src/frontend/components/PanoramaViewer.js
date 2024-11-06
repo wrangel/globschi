@@ -13,7 +13,7 @@ const animatedValues = {
   fisheye: { start: 2, end: 0 }, // Start with fisheye effect
 };
 
-const PanoramaViewer = ({ url, onInteractionStart, onInteractionEnd }) => {
+const PanoramaViewer = ({ url }) => {
   const [viewer, setViewer] = useState(null);
 
   const handleReady = useCallback((instance) => {
@@ -72,12 +72,10 @@ const PanoramaViewer = ({ url, onInteractionStart, onInteractionEnd }) => {
         defaultZoomLvl={50}
         maxFov={panoMaxFov}
         minFov={panoMinFov}
-        touchmoveTwoFingers={true} // Use this option instead
+        touchmoveTwoFingers={true}
         littlePlanet={true}
         navbar={["fullscreen"]}
         onReady={handleReady}
-        onInteractionStart={onInteractionStart} // Pass interaction handlers
-        onInteractionEnd={onInteractionEnd}
       />
     </div>
   );

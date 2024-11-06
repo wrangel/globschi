@@ -17,6 +17,8 @@ function ImagePopup({ item, onClose, onNext, onPrevious }) {
   const [touchEnd, setTouchEnd] = useState(null);
 
   const minSwipeDistance = 50;
+
+  // Load image for non-panorama items
   useEffect(() => {
     if (item && item.viewer !== "pano") {
       setIsLoading(true);
@@ -34,6 +36,7 @@ function ImagePopup({ item, onClose, onNext, onPrevious }) {
     }
   }, [item]);
 
+  // Gesture bindings
   const bindDrag = useDrag(({ offset: [x, y] }) => {
     setPosition({ x, y });
   });
@@ -42,6 +45,7 @@ function ImagePopup({ item, onClose, onNext, onPrevious }) {
     setScale(Math.max(1, Math.min(5, d)));
   });
 
+  // Interaction handlers
   const handlePanoramaInteractionStart = useCallback(() => {
     setIsPanoramaInteracting(true);
   }, []);
@@ -59,6 +63,7 @@ function ImagePopup({ item, onClose, onNext, onPrevious }) {
     setPosition({ x: 0, y: 0 });
   }, [scale]);
 
+  // Keyboard navigation
   const handleKeyDown = useCallback(
     (event) => {
       if (event.key === "Escape") {
@@ -79,6 +84,7 @@ function ImagePopup({ item, onClose, onNext, onPrevious }) {
     [onClose, showMetadata, onNext, onPrevious, scale]
   );
 
+  // Event listeners for keyboard navigation
   useEffect(() => {
     document.addEventListener("keydown", handleKeyDown);
     return () => {
@@ -86,6 +92,7 @@ function ImagePopup({ item, onClose, onNext, onPrevious }) {
     };
   }, [handleKeyDown]);
 
+  // Touch event handlers
   const onTouchStart = (e) => {
     setTouchEnd(null);
     setTouchStart(e.targetTouches[0].clientX);
@@ -102,6 +109,7 @@ function ImagePopup({ item, onClose, onNext, onPrevious }) {
     if (isRightSwipe && !isPanoramaInteracting && scale === 1) onPrevious();
   };
 
+  // Render metadata
   const renderMetadata = () => (
     <div className={`metadata-popup ${showMetadata ? "visible" : ""}`}>
       <pre>{item.metadata}</pre>
@@ -116,11 +124,12 @@ function ImagePopup({ item, onClose, onNext, onPrevious }) {
     </div>
   );
 
+  // Render content based on item type
   const renderContent = () =>
     item.viewer === "pano" ? (
       <div className="panorama-container">
         <PanoramaViewer
-          url={item.actualUrl}
+          url={item.actualUrl} // Ensure this is the correct property for the panorama URL
           onInteractionStart={handlePanoramaInteractionStart}
           onInteractionEnd={handlePanoramaInteractionEnd}
         />

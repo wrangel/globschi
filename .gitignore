@@ -20,4 +20,5 @@ error.log
 .flaskenv*
 !.env.project
 .env*
+.env.vault
 !.env.vault

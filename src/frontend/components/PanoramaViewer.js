@@ -1,229 +1,86 @@
 // src/components/PanoramaViewer.js
 
-import React, {
-  useEffect,
-  useRef,
-  useCallback,
-  useState,
-  useMemo,
-} from "react";
-import * as THREE from "three";
+import React, { useState, useCallback } from "react";
+import { ReactPhotoSphereViewer } from "react-photo-sphere-viewer";
+
+const panoMaxFov = 110; // Maximum field of view
+const panoMinFov = 10; // Minimum field of view
+
+const animatedValues = {
+  pitch: { start: -Math.PI / 2, end: -0.1 }, // Start at the bottom, end slightly above
+  yaw: { start: Math.PI, end: 0 }, // Start facing backward, end facing forward
+  zoom: { start: 0, end: 50 }, // Start zoomed out, end zoomed in
+  fisheye: { start: 2, end: 0 }, // Start with fisheye effect
+};
 
 const PanoramaViewer = ({ url, onInteractionStart, onInteractionEnd }) => {
-  const containerRef = useRef(null);
-  const sceneRef = useRef(null);
-  const cameraRef = useRef(null);
-  const rendererRef = useRef(null);
-  const sphereRef = useRef(null);
-  const isUserInteractingRef = useRef(false);
-  const onPointerDownMouseXRef = useRef(0);
-  const onPointerDownMouseYRef = useRef(0);
-  const lonRef = useRef(0);
-  const latRef = useRef(0);
-  const phiRef = useRef(0);
-  const thetaRef = useRef(0);
-  const distanceRef = useRef(50);
-  const [isPinching, setIsPinching] = useState(false);
-  const [pinchDistance, setPinchDistance] = useState(0);
-  const interactionTimeoutRef = useRef(null);
-  const [isAutoRotating, setIsAutoRotating] = useState(true);
-  const lastClickTimeRef = useRef(0);
+  const [viewer, setViewer] = useState(null);
 
-  const startInteraction = useCallback(() => {
-    if (!isUserInteractingRef.current) {
-      isUserInteractingRef.current = true;
-      onInteractionStart();
-    }
-    clearTimeout(interactionTimeoutRef.current);
-  }, [onInteractionStart]);
-
-  const handleWheel = useCallback(
-    (e) => {
-      e.preventDefault();
-      distanceRef.current = Math.max(
-        1,
-        Math.min(1000, distanceRef.current + e.deltaY * 0.05)
-      );
-      startInteraction();
-    },
-    [startInteraction]
-  );
-
-  const getDistance = useCallback((touch1, touch2) => {
-    return Math.hypot(
-      touch1.clientX - touch2.clientX,
-      touch1.clientY - touch2.clientY
-    );
-  }, []);
-
-  const endInteraction = useCallback(() => {
-    interactionTimeoutRef.current = setTimeout(() => {
-      isUserInteractingRef.current = false;
-      setIsPinching(false);
-      onInteractionEnd();
-    }, 200);
-  }, [onInteractionEnd]);
-
-  const handleDoubleClick = useCallback((e) => {
-    e.preventDefault();
-    const currentTime = Date.now();
-    if (currentTime - lastClickTimeRef.current < 300) {
-      setIsAutoRotating((prev) => !prev);
-    }
-    lastClickTimeRef.current = currentTime;
-  }, []);
-
-  const onPointerDown = useCallback(
-    (e) => {
-      e.preventDefault();
-      startInteraction();
-
-      const clientX = e.clientX || (e.touches && e.touches[0].clientX);
-      const clientY = e.clientY || (e.touches && e.touches[0].clientY);
-
-      onPointerDownMouseXRef.current = clientX;
-      onPointerDownMouseYRef.current = clientY;
-
-      if (e.touches && e.touches.length === 2) {
-        setIsPinching(true);
-        setPinchDistance(getDistance(e.touches[0], e.touches[1]));
-      }
-    },
-    [getDistance, startInteraction]
-  );
-
-  const onPointerMove = useCallback(
-    (e) => {
-      e.preventDefault();
-      if (!isUserInteractingRef.current) return;
-
-      const clientX = e.clientX || (e.touches && e.touches[0].clientX);
-      const clientY = e.clientY || (e.touches && e.touches[0].clientY);
-
-      if (isPinching && e.touches && e.touches.length === 2) {
-        const newDistance = getDistance(e.touches[0], e.touches[1]);
-        const delta = newDistance - pinchDistance;
-        distanceRef.current = Math.max(
-          1,
-          Math.min(1000, distanceRef.current - delta * 0.1)
-        );
-        setPinchDistance(newDistance);
-      } else if (
-        (e.touches && e.touches.length === 2) ||
-        e.buttons === 1 ||
-        (e.touches && e.touches.length === 1)
-      ) {
-        const movementX = (clientX - onPointerDownMouseXRef.current) * 0.1;
-        const movementY = (clientY - onPointerDownMouseYRef.current) * 0.1;
-
-        lonRef.current -= movementX;
-        latRef.current -= movementY;
-
-        onPointerDownMouseXRef.current = clientX;
-        onPointerDownMouseYRef.current = clientY;
-      }
-    },
-    [isPinching, pinchDistance, getDistance]
-  );
-
-  const onPointerUp = useCallback(
-    (e) => {
-      e.preventDefault();
-      endInteraction();
-    },
-    [endInteraction]
-  );
-
-  useEffect(() => {
-    if (!containerRef.current) return;
-
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(
-      75,
-      window.innerWidth / window.innerHeight,
-      1,
-      1100
-    );
-    const renderer = new THREE.WebGLRenderer({
-      antialias: true,
-      canvas: containerRef.current,
+  const handleReady = useCallback((instance) => {
+    setViewer(instance);
+    instance.setOptions({
+      fisheye: true,
     });
 
-    sceneRef.current = scene;
-    cameraRef.current = camera;
-    rendererRef.current = renderer;
+    // Start the intro animation
+    intro(instance);
+  }, []);
 
-    renderer.setSize(window.innerWidth, window.innerHeight);
+  const intro = (viewer) => {
+    const duration = 6000; // Animation duration in milliseconds
+    const startTime = performance.now();
 
-    const textureLoader = new THREE.TextureLoader();
-    textureLoader.load(url, (texture) => {
-      texture.generateMipmaps = false;
-      texture.minFilter = THREE.LinearFilter;
-      texture.magFilter = THREE.LinearFilter;
-      texture.mapping = THREE.EquirectangularReflectionMapping;
+    const animate = (currentTime) => {
+      const elapsed = currentTime - startTime;
+      const progress = Math.min(elapsed / duration, 1); // Normalize progress between 0 and 1
 
-      const geometry = new THREE.SphereGeometry(500, 60, 40);
-      geometry.scale(-1, 1, 1);
-      const material = new THREE.MeshBasicMaterial({ map: texture });
-      const sphere = new THREE.Mesh(geometry, material);
-      sphereRef.current = sphere;
-      scene.add(sphere);
+      // Interpolate properties based on progress
+      const currentPitch =
+        animatedValues.pitch.start +
+        (animatedValues.pitch.end - animatedValues.pitch.start) * progress;
+      const currentYaw =
+        animatedValues.yaw.start +
+        (animatedValues.yaw.end - animatedValues.yaw.start) * progress;
+      const currentZoom =
+        animatedValues.zoom.start +
+        (animatedValues.zoom.end - animatedValues.zoom.start) * progress;
+      const currentFisheye =
+        animatedValues.fisheye.start +
+        (animatedValues.fisheye.end - animatedValues.fisheye.start) * progress;
 
-      animate();
-    });
+      viewer.setOptions({
+        fisheye: currentFisheye,
+      });
 
-    const animate = () => {
-      requestAnimationFrame(animate);
+      viewer.rotate({ yaw: currentYaw, pitch: currentPitch });
+      viewer.zoom(currentZoom);
 
-      if (!isUserInteractingRef.current && isAutoRotating) {
-        lonRef.current += 0.02; // Set the rotation speed
+      if (progress < 1) {
+        requestAnimationFrame(animate); // Continue animating until complete
       }
-
-      latRef.current = Math.max(-85, Math.min(85, latRef.current));
-      phiRef.current = THREE.MathUtils.degToRad(90 - latRef.current);
-      thetaRef.current = THREE.MathUtils.degToRad(lonRef.current);
-
-      camera.position.setFromSphericalCoords(
-        distanceRef.current,
-        phiRef.current,
-        thetaRef.current
-      );
-
-      camera.lookAt(scene.position);
-      renderer.render(scene, camera);
     };
 
-    const handleResize = () => {
-      camera.aspect = window.innerWidth / window.innerHeight;
-      camera.updateProjectionMatrix();
-      renderer.setSize(window.innerWidth, window.innerHeight);
-    };
+    requestAnimationFrame(animate); // Start the animation loop
+  };
 
-    window.addEventListener("resize", handleResize);
-
-    return () => {
-      window.removeEventListener("resize", handleResize);
-      renderer.dispose();
-    };
-  }, [url, isAutoRotating]);
-
-  const canvasProps = useMemo(
-    () => ({
-      style: { width: "100%", height: "100%", touchAction: "none" },
-      onMouseDown: onPointerDown,
-      onMouseMove: onPointerMove,
-      onMouseUp: onPointerUp,
-      onMouseLeave: onPointerUp,
-      onTouchStart: onPointerDown,
-      onTouchMove: onPointerMove,
-      onTouchEnd: onPointerUp,
-      onWheel: handleWheel,
-      onDoubleClick: handleDoubleClick,
-    }),
-    [onPointerDown, onPointerMove, onPointerUp, handleWheel, handleDoubleClick]
+  return (
+    <div className="panorama-container">
+      <ReactPhotoSphereViewer
+        src={url}
+        height="100%"
+        width="100%"
+        defaultZoomLvl={50}
+        maxFov={panoMaxFov}
+        minFov={panoMinFov}
+        touchmoveTwoFingers={true} // Use this option instead
+        littlePlanet={true}
+        navbar={["fullscreen"]}
+        onReady={handleReady}
+        onInteractionStart={onInteractionStart} // Pass interaction handlers
+        onInteractionEnd={onInteractionEnd}
+      />
+    </div>
   );
-
-  return <canvas ref={containerRef} {...canvasProps} />;
 };
 
 export default PanoramaViewer;

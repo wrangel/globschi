@@ -1,6 +1,10 @@
 // src/components/ErrorBoundary.js
-
 import React from "react";
+import * as Sentry from "@sentry/react";
+import initSentry from "./SentryInit";
+
+// Initialize Sentry when the component mounts
+initSentry();
 
 class ErrorBoundary extends React.Component {
   constructor(props) {
@@ -14,14 +18,24 @@ class ErrorBoundary extends React.Component {
   }
 
   componentDidCatch(error, errorInfo) {
-    // You can log the error to an error reporting service
+    // Log the error to Sentry
+    Sentry.captureException(error);
     console.error("Uncaught error:", error, errorInfo);
   }
 
+  handleRetry = () => {
+    this.setState({ hasError: false }); // Reset the error state
+  };
+
   render() {
     if (this.state.hasError) {
-      // You can render any custom fallback UI
-      return <h1>Something went wrong.</h1>;
+      // Custom fallback UI with a retry button
+      return (
+        <div>
+          <h1>Something went wrong.</h1>
+          <button onClick={this.handleRetry}>Try Again</button>
+        </div>
+      );
     }
 
     return this.props.children;

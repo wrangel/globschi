@@ -1,12 +1,14 @@
 // src/views/About.js
 
 import React from "react";
+import styles from "../styles/About.module.css";
 
 const About = () => {
   return (
-    <div className="about-container">
+    <div className={styles.aboutContainer}>
+      {" "}
+      {/* Use styles from the module */}
       <h2>That's us!</h2>
-
       <p>
         <a
           target="_blank"
@@ -25,7 +27,6 @@ const About = () => {
         </a>{" "}
         &amp; dance
       </p>
-
       <h2>Acknowledgements</h2>
       <p>
         <a

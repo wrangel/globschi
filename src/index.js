@@ -3,7 +3,6 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./frontend/App";
 import reportWebVitals from "./frontend/reportWebVitals";
-import "./frontend/styles/About.css";
 import "./frontend/styles/ErrorBoundary.css";
 import "./frontend/styles/FullScreenModal.css";
 import "./frontend/styles/Global.css";

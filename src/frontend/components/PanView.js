@@ -43,23 +43,25 @@ export default function PanView({ imageUrl, onClose }) {
   return (
     <div className="pan-view" style={{ margin: "0", padding: "0" }}>
       {" "}
-      {/* Remove margin and padding */}
-      <button onClick={onClose}>Close Viewer</button>
-      {imageUrl ? (
-        <ReactPhotoSphereViewer
-          src={imageUrl}
-          height="80vh" // Set height to fit better in modal
-          width="100%"
-          defaultZoomLvl={50}
-          maxFov={panoMaxFov}
-          minFov={panoMinFov}
-          touchmoveTwoFingers={true}
-          littlePlanet={true}
-          navbar={["fullscreen"]}
-        />
-      ) : (
-        <div>No panorama URL provided</div>
-      )}
+      {/* Ensure no extra margins */}
+      <div className="panorama-container">
+        {imageUrl ? (
+          <ReactPhotoSphereViewer
+            src={imageUrl}
+            height="80vh" // Set height to fit better in modal
+            width="100%"
+            defaultZoomLvl={50}
+            maxFov={panoMaxFov}
+            minFov={panoMinFov}
+            touchmoveTwoFingers={true}
+            littlePlanet={true}
+            navbar={["fullscreen"]}
+            onReady={handleReady}
+          />
+        ) : (
+          <div>No panorama URL provided</div>
+        )}
+      </div>
     </div>
   );
 }

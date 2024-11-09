@@ -7,7 +7,6 @@ import "./frontend/styles/ErrorBoundary.css";
 import "./frontend/styles/FullScreenModal.css";
 import "./frontend/styles/Global.css";
 import "./frontend/styles/HamburgerMenu.css";
-import "./frontend/styles/Home.css";
 import "./frontend/styles/ImagePopup.css";
 import "./frontend/styles/Map.css";
 import "./frontend/styles/PortfolioGrid.css";

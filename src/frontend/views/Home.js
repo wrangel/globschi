@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useCallback } from "react";
 import PortfolioGrid from "../components/PortfolioGrid";
+import styles from "../styles/Home.module.css";
 
 function HomePage() {
   const [items, setItems] = useState([]);
@@ -30,15 +31,17 @@ function HomePage() {
   }, [fetchData]);
 
   if (isLoading) {
-    return <div className="home-page">Loading...</div>;
+    return <div className={styles.homePage}>Loading...</div>; // Use styles from the module
   }
 
   if (error) {
-    return <div className="home-page">Error: {error}</div>;
+    return <div className={styles.homePage}>Error: {error}</div>; // Use styles from the module
   }
 
   return (
-    <div className="home-page">
+    <div className={styles.homePage}>
+      {" "}
+      {/* Use styles from the module */}
       <h1>Dronef Kollege von Globschi. Der arme Dronef versunken im See</h1>
       {items.length > 0 ? (
         <PortfolioGrid items={items} />

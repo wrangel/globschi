@@ -6,6 +6,7 @@ import PortfolioItem from "./PortfolioItem";
 import ImagePopup from "./ImagePopup";
 import PanoramaViewer from "./PanoramaViewer"; // Import PanoramaViewer
 import FullScreenModal from "./FullScreenModal"; // Import FullScreenModal
+import styles from "../styles/PortfolioGrid.module.css";
 
 function PortfolioGrid({ items }) {
   const [selectedItemId, setSelectedItemId] = useState(null);
@@ -49,8 +50,8 @@ function PortfolioGrid({ items }) {
             default: 4,
             // Define breakpoints as needed
           }}
-          className="masonry-grid"
-          columnClassName="masonry-grid_column"
+          className={styles.masonryGrid} // Use styles from the module
+          columnClassName={styles.masonryGridColumn} // Use styles from the module
         >
           {masonryItems}
         </Masonry>

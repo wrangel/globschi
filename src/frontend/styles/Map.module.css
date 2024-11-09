@@ -1,10 +1,10 @@
-/* src/styles/Map.css */
+/* src/frontend/styles/Map.module.css */
 
-.leaflet-container {
+.leafletContainer {
   z-index: 1000; /* Ensure this is lower than the hamburger menu’s z-index */
 }
 
-.leaflet-marker-icon {
+.leafletMarkerIcon {
   background: none;
   border: none;
 }

@@ -5,6 +5,7 @@ import { MapContainer, TileLayer, Marker } from "react-leaflet";
 import ImagePopup from "../components/ImagePopup";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
+import styles from "../styles/Map.module.css";
 
 const redPinIcon = new L.Icon({
   iconUrl:
@@ -74,6 +75,7 @@ const MapPage = () => {
       <MapContainer
         center={[0, 0]}
         zoom={2}
+        className={styles.leafletContainer} // Use styles from the module
         style={{ height: "100vh", width: "100%" }}
       >
         <TileLayer

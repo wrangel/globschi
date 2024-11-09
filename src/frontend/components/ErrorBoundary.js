@@ -1,7 +1,9 @@
 // src/components/ErrorBoundary.js
+
 import React from "react";
 import * as Sentry from "@sentry/react";
 import initSentry from "./SentryInit";
+import styles from "../styles/ErrorBoundary.module.css";
 
 // Initialize Sentry when the component mounts
 initSentry();
@@ -31,7 +33,9 @@ class ErrorBoundary extends React.Component {
     if (this.state.hasError) {
       // Custom fallback UI with a retry button
       return (
-        <div>
+        <div className={styles.errorBoundary}>
+          {" "}
+          {/* Use styles from the module */}
           <h1>Something went wrong.</h1>
           <button onClick={this.handleRetry}>Try Again</button>
         </div>

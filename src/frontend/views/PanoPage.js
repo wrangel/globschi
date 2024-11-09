@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useCallback } from "react";
 import PanView from "../components/PanView"; // Import your PanView component
-import Modal from "../components/Modal"; // Import the Modal component
+import FullScreenModal from "../components/FullScreenModal"; // Import the FullScreenModal component
 import "../styles/PanoPage.css"; // Optional: import styles for PanoPage
 
 function PanoPage() {
@@ -59,10 +59,10 @@ function PanoPage() {
         ))}
       </ul>
 
-      {/* Modal for Panorama Viewer */}
-      <Modal isOpen={isModalOpen} onClose={handleCloseViewer}>
-        <PanView imageUrl={selectedItemUrl} onClose={handleCloseViewer} />
-      </Modal>
+      {/* Full-Screen Modal for Panorama Viewer */}
+      <FullScreenModal isOpen={isModalOpen} onClose={handleCloseViewer}>
+        <PanView imageUrl={selectedItemUrl} />
+      </FullScreenModal>
     </div>
   );
 }

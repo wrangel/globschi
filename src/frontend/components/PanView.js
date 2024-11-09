@@ -6,7 +6,7 @@ import { ReactPhotoSphereViewer } from "react-photo-sphere-viewer";
 const panoMaxFov = 110; // Maximum field of view
 const panoMinFov = 10; // Minimum field of view
 
-export default function PanView({ imageUrl, onClose }) {
+export default function PanView({ imageUrl }) {
   const [viewer, setViewer] = useState(null);
 
   const handleReady = useCallback((instance) => {
@@ -41,27 +41,23 @@ export default function PanView({ imageUrl, onClose }) {
   };
 
   return (
-    <div className="pan-view" style={{ margin: "0", padding: "0" }}>
-      {" "}
-      {/* Ensure no extra margins */}
-      <div className="panorama-container">
-        {imageUrl ? (
-          <ReactPhotoSphereViewer
-            src={imageUrl}
-            height="80vh" // Set height to fit better in modal
-            width="100%"
-            defaultZoomLvl={50}
-            maxFov={panoMaxFov}
-            minFov={panoMinFov}
-            touchmoveTwoFingers={true}
-            littlePlanet={true}
-            navbar={["fullscreen"]}
-            onReady={handleReady}
-          />
-        ) : (
-          <div>No panorama URL provided</div>
-        )}
-      </div>
+    <div className="pan-view">
+      {imageUrl ? (
+        <ReactPhotoSphereViewer
+          src={imageUrl}
+          height="100vh" // Set height to fill the screen
+          width="100%"
+          defaultZoomLvl={50}
+          maxFov={panoMaxFov}
+          minFov={panoMinFov}
+          touchmoveTwoFingers={true}
+          littlePlanet={true}
+          navbar={["fullscreen"]}
+          onReady={handleReady}
+        />
+      ) : (
+        <div>No panorama URL provided</div>
+      )}
     </div>
   );
 }

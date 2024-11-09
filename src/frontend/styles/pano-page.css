@@ -1,0 +1,24 @@
+./* src/styles/pano-page.css */
+
+.pano-page {
+  text-align: center;
+  padding: var(--gutter-size);
+}
+
+.pano-page ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.pano-page li {
+  margin: 10px 0;
+}
+
+.pano-page a {
+  color: var(--link-color);
+  text-decoration: none;
+}
+
+.pano-page a:hover {
+  text-decoration: underline;
+}

@@ -1,35 +1,29 @@
 // src/components/HamburgerMenu.js
+import React from "react";
+import PropTypes from "prop-types"; // Ensure PropTypes is imported
 
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-
-const HamburgerMenu = () => {
-  const [isOpen, setIsOpen] = useState(false); // State to manage menu visibility
-  const navigate = useNavigate(); // Hook for navigation
-
-  const toggleMenu = () => {
-    setIsOpen(!isOpen);
-  };
-
-  const handleNavigation = (path) => {
-    setIsOpen(false);
-    navigate(path);
-  };
-
+const HamburgerMenu = React.memo(({ isOpen, onToggle, onNavigate }) => {
   return (
     <div className="hamburger-menu">
-      <button onClick={toggleMenu} className="menu-icon">
+      <button onClick={onToggle} className="menu-icon" aria-label="Toggle Menu">
         &#9776; {/* Hamburger icon */}
       </button>
       {isOpen && (
         <div className="menu-dropdown">
-          <button onClick={() => handleNavigation("/")}>Home</button>
-          <button onClick={() => handleNavigation("/about")}>About</button>
-          <button onClick={() => handleNavigation("/map")}>Map</button>
+          <button onClick={() => onNavigate("/")}>Home</button>
+          <button onClick={() => onNavigate("/about")}>About</button>
+          <button onClick={() => onNavigate("/map")}>Map</button>
         </div>
       )}
     </div>
   );
+});
+
+// Prop Types for validation
+HamburgerMenu.propTypes = {
+  isOpen: PropTypes.bool.isRequired,
+  onToggle: PropTypes.func.isRequired,
+  onNavigate: PropTypes.func.isRequired,
 };
 
 export default HamburgerMenu;

@@ -9,6 +9,7 @@
     - number of views ranges, altitude, country, cantons, drones, yearmonths, authors
 - fixes
   - thumbnail opening at the bottom
+  - Error in parsing value for ‘margin-top’.  Declaration dropped.
 - performance
   - improve
 - deployment

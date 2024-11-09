@@ -155,22 +155,33 @@ const PanoramaViewer = ({ url, onInteractionStart, onInteractionEnd }) => {
 
     renderer.setSize(window.innerWidth, window.innerHeight);
 
-    const textureLoader = new THREE.TextureLoader();
-    textureLoader.load(url, (texture) => {
-      texture.generateMipmaps = false;
-      texture.minFilter = THREE.LinearFilter;
-      texture.magFilter = THREE.LinearFilter;
-      texture.mapping = THREE.EquirectangularReflectionMapping;
+    const loadTexture = async () => {
+      try {
+        const response = await fetch(url);
+        const blob = await response.blob();
+        const textureImageBitmap = await createImageBitmap(blob);
 
-      const geometry = new THREE.SphereGeometry(500, 60, 40);
-      geometry.scale(-1, 1, 1);
-      const material = new THREE.MeshBasicMaterial({ map: texture });
-      const sphere = new THREE.Mesh(geometry, material);
-      sphereRef.current = sphere;
-      scene.add(sphere);
+        const texture = new THREE.CanvasTexture(textureImageBitmap);
+        texture.colorSpace = THREE.SRGBColorSpace;
+        texture.generateMipmaps = false;
+        texture.minFilter = THREE.LinearFilter;
+        texture.magFilter = THREE.LinearFilter;
+        texture.mapping = THREE.EquirectangularReflectionMapping;
 
-      animate();
-    });
+        const geometry = new THREE.SphereGeometry(500, 60, 40);
+        geometry.scale(-1, 1, 1);
+        const material = new THREE.MeshBasicMaterial({ map: texture });
+        const sphere = new THREE.Mesh(geometry, material);
+        sphereRef.current = sphere;
+        scene.add(sphere);
+
+        animate();
+      } catch (error) {
+        console.error("Error loading texture:", error);
+      }
+    };
+
+    loadTexture();
 
     const animate = () => {
       requestAnimationFrame(animate);

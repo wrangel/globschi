@@ -1,4 +1,4 @@
-// src/components/PanView.js
+// src/components/PanoramaViewer.js
 
 import React, { useCallback } from "react"; // Remove useState if not used
 import { ReactPhotoSphereViewer } from "react-photo-sphere-viewer";
@@ -6,7 +6,7 @@ import { ReactPhotoSphereViewer } from "react-photo-sphere-viewer";
 const panoMaxFov = 110; // Maximum field of view
 const panoMinFov = 10; // Minimum field of view
 
-export default function PanView({ imageUrl }) {
+export default function PanoramaViewer({ imageUrl }) {
   const handleReady = useCallback((instance) => {
     instance.setOptions({
       fisheye: true,

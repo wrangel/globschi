@@ -4,7 +4,7 @@ import React, { useState, useCallback, useMemo, useRef } from "react";
 import Masonry from "react-masonry-css";
 import PortfolioItem from "./PortfolioItem";
 import ImagePopup from "./ImagePopup";
-import PanView from "./PanView"; // Import PanView
+import PanoramaViewer from "./PanoramaViewer"; // Import PanoramaViewer
 import FullScreenModal from "./FullScreenModal"; // Import FullScreenModal
 
 function PortfolioGrid({ items }) {
@@ -59,7 +59,7 @@ function PortfolioGrid({ items }) {
       {/* Full-Screen Modal for Panorama Viewer */}
       {isModalOpen && selectedItem && (
         <FullScreenModal isOpen={isModalOpen} onClose={handleClosePopup}>
-          <PanView
+          <PanoramaViewer
             imageUrl={selectedItem.actualUrl}
             onClose={handleClosePopup}
           />

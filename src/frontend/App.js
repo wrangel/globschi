@@ -6,10 +6,10 @@ import ErrorBoundary from "./components/ErrorBoundary";
 import HamburgerMenu from "./components/HamburgerMenu";
 import "./styles/global.css";
 
-// Lazy load the HomePage, About, and MapPage components
-const HomePage = React.lazy(() => import("./views/HomePage"));
-const AboutPage = React.lazy(() => import("./views/About"));
-const MapPage = React.lazy(() => import("./views/MapPage"));
+// Lazy load the Home, About, and Map components
+const Home = React.lazy(() => import("./views/Home"));
+const About = React.lazy(() => import("./views/About"));
+const Map = React.lazy(() => import("./views/Map"));
 
 function App() {
   return (
@@ -19,9 +19,9 @@ function App() {
         <ErrorBoundary>
           <Suspense fallback={<div>Loading...</div>}>
             <Routes>
-              <Route path="/" element={<HomePage />} />
-              <Route path="/about" element={<AboutPage />} />
-              <Route path="/map" element={<MapPage />} />
+              <Route path="/" element={<Home />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/map" element={<Map />} />
               {/* PanoPage route removed */}
             </Routes>
           </Suspense>

@@ -37,9 +37,9 @@
     "winston": "^3.16.0"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
+    "start": "GENERATE_SOURCEMAP=false react-scripts start",
+    "build": "GENERATE_SOURCEMAP=false react-scripts build",
+    "test": "GENERATE_SOURCEMAP=false react-scripts test",
     "eject": "react-scripts eject",
     "keep-books": "node ./src/backend/management/bookKeeper.mjs",
     "collect-metadata": "node ./src/backend/management/metadataCollector.mjs",

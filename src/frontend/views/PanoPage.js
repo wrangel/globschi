@@ -2,12 +2,15 @@
 
 import React, { useState, useEffect, useCallback } from "react";
 import PanView from "../components/PanView"; // Import your PanView component
+import Modal from "../components/Modal"; // Import the Modal component
+import "../styles/PanoPage.css"; // Optional: import styles for PanoPage
 
 function PanoPage() {
   const [items, setItems] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [selectedItemUrl, setSelectedItemUrl] = useState(null); // State for selected panorama URL
+  const [isModalOpen, setIsModalOpen] = useState(false); // State to control modal visibility
 
   const fetchData = useCallback(async () => {
     try {
@@ -34,10 +37,12 @@ function PanoPage() {
 
   const handleItemClick = (url) => {
     setSelectedItemUrl(url); // Set the selected URL for viewing
+    setIsModalOpen(true); // Open the modal
   };
 
   const handleCloseViewer = () => {
-    setSelectedItemUrl(null); // Close the viewer
+    setIsModalOpen(false); // Close the modal
+    setSelectedItemUrl(null); // Clear selected URL
   };
 
   if (isLoading) return <div>Loading...</div>;
@@ -54,11 +59,10 @@ function PanoPage() {
         ))}
       </ul>
 
-      {selectedItemUrl && (
-        <div className="panorama-viewer-popup">
-          <PanView imageUrl={selectedItemUrl} onClose={handleCloseViewer} />
-        </div>
-      )}
+      {/* Modal for Panorama Viewer */}
+      <Modal isOpen={isModalOpen} onClose={handleCloseViewer}>
+        <PanView imageUrl={selectedItemUrl} onClose={handleCloseViewer} />
+      </Modal>
     </div>
   );
 }

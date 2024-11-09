@@ -3,12 +3,16 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./frontend/App";
 import reportWebVitals from "./frontend/reportWebVitals";
-import "./frontend/styles/global.css";
-import "./frontend/styles/home.css";
-import "./frontend/styles/error-boundary.css";
-import "./frontend/styles/image-popup.css";
-import "./frontend/styles/portfolio-grid.css";
-import "./frontend/styles/portfolio-item.css";
+import "./frontend/styles/About.css";
+import "./frontend/styles/ErrorBoundary.css";
+import "./frontend/styles/FullScreenModal.css";
+import "./frontend/styles/Global.css";
+import "./frontend/styles/HamburgerMenu.css";
+import "./frontend/styles/Home.css";
+import "./frontend/styles/ImagePopup.css";
+import "./frontend/styles/Map.css";
+import "./frontend/styles/PortfolioGrid.css";
+import "./frontend/styles/PortfolioItem.css";
 import "@photo-sphere-viewer/core/index.css";
 
 // Initialize the root element with React 18's createRoot

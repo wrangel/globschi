@@ -4,7 +4,6 @@ import React, { Suspense } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import ErrorBoundary from "./components/ErrorBoundary";
 import HamburgerMenu from "./components/HamburgerMenu";
-import "./styles/global.css";
 
 // Lazy load the Home, About, and Map components
 const Home = React.lazy(() => import("./views/Home"));

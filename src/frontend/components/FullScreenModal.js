@@ -1,7 +1,6 @@
 // src/components/FullScreenModal.js
 
 import React from "react";
-import "../styles/FullScreenModal.css"; // Import styles for the modal
 
 const FullScreenModal = ({ isOpen, onClose, children }) => {
   if (!isOpen) return null;

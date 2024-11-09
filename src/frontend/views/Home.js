@@ -1,4 +1,5 @@
 // src/views/HomePage.js
+
 import React, { useState, useEffect, useCallback } from "react";
 import PortfolioGrid from "../components/PortfolioGrid";
 

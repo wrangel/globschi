@@ -1,5 +1,6 @@
+// src/views/About.js
+
 import React from "react";
-import "../styles/About.css"; // Ensure this path is correct
 
 const About = () => {
   return (

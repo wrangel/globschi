@@ -2,7 +2,6 @@
 
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import "../styles/hamburger-menu.css"; // Import your CSS
 
 const HamburgerMenu = () => {
   const [isOpen, setIsOpen] = useState(false); // State to manage menu visibility

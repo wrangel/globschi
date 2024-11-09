@@ -2,7 +2,8 @@
 
 import React, { useState, useCallback, memo } from "react";
 
-const MetadataPopup = ({ item }) => {
+// Memoized MetadataPopup component
+const MetadataPopup = memo(({ item }) => {
   if (!item) return null;
 
   return (
@@ -22,7 +23,7 @@ const MetadataPopup = ({ item }) => {
       </ul>
     </div>
   );
-};
+});
 
 function PortfolioItem({ item, onItemClick }) {
   const [showMetadata, setShowMetadata] = useState(false);
@@ -65,10 +66,11 @@ function PortfolioItem({ item, onItemClick }) {
       tabIndex={0} // Make it focusable
       aria-label={`View ${item.name}`}
     >
+      {/* Lazy load the image */}
       <img
         src={item.thumbnailUrl}
         alt={item.name || "Portfolio item"}
-        loading="lazy"
+        loading="lazy" // Lazy loading attribute
       />
       {showMetadata && <MetadataPopup item={item} />}
     </div>

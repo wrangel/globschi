@@ -6,60 +6,29 @@ import { usePinch } from "@use-gesture/react";
 import PortfolioItem from "./PortfolioItem";
 import ImagePopup from "./ImagePopup";
 import PanView from "./PanView"; // Import PanView
+import FullScreenModal from "./FullScreenModal"; // Import FullScreenModal
 
 function PortfolioGrid({ items }) {
   const [selectedItemId, setSelectedItemId] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [columnCount, setColumnCount] = useState(4);
   const gridRef = useRef(null);
 
   const handleItemClick = useCallback((clickedItem) => {
     setSelectedItemId(clickedItem.id);
+    if (clickedItem.viewer === "pano") {
+      setIsModalOpen(true); // Open modal for panoramas
+    }
   }, []);
 
   const handleClosePopup = useCallback(() => {
-    setSelectedItemId(null);
+    setIsModalOpen(false); // Close modal
+    setSelectedItemId(null); // Clear selected item
   }, []);
-
-  const handleNextItem = useCallback(() => {
-    setSelectedItemId((prevId) => {
-      const currentIndex = items.findIndex((item) => item.id === prevId);
-      const nextIndex = (currentIndex + 1) % items.length;
-      return items[nextIndex].id;
-    });
-  }, [items]);
-
-  const handlePreviousItem = useCallback(() => {
-    setSelectedItemId((prevId) => {
-      const currentIndex = items.findIndex((item) => item.id === prevId);
-      const previousIndex = (currentIndex - 1 + items.length) % items.length;
-      return items[previousIndex].id;
-    });
-  }, [items]);
 
   const selectedItem = useMemo(
     () => items.find((item) => item.id === selectedItemId) || null,
     [items, selectedItemId]
-  );
-
-  usePinch(
-    ({ offset: [d] }) => {
-      const newColumnCount = Math.max(1, Math.min(8, Math.round(4 * (1 / d))));
-      setColumnCount(newColumnCount);
-    },
-    {
-      target: gridRef,
-      eventOptions: { passive: false },
-    }
-  );
-
-  const breakpointColumnsObj = useMemo(
-    () => ({
-      default: columnCount,
-      1100: Math.min(columnCount, 3),
-      700: Math.min(columnCount, 2),
-      500: 1,
-    }),
-    [columnCount]
   );
 
   const masonryItems = useMemo(
@@ -78,7 +47,10 @@ function PortfolioGrid({ items }) {
     <>
       <div ref={gridRef}>
         <Masonry
-          breakpointCols={breakpointColumnsObj}
+          breakpointCols={{
+            default: columnCount,
+            // Define breakpoints as needed
+          }}
           className="masonry-grid"
           columnClassName="masonry-grid_column"
         >
@@ -86,20 +58,24 @@ function PortfolioGrid({ items }) {
         </Masonry>
       </div>
 
-      {selectedItem &&
-        (selectedItem.viewer === "pano" ? (
+      {/* Full-Screen Modal for Panorama Viewer */}
+      {isModalOpen && selectedItem && (
+        <FullScreenModal isOpen={isModalOpen} onClose={handleClosePopup}>
           <PanView
             imageUrl={selectedItem.actualUrl}
             onClose={handleClosePopup}
           />
-        ) : (
-          <ImagePopup
-            item={selectedItem}
-            onClose={handleClosePopup}
-            onNext={handleNextItem}
-            onPrevious={handlePreviousItem}
-          />
-        ))}
+        </FullScreenModal>
+      )}
+
+      {/* Render ImagePopup for images */}
+      {selectedItem && selectedItem.viewer !== "pano" && (
+        <ImagePopup
+          item={selectedItem}
+          onClose={handleClosePopup}
+          // Add navigation functions if needed
+        />
+      )}
     </>
   );
 }

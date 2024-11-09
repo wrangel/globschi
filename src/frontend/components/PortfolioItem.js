@@ -1,4 +1,4 @@
-// PortfolioItem.js
+// src/components/PortfolioItem.js
 
 import React, { useState, useCallback, memo } from "react";
 
@@ -28,14 +28,14 @@ function PortfolioItem({ item, onItemClick }) {
   const [showMetadata, setShowMetadata] = useState(false);
 
   const handleClick = useCallback(() => {
-    onItemClick(item);
+    onItemClick(item); // Trigger the click action with the entire item
   }, [item, onItemClick]);
 
   const handleKeyDown = useCallback(
     (event) => {
       if (event.key === "Enter" || event.key === " ") {
         event.preventDefault();
-        onItemClick(item);
+        onItemClick(item); // Trigger click action for keyboard users
       }
     },
     [item, onItemClick]
@@ -46,14 +46,6 @@ function PortfolioItem({ item, onItemClick }) {
   }, []);
 
   const handleMouseLeave = useCallback(() => {
-    setShowMetadata(false);
-  }, []);
-
-  const handleFocus = useCallback(() => {
-    setShowMetadata(true);
-  }, []);
-
-  const handleBlur = useCallback(() => {
     setShowMetadata(false);
   }, []);
 
@@ -69,10 +61,8 @@ function PortfolioItem({ item, onItemClick }) {
       onKeyDown={handleKeyDown}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
-      onFocus={handleFocus}
-      onBlur={handleBlur}
       role="button"
-      tabIndex={0}
+      tabIndex={0} // Make it focusable
       aria-label={`View ${item.name}`}
     >
       <img

@@ -2,25 +2,18 @@
 
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useDrag, usePinch } from "@use-gesture/react";
-import PanoramaViewer from "./PanoramaViewer";
 
 function ImagePopup({ item, onClose, onNext, onPrevious }) {
   const [isLoading, setIsLoading] = useState(true);
   const [showMetadata, setShowMetadata] = useState(false);
-  const [isPanoramaInteracting, setIsPanoramaInteracting] = useState(false);
   const [scale, setScale] = useState(1);
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const imgRef = useRef(null);
   const popupRef = useRef(null);
 
-  const [touchStart, setTouchStart] = useState(null);
-  const [touchEnd, setTouchEnd] = useState(null);
-
-  const minSwipeDistance = 50;
-
-  // Load image for non-panorama items
+  // Load image
   useEffect(() => {
-    if (item && item.viewer !== "pano") {
+    if (item) {
       setIsLoading(true);
       const img = new Image();
       img.src = item.actualUrl;
@@ -43,43 +36,23 @@ function ImagePopup({ item, onClose, onNext, onPrevious }) {
     setScale(Math.max(1, Math.min(5, d)));
   });
 
-  // Interaction handlers
-  const handlePanoramaInteractionStart = useCallback(() => {
-    setIsPanoramaInteracting(true);
-  }, []);
-
-  const handlePanoramaInteractionEnd = useCallback(() => {
-    setIsPanoramaInteracting(false);
-  }, []);
-
+  // Toggle metadata
   const toggleMetadata = useCallback(() => {
     setShowMetadata((prev) => !prev);
   }, []);
-
-  const handleDoubleClick = useCallback(() => {
-    setScale(scale === 1 ? 2 : 1);
-    setPosition({ x: 0, y: 0 });
-  }, [scale]);
 
   // Keyboard navigation
   const handleKeyDown = useCallback(
     (event) => {
       if (event.key === "Escape") {
-        if (showMetadata) {
-          setShowMetadata(false);
-        } else if (scale !== 1) {
-          setScale(1);
-          setPosition({ x: 0, y: 0 });
-        } else {
-          onClose();
-        }
-      } else if (event.key === "ArrowLeft" && scale === 1) {
+        onClose();
+      } else if (event.key === "ArrowLeft") {
         onPrevious();
-      } else if (event.key === "ArrowRight" && scale === 1) {
+      } else if (event.key === "ArrowRight") {
         onNext();
       }
     },
-    [onClose, showMetadata, onNext, onPrevious, scale]
+    [onClose, onNext, onPrevious]
   );
 
   // Event listeners for keyboard navigation
@@ -89,23 +62,6 @@ function ImagePopup({ item, onClose, onNext, onPrevious }) {
       document.removeEventListener("keydown", handleKeyDown);
     };
   }, [handleKeyDown]);
-
-  // Touch event handlers
-  const onTouchStart = (e) => {
-    setTouchEnd(null);
-    setTouchStart(e.targetTouches[0].clientX);
-  };
-
-  const onTouchMove = (e) => setTouchEnd(e.targetTouches[0].clientX);
-
-  const onTouchEnd = () => {
-    if (!touchStart || !touchEnd) return;
-    const distance = touchStart - touchEnd;
-    const isLeftSwipe = distance > minSwipeDistance;
-    const isRightSwipe = distance < -minSwipeDistance;
-    if (isLeftSwipe && !isPanoramaInteracting && scale === 1) onNext();
-    if (isRightSwipe && !isPanoramaInteracting && scale === 1) onPrevious();
-  };
 
   // Render metadata
   const renderMetadata = () => (
@@ -122,71 +78,26 @@ function ImagePopup({ item, onClose, onNext, onPrevious }) {
     </div>
   );
 
-  // Render content based on item type
-  const renderContent = () =>
-    item.viewer === "pano" ? (
-      <div className="panorama-container">
-        <PanoramaViewer
-          url={item.actualUrl} // Ensure this is the correct property for the panorama URL
-          onInteractionStart={handlePanoramaInteractionStart}
-          onInteractionEnd={handlePanoramaInteractionEnd}
-        />
-      </div>
-    ) : (
-      <div
-        className="image-container"
-        {...bindDrag()}
-        {...bindPinch()}
-        onDoubleClick={handleDoubleClick}
-        onWheel={(e) => {
-          e.preventDefault();
-          setScale((current) =>
-            Math.max(1, Math.min(5, current - e.deltaY / 500))
-          );
-        }}
-      >
-        {isLoading && (
-          <div className="thumbnail-container">
-            <img
-              src={item.thumbnailUrl || item.actualUrl}
-              alt={item.name}
-              className="thumbnail"
-            />
-            <div className="loading-spinner"></div>
-          </div>
-        )}
-        <img
-          ref={imgRef}
-          src={item.actualUrl}
-          alt={item.name}
-          className={isLoading ? "hidden" : "loaded"}
+  return (
+    <div className="image-popup">
+      <div className="image-popup-content" ref={popupRef}>
+        <div
+          className="image-container"
+          {...bindDrag()}
+          {...bindPinch()}
           style={{
             transform: `scale(${scale}) translate(${position.x}px, ${position.y}px)`,
-            transition: isLoading ? "none" : "transform 0.2s",
-            transformOrigin: "0 0",
           }}
-          onLoad={() => {
-            setIsLoading(false);
-            if (imgRef.current) {
-              imgRef.current.classList.remove("hidden");
-              imgRef.current.classList.add("loaded");
-            }
-          }}
-        />
-      </div>
-    );
-
-  if (!item) return null;
-
-  return (
-    <div
-      className="image-popup"
-      onTouchStart={onTouchStart}
-      onTouchMove={onTouchMove}
-      onTouchEnd={onTouchEnd}
-    >
-      <div className="image-popup-content" ref={popupRef}>
-        {renderContent()}
+        >
+          {isLoading && <div className="loading-spinner"></div>}
+          <img
+            ref={imgRef}
+            src={item.actualUrl}
+            alt={item.name}
+            className={isLoading ? "hidden" : "loaded"}
+            onLoad={() => setIsLoading(false)}
+          />
+        </div>
         <button
           className="popup-button close-button"
           onClick={onClose}
@@ -198,7 +109,6 @@ function ImagePopup({ item, onClose, onNext, onPrevious }) {
           className="popup-button nav-button prev"
           onClick={onPrevious}
           aria-label="Previous"
-          disabled={isPanoramaInteracting || scale !== 1}
         >
           ‹
         </button>
@@ -206,7 +116,6 @@ function ImagePopup({ item, onClose, onNext, onPrevious }) {
           className="popup-button nav-button next"
           onClick={onNext}
           aria-label="Next"
-          disabled={isPanoramaInteracting || scale !== 1}
         >
           ›
         </button>

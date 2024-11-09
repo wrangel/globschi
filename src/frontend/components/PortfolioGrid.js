@@ -5,6 +5,7 @@ import Masonry from "react-masonry-css";
 import { usePinch } from "@use-gesture/react";
 import PortfolioItem from "./PortfolioItem";
 import ImagePopup from "./ImagePopup";
+import PanView from "./PanView"; // Import PanView
 
 function PortfolioGrid({ items }) {
   const [selectedItemId, setSelectedItemId] = useState(null);
@@ -84,14 +85,21 @@ function PortfolioGrid({ items }) {
           {masonryItems}
         </Masonry>
       </div>
-      {selectedItem && (
-        <ImagePopup
-          item={selectedItem}
-          onClose={handleClosePopup}
-          onNext={handleNextItem}
-          onPrevious={handlePreviousItem}
-        />
-      )}
+
+      {selectedItem &&
+        (selectedItem.viewer === "pano" ? (
+          <PanView
+            imageUrl={selectedItem.actualUrl}
+            onClose={handleClosePopup}
+          />
+        ) : (
+          <ImagePopup
+            item={selectedItem}
+            onClose={handleClosePopup}
+            onNext={handleNextItem}
+            onPrevious={handlePreviousItem}
+          />
+        ))}
     </>
   );
 }

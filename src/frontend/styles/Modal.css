@@ -16,11 +16,10 @@
 .modal-content {
   background-color: white;
   border-radius: 8px;
-  padding: 20px;
-  width: 90%; /* Set width to a percentage of the viewport */
-  max-width: 800px; /* Limit maximum width for larger screens */
+  padding: 0; /* Remove padding to eliminate white space */
+  width: 95%; /* Set width to a percentage of the viewport */
+  max-width: 1200px; /* Limit maximum width for larger screens */
   max-height: 90%; /* Limit maximum height */
-  overflow-y: auto; /* Allow scrolling if content is too tall */
 }
 
 .close-button {

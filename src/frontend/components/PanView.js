@@ -41,12 +41,14 @@ export default function PanView({ imageUrl, onClose }) {
   };
 
   return (
-    <div className="pan-view">
+    <div className="pan-view" style={{ margin: "0", padding: "0" }}>
+      {" "}
+      {/* Remove margin and padding */}
       <button onClick={onClose}>Close Viewer</button>
       {imageUrl ? (
         <ReactPhotoSphereViewer
           src={imageUrl}
-          height="80vh" // Adjust height to fit better in modal
+          height="80vh" // Set height to fit better in modal
           width="100%"
           defaultZoomLvl={50}
           maxFov={panoMaxFov}

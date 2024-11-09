@@ -2,7 +2,6 @@
 
 import React, { useState, useCallback, useMemo, useRef } from "react";
 import Masonry from "react-masonry-css";
-import { usePinch } from "@use-gesture/react";
 import PortfolioItem from "./PortfolioItem";
 import ImagePopup from "./ImagePopup";
 import PanView from "./PanView"; // Import PanView
@@ -11,7 +10,6 @@ import FullScreenModal from "./FullScreenModal"; // Import FullScreenModal
 function PortfolioGrid({ items }) {
   const [selectedItemId, setSelectedItemId] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [columnCount, setColumnCount] = useState(4);
   const gridRef = useRef(null);
 
   const handleItemClick = useCallback((clickedItem) => {
@@ -48,7 +46,7 @@ function PortfolioGrid({ items }) {
       <div ref={gridRef}>
         <Masonry
           breakpointCols={{
-            default: columnCount,
+            default: 4,
             // Define breakpoints as needed
           }}
           className="masonry-grid"

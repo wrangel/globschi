@@ -1,11 +1,13 @@
 // src/views/PanoPage.js
 
 import React, { useState, useEffect, useCallback } from "react";
+import PanView from "../components/PanView"; // Import your PanView component
 
 function PanoPage() {
   const [items, setItems] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [selectedItemUrl, setSelectedItemUrl] = useState(null); // State for selected panorama URL
 
   const fetchData = useCallback(async () => {
     try {
@@ -18,11 +20,6 @@ function PanoPage() {
       // Filter items to only include those with viewer 'pano'
       const filteredItems = data.filter((item) => item.viewer === "pano");
       setItems(filteredItems);
-
-      // Console log all the properties of each item
-      filteredItems.forEach((item, index) => {
-        console.log(`Item ${index + 1}:`, item);
-      });
     } catch (e) {
       console.error("Error fetching data:", e);
       setError("Failed to load items. Please try again later.");
@@ -35,26 +32,33 @@ function PanoPage() {
     fetchData();
   }, [fetchData]);
 
-  if (isLoading) {
-    return <div className="pano-page">Loading...</div>;
-  }
+  const handleItemClick = (url) => {
+    setSelectedItemUrl(url); // Set the selected URL for viewing
+  };
 
-  if (error) {
-    return <div className="pano-page">Error: {error}</div>;
-  }
+  const handleCloseViewer = () => {
+    setSelectedItemUrl(null); // Close the viewer
+  };
+
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error}</div>;
 
   return (
     <div className="pano-page">
       <h1>Panorama URLs</h1>
       <ul>
-        {items.map((item, index) => (
-          <li key={index}>
-            <a href={item.actualUrl} target="_blank" rel="noopener noreferrer">
-              {item.name || `Panorama ${index + 1}`}
-            </a>
+        {items.map((item) => (
+          <li key={item.id} onClick={() => handleItemClick(item.actualUrl)}>
+            {item.name || `Panorama ${item.id}`}
           </li>
         ))}
       </ul>
+
+      {selectedItemUrl && (
+        <div className="panorama-viewer-popup">
+          <PanView imageUrl={selectedItemUrl} onClose={handleCloseViewer} />
+        </div>
+      )}
     </div>
   );
 }

@@ -10,7 +10,6 @@ const ImagePopup = memo(({ item, onClose, onNext, onPrevious }) => {
   const [scale, setScale] = useState(1);
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const imgRef = useRef(null);
-  const popupRef = useRef(null);
 
   // Load image
   useEffect(() => {
@@ -23,7 +22,6 @@ const ImagePopup = memo(({ item, onClose, onNext, onPrevious }) => {
         setIsLoading(false);
         if (imgRef.current) {
           imgRef.current.src = item.actualUrl;
-          imgRef.current.classList.add(styles.loaded);
         }
       };
 
@@ -42,120 +40,75 @@ const ImagePopup = memo(({ item, onClose, onNext, onPrevious }) => {
     setScale(Math.max(1, Math.min(5, d)));
   });
 
-  // Toggle metadata
-  const toggleMetadata = useCallback(() => {
+  // Toggle metadata visibility
+  const toggleMetadata = () => {
     setShowMetadata((prev) => !prev);
-  }, []);
-
-  // Keyboard navigation
-  const handleKeyDown = useCallback(
-    (event) => {
-      if (event.key === "Escape") {
-        onClose();
-      } else if (event.key === "ArrowLeft") {
-        onPrevious();
-      } else if (event.key === "ArrowRight") {
-        onNext();
-      }
-    },
-    [onClose, onNext, onPrevious]
-  );
-
-  // Event listeners for keyboard navigation
-  useEffect(() => {
-    document.addEventListener("keydown", handleKeyDown);
-    return () => {
-      document.removeEventListener("keydown", handleKeyDown); // Cleanup
-    };
-  }, [handleKeyDown]);
-
-  // Render metadata only if the image has loaded
-  const renderMetadata = () => (
-    <div
-      className={`${styles.metadataPopup} ${
-        showMetadata ? styles.visible : ""
-      }`}
-    >
-      <pre>{item.metadata}</pre>
-      <a
-        href={`https://www.google.com/maps/search/?api=1&query=${item.latitude},${item.longitude}&maptype=satellite`}
-        target="_blank"
-        rel="noopener noreferrer"
-        className={styles.mapLink}
-        aria-label="View location on map"
-      >
-        View on Map
-      </a>
-    </div>
-  );
+  };
 
   return (
-    <div
-      className={styles.imagePopup}
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="image-popup-title"
-    >
-      <h2 id="image-popup-title" className={styles.visuallyHidden}>
-        Image Viewer
-      </h2>
-      <div className={styles.imagePopupContent} ref={popupRef}>
-        <div
-          className={styles.imageContainer}
-          {...bindDrag()}
-          {...bindPinch()}
-          style={{
-            transform: `scale(${scale}) translate(${position.x}px, ${position.y}px)`,
-          }}
-        >
-          {isLoading && <div className={styles.loadingSpinner}></div>}
-          <img
-            ref={imgRef}
-            src={item.actualUrl}
-            alt={item.name}
-            className={`${styles.image} ${
-              isLoading ? styles.hidden : styles.loaded
-            }`}
-            onLoad={() => setIsLoading(false)}
-            loading="lazy" // Lazy loading attribute for the image
-          />
-        </div>
-
-        {/* Only render metadata after the image has loaded */}
-        {!isLoading && (
-          <>
-            <button
-              className={`${styles.popupButton} ${styles.closeButton}`}
-              onClick={onClose}
-              aria-label="Close image popup"
-            >
-              ×
-            </button>
-            <button
-              className={`${styles.popupButton} ${styles.navButton} ${styles.prevButton}`}
-              onClick={onPrevious}
-              aria-label="Previous image"
-            >
-              ‹
-            </button>
-            <button
-              className={`${styles.popupButton} ${styles.navButton} ${styles.nextButton}`}
-              onClick={onNext}
-              aria-label="Next image"
-            >
-              ›
-            </button>
-            <button
-              className={`${styles.popupButton} ${styles.metadataButton}`}
-              onClick={toggleMetadata}
-              aria-label="Toggle Metadata"
-            >
-              i
-            </button>
-            {renderMetadata()}
-          </>
-        )}
+    <div className={styles.imagePopup} role="dialog" aria-modal="true">
+      <h2 className={styles.visuallyHidden}>Image Viewer</h2>
+      <div
+        className={styles.imageContainer}
+        {...bindDrag()}
+        {...bindPinch()}
+        style={{
+          transform: `scale(${scale}) translate(${position.x}px, ${position.y}px)`,
+        }}
+      >
+        {isLoading && <div className={styles.loadingSpinner}></div>}
+        <img
+          ref={imgRef}
+          src={item.actualUrl}
+          alt={item.name}
+          className={`${styles.image} ${isLoading ? styles.hidden : ""}`}
+        />
       </div>
+
+      {/* Control Buttons */}
+      <button
+        className={`${styles.popupButton} ${styles.closeButton}`}
+        onClick={onClose}
+        aria-label="Close image popup"
+      >
+        ×
+      </button>
+      <button
+        className={`${styles.popupButton} ${styles.prevButton}`}
+        onClick={onPrevious}
+        aria-label="Previous image"
+      >
+        ‹
+      </button>
+      <button
+        className={`${styles.popupButton} ${styles.nextButton}`}
+        onClick={onNext}
+        aria-label="Next image"
+      >
+        ›
+      </button>
+      <button
+        className={`${styles.popupButton} ${styles.metadataButton}`}
+        onClick={toggleMetadata}
+        aria-label="Toggle Metadata"
+      >
+        i
+      </button>
+
+      {/* Metadata Popup */}
+      {showMetadata && (
+        <div className={styles.metadataPopup}>
+          <pre>{item.metadata}</pre>
+          <a
+            href={`https://www.google.com/maps/search/?api=1&query=${item.latitude},${item.longitude}&maptype=satellite`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={styles.mapLink}
+          >
+            View on Map
+          </a>
+        </div>
+      )}
     </div>
   );
 });

@@ -9,9 +9,10 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100px; /* Increase the size of the header box */
+  height: 10vh; /* Use viewport height to make the header size responsive */
 }
 
 h1 {
   margin: 0;
+  font-size: 2rem; /* Adjust font size using relative units */
 }

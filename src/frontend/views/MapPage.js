@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { MapContainer, TileLayer, Marker } from "react-leaflet";
-import ImagePopup from "../components/ImagePopup";
-import PanoramaViewer from "../components/PanoramaViewer"; // Import PanoramaViewer
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import styles from "../styles/Map.module.css";
@@ -22,8 +20,6 @@ const MapPage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [selectedItemIndex, setSelectedItemIndex] = useState(null);
-  const [isPopupOpen, setIsPopupOpen] = useState(false);
-  const [isPanoramaOpen, setIsPanoramaOpen] = useState(false); // State for Panorama Viewer
 
   // Fetch data from backend
   const fetchData = async () => {
@@ -48,31 +44,14 @@ const MapPage = () => {
 
   // Handle marker click events
   const handleMarkerClick = (index) => {
-    const item = items[index]; // Get the clicked item
-    setSelectedItemIndex(index);
-
-    if (item.viewer === "image") {
-      setIsPopupOpen(true); // Open ImagePopup if viewer is image
-    } else if (item.viewer === "pano") {
-      setIsPanoramaOpen(true); // Open PanoramaViewer if viewer is panorama
-    }
-  };
-
-  const handleClosePopup = () => {
-    setIsPopupOpen(false);
-    setSelectedItemIndex(null);
-  };
-
-  const handleClosePanorama = () => {
-    setIsPanoramaOpen(false);
-    setSelectedItemIndex(null);
+    setSelectedItemIndex(index); // Set the selected item index
   };
 
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
 
   return (
-    <>
+    <div>
       <MapContainer
         center={[0, 0]}
         zoom={2}
@@ -96,29 +75,21 @@ const MapPage = () => {
         ))}
       </MapContainer>
 
-      {/* Render ImagePopup or PanoramaViewer based on selection */}
-      {isPopupOpen && selectedItemIndex !== null && (
-        <ImagePopup
-          item={items[selectedItemIndex]}
-          onClose={handleClosePopup}
-          onNext={() =>
-            handleMarkerClick((selectedItemIndex + 1) % items.length)
-          }
-          onPrevious={() =>
-            handleMarkerClick(
-              (selectedItemIndex - 1 + items.length) % items.length
-            )
-          }
-        />
+      {/* Display selected item properties */}
+      {selectedItemIndex !== null && (
+        <div className={styles.itemDetails}>
+          <h3>Item Details</h3>
+          <ul>
+            {Object.entries(items[selectedItemIndex]).map(([key, value]) => (
+              <li key={key}>
+                <strong>{key}:</strong> {value.toString()}
+              </li>
+            ))}
+          </ul>
+          <button onClick={() => setSelectedItemIndex(null)}>Close</button>
+        </div>
       )}
-
-      {isPanoramaOpen && selectedItemIndex !== null && (
-        <PanoramaViewer
-          imageUrl={items[selectedItemIndex].actualUrl} // Assuming actualUrl is the panorama URL
-          onClose={handleClosePanorama} // Add close handler for panorama viewer
-        />
-      )}
-    </>
+    </div>
   );
 };
 

@@ -1,4 +1,4 @@
-// src/components/PortfolioItem.js
+// src/frontend/components/PortfolioItem.js
 
 import React, { useCallback, memo } from "react";
 import styles from "../styles/PortfolioItem.module.css";

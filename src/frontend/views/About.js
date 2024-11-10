@@ -60,9 +60,9 @@ const About = () => {
           rel="noopener noreferrer"
           href="https://photo-sphere-viewer.js.org/"
         >
-          Photo Sphere Viewer XXXXXXX
+          Photo Sphere Viewer
         </a>{" "}
-        for the fantastic 360&deg; panorama display.
+        for the 360&deg; panorama display.
       </p>
       <p>
         <a

@@ -9,6 +9,8 @@ import {
 } from "react-router-dom";
 import ErrorBoundary from "./components/ErrorBoundary";
 import HamburgerMenu from "./components/HamburgerMenu";
+import ImagePopup from "./components/ImagePopup"; // Import ImagePopup
+import PanoramaViewer from "./components/PanoramaViewer"; // Import PanoramaViewer
 import styles from "./styles/SharedStyles.module.css";
 
 // Lazy load the Home, About, and Map components
@@ -18,6 +20,8 @@ const Map = React.lazy(() => import("./views/Map"));
 
 function App() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isImagePopupOpen, setIsImagePopupOpen] = useState(false);
+  const [isPanoramaOpen, setIsPanoramaOpen] = useState(false);
 
   const toggleMenu = () => {
     setIsMenuOpen((prev) => !prev);
@@ -30,22 +34,66 @@ function App() {
     setIsMenuOpen(false);
   };
 
+  const handleOpenImagePopup = () => {
+    setIsImagePopupOpen(true);
+    setIsMenuOpen(false); // Close menu if it's open
+  };
+
+  const handleCloseImagePopup = () => {
+    setIsImagePopupOpen(false);
+  };
+
+  const handleOpenPanoramaViewer = () => {
+    setIsPanoramaOpen(true);
+    setIsMenuOpen(false); // Close menu if it's open
+  };
+
+  const handleClosePanoramaViewer = () => {
+    setIsPanoramaOpen(false);
+  };
+
   return (
     <div className={styles.app}>
       <HamburgerMenu
-        isOpen={isMenuOpen}
+        isOpen={!isImagePopupOpen && !isPanoramaOpen && isMenuOpen} // Show only if no popups are open
         onToggle={toggleMenu}
         onNavigate={handleNavigate}
       />
       <ErrorBoundary>
         <Suspense fallback={<div className={styles.loading}>Loading...</div>}>
           <Routes>
-            <Route path="/" element={<Home />} />
+            <Route
+              path="/"
+              element={
+                <Home
+                  onOpenImage={handleOpenImagePopup}
+                  onOpenPanorama={handleOpenPanoramaViewer}
+                />
+              }
+            />
             <Route path="/about" element={<About />} />
             <Route path="/map" element={<Map />} />
           </Routes>
         </Suspense>
       </ErrorBoundary>
+
+      {/* Render popups conditionally */}
+      {isImagePopupOpen && (
+        <ImagePopup
+          item={
+            {
+              /* Pass your item data here */
+            }
+          }
+          onClose={handleCloseImagePopup}
+        />
+      )}
+      {isPanoramaOpen && (
+        <PanoramaViewer
+          imageUrl={"/* Your panorama URL here */"}
+          onClose={handleClosePanoramaViewer}
+        />
+      )}
     </div>
   );
 }

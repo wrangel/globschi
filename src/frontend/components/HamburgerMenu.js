@@ -5,6 +5,9 @@ import PropTypes from "prop-types"; // Ensure PropTypes is imported
 import styles from "../styles/HamburgerMenu.module.css";
 
 const HamburgerMenu = memo(({ isOpen, onToggle, onNavigate }) => {
+  // If not open, do not render anything
+  if (!isOpen) return null;
+
   return (
     <div className={styles.hamburgerMenu}>
       <button
@@ -14,13 +17,11 @@ const HamburgerMenu = memo(({ isOpen, onToggle, onNavigate }) => {
       >
         &#9776; {/* Hamburger icon */}
       </button>
-      {isOpen && (
-        <div className={styles.menuDropdown}>
-          <button onClick={() => onNavigate("/")}>Home</button>
-          <button onClick={() => onNavigate("/about")}>About</button>
-          <button onClick={() => onNavigate("/map")}>Map</button>
-        </div>
-      )}
+      <div className={styles.menuDropdown}>
+        <button onClick={() => onNavigate("/")}>Home</button>
+        <button onClick={() => onNavigate("/about")}>About</button>
+        <button onClick={() => onNavigate("/map")}>Map</button>
+      </div>
     </div>
   );
 });

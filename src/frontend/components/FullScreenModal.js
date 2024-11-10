@@ -1,10 +1,10 @@
 // src/frontend/components/FullScreenModal.js
 
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, memo } from "react";
 import PropTypes from "prop-types";
 import styles from "../styles/FullScreenModal.module.css";
 
-const FullScreenModal = ({ isOpen, onClose, children }) => {
+const FullScreenModal = memo(({ isOpen, onClose, children }) => {
   const modalRef = useRef(null);
   const triggerRef = useRef(null);
 
@@ -61,12 +61,11 @@ const FullScreenModal = ({ isOpen, onClose, children }) => {
         ref={modalRef}
         role="dialog"
         aria-modal="true"
-        aria-labelledby="modal-title" // Add an ID for labeling
+        aria-labelledby="modal-title"
       >
         <h2 id="modal-title" className={styles.visuallyHidden}>
           Modal Title
-        </h2>{" "}
-        {/* Visually hidden title */}
+        </h2>
         {children}
         <button
           className={styles.closeButton}
@@ -78,7 +77,7 @@ const FullScreenModal = ({ isOpen, onClose, children }) => {
       </div>
     </div>
   );
-};
+});
 
 FullScreenModal.propTypes = {
   isOpen: PropTypes.bool.isRequired,

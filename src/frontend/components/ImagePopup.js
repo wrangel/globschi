@@ -1,8 +1,8 @@
-// src/frontend/components/ImagePopup.js
+// src/components/ImagePopup.js
 
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useDrag, usePinch } from "@use-gesture/react";
-import styles from "../styles/ImagePopup.module.css";
+import styles from "../styles/ImagePopup.module.css"; // Assuming you have a CSS module for styles
 
 function ImagePopup({ item, onClose, onNext, onPrevious }) {
   const [isLoading, setIsLoading] = useState(true);
@@ -18,12 +18,18 @@ function ImagePopup({ item, onClose, onNext, onPrevious }) {
       setIsLoading(true);
       const img = new Image();
       img.src = item.actualUrl;
+
       img.onload = () => {
         setIsLoading(false);
         if (imgRef.current) {
           imgRef.current.src = item.actualUrl;
           imgRef.current.classList.add(styles.loaded);
         }
+      };
+
+      // Cleanup function to prevent memory leaks
+      return () => {
+        img.onload = null; // Remove the onload handler
       };
     }
   }, [item]);
@@ -60,7 +66,7 @@ function ImagePopup({ item, onClose, onNext, onPrevious }) {
   useEffect(() => {
     document.addEventListener("keydown", handleKeyDown);
     return () => {
-      document.removeEventListener("keydown", handleKeyDown);
+      document.removeEventListener("keydown", handleKeyDown); // Cleanup on unmount
     };
   }, [handleKeyDown]);
 
@@ -103,6 +109,7 @@ function ImagePopup({ item, onClose, onNext, onPrevious }) {
               isLoading ? styles.hidden : styles.loaded
             }`}
             onLoad={() => setIsLoading(false)}
+            loading="lazy" // Lazy loading attribute for the image
           />
         </div>
         <button

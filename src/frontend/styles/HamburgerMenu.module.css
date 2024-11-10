@@ -10,8 +10,13 @@
 .menuIcon {
   background: none; /* No background */
   border: none; /* No border */
-  color: white; /* Icon color */
-  font-size: 24px; /* Size of the icon */
+  color: rgba(
+    255,
+    255,
+    255,
+    0.9
+  ); /* Slightly less transparent white for better visibility */
+  font-size: 28px; /* Increase size of the icon */
   cursor: pointer; /* Pointer cursor on hover */
 }
 
@@ -19,9 +24,9 @@
   position: absolute; /* Position dropdown absolutely */
   top: 40px; /* Adjust based on your layout */
   left: 0; /* Align to the left */
-  background-color: transparent; /* Make background transparent */
-  padding: 0; /* Remove padding around dropdown items if desired */
-  border-radius: 0; /* No rounded corners for a minimalist look */
+  background-color: transparent; /* No background for dropdown */
+  padding: 0; /* Remove padding around dropdown items */
+  border-radius: 0; /* No rounded corners */
   z-index: 1001; /* Ensure this is higher than the map’s z-index */
 }
 
@@ -31,12 +36,8 @@
 
 .menuDropdown button {
   display: block; /* Block display for links */
-  color: rgba(
-    255,
-    255,
-    255,
-    0.8
-  ); /* Semi-transparent white text for contrast */
+  color: rgba(255, 255, 255, 0.9); /* Use a more visible white color for text */
+  font-size: 18px; /* Increase font size for dropdown items */
   text-decoration: none; /* Remove underline */
   padding: 5px; /* Slight padding for better click area */
   margin: 0; /* Remove margin for a minimalist look */
@@ -49,6 +50,6 @@
     255,
     255,
     255,
-    0.1
+    0.2
   ); /* Lightens on hover for visibility */
 }

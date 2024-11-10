@@ -31,11 +31,11 @@ const PortfolioItem = memo(({ item, onItemClick }) => {
       onKeyDown={handleKeyDown} // Handle keyboard navigation
       role="button" // Indicate that this div is a button
       tabIndex={0} // Make the div focusable
-      aria-label={`View ${item.name}`} // Provide an accessible label
+      aria-label={`View ${item.id}`} // Provide an accessible label
     >
       <img
         src={item.thumbnailUrl}
-        alt={item.name || "Portfolio item"} // Fallback alt text
+        alt={item.id || "Portfolio item"} // Fallback alt text
         loading="lazy" // Lazy load the image
       />
     </div>
@@ -46,7 +46,6 @@ const PortfolioItem = memo(({ item, onItemClick }) => {
 PortfolioItem.propTypes = {
   item: PropTypes.shape({
     id: PropTypes.string.isRequired,
-    name: PropTypes.string.isRequired,
     thumbnailUrl: PropTypes.string.isRequired,
   }).isRequired,
   onItemClick: PropTypes.func.isRequired,

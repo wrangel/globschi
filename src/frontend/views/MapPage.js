@@ -1,8 +1,9 @@
 // src/views/MapPage.js
 
 import React, { useState, useEffect } from "react";
-import { MapContainer, TileLayer, Marker, ZoomControl } from "react-leaflet"; // Import ZoomControl
+import { MapContainer, TileLayer, Marker } from "react-leaflet";
 import ImagePopup from "../components/ImagePopup";
+import PanoramaViewer from "../components/PanoramaViewer"; // Import PanoramaViewer
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import styles from "../styles/Map.module.css";
@@ -24,6 +25,7 @@ const MapPage = () => {
   const [error, setError] = useState(null);
   const [selectedItemIndex, setSelectedItemIndex] = useState(null);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const [isPanoramaOpen, setIsPanoramaOpen] = useState(false); // State for Panorama Viewer
 
   const fetchData = async () => {
     try {
@@ -43,12 +45,17 @@ const MapPage = () => {
 
   useEffect(() => {
     fetchData();
-    console.log("Fetched items:", items); // Log fetched items
   }, []);
 
   const handleMarkerClick = (index) => {
+    const item = items[index]; // Get the clicked item
     setSelectedItemIndex(index);
-    setIsPopupOpen(true);
+
+    if (item.viewer === "image") {
+      setIsPopupOpen(true); // Open ImagePopup if viewer is image
+    } else if (item.viewer === "pano") {
+      setIsPanoramaOpen(true); // Open PanoramaViewer if viewer is panorama
+    }
   };
 
   const handleClosePopup = () => {
@@ -56,16 +63,9 @@ const MapPage = () => {
     setSelectedItemIndex(null);
   };
 
-  const handleNext = () => {
-    setSelectedItemIndex((prevIndex) =>
-      prevIndex < items.length - 1 ? prevIndex + 1 : 0
-    );
-  };
-
-  const handlePrevious = () => {
-    setSelectedItemIndex((prevIndex) =>
-      prevIndex > 0 ? prevIndex - 1 : items.length - 1
-    );
+  const handleClosePanorama = () => {
+    setIsPanoramaOpen(false);
+    setSelectedItemIndex(null);
   };
 
   if (isLoading) return <div>Loading...</div>;
@@ -76,9 +76,9 @@ const MapPage = () => {
       <MapContainer
         center={[0, 0]}
         zoom={2}
-        className={styles.leafletContainer} // Use styles from the module
+        className={styles.leafletContainer}
         style={{ height: "100vh", width: "100%" }}
-        zoomControl={false} // Disable default zoom control to avoid conflicts
+        zoomControl={false} // Disable default zoom control
       >
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -94,14 +94,27 @@ const MapPage = () => {
             }}
           />
         ))}
-        <ZoomControl position="bottomleft" /> {/* Add Zoom Control */}
       </MapContainer>
+
+      {/* Render ImagePopup or PanoramaViewer based on selection */}
       {isPopupOpen && selectedItemIndex !== null && (
         <ImagePopup
           item={items[selectedItemIndex]}
           onClose={handleClosePopup}
-          onNext={handleNext}
-          onPrevious={handlePrevious}
+          onNext={() =>
+            handleMarkerClick((selectedItemIndex + 1) % items.length)
+          }
+          onPrevious={() =>
+            handleMarkerClick(
+              (selectedItemIndex - 1 + items.length) % items.length
+            )
+          }
+        />
+      )}
+
+      {isPanoramaOpen && selectedItemIndex !== null && (
+        <PanoramaViewer
+          imageUrl={items[selectedItemIndex].actualUrl} // Assuming actualUrl is the panorama URL
         />
       )}
     </>

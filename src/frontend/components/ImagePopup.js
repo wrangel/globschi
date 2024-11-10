@@ -1,10 +1,10 @@
-// src/frontend/components/ImagePopup.js
+// src/components/ImagePopup.js
 
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import React, { useState, useEffect, useRef, useCallback, memo } from "react";
 import { useDrag, usePinch } from "@use-gesture/react";
 import styles from "../styles/ImagePopup.module.css";
 
-function ImagePopup({ item, onClose, onNext, onPrevious }) {
+const ImagePopup = memo(({ item, onClose, onNext, onPrevious }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [showMetadata, setShowMetadata] = useState(false);
   const [scale, setScale] = useState(1);
@@ -69,7 +69,7 @@ function ImagePopup({ item, onClose, onNext, onPrevious }) {
     };
   }, [handleKeyDown]);
 
-  // Render metadata
+  // Render metadata only if the image has loaded
   const renderMetadata = () => (
     <div
       className={`${styles.metadataPopup} ${
@@ -120,38 +120,44 @@ function ImagePopup({ item, onClose, onNext, onPrevious }) {
             loading="lazy" // Lazy loading attribute for the image
           />
         </div>
-        <button
-          className={`${styles.popupButton} ${styles.closeButton}`}
-          onClick={onClose}
-          aria-label="Close image popup"
-        >
-          ×
-        </button>
-        <button
-          className={`${styles.popupButton} ${styles.navButton} ${styles.prevButton}`}
-          onClick={onPrevious}
-          aria-label="Previous image"
-        >
-          ‹
-        </button>
-        <button
-          className={`${styles.popupButton} ${styles.navButton} ${styles.nextButton}`}
-          onClick={onNext}
-          aria-label="Next image"
-        >
-          ›
-        </button>
-        <button
-          className={`${styles.popupButton} ${styles.metadataButton}`}
-          onClick={toggleMetadata}
-          aria-label="Toggle Metadata"
-        >
-          i
-        </button>
-        {renderMetadata()}
+
+        {/* Only render metadata after the image has loaded */}
+        {!isLoading && (
+          <>
+            <button
+              className={`${styles.popupButton} ${styles.closeButton}`}
+              onClick={onClose}
+              aria-label="Close image popup"
+            >
+              ×
+            </button>
+            <button
+              className={`${styles.popupButton} ${styles.navButton} ${styles.prevButton}`}
+              onClick={onPrevious}
+              aria-label="Previous image"
+            >
+              ‹
+            </button>
+            <button
+              className={`${styles.popupButton} ${styles.navButton} ${styles.nextButton}`}
+              onClick={onNext}
+              aria-label="Next image"
+            >
+              ›
+            </button>
+            <button
+              className={`${styles.popupButton} ${styles.metadataButton}`}
+              onClick={toggleMetadata}
+              aria-label="Toggle Metadata"
+            >
+              i
+            </button>
+            {renderMetadata()}
+          </>
+        )}
       </div>
     </div>
   );
-}
+});
 
 export default ImagePopup;

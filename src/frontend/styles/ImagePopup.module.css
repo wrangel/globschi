@@ -10,14 +10,10 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 1000;
 }
 
 .imagePopupContent {
   position: relative;
-  max-width: 95%;
-  max-height: 95%;
-  background-color: black;
 }
 
 .loadingSpinner {
@@ -29,143 +25,89 @@
   border: 3px solid rgba(255, 255, 255, 0.3);
   border-radius: 50%;
   border-top: 3px solid #fff;
-  animation: spin 1s linear infinite;
-  z-index: 2;
-}
-
-.thumbnailContainer {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 50%;
-  height: auto;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  animation: spin 0.6s linear infinite;
 }
 
 .imageContainer {
+  /* Additional styles for the image container */
   position: relative;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  overflow: hidden;
-  touch-action: none;
-}
-
-.thumbnail {
-  max-width: 100%;
-  max-height: 100%;
-  object-fit: contain;
+  overflow: hidden; /* Ensure the container hides overflow */
 }
 
 .image {
-  max-width: 100%;
-  max-height: 100%;
-  object-fit: contain;
-  transition: opacity 0.3s ease, transform 0.2s;
-  -webkit-user-select: none; /* Safari 3+ */
-  user-select: none; /* Standard syntax */
+  max-width: calc(100% - var(--gutter-size));
+  max-height: calc(100% - var(--gutter-size));
+  object-fit: contain; /* Maintain aspect ratio */
+  transition: opacity 0.3s ease-in-out; /* Smooth transition for opacity */
 }
 
 .hidden {
-  opacity: 0;
+  opacity: 0; /* Hide image while loading */
 }
 
 .loaded {
-  opacity: 1;
-}
-
-.panoramaContainer {
-  width: 100%;
-  height: 100%;
+  opacity: 1; /* Show image when loaded */
 }
 
 .popupButton {
   position: absolute;
   background-color: transparent;
-  color: rgba(255, 255, 255, 0.6);
+  color: rgba(255, 255, 255, 0.6); /* More transparent */
   border: none;
   cursor: pointer;
-  font-size: 24px;
-  width: 40px;
+  font-size: 24px; /* Adjust size as needed */
+  width: 40px; /* Button dimensions */
   height: 40px;
   display: flex;
   justify-content: center;
   align-items: center;
-  transition: all var(--transition-duration) ease;
-  mix-blend-mode: difference;
-  z-index: 1;
-  padding: 0;
-}
-
-.popupButton:hover {
-  opacity: 1;
+  z-index: 1; /* Ensure buttons are above other elements */
 }
 
 .closeButton {
-  top: 10px;
-  right: 10px;
+  top: 20px;
+  right: 20px;
 }
-
-.metadataButton {
-  top: 10px;
+.prevButton {
   left: 10px;
-}
-
-.navButton {
   top: 50%;
   transform: translateY(-50%);
 }
-
-.prevButton {
-  left: 10px;
-}
-
 .nextButton {
   right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+.metadataButton {
+  top: 20px;
+  left: 20px;
 }
 
 .metadataPopup {
   position: absolute;
-  top: 60px;
-  left: 10px;
-  background-color: rgba(0, 0, 0, 0.5);
-  color: var(--text-color);
-  padding: 12px;
-  border-radius: 5px;
-  font-size: 0.95em;
-  max-width: 300px;
-  z-index: 1001;
-  opacity: 0;
-  transition: opacity var(--transition-duration) ease;
+  top: auto; /* Adjust as needed */
+  left: auto;
+  background-color: #000;
+  color: #fff;
+  padding: 0.5em;
+  border-radius: 0.5em;
 }
 
-.visible {
-  opacity: 1;
-}
-
-.mapLink {
-  display: inline-block;
-  margin-top: 6px;
-  color: var(--text-color);
-  text-decoration: none;
-  font-size: inherit;
-  font-family: inherit;
-}
-
-.mapLink:hover {
-  text-decoration: underline;
+.visuallyHidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: path(0); /* Hide visually but keep accessible */
 }
 
 @keyframes spin {
-  0% {
+  from {
     transform: rotate(0deg);
   }
-  100% {
+  to {
     transform: rotate(360deg);
   }
 }

@@ -1,8 +1,8 @@
-// src/components/ImagePopup.js
+// src/frontend/components/ImagePopup.js
 
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useDrag, usePinch } from "@use-gesture/react";
-import styles from "../styles/ImagePopup.module.css"; // Assuming you have a CSS module for styles
+import styles from "../styles/ImagePopup.module.css";
 
 function ImagePopup({ item, onClose, onNext, onPrevious }) {
   const [isLoading, setIsLoading] = useState(true);
@@ -27,9 +27,8 @@ function ImagePopup({ item, onClose, onNext, onPrevious }) {
         }
       };
 
-      // Cleanup function to prevent memory leaks
       return () => {
-        img.onload = null; // Remove the onload handler
+        img.onload = null; // Cleanup
       };
     }
   }, [item]);
@@ -66,7 +65,7 @@ function ImagePopup({ item, onClose, onNext, onPrevious }) {
   useEffect(() => {
     document.addEventListener("keydown", handleKeyDown);
     return () => {
-      document.removeEventListener("keydown", handleKeyDown); // Cleanup on unmount
+      document.removeEventListener("keydown", handleKeyDown); // Cleanup
     };
   }, [handleKeyDown]);
 
@@ -83,6 +82,7 @@ function ImagePopup({ item, onClose, onNext, onPrevious }) {
         target="_blank"
         rel="noopener noreferrer"
         className={styles.mapLink}
+        aria-label="View location on map"
       >
         View on Map
       </a>
@@ -90,7 +90,15 @@ function ImagePopup({ item, onClose, onNext, onPrevious }) {
   );
 
   return (
-    <div className={styles.imagePopup}>
+    <div
+      className={styles.imagePopup}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="image-popup-title"
+    >
+      <h2 id="image-popup-title" className={styles.visuallyHidden}>
+        Image Viewer
+      </h2>
       <div className={styles.imagePopupContent} ref={popupRef}>
         <div
           className={styles.imageContainer}
@@ -115,21 +123,21 @@ function ImagePopup({ item, onClose, onNext, onPrevious }) {
         <button
           className={`${styles.popupButton} ${styles.closeButton}`}
           onClick={onClose}
-          aria-label="Close"
+          aria-label="Close image popup"
         >
           ×
         </button>
         <button
           className={`${styles.popupButton} ${styles.navButton} ${styles.prevButton}`}
           onClick={onPrevious}
-          aria-label="Previous"
+          aria-label="Previous image"
         >
           ‹
         </button>
         <button
           className={`${styles.popupButton} ${styles.navButton} ${styles.nextButton}`}
           onClick={onNext}
-          aria-label="Next"
+          aria-label="Next image"
         >
           ›
         </button>

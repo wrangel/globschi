@@ -61,7 +61,12 @@ const FullScreenModal = ({ isOpen, onClose, children }) => {
         ref={modalRef}
         role="dialog"
         aria-modal="true"
+        aria-labelledby="modal-title" // Add an ID for labeling
       >
+        <h2 id="modal-title" className={styles.visuallyHidden}>
+          Modal Title
+        </h2>{" "}
+        {/* Visually hidden title */}
         {children}
         <button
           className={styles.closeButton}

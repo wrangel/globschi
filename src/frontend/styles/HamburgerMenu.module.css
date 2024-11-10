@@ -23,26 +23,8 @@
   padding: 10px; /* Padding around dropdown items */
   border-radius: 5px; /* Rounded corners */
   z-index: 1001; /* Ensure this is higher than the map’s z-index */
-  display: none; /* Hide dropdown by default */
 }
 
 .menuDropdown.open {
   display: block; /* Show dropdown when open */
-}
-
-.menuDropdown button {
-  display: block; /* Block display for links */
-  color: white; /* Link color - ensure this contrasts with background */
-  text-decoration: none; /* Remove underline */
-  padding: 5px 10px; /* Padding for links */
-  background-color: transparent; /* Make button background transparent to see dropdown bg */
-}
-
-.menuDropdown button:hover {
-  background-color: rgba(
-    255,
-    255,
-    255,
-    0.1
-  ); /* Hover effect - lightens on hover for visibility */
 }

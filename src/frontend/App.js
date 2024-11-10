@@ -27,7 +27,6 @@ function App() {
             <Route path="/" element={<HomePage />} />
             <Route path="/about" element={<AboutPage />} />
             <Route path="/map" element={<MapPage />} />
-            {/* Add route for PanoViewer2 */}
           </Routes>
         </Suspense>
       </ErrorBoundary>

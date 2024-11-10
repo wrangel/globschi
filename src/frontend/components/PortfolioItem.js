@@ -1,9 +1,10 @@
-// src/frontend/components/PortfolioItem.js
+// src/components/PortfolioItem.js
 
-import React, { useCallback, memo } from "react";
+import React, { memo, useCallback } from "react";
+import PropTypes from "prop-types";
 import styles from "../styles/PortfolioItem.module.css";
 
-function PortfolioItem({ item, onItemClick }) {
+const PortfolioItem = memo(({ item, onItemClick }) => {
   const handleClick = useCallback(() => {
     onItemClick(item);
   }, [item, onItemClick]);
@@ -11,8 +12,8 @@ function PortfolioItem({ item, onItemClick }) {
   const handleKeyDown = useCallback(
     (event) => {
       if (event.key === "Enter" || event.key === " ") {
-        event.preventDefault();
-        onItemClick(item);
+        event.preventDefault(); // Prevent default action for space and enter keys
+        onItemClick(item); // Trigger item click
       }
     },
     [item, onItemClick]
@@ -20,25 +21,35 @@ function PortfolioItem({ item, onItemClick }) {
 
   if (!item || !item.thumbnailUrl) {
     console.warn("PortfolioItem: Invalid item data");
-    return null;
+    return null; // Gracefully handle invalid item data
   }
 
   return (
     <div
       className={styles.portfolioItem}
-      onClick={handleClick}
-      onKeyDown={handleKeyDown}
-      role="button"
-      tabIndex={0}
-      aria-label={`View ${item.name}`}
+      onClick={handleClick} // Handle click event
+      onKeyDown={handleKeyDown} // Handle keyboard navigation
+      role="button" // Indicate that this div is a button
+      tabIndex={0} // Make the div focusable
+      aria-label={`View ${item.name}`} // Provide an accessible label
     >
       <img
         src={item.thumbnailUrl}
-        alt={item.name || "Portfolio item"}
-        loading="lazy"
+        alt={item.name || "Portfolio item"} // Fallback alt text
+        loading="lazy" // Lazy load the image
       />
     </div>
   );
-}
+});
 
-export default memo(PortfolioItem);
+// Prop Types for validation
+PortfolioItem.propTypes = {
+  item: PropTypes.shape({
+    id: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired,
+    thumbnailUrl: PropTypes.string.isRequired,
+  }).isRequired,
+  onItemClick: PropTypes.func.isRequired,
+};
+
+export default PortfolioItem;

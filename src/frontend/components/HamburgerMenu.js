@@ -1,14 +1,12 @@
 // src/components/HamburgerMenu.js
 
-import React from "react";
+import React, { memo } from "react";
 import PropTypes from "prop-types"; // Ensure PropTypes is imported
 import styles from "../styles/HamburgerMenu.module.css";
 
-const HamburgerMenu = React.memo(({ isOpen, onToggle, onNavigate }) => {
+const HamburgerMenu = memo(({ isOpen, onToggle, onNavigate }) => {
   return (
     <div className={styles.hamburgerMenu}>
-      {" "}
-      {/* Use styles from the module */}
       <button
         onClick={onToggle}
         className={styles.menuIcon}

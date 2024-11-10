@@ -10,6 +10,7 @@ const ImagePopup = memo(({ item, onClose, onNext, onPrevious }) => {
   const [scale, setScale] = useState(1);
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const imgRef = useRef(null);
+  const popupRef = useRef(null); // Reference for the popup
 
   // Load image
   useEffect(() => {
@@ -45,8 +46,35 @@ const ImagePopup = memo(({ item, onClose, onNext, onPrevious }) => {
     setShowMetadata((prev) => !prev);
   };
 
+  // Handle keyboard navigation
+  const handleKeyDown = useCallback(
+    (event) => {
+      if (event.key === "Escape") {
+        onClose(); // Close popup when Escape is pressed
+      } else if (event.key === "ArrowLeft") {
+        onPrevious();
+      } else if (event.key === "ArrowRight") {
+        onNext();
+      }
+    },
+    [onClose, onNext, onPrevious]
+  );
+
+  // Event listeners for keyboard navigation
+  useEffect(() => {
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown); // Cleanup
+    };
+  }, [handleKeyDown]);
+
   return (
-    <div className={styles.imagePopup} role="dialog" aria-modal="true">
+    <div
+      className={styles.imagePopup}
+      role="dialog"
+      aria-modal="true"
+      ref={popupRef}
+    >
       <div
         className={styles.imageContainer}
         {...bindDrag()}

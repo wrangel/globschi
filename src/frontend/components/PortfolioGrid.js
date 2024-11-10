@@ -1,6 +1,6 @@
 // src/components/PortfolioGrid.js
 
-import React, { useState, useCallback, useMemo, useRef } from "react";
+import React, { useState, useCallback, useMemo } from "react";
 import Masonry from "react-masonry-css";
 import PortfolioItem from "./PortfolioItem";
 import ImagePopup from "./ImagePopup";
@@ -11,7 +11,6 @@ import styles from "../styles/PortfolioGrid.module.css";
 function PortfolioGrid({ items }) {
   const [selectedItemId, setSelectedItemId] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const gridRef = useRef(null);
 
   const handleItemClick = useCallback((clickedItem) => {
     setSelectedItemId(clickedItem.id);
@@ -42,9 +41,14 @@ function PortfolioGrid({ items }) {
     [items, handleItemClick]
   );
 
+  // Conditional rendering for empty state
+  if (!items || items.length === 0) {
+    return <div>No items available.</div>; // Graceful handling of no items
+  }
+
   return (
     <>
-      <div ref={gridRef}>
+      <div>
         <Masonry
           breakpointCols={{
             default: 4,
@@ -69,11 +73,7 @@ function PortfolioGrid({ items }) {
 
       {/* Render ImagePopup for images */}
       {selectedItem && selectedItem.viewer !== "pano" && (
-        <ImagePopup
-          item={selectedItem}
-          onClose={handleClosePopup}
-          // Add navigation functions if needed
-        />
+        <ImagePopup item={selectedItem} onClose={handleClosePopup} />
       )}
     </>
   );

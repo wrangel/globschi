@@ -1,0 +1,35 @@
+/* src/frontend/styles/PortfolioGrid.module.css */
+
+.masonryGrid {
+  display: flex;
+  margin-left: -20px; /* gutter size offset */
+  width: auto;
+}
+
+.masonryGridColumn {
+  padding-left: 20px; /* gutter size */
+  background-clip: padding-box;
+}
+
+/* Style your items */
+.masonryGridColumn > div {
+  margin-bottom: 20px;
+}
+
+@media (max-width: 1100px) {
+  .masonryGridColumn {
+    width: calc(100% / 3) !important;
+  }
+}
+
+@media (max-width: 700px) {
+  .masonryGridColumn {
+    width: 50% !important;
+  }
+}
+
+@media (max-width: 500px) {
+  .masonryGridColumn {
+    width: 100% !important;
+  }
+}

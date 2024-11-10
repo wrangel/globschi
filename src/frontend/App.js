@@ -9,6 +9,7 @@ import {
 } from "react-router-dom";
 import ErrorBoundary from "./components/ErrorBoundary";
 import HamburgerMenu from "./components/HamburgerMenu";
+import styles from "./styles/SharedStyles.module.css";
 
 // Lazy load the Home, About, and Map components
 const Home = React.lazy(() => import("./views/Home"));
@@ -16,28 +17,28 @@ const About = React.lazy(() => import("./views/About"));
 const Map = React.lazy(() => import("./views/Map"));
 
 function App() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false); // State to manage menu visibility
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const toggleMenu = () => {
-    setIsMenuOpen((prev) => !prev); // Toggle menu open/close
+    setIsMenuOpen((prev) => !prev);
   };
 
-  const navigate = useNavigate(); // Get the navigate function from the hook
+  const navigate = useNavigate();
 
   const handleNavigate = (path) => {
-    navigate(path); // Use navigate function to change routes
-    setIsMenuOpen(false); // Close menu after navigation
+    navigate(path);
+    setIsMenuOpen(false);
   };
 
   return (
-    <div className="App">
+    <div className={styles.app}>
       <HamburgerMenu
         isOpen={isMenuOpen}
         onToggle={toggleMenu}
-        onNavigate={handleNavigate} // Pass the handleNavigate function
+        onNavigate={handleNavigate}
       />
       <ErrorBoundary>
-        <Suspense fallback={<div>Loading...</div>}>
+        <Suspense fallback={<div className={styles.loading}>Loading...</div>}>
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/about" element={<About />} />

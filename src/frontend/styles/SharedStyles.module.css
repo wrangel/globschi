@@ -1,0 +1,41 @@
+/* src/styles/SharedStyles.module.css */
+
+.app {
+  min-height: 100vh;
+}
+
+.heading {
+  color: var(--text-color);
+  margin-bottom: calc(var(--gutter-size) * 1.5);
+}
+
+.popupButton {
+  font-size: 20px;
+  width: 30px;
+  height: 30px;
+}
+
+.metadataPopup {
+  top: 50px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80%;
+  max-width: none;
+}
+
+/* You can keep the media queries here if they're used across components */
+@media (max-width: 768px) {
+  .popupButton {
+    font-size: 20px;
+    width: 30px;
+    height: 30px;
+  }
+
+  .metadataPopup {
+    top: 50px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80%;
+    max-width: none;
+  }
+}

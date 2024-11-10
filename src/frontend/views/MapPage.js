@@ -1,7 +1,7 @@
 // src/views/MapPage.js
 
 import React, { useState, useEffect } from "react";
-import { MapContainer, TileLayer, Marker } from "react-leaflet";
+import { MapContainer, TileLayer, Marker, ZoomControl } from "react-leaflet"; // Import ZoomControl
 import ImagePopup from "../components/ImagePopup";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
@@ -43,6 +43,7 @@ const MapPage = () => {
 
   useEffect(() => {
     fetchData();
+    console.log("Fetched items:", items); // Log fetched items
   }, []);
 
   const handleMarkerClick = (index) => {
@@ -77,6 +78,7 @@ const MapPage = () => {
         zoom={2}
         className={styles.leafletContainer} // Use styles from the module
         style={{ height: "100vh", width: "100%" }}
+        zoomControl={false} // Disable default zoom control to avoid conflicts
       >
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -92,6 +94,7 @@ const MapPage = () => {
             }}
           />
         ))}
+        <ZoomControl position="bottomleft" /> {/* Add Zoom Control */}
       </MapContainer>
       {isPopupOpen && selectedItemIndex !== null && (
         <ImagePopup

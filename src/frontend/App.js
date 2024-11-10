@@ -11,9 +11,9 @@ import ErrorBoundary from "./components/ErrorBoundary";
 import HamburgerMenu from "./components/HamburgerMenu";
 
 // Lazy load the HomePage, AboutPage, MapPage, and PanoPage components
-const HomePage = React.lazy(() => import("./views/Home"));
-const AboutPage = React.lazy(() => import("./views/About"));
-const MapPage = React.lazy(() => import("./views/Map"));
+const HomePage = React.lazy(() => import("./views/HomePage"));
+const AboutPage = React.lazy(() => import("./views/AboutPage"));
+const MapPage = React.lazy(() => import("./views/MapPage"));
 
 function App() {
   const navigate = useNavigate();

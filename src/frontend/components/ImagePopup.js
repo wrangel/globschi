@@ -1,7 +1,8 @@
-// src/components/ImagePopup.js
+// src/frontend/components/ImagePopup.js
 
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useDrag, usePinch } from "@use-gesture/react";
+import styles from "../styles/ImagePopup.module.css";
 
 function ImagePopup({ item, onClose, onNext, onPrevious }) {
   const [isLoading, setIsLoading] = useState(true);
@@ -21,7 +22,7 @@ function ImagePopup({ item, onClose, onNext, onPrevious }) {
         setIsLoading(false);
         if (imgRef.current) {
           imgRef.current.src = item.actualUrl;
-          imgRef.current.classList.add("loaded");
+          imgRef.current.classList.add(styles.loaded);
         }
       };
     }
@@ -65,13 +66,17 @@ function ImagePopup({ item, onClose, onNext, onPrevious }) {
 
   // Render metadata
   const renderMetadata = () => (
-    <div className={`metadata-popup ${showMetadata ? "visible" : ""}`}>
+    <div
+      className={`${styles.metadataPopup} ${
+        showMetadata ? styles.visible : ""
+      }`}
+    >
       <pre>{item.metadata}</pre>
       <a
         href={`https://www.google.com/maps/search/?api=1&query=${item.latitude},${item.longitude}&maptype=satellite`}
         target="_blank"
         rel="noopener noreferrer"
-        className="map-link"
+        className={styles.mapLink}
       >
         View on Map
       </a>
@@ -79,48 +84,50 @@ function ImagePopup({ item, onClose, onNext, onPrevious }) {
   );
 
   return (
-    <div className="image-popup">
-      <div className="image-popup-content" ref={popupRef}>
+    <div className={styles.imagePopup}>
+      <div className={styles.imagePopupContent} ref={popupRef}>
         <div
-          className="image-container"
+          className={styles.imageContainer}
           {...bindDrag()}
           {...bindPinch()}
           style={{
             transform: `scale(${scale}) translate(${position.x}px, ${position.y}px)`,
           }}
         >
-          {isLoading && <div className="loading-spinner"></div>}
+          {isLoading && <div className={styles.loadingSpinner}></div>}
           <img
             ref={imgRef}
             src={item.actualUrl}
             alt={item.name}
-            className={isLoading ? "hidden" : "loaded"}
+            className={`${styles.image} ${
+              isLoading ? styles.hidden : styles.loaded
+            }`}
             onLoad={() => setIsLoading(false)}
           />
         </div>
         <button
-          className="popup-button close-button"
+          className={`${styles.popupButton} ${styles.closeButton}`}
           onClick={onClose}
           aria-label="Close"
         >
           ×
         </button>
         <button
-          className="popup-button nav-button prev"
+          className={`${styles.popupButton} ${styles.navButton} ${styles.prevButton}`}
           onClick={onPrevious}
           aria-label="Previous"
         >
           ‹
         </button>
         <button
-          className="popup-button nav-button next"
+          className={`${styles.popupButton} ${styles.navButton} ${styles.nextButton}`}
           onClick={onNext}
           aria-label="Next"
         >
           ›
         </button>
         <button
-          className="popup-button metadata-button"
+          className={`${styles.popupButton} ${styles.metadataButton}`}
           onClick={toggleMetadata}
           aria-label="Toggle Metadata"
         >

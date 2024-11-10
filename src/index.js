@@ -5,7 +5,6 @@ import App from "./frontend/App";
 import reportWebVitals from "./frontend/reportWebVitals";
 import "./frontend/styles/FullScreenModal.css";
 import "./frontend/styles/Global.css";
-import "./frontend/styles/ImagePopup.css";
 import "@photo-sphere-viewer/core/index.css";
 
 // Initialize the root element with React 18's createRoot

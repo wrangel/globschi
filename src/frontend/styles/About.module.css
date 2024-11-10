@@ -1,12 +1,15 @@
 /* src/frontend/styles/About.modules.css */
 
-.about-container {
+.aboutContainer {
   display: flex;
-  flex-direction: column; /* Align items in a column */
-  justify-content: center; /* Center items vertically */
-  align-items: center; /* Center items horizontally */
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   height: 100vh; /* Full viewport height */
-  text-align: center; /* Center text */
+  width: 100vw; /* Full viewport width */
+  text-align: center;
+  padding: 20px; /* Optional: Add some padding for content spacing */
+  box-sizing: border-box; /* Ensure padding doesn't affect the overall width/height */
 }
 
 h2 {

@@ -1,5 +1,3 @@
-// src/views/MapPage.js
-
 import React, { useState, useEffect } from "react";
 import { MapContainer, TileLayer, Marker } from "react-leaflet";
 import ImagePopup from "../components/ImagePopup";
@@ -27,6 +25,7 @@ const MapPage = () => {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [isPanoramaOpen, setIsPanoramaOpen] = useState(false); // State for Panorama Viewer
 
+  // Fetch data from backend
   const fetchData = async () => {
     try {
       const response = await fetch("/api/combined-data");
@@ -47,6 +46,7 @@ const MapPage = () => {
     fetchData();
   }, []);
 
+  // Handle marker click events
   const handleMarkerClick = (index) => {
     const item = items[index]; // Get the clicked item
     setSelectedItemIndex(index);
@@ -90,7 +90,7 @@ const MapPage = () => {
             position={[item.latitude, item.longitude]}
             icon={redPinIcon}
             eventHandlers={{
-              click: () => handleMarkerClick(index),
+              click: () => handleMarkerClick(index), // Handle marker click
             }}
           />
         ))}
@@ -115,6 +115,7 @@ const MapPage = () => {
       {isPanoramaOpen && selectedItemIndex !== null && (
         <PanoramaViewer
           imageUrl={items[selectedItemIndex].actualUrl} // Assuming actualUrl is the panorama URL
+          onClose={handleClosePanorama} // Add close handler for panorama viewer
         />
       )}
     </>

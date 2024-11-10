@@ -1,12 +1,7 @@
 // src/App.js
 
 import React, { Suspense } from "react";
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-  useNavigate,
-} from "react-router-dom";
+import { Routes, Route, useNavigate } from "react-router-dom";
 import ErrorBoundary from "./components/ErrorBoundary";
 import HamburgerMenu from "./components/HamburgerMenu";
 

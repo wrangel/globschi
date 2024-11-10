@@ -3,7 +3,6 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./frontend/App";
 import reportWebVitals from "./frontend/reportWebVitals";
-import "./frontend/styles/FullScreenModal.css";
 import "./frontend/styles/Global.css";
 import "@photo-sphere-viewer/core/index.css";
 

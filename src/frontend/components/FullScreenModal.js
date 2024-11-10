@@ -1,24 +1,22 @@
-// src/components/FullScreenModal.js
+// src/frontend/components/FullScreenModal.js
+
 import React, { useEffect, useRef } from "react";
 import PropTypes from "prop-types";
+import styles from "../styles/FullScreenModal.module.css";
 
 const FullScreenModal = ({ isOpen, onClose, children }) => {
   const modalRef = useRef(null);
-  const triggerRef = useRef(null); // Reference to the element that opened the modal
+  const triggerRef = useRef(null);
 
-  // Handle focus trapping
   useEffect(() => {
     if (isOpen) {
-      // Save the reference to the element that triggered the modal
       triggerRef.current = document.activeElement;
 
-      // Focus the first focusable element in the modal
       const firstFocusableElement = modalRef.current.querySelector(
         'button, [href], [tabindex]:not([tabindex="-1"]), input, select, textarea'
       );
       firstFocusableElement?.focus();
 
-      // Add event listener for keydown to trap focus
       const handleKeyDown = (event) => {
         const focusableElements = modalRef.current.querySelectorAll(
           'button, [href], [tabindex]:not([tabindex="-1"]), input, select, textarea'
@@ -27,23 +25,20 @@ const FullScreenModal = ({ isOpen, onClose, children }) => {
         const lastElement = focusableElements[focusableElements.length - 1];
 
         if (event.key === "Tab") {
-          if (event.shiftKey) {
-            // Shift + Tab
-            if (document.activeElement === firstElement) {
-              event.preventDefault();
-              lastElement.focus();
-            }
-          } else {
-            // Tab
-            if (document.activeElement === lastElement) {
-              event.preventDefault();
-              firstElement.focus();
-            }
+          if (event.shiftKey && document.activeElement === firstElement) {
+            event.preventDefault();
+            lastElement.focus();
+          } else if (
+            !event.shiftKey &&
+            document.activeElement === lastElement
+          ) {
+            event.preventDefault();
+            firstElement.focus();
           }
         }
 
         if (event.key === "Escape") {
-          onClose(); // Close modal on Escape key press
+          onClose();
         }
       };
 
@@ -51,7 +46,7 @@ const FullScreenModal = ({ isOpen, onClose, children }) => {
 
       return () => {
         document.removeEventListener("keydown", handleKeyDown);
-        triggerRef.current?.focus(); // Return focus to the triggering element
+        triggerRef.current?.focus();
       };
     }
   }, [isOpen, onClose]);
@@ -59,9 +54,9 @@ const FullScreenModal = ({ isOpen, onClose, children }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="fullscreen-overlay" onClick={onClose}>
+    <div className={styles.fullscreenOverlay} onClick={onClose}>
       <div
-        className="fullscreen-content"
+        className={styles.fullscreenContent}
         onClick={(e) => e.stopPropagation()}
         ref={modalRef}
         role="dialog"
@@ -69,7 +64,7 @@ const FullScreenModal = ({ isOpen, onClose, children }) => {
       >
         {children}
         <button
-          className="close-button"
+          className={styles.closeButton}
           onClick={onClose}
           aria-label="Close Modal"
         >
@@ -80,7 +75,6 @@ const FullScreenModal = ({ isOpen, onClose, children }) => {
   );
 };
 
-// Prop Types for validation
 FullScreenModal.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,

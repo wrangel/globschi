@@ -47,7 +47,6 @@ const ImagePopup = memo(({ item, onClose, onNext, onPrevious }) => {
 
   return (
     <div className={styles.imagePopup} role="dialog" aria-modal="true">
-      <h2 className={styles.visuallyHidden}>Image Viewer</h2>
       <div
         className={styles.imageContainer}
         {...bindDrag()}

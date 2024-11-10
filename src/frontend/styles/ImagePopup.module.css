@@ -78,6 +78,8 @@
 
 .metadataPopup {
   position: absolute;
+  top: calc(20px + (40px)); /* Position it below the i button */
+  left: 20px; /* Align with i button */
   background-color: #000;
   color: #fff;
   padding: 0.5em;

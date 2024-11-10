@@ -1,11 +1,7 @@
-// src/components/PortfolioGrid.js
-
 import React, { useState, useCallback, useMemo } from "react";
 import Masonry from "react-masonry-css";
 import PortfolioItem from "./PortfolioItem";
-import ImagePopup from "./ImagePopup";
-import PanoramaViewer from "./PanoramaViewer";
-import FullScreenModal from "./FullScreenModal";
+import ViewerPopup from "./ViewerPopup"; // Import ViewerPopup
 import styles from "../styles/PortfolioGrid.module.css";
 
 function PortfolioGrid({ items }) {
@@ -14,9 +10,7 @@ function PortfolioGrid({ items }) {
 
   const handleItemClick = useCallback((clickedItem) => {
     setSelectedItemId(clickedItem.id);
-    if (clickedItem.viewer === "pano") {
-      setIsModalOpen(true); // Open modal for panoramas
-    }
+    setIsModalOpen(true); // Open modal for both images and panoramas
   }, []);
 
   const handleClosePopup = useCallback(() => {
@@ -61,20 +55,12 @@ function PortfolioGrid({ items }) {
         </Masonry>
       </div>
 
-      {/* Full-Screen Modal for Panorama Viewer */}
-      {isModalOpen && selectedItem && (
-        <FullScreenModal isOpen={isModalOpen} onClose={handleClosePopup}>
-          <PanoramaViewer
-            imageUrl={selectedItem.actualUrl}
-            onClose={handleClosePopup}
-          />
-        </FullScreenModal>
-      )}
-
-      {/* Render ImagePopup for images */}
-      {selectedItem && selectedItem.viewer !== "pano" && (
-        <ImagePopup item={selectedItem} onClose={handleClosePopup} />
-      )}
+      {/* Render ViewerPopup for images or panoramas */}
+      <ViewerPopup
+        item={selectedItem}
+        isOpen={isModalOpen}
+        onClose={handleClosePopup}
+      />
     </>
   );
 }

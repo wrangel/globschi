@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import { MapContainer, TileLayer, Marker } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import styles from "../styles/Map.module.css";
-import ImagePopup from "../components/ImagePopup"; // Import ImagePopup
-import PanoramaViewer from "../components/PanoramaViewer"; // Import PanoramaViewer
-import FullScreenModal from "../components/FullScreenModal"; // Import FullScreenModal
+import ViewerPopup from "../components/ViewerPopup"; // Import ViewerPopup
 
 const redPinIcon = new L.Icon({
   iconUrl:
@@ -25,7 +23,6 @@ const MapPage = () => {
 
   // State for handling popups
   const [selectedItemIndex, setSelectedItemIndex] = useState(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
 
   // Fetch data from backend
   const fetchData = async () => {
@@ -54,15 +51,9 @@ const MapPage = () => {
   // Handle marker click events
   const handleMarkerClick = (index) => {
     setSelectedItemIndex(index); // Set the selected item index
-    const item = items[index];
-
-    if (item.viewer === "pano") {
-      setIsModalOpen(true); // Open Panorama Viewer if viewer is pano
-    }
   };
 
   const handleClosePopup = () => {
-    setIsModalOpen(false); // Close modal
     setSelectedItemIndex(null); // Clear selected item index
   };
 
@@ -87,34 +78,17 @@ const MapPage = () => {
             eventHandlers={{
               click: () => handleMarkerClick(index), // Handle marker click
             }}
-          >
-            <Popup>
-              <div className={styles.popupContent}>
-                <h4>{item.name}</h4>
-                {/* You can add more details here if needed */}
-              </div>
-            </Popup>
-          </Marker>
+          />
         ))}
       </MapContainer>
 
-      {/* Render ImagePopup or PanoramaViewer based on selection */}
+      {/* Render ViewerPopup for images or panoramas */}
       {selectedItemIndex !== null && (
-        <>
-          {items[selectedItemIndex].viewer === "pano" ? (
-            <FullScreenModal isOpen={isModalOpen} onClose={handleClosePopup}>
-              <PanoramaViewer
-                imageUrl={items[selectedItemIndex].actualUrl} // Assuming actualUrl is the panorama URL
-                onClose={handleClosePopup}
-              />
-            </FullScreenModal>
-          ) : (
-            <ImagePopup
-              item={items[selectedItemIndex]}
-              onClose={handleClosePopup}
-            />
-          )}
-        </>
+        <ViewerPopup
+          item={items[selectedItemIndex]}
+          isOpen
+          onClose={handleClosePopup}
+        />
       )}
     </div>
   );

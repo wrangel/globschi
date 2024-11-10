@@ -1,17 +1,18 @@
-/* src/styles/PortfolioItem.css */
+/* src/styles/PortfolioItem.module.css */
 
-.portfolio-item {
+.portfolioItem {
   margin-bottom: var(--gutter-size);
-  overflow: hidden; /* This will contain the zoomed image */
+  overflow: hidden;
+  cursor: pointer;
 }
 
-.portfolio-item img {
+.portfolioItem img {
   width: 100%;
   height: auto;
   display: block;
   transition: transform var(--transition-duration) ease;
 }
 
-.portfolio-item:hover img {
+.portfolioItem:hover img {
   transform: scale(1.08);
 }

@@ -42,7 +42,9 @@ function HomePage() {
     <div className={styles.homePage}>
       {" "}
       {/* Use styles from the module */}
-      <h1>Dronef Kollege von Globschi. Der arme Dronef versunken im See</h1>
+      <div className={styles.headerWrapper}>
+        <h1>Dronef Kollege von Globschi. Der arme Dronef versunken im See</h1>
+      </div>
       {items.length > 0 ? (
         <PortfolioGrid items={items} />
       ) : (

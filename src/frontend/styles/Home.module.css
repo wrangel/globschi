@@ -1,6 +1,17 @@
 /* src/frontend/styles/Home.modules.css */
 
-.home-page {
+.homePage {
   text-align: center;
   padding: var(--gutter-size);
+}
+
+.headerWrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100px; /* Increase the size of the header box */
+}
+
+h1 {
+  margin: 0;
 }

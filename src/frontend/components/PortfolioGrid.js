@@ -4,8 +4,8 @@ import React, { useState, useCallback, useMemo } from "react";
 import Masonry from "react-masonry-css";
 import PortfolioItem from "./PortfolioItem";
 import ImagePopup from "./ImagePopup";
-import PanoramaViewer from "./PanoramaViewer"; // Import PanoramaViewer
-import FullScreenModal from "./FullScreenModal"; // Import FullScreenModal
+import PanoramaViewer from "./PanoramaViewer";
+import FullScreenModal from "./FullScreenModal";
 import styles from "../styles/PortfolioGrid.module.css";
 
 function PortfolioGrid({ items }) {

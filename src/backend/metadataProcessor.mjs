@@ -124,6 +124,7 @@ function formatMetadata(doc) {
     `Author: ${doc.author}`,
     `Drone: ${doc.drone}`,
   ]
+    .map((item) => (item === "undefined" ? "" : item)) // Replace 'undefined' with empty string
     .filter(Boolean)
     .join("\n");
 }

@@ -1,35 +1,43 @@
 // src/components/HamburgerMenu.js
 
-import React, { memo } from "react";
-import PropTypes from "prop-types"; // Ensure PropTypes is imported
+import React, { useState, memo } from "react";
+import PropTypes from "prop-types";
 import styles from "../styles/HamburgerMenu.module.css";
 
-const HamburgerMenu = memo(({ isOpen, onToggle, onNavigate }) => {
-  // If not open, do not render anything
-  if (!isOpen) return null;
+const HamburgerMenu = memo(({ onNavigate }) => {
+  const [isOpen, setIsOpen] = useState(false);
+
+  const handleToggle = () => {
+    setIsOpen(!isOpen);
+  };
+
+  const handleNavigation = (path) => {
+    onNavigate(path);
+    setIsOpen(false); // Close the menu after navigation
+  };
 
   return (
     <div className={styles.hamburgerMenu}>
       <button
-        onClick={onToggle}
+        onClick={handleToggle}
         className={styles.menuIcon}
         aria-label="Toggle Menu"
       >
         &#9776; {/* Hamburger icon */}
       </button>
-      <div className={styles.menuDropdown}>
-        <button onClick={() => onNavigate("/")}>Home</button>
-        <button onClick={() => onNavigate("/about")}>About</button>
-        <button onClick={() => onNavigate("/map")}>Map</button>
-      </div>
+      {isOpen && (
+        <div className={styles.menuDropdown}>
+          <button onClick={() => handleNavigation("/")}>Home</button>
+          <button onClick={() => handleNavigation("/about")}>About</button>
+          <button onClick={() => handleNavigation("/map")}>Map</button>
+        </div>
+      )}
     </div>
   );
 });
 
 // Prop Types for validation
 HamburgerMenu.propTypes = {
-  isOpen: PropTypes.bool.isRequired,
-  onToggle: PropTypes.func.isRequired,
   onNavigate: PropTypes.func.isRequired,
 };
 

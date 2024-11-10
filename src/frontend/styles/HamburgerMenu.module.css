@@ -1,8 +1,9 @@
 /* src/frontend/styles/HamburgerMenu.module.css */
 
 .hamburgerMenu {
-  position: relative; /* Position relative for dropdown */
-  display: inline-block; /* Aligns it inline */
+  position: absolute; /* Position absolute for fixed positioning */
+  top: 20px; /* Distance from the top */
+  left: 20px; /* Distance from the left */
   z-index: 1001; /* Ensure this is higher than the map’s z-index */
 }
 
@@ -21,6 +22,12 @@
   background-color: black; /* Background color for dropdown */
   padding: 10px; /* Padding around dropdown items */
   border-radius: 5px; /* Rounded corners */
+  z-index: 1001; /* Ensure this is higher than the map’s z-index */
+  display: none; /* Hide dropdown by default */
+}
+
+.menuDropdown.open {
+  display: block; /* Show dropdown when open */
 }
 
 .menuDropdown button {

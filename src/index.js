@@ -1,6 +1,7 @@
 // src/index.js
 import React from "react";
 import ReactDOM from "react-dom/client";
+import { BrowserRouter as Router } from "react-router-dom"; // Import BrowserRouter
 import App from "./frontend/App";
 import reportWebVitals from "./frontend/reportWebVitals";
 import "./frontend/styles/Global.css";
@@ -9,10 +10,12 @@ import "@photo-sphere-viewer/core/index.css";
 // Initialize the root element with React 18's createRoot
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
-// Render the App component wrapped in StrictMode
+// Render the App component wrapped in Router
 root.render(
   <React.StrictMode>
-    <App />
+    <Router>
+      <App />
+    </Router>
   </React.StrictMode>
 );
 

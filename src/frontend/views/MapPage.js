@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { MapContainer, TileLayer, Marker } from "react-leaflet";
+import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import styles from "../styles/Map.module.css";
@@ -19,7 +19,6 @@ const MapPage = () => {
   const [items, setItems] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [selectedItemIndex, setSelectedItemIndex] = useState(null);
 
   // Fetch data from backend
   const fetchData = async () => {
@@ -42,11 +41,6 @@ const MapPage = () => {
     fetchData();
   }, []);
 
-  // Handle marker click events
-  const handleMarkerClick = (index) => {
-    setSelectedItemIndex(index); // Set the selected item index
-  };
-
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
 
@@ -68,27 +62,22 @@ const MapPage = () => {
             key={item.id}
             position={[item.latitude, item.longitude]}
             icon={redPinIcon}
-            eventHandlers={{
-              click: () => handleMarkerClick(index), // Handle marker click
-            }}
-          />
+          >
+            <Popup>
+              <div className={styles.popupContent}>
+                <h4>{item.name}</h4>
+                <ul>
+                  {Object.entries(item).map(([key, value]) => (
+                    <li key={key}>
+                      <strong>{key}:</strong> {value.toString()}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </Popup>
+          </Marker>
         ))}
       </MapContainer>
-
-      {/* Display selected item properties */}
-      {selectedItemIndex !== null && (
-        <div className={styles.itemDetails}>
-          <h3>Item Details</h3>
-          <ul>
-            {Object.entries(items[selectedItemIndex]).map(([key, value]) => (
-              <li key={key}>
-                <strong>{key}:</strong> {value.toString()}
-              </li>
-            ))}
-          </ul>
-          <button onClick={() => setSelectedItemIndex(null)}>Close</button>
-        </div>
-      )}
     </div>
   );
 };

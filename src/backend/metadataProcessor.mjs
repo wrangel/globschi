@@ -111,21 +111,21 @@ function formatMetadata(doc) {
   });
 
   const road = doc.road ? doc.road.replace(/^,\s*/, "") : "";
-  const location1 = `${doc.postalCode} ${doc.location}`;
-  const location2 = `${doc.region}, ${doc.country}`;
+  const location1 = `${doc.postalCode || ""} ${doc.location || ""}`.trim();
+  const location2 = `${doc.region || ""}, ${doc.country || ""}`.trim();
 
   return [
     formattedDate,
     formattedTime,
-    `${doc.altitude.toFixed(1)}m above ground`,
+    `${doc.altitude ? doc.altitude.toFixed(1) : ""}m above ground`,
     road,
     location1,
     location2,
-    `Author: ${doc.author}`,
-    `Drone: ${doc.drone}`,
+    `Author: ${doc.author || ""}`,
+    `Drone: ${doc.drone || ""}`,
   ]
-    .map((item) => (item === "undefined" ? "" : item)) // Replace 'undefined' with empty string
-    .filter(Boolean)
+    .map((item) => (item === undefined || item === "undefined" ? "" : item)) // Replace 'undefined' with empty string
+    .filter(Boolean) // Remove any empty strings
     .join("\n");
 }
 

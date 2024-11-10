@@ -2,6 +2,7 @@
 
 import React, { useState, useCallback } from "react";
 import { ReactPhotoSphereViewer } from "react-photo-sphere-viewer";
+import styles from "../styles/PanoramaViewer.module.css";
 
 const panoMaxFov = 110; // Maximum field of view
 const panoMinFov = 10; // Minimum field of view
@@ -13,14 +14,16 @@ const animatedValues = {
   fisheye: { start: 2, end: 0 }, // Start with fisheye effect
 };
 
-export default function PanoramaViewer({ imageUrl }) {
+export default function PanoramaViewer({ imageUrl, thumbnailUrl }) {
   const [viewer, setViewer] = useState(null);
+  const [isLoading, setIsLoading] = useState(true); // Loading state
 
   const handleReady = useCallback((instance) => {
     setViewer(instance);
     instance.setOptions({
       fisheye: true,
     });
+    setIsLoading(false); // Panorama has loaded
     intro(instance);
   }, []);
 
@@ -62,7 +65,20 @@ export default function PanoramaViewer({ imageUrl }) {
   };
 
   return (
-    <div className="pan-view">
+    <div className={styles.panoView}>
+      {isLoading && (
+        <div className={styles.loadingOverlay}>
+          {thumbnailUrl && (
+            <img
+              src={thumbnailUrl}
+              alt="Thumbnail"
+              className={styles.thumbnail}
+            />
+          )}
+          <div className={styles.spinner}></div>{" "}
+          {/* Add spinner style in CSS */}
+        </div>
+      )}
       {imageUrl ? (
         <ReactPhotoSphereViewer
           src={imageUrl}
@@ -73,7 +89,7 @@ export default function PanoramaViewer({ imageUrl }) {
           minFov={panoMinFov}
           touchmoveTwoFingers={true}
           littlePlanet={true}
-          navbar={["fullscreen"]}
+          navbar={["fullscreen"]} // Only include fullscreen icon
           onReady={handleReady}
         />
       ) : (

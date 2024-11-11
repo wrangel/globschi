@@ -6,7 +6,7 @@
   position: absolute; /* Position absolute for fixed positioning */
   top: 20px; /* Distance from the top */
   left: 20px; /* Distance from the left */
-  z-index: 1000; /* Lower than the image popup */
+  z-index: 1010; /* Lower than the image popup */
 }
 
 .menuIcon {

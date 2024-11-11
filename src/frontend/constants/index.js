@@ -1,4 +1,5 @@
 // src/frontend/constants/index.js
+import L from "leaflet"; // Import Leaflet
 
 // Grid breakpoints
 export const GRID_BREAKPOINTS = {
@@ -39,3 +40,13 @@ export const ICON_SIZES = {
   POPUP_ANCHOR: [1, -34],
   SHADOW: [41, 41],
 };
+
+// Define redPinIcon
+export const redPinIcon = new L.Icon({
+  iconUrl: ICON_URLS.RED_MARKER,
+  shadowUrl: ICON_URLS.MARKER_SHADOW,
+  iconSize: ICON_SIZES.MARKER,
+  iconAnchor: ICON_SIZES.MARKER_ANCHOR,
+  popupAnchor: ICON_SIZES.POPUP_ANCHOR,
+  shadowSize: ICON_SIZES.SHADOW,
+});

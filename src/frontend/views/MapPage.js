@@ -1,73 +1,15 @@
-// src/views/MapPage.js
-import React, { useMemo, useEffect } from "react";
-import { MapContainer, TileLayer, Marker } from "react-leaflet";
-import L from "leaflet";
+// src/frontend/views/MapPage.js
+import React from "react";
+import { MapContainer, TileLayer } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import styles from "../styles/Map.module.css";
-import ViewerPopup from "../components/ViewerPopup";
 import LoadingErrorHandler from "../components/LoadingErrorHandler";
-import { useItems } from "../hooks/useItems";
-import { useItemViewer } from "../hooks/useItemViewer";
 import { useLoadingError } from "../hooks/useLoadingError";
-import {
-  MAP_INITIAL_CENTER,
-  MAP_INITIAL_ZOOM,
-  ICON_URLS,
-  ICON_SIZES,
-  API_ENDPOINTS,
-} from "../constants";
+import { MAP_INITIAL_CENTER, MAP_INITIAL_ZOOM } from "../constants";
+import withItemRendering from "../components/withItemRendering";
 
-const redPinIcon = new L.Icon({
-  iconUrl: ICON_URLS.RED_MARKER,
-  shadowUrl: ICON_URLS.MARKER_SHADOW,
-  iconSize: ICON_SIZES.MARKER,
-  iconAnchor: ICON_SIZES.MARKER_ANCHOR,
-  popupAnchor: ICON_SIZES.POPUP_ANCHOR,
-  shadowSize: ICON_SIZES.SHADOW,
-});
-
-const MapPage = () => {
-  const {
-    items,
-    isLoading: isItemsLoading,
-    error: itemsError,
-  } = useItems(API_ENDPOINTS.ITEMS);
-  const { isLoading, error, startLoading, stopLoading, setErrorMessage } =
-    useLoadingError(isItemsLoading);
-  const {
-    selectedItem,
-    isModalOpen,
-    handleItemClick,
-    handleClosePopup,
-    handleNextItem,
-    handlePreviousItem,
-  } = useItemViewer(items);
-
-  useEffect(() => {
-    if (isItemsLoading) {
-      startLoading();
-    } else {
-      stopLoading();
-    }
-    if (itemsError) {
-      setErrorMessage(itemsError);
-    }
-  }, [isItemsLoading, itemsError, startLoading, stopLoading, setErrorMessage]);
-
-  const markers = useMemo(
-    () =>
-      items.map((item) => (
-        <Marker
-          key={item.id}
-          position={[item.latitude, item.longitude]}
-          icon={redPinIcon}
-          eventHandlers={{
-            click: () => handleItemClick(item),
-          }}
-        />
-      )),
-    [items, handleItemClick]
-  );
+const MapPage = (props) => {
+  const { isLoading, error } = useLoadingError(false);
 
   return (
     <LoadingErrorHandler isLoading={isLoading} error={error}>
@@ -83,21 +25,11 @@ const MapPage = () => {
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
           />
-          {markers}
+          {props.children} {/* Rendered items will be passed here */}
         </MapContainer>
-
-        {selectedItem && (
-          <ViewerPopup
-            item={selectedItem}
-            isOpen={isModalOpen}
-            onClose={handleClosePopup}
-            onNext={handleNextItem}
-            onPrevious={handlePreviousItem}
-          />
-        )}
       </div>
     </LoadingErrorHandler>
   );
 };
 
-export default MapPage;
+export default withItemRendering(MapPage);

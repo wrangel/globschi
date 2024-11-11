@@ -34,8 +34,8 @@ const FitBounds = ({ items }) => {
       const longitudes = items.map((item) => item.longitude);
 
       // Calculate the bounding box with larger margins
-      const latOffset = 0.1;
-      const lngOffset = 0.1;
+      const latOffset = 1.5; // Adjust as needed for more margin
+      const lngOffset = 1.5; // Adjust as needed for more margin
 
       const bounds = [
         [
@@ -89,6 +89,9 @@ const MapPage = () => {
           className={styles.leafletContainer}
           style={{ height: "100vh", width: "100%" }}
           zoomControl={false}
+          zoomSnap={0.05} // Enable fractional zooming with finer control
+          zoomDelta={0.25} // Smaller increment for zooming in/out
+          wheelPxPerZoomLevel={50} // Adjust this value for mouse wheel sensitivity
         >
           <TileLayer
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"

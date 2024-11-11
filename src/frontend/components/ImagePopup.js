@@ -1,9 +1,10 @@
 // src/components/ImagePopup.js
-import React, { useState, useEffect, useRef, useCallback, memo } from "react";
+import React, { useState, useEffect, useRef, memo } from "react";
 import { useDrag, usePinch } from "@use-gesture/react";
 import styles from "../styles/ImagePopup.module.css";
-import LoadingOverlay from "./LoadingOverlay"; // Import the common loading overlay
-import ControlButtons from "./ControlButtons"; // Import the common control buttons
+import LoadingOverlay from "./LoadingOverlay";
+import ControlButtons from "./ControlButtons";
+import useKeyboardNavigation from "../hooks/useKeyboardNavigation"; // Import the custom hook
 
 const ImagePopup = memo(({ item, onClose, onNext, onPrevious }) => {
   const [isLoading, setIsLoading] = useState(true);
@@ -41,10 +42,8 @@ const ImagePopup = memo(({ item, onClose, onNext, onPrevious }) => {
     setScale(Math.max(1, Math.min(5, d)));
   });
 
-  // Toggle metadata visibility
-  const toggleMetadata = () => {
-    setShowMetadata((prev) => !prev);
-  };
+  // Use the custom keyboard navigation hook
+  useKeyboardNavigation(onClose, onPrevious, onNext);
 
   return (
     <div className={styles.imagePopup} role="dialog" aria-modal="true">
@@ -69,7 +68,7 @@ const ImagePopup = memo(({ item, onClose, onNext, onPrevious }) => {
         onClose={onClose}
         onPrevious={onPrevious}
         onNext={onNext}
-        onToggleMetadata={toggleMetadata}
+        onToggleMetadata={() => setShowMetadata((prev) => !prev)}
       />
 
       {/* Metadata Popup */}

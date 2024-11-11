@@ -1,5 +1,4 @@
 // src/components/HamburgerMenu.js
-
 import React, { useState, memo } from "react";
 import PropTypes from "prop-types";
 import styles from "../styles/HamburgerMenu.module.css";
@@ -12,7 +11,7 @@ const HamburgerMenu = memo(({ onNavigate }) => {
   };
 
   const handleNavigation = (path) => {
-    onNavigate(path);
+    onNavigate(path); // Call the passed in function
     setIsOpen(false); // Close the menu after navigation
   };
 

@@ -1,5 +1,4 @@
 // src/views/MapPage.js
-
 import React, { useMemo, useEffect } from "react";
 import { MapContainer, TileLayer, Marker } from "react-leaflet";
 import L from "leaflet";
@@ -10,20 +9,29 @@ import LoadingErrorHandler from "../components/LoadingErrorHandler";
 import { useItems } from "../hooks/useItems";
 import { useItemViewer } from "../hooks/useItemViewer";
 import { useLoadingError } from "../hooks/useLoadingError";
+import {
+  MAP_INITIAL_CENTER,
+  MAP_INITIAL_ZOOM,
+  ICON_URLS,
+  ICON_SIZES,
+  API_ENDPOINTS,
+} from "../constants";
 
 const redPinIcon = new L.Icon({
-  iconUrl:
-    "https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png",
-  shadowUrl:
-    "https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png",
-  iconSize: [25, 41],
-  iconAnchor: [12, 41],
-  popupAnchor: [1, -34],
-  shadowSize: [41, 41],
+  iconUrl: ICON_URLS.RED_MARKER,
+  shadowUrl: ICON_URLS.MARKER_SHADOW,
+  iconSize: ICON_SIZES.MARKER,
+  iconAnchor: ICON_SIZES.MARKER_ANCHOR,
+  popupAnchor: ICON_SIZES.POPUP_ANCHOR,
+  shadowSize: ICON_SIZES.SHADOW,
 });
 
 const MapPage = () => {
-  const { items, isLoading: isItemsLoading, error: itemsError } = useItems();
+  const {
+    items,
+    isLoading: isItemsLoading,
+    error: itemsError,
+  } = useItems(API_ENDPOINTS.ITEMS);
   const { isLoading, error, startLoading, stopLoading, setErrorMessage } =
     useLoadingError(isItemsLoading);
   const {
@@ -65,8 +73,8 @@ const MapPage = () => {
     <LoadingErrorHandler isLoading={isLoading} error={error}>
       <div className={styles.mapPageContainer}>
         <MapContainer
-          center={[0, 0]}
-          zoom={2}
+          center={MAP_INITIAL_CENTER}
+          zoom={MAP_INITIAL_ZOOM}
           className={styles.leafletContainer}
           style={{ height: "100vh", width: "100%" }}
           zoomControl={false}

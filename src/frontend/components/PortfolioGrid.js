@@ -7,9 +7,10 @@ import LoadingErrorHandler from "./LoadingErrorHandler";
 import styles from "../styles/PortfolioGrid.module.css";
 import { useItemViewer } from "../hooks/useItemViewer";
 import { useLoadingError } from "../hooks/useLoadingError";
+import { GRID_BREAKPOINTS } from "../constants";
 
 function PortfolioGrid({ items }) {
-  const { isLoading, error } = useLoadingError(false); // Assuming items are already loaded
+  const { isLoading, error } = useLoadingError(false);
   const {
     selectedItem,
     isModalOpen,
@@ -37,10 +38,7 @@ function PortfolioGrid({ items }) {
         <>
           <div>
             <Masonry
-              breakpointCols={{
-                default: 4,
-                // Define breakpoints as needed
-              }}
+              breakpointCols={GRID_BREAKPOINTS}
               className={styles.masonryGrid}
               columnClassName={styles.masonryGridColumn}
             >

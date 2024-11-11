@@ -1,4 +1,5 @@
 // src/frontend/hooks/useSelectedItem.js
+
 import { useState, useCallback } from "react";
 
 export const useSelectedItem = () => {

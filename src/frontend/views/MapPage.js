@@ -1,6 +1,6 @@
 // src/views/MapPage.js
-import React, { useState } from "react";
-import { MapContainer, TileLayer, Marker } from "react-leaflet";
+import React, { useState, useEffect } from "react";
+import { MapContainer, TileLayer, Marker, useMap } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import styles from "../styles/Map.module.css";
@@ -13,9 +13,8 @@ import {
   ICON_URLS,
   ICON_SIZES,
 } from "../constants";
-import ViewerPopup from "../components/ViewerPopup"; // Import ViewerPopup
+import ViewerPopup from "../components/ViewerPopup";
 
-// Define the red pin icon
 const redPinIcon = new L.Icon({
   iconUrl: ICON_URLS.RED_MARKER,
   shadowUrl: ICON_URLS.MARKER_SHADOW,
@@ -25,12 +24,39 @@ const redPinIcon = new L.Icon({
   shadowSize: ICON_SIZES.SHADOW,
 });
 
+// Define getBounds function (if needed for specific points)
+const getBounds = (latitude, longitude) => {
+  const latOffset = 0.9; // Roughly 100 km in degrees (~0.9°)
+  const lngOffset = 1.5; // Roughly 100 km in degrees (~1.5°)
+
+  return [
+    [latitude - latOffset, longitude - lngOffset], // Southwest corner
+    [latitude + latOffset, longitude + lngOffset], // Northeast corner
+  ];
+};
+
+// Custom hook to fit bounds based on all items
+const FitBounds = ({ items }) => {
+  const map = useMap();
+
+  useEffect(() => {
+    if (items.length > 0) {
+      const bounds = L.latLngBounds(
+        items.map((item) => [item.latitude, item.longitude])
+      );
+      map.fitBounds(bounds);
+    }
+  }, [items, map]);
+
+  return null;
+};
+
 const MapPage = () => {
   const { items, isLoading, error } = useItems();
   const { isLoading: loadingError, setErrorMessage } =
     useLoadingError(isLoading);
 
-  // State for managing the selected item and modal visibility
+  // State for managing selected item and modal visibility
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
 
@@ -75,6 +101,9 @@ const MapPage = () => {
               }}
             />
           ))}
+
+          {/* Fit bounds when items are rendered */}
+          <FitBounds items={items} />
         </MapContainer>
 
         {/* Render ViewerPopup if an item is selected */}

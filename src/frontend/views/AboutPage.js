@@ -42,7 +42,7 @@ const About = () => {
         <a target="_blank" rel="noopener noreferrer" href="https://ptgui.com">
           PTGui Pro
         </a>{" "}
-        for equirectangular 360&deg; panorama stitching.
+        for the equirectangular 360&deg; panorama stitching.
       </p>
       <p>
         <a
@@ -52,7 +52,7 @@ const About = () => {
         >
           Adobe Lightroom
         </a>{" "}
-        for wide angle &amp; HDR image creation.
+        for the wide angle &amp; HDR image creation.
       </p>
       <p>
         <a
@@ -62,7 +62,7 @@ const About = () => {
         >
           Photo Sphere Viewer
         </a>{" "}
-        for the 360&deg; panorama display.
+        for the the 360&deg; panorama display.
       </p>
       <p>
         <a

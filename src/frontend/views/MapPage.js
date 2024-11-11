@@ -24,26 +24,31 @@ const redPinIcon = new L.Icon({
   shadowSize: ICON_SIZES.SHADOW,
 });
 
-// Define getBounds function (if needed for specific points)
-const getBounds = (latitude, longitude) => {
-  const latOffset = 0.9; // Roughly 100 km in degrees (~0.9°)
-  const lngOffset = 1.5; // Roughly 100 km in degrees (~1.5°)
-
-  return [
-    [latitude - latOffset, longitude - lngOffset], // Southwest corner
-    [latitude + latOffset, longitude + lngOffset], // Northeast corner
-  ];
-};
-
 // Custom hook to fit bounds based on all items
 const FitBounds = ({ items }) => {
   const map = useMap();
 
   useEffect(() => {
     if (items.length > 0) {
-      const bounds = L.latLngBounds(
-        items.map((item) => [item.latitude, item.longitude])
-      );
+      const latitudes = items.map((item) => item.latitude);
+      const longitudes = items.map((item) => item.longitude);
+
+      // Calculate the bounding box with larger margins
+      const latOffset = 0.1;
+      const lngOffset = 0.1;
+
+      const bounds = [
+        [
+          Math.min(...latitudes) - latOffset,
+          Math.min(...longitudes) - lngOffset,
+        ], // Southwest corner
+        [
+          Math.max(...latitudes) + latOffset,
+          Math.max(...longitudes) + lngOffset,
+        ], // Northeast corner
+      ];
+
+      // Fit map to bounds
       map.fitBounds(bounds);
     }
   }, [items, map]);

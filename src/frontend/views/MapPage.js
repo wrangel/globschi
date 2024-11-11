@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from "react";
+// src/views/MapPage.js
+import React, { useState } from "react";
 import { MapContainer, TileLayer, Marker } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import styles from "../styles/Map.module.css";
-import ViewerPopup from "../components/ViewerPopup"; // Import ViewerPopup
+import ViewerPopup from "../components/ViewerPopup";
+import { useItems } from "../hooks/useItems";
 
 const redPinIcon = new L.Icon({
   iconUrl:
@@ -17,44 +19,18 @@ const redPinIcon = new L.Icon({
 });
 
 const MapPage = () => {
-  const [items, setItems] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(null);
-
-  // State for handling popups
+  const { items, isLoading, error } = useItems();
   const [selectedItemIndex, setSelectedItemIndex] = useState(null);
-
-  // Fetch data from backend
-  const fetchData = async () => {
-    try {
-      const response = await fetch("/api/combined-data");
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      const data = await response.json();
-      setItems(data);
-    } catch (e) {
-      console.error("Error fetching data:", e);
-      setError("Failed to load items. Please try again later.");
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchData();
-  }, []);
 
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
 
-  // Handle marker click events
   const handleMarkerClick = (index) => {
-    setSelectedItemIndex(index); // Set the selected item index
+    setSelectedItemIndex(index);
   };
 
   const handleClosePopup = () => {
-    setSelectedItemIndex(null); // Clear selected item index
+    setSelectedItemIndex(null);
   };
 
   return (
@@ -64,7 +40,7 @@ const MapPage = () => {
         zoom={2}
         className={styles.leafletContainer}
         style={{ height: "100vh", width: "100%" }}
-        zoomControl={false} // Disable default zoom control
+        zoomControl={false}
       >
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -76,13 +52,12 @@ const MapPage = () => {
             position={[item.latitude, item.longitude]}
             icon={redPinIcon}
             eventHandlers={{
-              click: () => handleMarkerClick(index), // Handle marker click
+              click: () => handleMarkerClick(index),
             }}
           />
         ))}
       </MapContainer>
 
-      {/* Render ViewerPopup for images or panoramas */}
       {selectedItemIndex !== null && (
         <ViewerPopup
           item={items[selectedItemIndex]}

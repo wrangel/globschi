@@ -1,47 +1,23 @@
 // src/views/HomePage.js
 
-import React, { useState, useEffect, useCallback } from "react";
+import React from "react";
 import PortfolioGrid from "../components/PortfolioGrid";
 import styles from "../styles/Home.module.css";
+import { useItems } from "../hooks/useItems";
 
 function HomePage() {
-  const [items, setItems] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(null);
-
-  const fetchData = useCallback(async () => {
-    try {
-      setIsLoading(true);
-      const response = await fetch("/api/combined-data");
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      const data = await response.json();
-      setItems(data);
-    } catch (e) {
-      console.error("Error fetching data:", e);
-      setError("Failed to load items. Please try again later.");
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    fetchData();
-  }, [fetchData]);
+  const { items, isLoading, error } = useItems();
 
   if (isLoading) {
-    return <div className={styles.homePage}>Loading...</div>; // Use styles from the module
+    return <div className={styles.homePage}>Loading...</div>;
   }
 
   if (error) {
-    return <div className={styles.homePage}>Error: {error}</div>; // Use styles from the module
+    return <div className={styles.homePage}>Error: {error}</div>;
   }
 
   return (
     <div className={styles.homePage}>
-      {" "}
-      {/* Use styles from the module */}
       <div className={styles.headerWrapper}>
         <h1>Dronef Kollege von Globschi. Der arme Dronef versunken im See</h1>
       </div>

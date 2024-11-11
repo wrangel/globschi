@@ -1,5 +1,5 @@
 // src/views/MapPage.js
-import React from "react";
+import React, { useState } from "react";
 import { MapContainer, TileLayer, Marker } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
@@ -13,7 +13,7 @@ import {
   ICON_URLS,
   ICON_SIZES,
 } from "../constants";
-import ViewerPopup from "../components/ViewerPopup";
+import ViewerPopup from "../components/ViewerPopup"; // Import ViewerPopup
 
 // Define the red pin icon
 const redPinIcon = new L.Icon({
@@ -30,9 +30,24 @@ const MapPage = () => {
   const { isLoading: loadingError, setErrorMessage } =
     useLoadingError(isLoading);
 
+  // State for managing the selected item and modal visibility
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedItem, setSelectedItem] = useState(null);
+
   if (error) {
     setErrorMessage(error);
   }
+
+  // Function to handle marker click
+  const handleMarkerClick = (item) => {
+    setSelectedItem(item); // Set the selected item
+    setIsModalOpen(true); // Open the modal
+  };
+
+  const handleClosePopup = () => {
+    setIsModalOpen(false); // Close the modal
+    setSelectedItem(null); // Clear the selected item
+  };
 
   return (
     <LoadingErrorHandler isLoading={loadingError} error={error}>
@@ -56,16 +71,20 @@ const MapPage = () => {
               position={[item.latitude, item.longitude]}
               icon={redPinIcon}
               eventHandlers={{
-                click: () => {
-                  // Handle marker click to show popup or any other action
-                },
+                click: () => handleMarkerClick(item), // Handle marker click to open popup
               }}
             />
           ))}
         </MapContainer>
 
         {/* Render ViewerPopup if an item is selected */}
-        {/* Add logic for handling selected item and showing popup */}
+        {isModalOpen && (
+          <ViewerPopup
+            item={selectedItem}
+            isOpen={isModalOpen}
+            onClose={handleClosePopup}
+          />
+        )}
       </div>
     </LoadingErrorHandler>
   );

@@ -1,20 +1,14 @@
 // src/components/PanoramaViewer.js
-
 import React, { useState, useCallback } from "react";
 import { ReactPhotoSphereViewer } from "react-photo-sphere-viewer";
 import styles from "../styles/PanoramaViewer.module.css";
+import LoadingOverlay from "./LoadingOverlay"; // Import the common loading overlay
+import ControlButtons from "./ControlButtons"; // Import the common control buttons
 
 const panoMaxFov = 110; // Maximum field of view
 const panoMinFov = 10; // Minimum field of view
 
-const animatedValues = {
-  pitch: { start: -Math.PI / 2, end: -0.1 }, // Start at the bottom, end slightly above
-  yaw: { start: Math.PI, end: 0 }, // Start facing backward, end facing forward
-  zoom: { start: 0, end: 50 }, // Start zoomed out, end zoomed in
-  fisheye: { start: 2, end: 0 }, // Start with fisheye effect
-};
-
-export default function PanoramaViewer({ imageUrl, thumbnailUrl }) {
+export default function PanoramaViewer({ imageUrl, thumbnailUrl, onClose }) {
   const [viewer, setViewer] = useState(null);
   const [isLoading, setIsLoading] = useState(true); // Loading state
 
@@ -35,26 +29,10 @@ export default function PanoramaViewer({ imageUrl, thumbnailUrl }) {
       const elapsed = currentTime - startTime;
       const progress = Math.min(elapsed / duration, 1); // Normalize progress between 0 and 1
 
-      // Interpolate properties based on progress
-      const currentPitch =
-        animatedValues.pitch.start +
-        (animatedValues.pitch.end - animatedValues.pitch.start) * progress;
-      const currentYaw =
-        animatedValues.yaw.start +
-        (animatedValues.yaw.end - animatedValues.yaw.start) * progress;
-      const currentZoom =
-        animatedValues.zoom.start +
-        (animatedValues.zoom.end - animatedValues.zoom.start) * progress;
-      const currentFisheye =
-        animatedValues.fisheye.start +
-        (animatedValues.fisheye.end - animatedValues.fisheye.start) * progress;
-
-      viewer.setOptions({
-        fisheye: currentFisheye,
+      viewer.rotate({
+        yaw: Math.PI * progress,
+        pitch: -Math.PI / (2 * (1 - progress)),
       });
-
-      viewer.rotate({ yaw: currentYaw, pitch: currentPitch });
-      viewer.zoom(currentZoom);
 
       if (progress < 1) {
         requestAnimationFrame(animate); // Continue animating until complete
@@ -66,19 +44,7 @@ export default function PanoramaViewer({ imageUrl, thumbnailUrl }) {
 
   return (
     <div className={styles.panoView}>
-      {isLoading && (
-        <div className={styles.loadingOverlay}>
-          {thumbnailUrl && (
-            <img
-              src={thumbnailUrl}
-              alt="Thumbnail"
-              className={styles.thumbnail}
-            />
-          )}
-          <div className={styles.spinner}></div>{" "}
-          {/* Add spinner style in CSS */}
-        </div>
-      )}
+      {isLoading && <LoadingOverlay thumbnailUrl={thumbnailUrl} />}
       {imageUrl ? (
         <ReactPhotoSphereViewer
           src={imageUrl}
@@ -95,6 +61,14 @@ export default function PanoramaViewer({ imageUrl, thumbnailUrl }) {
       ) : (
         <div>No panorama URL provided</div>
       )}
+
+      {/* Control Buttons */}
+      <ControlButtons
+        onClose={onClose}
+        onPrevious={() => {}}
+        onNext={() => {}}
+        onToggleMetadata={() => {}}
+      />
     </div>
   );
 }

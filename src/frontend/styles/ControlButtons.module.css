@@ -1,0 +1,28 @@
+.popupButton {
+  position: absolute;
+  background-color: transparent;
+  color: rgba(255, 255, 255, 0.6);
+  border: none;
+  cursor: pointer;
+  font-size: 24px;
+}
+
+.closeButton {
+  top: 20px;
+  right: 20px; /* Positioning for close button */
+}
+
+.prevButton {
+  left: 10px;
+  top: calc(50% - (20px)); /* Center vertically in the middle of the popup */
+}
+
+.nextButton {
+  right: 10px;
+  top: calc(50% - (20px)); /* Center vertically in the middle of the popup */
+}
+
+.metadataButton {
+  top: 20px;
+  left: 20px; /* Positioning for metadata button */
+}

@@ -1,7 +1,7 @@
 - functionality
   - ! pano: full screen button, reset view button
     - forward backward icons
-  - thumbnail while loading
+  - thumbnail while loading, both pano and image
   - same spinner for all media
   - ! video
   - number of views

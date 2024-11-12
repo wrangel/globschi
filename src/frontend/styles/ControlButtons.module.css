@@ -5,6 +5,7 @@
   border: none;
   cursor: pointer;
   font-size: 24px;
+  z-index: 1100;
 }
 
 .closeButton {

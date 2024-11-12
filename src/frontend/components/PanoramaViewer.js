@@ -9,7 +9,14 @@ import useKeyboardNavigation from "../hooks/useKeyboardNavigation";
 const panoMaxFov = 110; // Maximum field of view
 const panoMinFov = 10; // Minimum field of view
 
-export default function PanoramaViewer({ imageUrl, thumbnailUrl, onClose }) {
+const animatedValues = {
+  pitch: { start: -Math.PI / 2, end: -0.1 }, // Start at the bottom, end slightly above
+  yaw: { start: Math.PI, end: 0 }, // Start facing backward, end facing forward
+  zoom: { start: 0, end: 50 }, // Start zoomed out, end zoomed in
+  fisheye: { start: 2, end: 0 }, // Start with fisheye effect
+};
+
+const PanoramaViewer = ({ imageUrl, thumbnailUrl, onClose }) => {
   const viewerRef = useRef(null);
   const [isLoading, setIsLoading] = useState(true); // Loading state
 
@@ -18,7 +25,8 @@ export default function PanoramaViewer({ imageUrl, thumbnailUrl, onClose }) {
     instance.setOptions({
       fisheye: true,
     });
-    setIsLoading(false); // Panorama has loaded
+
+    // Start the intro animation
     intro(instance);
   }, []);
 
@@ -30,10 +38,26 @@ export default function PanoramaViewer({ imageUrl, thumbnailUrl, onClose }) {
       const elapsed = currentTime - startTime;
       const progress = Math.min(elapsed / duration, 1); // Normalize progress between 0 and 1
 
-      viewer.rotate({
-        yaw: Math.PI * progress,
-        pitch: -Math.PI / (2 * (1 - progress)),
+      // Interpolate properties based on progress
+      const currentPitch =
+        animatedValues.pitch.start +
+        (animatedValues.pitch.end - animatedValues.pitch.start) * progress;
+      const currentYaw =
+        animatedValues.yaw.start +
+        (animatedValues.yaw.end - animatedValues.yaw.start) * progress;
+      const currentZoom =
+        animatedValues.zoom.start +
+        (animatedValues.zoom.end - animatedValues.zoom.start) * progress;
+      const currentFisheye =
+        animatedValues.fisheye.start +
+        (animatedValues.fisheye.end - animatedValues.fisheye.start) * progress;
+
+      viewer.setOptions({
+        fisheye: currentFisheye,
       });
+
+      viewer.rotate({ yaw: currentYaw, pitch: currentPitch });
+      viewer.zoom(currentZoom);
 
       if (progress < 1) {
         requestAnimationFrame(animate); // Continue animating until complete
@@ -79,4 +103,6 @@ export default function PanoramaViewer({ imageUrl, thumbnailUrl, onClose }) {
       />
     </div>
   );
-}
+};
+
+export default PanoramaViewer;

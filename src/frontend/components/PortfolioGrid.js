@@ -5,7 +5,7 @@ import LoadingErrorHandler from "./LoadingErrorHandler";
 import styles from "../styles/PortfolioGrid.module.css";
 import { useLoadingError } from "../hooks/useLoadingError";
 import { GRID_BREAKPOINTS } from "../constants";
-import withItemRendering from "./withItemRendering";
+import WithItemRendering from "../hocs/WithItemRendering";
 
 const PortfolioGrid = ({ children }) => {
   const { isLoading, error } = useLoadingError(false);
@@ -25,4 +25,4 @@ const PortfolioGrid = ({ children }) => {
   );
 };
 
-export default withItemRendering(PortfolioGrid);
+export default WithItemRendering(PortfolioGrid);

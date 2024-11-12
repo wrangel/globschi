@@ -8,7 +8,7 @@
     "@aws-sdk/lib-storage": "^3.689.0",
     "@aws-sdk/s3-request-presigner": "^3.689.0",
     "@photo-sphere-viewer/core": "^5.11.1",
-    "@sentry/react": "^8.37.1",
+    "@sentry/react": "^8.38.0",
     "@use-gesture/react": "^10.3.1",
     "concurrently": "^9.1.0",
     "cors": "^2.8.5",

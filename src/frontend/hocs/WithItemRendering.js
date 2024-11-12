@@ -1,12 +1,12 @@
-// src/frontend/components/withItemRendering.js
+// src/frontend/hocs/WithItemRendering.js
 import React from "react";
-import ViewerPopup from "./ViewerPopup";
+import ViewerPopup from "../components/ViewerPopup";
 import { useItemViewer } from "../hooks/useItemViewer";
-import PortfolioItem from "./PortfolioItem";
-import MapMarker from "./MapMarker";
+import PortfolioItem from "../components/PortfolioItem";
+import MapMarker from "../components/MapMarker";
 
-const withItemRendering = (WrappedComponent) => {
-  return function WithItemRendering({ items = [], ...props }) {
+const WithItemRendering = (WrappedComponent) => {
+  return function EnhancedComponent({ items = [], ...props }) {
     const {
       selectedItem,
       isModalOpen,
@@ -19,7 +19,6 @@ const withItemRendering = (WrappedComponent) => {
     return (
       <>
         <WrappedComponent {...props}>
-          {/* Render MapMarkers or PortfolioItems based on WrappedComponent */}
           {items.map((item) => (
             <React.Fragment key={item.id}>
               {WrappedComponent.name === "MapPage" ? (
@@ -42,4 +41,4 @@ const withItemRendering = (WrappedComponent) => {
   };
 };
 
-export default withItemRendering;
+export default WithItemRendering;

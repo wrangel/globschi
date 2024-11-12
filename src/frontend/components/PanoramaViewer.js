@@ -10,7 +10,7 @@ const panoMaxFov = 110; // Maximum field of view
 const panoMinFov = 10; // Minimum field of view
 
 export default function PanoramaViewer({ imageUrl, thumbnailUrl, onClose }) {
-  const [viewer, setViewer] = useState(null);
+  const [, setViewer] = useState(null); // Changed this line
   const [isLoading, setIsLoading] = useState(true); // Loading state
 
   const handleReady = useCallback((instance) => {

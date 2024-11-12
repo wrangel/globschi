@@ -1,5 +1,5 @@
 // src/components/PanoramaViewer.js
-import React, { useState, useCallback } from "react";
+import React, { useRef, useCallback, useState } from "react";
 import { ReactPhotoSphereViewer } from "react-photo-sphere-viewer";
 import styles from "../styles/PanoramaViewer.module.css";
 import LoadingOverlay from "./LoadingOverlay";
@@ -10,11 +10,11 @@ const panoMaxFov = 110; // Maximum field of view
 const panoMinFov = 10; // Minimum field of view
 
 export default function PanoramaViewer({ imageUrl, thumbnailUrl, onClose }) {
-  const [, setViewer] = useState(null); // Changed this line
+  const viewerRef = useRef(null);
   const [isLoading, setIsLoading] = useState(true); // Loading state
 
   const handleReady = useCallback((instance) => {
-    setViewer(instance);
+    viewerRef.current = instance;
     instance.setOptions({
       fisheye: true,
     });

@@ -4,7 +4,7 @@ import { useDrag, usePinch } from "@use-gesture/react";
 import styles from "../styles/ImagePopup.module.css";
 import LoadingOverlay from "./LoadingOverlay";
 import ControlButtons from "./ControlButtons";
-import useKeyboardNavigation from "../hooks/useKeyboardNavigation"; // Import the custom hook
+import useKeyboardNavigation from "../hooks/useKeyboardNavigation";
 
 const ImagePopup = memo(({ item, onClose, onNext, onPrevious }) => {
   const [isLoading, setIsLoading] = useState(true);
@@ -42,7 +42,7 @@ const ImagePopup = memo(({ item, onClose, onNext, onPrevious }) => {
     setScale(Math.max(1, Math.min(5, d)));
   });
 
-  // Use the custom keyboard navigation hook
+  // Use keyboard navigation hook
   useKeyboardNavigation(onClose, onPrevious, onNext);
 
   return (

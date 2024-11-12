@@ -4,7 +4,7 @@ import { ReactPhotoSphereViewer } from "react-photo-sphere-viewer";
 import styles from "../styles/PanoramaViewer.module.css";
 import LoadingOverlay from "./LoadingOverlay";
 import ControlButtons from "./ControlButtons";
-import useKeyboardNavigation from "../hooks/useKeyboardNavigation"; // Import the custom hook
+import useKeyboardNavigation from "../hooks/useKeyboardNavigation";
 
 const panoMaxFov = 110; // Maximum field of view
 const panoMinFov = 10; // Minimum field of view
@@ -43,7 +43,7 @@ export default function PanoramaViewer({ imageUrl, thumbnailUrl, onClose }) {
     requestAnimationFrame(animate); // Start the animation loop
   };
 
-  // Use the custom keyboard navigation hook
+  // Use keyboard navigation hook
   useKeyboardNavigation(
     onClose,
     () => {},
@@ -73,8 +73,8 @@ export default function PanoramaViewer({ imageUrl, thumbnailUrl, onClose }) {
       {/* Control Buttons */}
       <ControlButtons
         onClose={onClose}
-        onPrevious={() => {}}
-        onNext={() => {}}
+        onPrevious={() => {}} // No previous for panorama viewer
+        onNext={() => {}} // No next for panorama viewer
         onToggleMetadata={() => {}}
       />
     </div>

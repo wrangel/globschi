@@ -1,6 +1,6 @@
 // src/components/ControlButtons.js
 import React from "react";
-import styles from "../styles/ControlButtons.module.css"; // Create this CSS file
+import styles from "../styles/ControlButtons.module.css"; // Ensure this file has consistent styles
 
 const ControlButtons = ({ onClose, onPrevious, onNext, onToggleMetadata }) => {
   return (

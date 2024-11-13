@@ -1,7 +1,7 @@
 // src/frontend/hocs/WithItemRendering.js
 import React from "react";
 import ViewerPopup from "../components/ViewerPopup";
-import { useItemViewer } from "../hooks/useItemViewer";
+import { useItemViewer } from "../hooks/useItemViewer"; // Custom hook for managing item state
 import PortfolioItem from "../components/PortfolioItem";
 import MapMarker from "../components/MapMarker";
 

@@ -1,105 +1,25 @@
 // src/components/PanoramaViewer.js
-import React, { useRef, useCallback, useState } from "react";
+import React, { useState } from "react";
 import { ReactPhotoSphereViewer } from "react-photo-sphere-viewer";
-import styles from "../styles/PanoramaViewer.module.css";
 import LoadingOverlay from "./LoadingOverlay";
-import ControlButtons from "./ControlButtons";
-import useKeyboardNavigation from "../hooks/useKeyboardNavigation";
+import styles from "../styles/PanoramaViewer.module.css";
 
-const panoMaxFov = 110; // Maximum field of view
-const panoMinFov = 10; // Minimum field of view
+const PanoramaViewer = ({ imageUrl, thumbnailUrl }) => {
+  const [isLoading, setIsLoading] = useState(true);
 
-const animatedValues = {
-  pitch: { start: -Math.PI / 2, end: -0.1 }, // Start at the bottom, end slightly above
-  yaw: { start: Math.PI, end: 0 }, // Start facing backward, end facing forward
-  zoom: { start: 0, end: 50 }, // Start zoomed out, end zoomed in
-  fisheye: { start: 2, end: 0 }, // Start with fisheye effect
-};
-
-const PanoramaViewer = ({ imageUrl, thumbnailUrl, onClose }) => {
-  const viewerRef = useRef(null);
-  const [isLoading, setIsLoading] = useState(true); // Loading state
-
-  const handleReady = useCallback((instance) => {
-    viewerRef.current = instance;
-    instance.setOptions({
-      fisheye: true,
-    });
-
-    // Start the intro animation
-    intro(instance);
-  }, []);
-
-  const intro = (viewer) => {
-    const duration = 6000; // Animation duration in milliseconds
-    const startTime = performance.now();
-
-    const animate = (currentTime) => {
-      const elapsed = currentTime - startTime;
-      const progress = Math.min(elapsed / duration, 1); // Normalize progress between 0 and 1
-
-      // Interpolate properties based on progress
-      const currentPitch =
-        animatedValues.pitch.start +
-        (animatedValues.pitch.end - animatedValues.pitch.start) * progress;
-      const currentYaw =
-        animatedValues.yaw.start +
-        (animatedValues.yaw.end - animatedValues.yaw.start) * progress;
-      const currentZoom =
-        animatedValues.zoom.start +
-        (animatedValues.zoom.end - animatedValues.zoom.start) * progress;
-      const currentFisheye =
-        animatedValues.fisheye.start +
-        (animatedValues.fisheye.end - animatedValues.fisheye.start) * progress;
-
-      viewer.setOptions({
-        fisheye: currentFisheye,
-      });
-
-      viewer.rotate({ yaw: currentYaw, pitch: currentPitch });
-      viewer.zoom(currentZoom);
-
-      if (progress < 1) {
-        requestAnimationFrame(animate); // Continue animating until complete
-      }
-    };
-
-    requestAnimationFrame(animate); // Start the animation loop
+  const handleReady = () => {
+    setIsLoading(false);
   };
 
-  // Use keyboard navigation hook
-  useKeyboardNavigation(
-    onClose,
-    () => {},
-    () => {}
-  ); // No previous/next for panorama
-
   return (
-    <div className={styles.panoView}>
+    <div className={styles.panoramaViewer}>
       {isLoading && <LoadingOverlay thumbnailUrl={thumbnailUrl} />}
-      {imageUrl ? (
-        <ReactPhotoSphereViewer
-          src={imageUrl}
-          height="100vh" // Set height to fill the screen
-          width="100%"
-          defaultZoomLvl={50}
-          maxFov={panoMaxFov}
-          minFov={panoMinFov}
-          touchmoveTwoFingers={true}
-          littlePlanet={true}
-          navbar={["fullscreen"]} // Only include fullscreen icon
-          onReady={handleReady}
-        />
-      ) : (
-        <div>No panorama URL provided</div>
-      )}
-
-      {/* Control Buttons */}
-      <ControlButtons
-        onClose={onClose}
-        onPrevious={() => {}} // No previous for panorama viewer
-        onNext={() => {}} // No next for panorama viewer
-        onToggleMetadata={() => {}}
+      <ReactPhotoSphereViewer
+        src={imageUrl}
+        height="100vh"
+        width="100%"
+        onReady={handleReady}
+        // Other props...
       />
     </div>
   );

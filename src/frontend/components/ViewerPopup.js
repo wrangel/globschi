@@ -1,25 +1,22 @@
-// src/components/ViewerPopup.js
-
+// src/frontend/components/ViewerPopup.js
 import React from "react";
-import ImagePopup from "./ImagePopup";
-import PanoramaViewer from "./PanoramaViewer";
+import Viewer from "./Viewer";
 import FullScreenModal from "./FullScreenModal";
 
-const ViewerPopup = ({ item, isOpen, onClose }) => {
+const ViewerPopup = ({ item, isOpen, onClose, onNext, onPrevious }) => {
   if (!item) return null;
 
-  if (item.viewer === "pano") {
-    return (
-      <FullScreenModal isOpen={isOpen} onClose={onClose}>
-        <PanoramaViewer
-          imageUrl={item.actualUrl} // Assuming actualUrl is the panorama URL
-          onClose={onClose}
-        />
-      </FullScreenModal>
-    );
-  } else {
-    return <ImagePopup item={item} onClose={onClose} />;
-  }
+  return (
+    <FullScreenModal isOpen={isOpen} onClose={onClose}>
+      <Viewer
+        item={item}
+        isOpen={isOpen}
+        onClose={onClose}
+        onNext={onNext}
+        onPrevious={onPrevious}
+      />
+    </FullScreenModal>
+  );
 };
 
-export default ViewerPopup;
+export default React.memo(ViewerPopup);

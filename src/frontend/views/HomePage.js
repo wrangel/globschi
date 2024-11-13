@@ -1,31 +1,50 @@
-// src/views/HomePage.js
-import React, { useState } from "react";
+// src/frontend/views/HomePage.js
+import React, { useState, useCallback } from "react";
 import PortfolioGrid from "../components/PortfolioGrid";
 import styles from "../styles/Home.module.css";
 import { useItems } from "../hooks/useItems";
-import HamburgerMenu from "../components/HamburgerMenu"; // Import HamburgerMenu
-import ViewerPopup from "../components/ViewerPopup"; // Import ViewerPopup
-import { useNavigate } from "react-router-dom"; // Import useNavigate
+import HamburgerMenu from "../components/HamburgerMenu";
+import ViewerPopup from "../components/ViewerPopup";
+import { useNavigate } from "react-router-dom";
 
 function HomePage() {
   const { items, isLoading, error } = useItems();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
-  const navigate = useNavigate(); // Use useNavigate for navigation
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const navigate = useNavigate();
 
-  const handleItemClick = (item) => {
+  const handleItemClick = useCallback((item, index) => {
     setSelectedItem(item);
+    setCurrentIndex(index);
     setIsModalOpen(true);
-  };
+  }, []);
 
-  const handleClosePopup = () => {
+  const handleClosePopup = useCallback(() => {
     setIsModalOpen(false);
     setSelectedItem(null);
-  };
+  }, []);
 
-  const handleNavigate = (path) => {
-    navigate(path); // Navigate to the specified path using navigate
-  };
+  const handleNavigate = useCallback(
+    (path) => {
+      navigate(path);
+    },
+    [navigate]
+  );
+
+  const handleNextItem = useCallback(() => {
+    if (currentIndex < items.length - 1) {
+      setCurrentIndex((prevIndex) => prevIndex + 1);
+      setSelectedItem(items[currentIndex + 1]);
+    }
+  }, [currentIndex, items]);
+
+  const handlePreviousItem = useCallback(() => {
+    if (currentIndex > 0) {
+      setCurrentIndex((prevIndex) => prevIndex - 1);
+      setSelectedItem(items[currentIndex - 1]);
+    }
+  }, [currentIndex, items]);
 
   if (isLoading) {
     return <div className={styles.homePage}>Loading...</div>;
@@ -45,15 +64,15 @@ function HomePage() {
       ) : (
         <p>No items to display.</p>
       )}
-      {/* Render ViewerPopup if an item is selected */}
       {isModalOpen && (
         <ViewerPopup
           item={selectedItem}
           isOpen={isModalOpen}
           onClose={handleClosePopup}
+          onNext={handleNextItem}
+          onPrevious={handlePreviousItem}
         />
       )}
-      {/* Pass onNavigate to HamburgerMenu */}
       <HamburgerMenu onNavigate={handleNavigate} />
     </div>
   );

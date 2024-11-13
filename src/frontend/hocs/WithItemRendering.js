@@ -1,4 +1,4 @@
-// src/frontend/hocs/WithItemRendering.js
+// src/hocs/WithItemRendering.js
 import React from "react";
 import ViewerPopup from "../components/ViewerPopup";
 import { useItemViewer } from "../hooks/useItemViewer";

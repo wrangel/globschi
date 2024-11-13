@@ -1,14 +1,20 @@
-// src/hooks/useKeyboardNavigation.js
+// src/frontend/hooks/useKeyboardNavigation.js
+
 import { useEffect, useCallback } from "react";
 
 const useKeyboardNavigation = (onClose, onPrevious, onNext) => {
   const handleKeyDown = useCallback(
     (event) => {
-      if (event.key === "Escape") {
-        onClose(); // Close popup when Escape is pressed
-      } else if (event.key === "ArrowLeft") {
+      console.log("Key pressed:", event.key);
+      console.log("onClose type:", typeof onClose);
+      if (event.key === "Escape" && typeof onClose === "function") {
+        onClose();
+      } else if (
+        event.key === "ArrowLeft" &&
+        typeof onPrevious === "function"
+      ) {
         onPrevious();
-      } else if (event.key === "ArrowRight") {
+      } else if (event.key === "ArrowRight" && typeof onNext === "function") {
         onNext();
       }
     },
@@ -18,9 +24,9 @@ const useKeyboardNavigation = (onClose, onPrevious, onNext) => {
   useEffect(() => {
     document.addEventListener("keydown", handleKeyDown);
     return () => {
-      document.removeEventListener("keydown", handleKeyDown); // Cleanup
+      document.removeEventListener("keydown", handleKeyDown);
     };
-  }, [handleKeyDown]); // Now handleKeyDown is the only dependency
+  }, [handleKeyDown]);
 };
 
 export default useKeyboardNavigation;

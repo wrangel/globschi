@@ -14,11 +14,15 @@ function HomePage() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const navigate = useNavigate();
 
-  const handleItemClick = useCallback((item, index) => {
-    setSelectedItem(item);
-    setCurrentIndex(index);
-    setIsModalOpen(true);
-  }, []);
+  const handleItemClick = useCallback(
+    (item) => {
+      const index = items.findIndex((i) => i.id === item.id);
+      setSelectedItem(item);
+      setCurrentIndex(index);
+      setIsModalOpen(true);
+    },
+    [items]
+  );
 
   const handleClosePopup = useCallback(() => {
     setIsModalOpen(false);

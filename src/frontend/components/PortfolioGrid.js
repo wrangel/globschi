@@ -5,9 +5,9 @@ import LoadingErrorHandler from "./LoadingErrorHandler";
 import styles from "../styles/PortfolioGrid.module.css";
 import { useLoadingError } from "../hooks/useLoadingError";
 import { GRID_BREAKPOINTS } from "../constants";
-import WithItemRendering from "../hocs/WithItemRendering";
+import PortfolioItem from "./PortfolioItem";
 
-const PortfolioGrid = ({ children }) => {
+const PortfolioGrid = ({ items, onItemClick }) => {
   const { isLoading, error } = useLoadingError(false);
 
   return (
@@ -18,11 +18,17 @@ const PortfolioGrid = ({ children }) => {
           className={styles.masonryGrid}
           columnClassName={styles.masonryGridColumn}
         >
-          {children} {/* Rendered items will be passed here */}
+          {items.map((item) => (
+            <PortfolioItem
+              key={item.id}
+              item={item}
+              onItemClick={onItemClick}
+            />
+          ))}
         </Masonry>
       </div>
     </LoadingErrorHandler>
   );
 };
 
-export default WithItemRendering(PortfolioGrid);
+export default PortfolioGrid;

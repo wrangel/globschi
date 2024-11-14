@@ -1,11 +1,9 @@
-// src/frontend/components/ViewerPopup.js
 import React, { useEffect } from "react";
 import Viewer from "./Viewer";
 import FullScreenModal from "./FullScreenModal";
 
 const ViewerPopup = ({ item, isOpen, onClose, onNext, onPrevious }) => {
-  if (!item) return null;
-
+  // Handle keyboard navigation using useEffect
   useEffect(() => {
     const handleKeyDown = (event) => {
       if (event.key === "Escape") {
@@ -13,6 +11,7 @@ const ViewerPopup = ({ item, isOpen, onClose, onNext, onPrevious }) => {
       }
     };
 
+    // Only add event listener if isOpen is true
     if (isOpen) {
       document.addEventListener("keydown", handleKeyDown);
     }
@@ -21,6 +20,8 @@ const ViewerPopup = ({ item, isOpen, onClose, onNext, onPrevious }) => {
       document.removeEventListener("keydown", handleKeyDown);
     };
   }, [isOpen, onClose]);
+
+  if (!item) return null;
 
   return (
     <FullScreenModal isOpen={isOpen} onClose={onClose}>

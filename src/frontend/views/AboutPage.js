@@ -6,8 +6,6 @@ import styles from "../styles/About.module.css";
 const About = () => {
   return (
     <div className={styles.aboutContainer}>
-      {" "}
-      {/* Use styles from the module */}
       <h2>That's us!</h2>
       <p>
         <a
@@ -81,6 +79,14 @@ const About = () => {
           href="https://www.perplexity.ai/"
         >
           Perplexity AI
+        </a>{" "}
+        and{" "}
+        <a
+          target="_blank"
+          rel="noopener noreferrer"
+          href="https://copilot.microsoft.com"
+        >
+          Microsoft Copilot
         </a>{" "}
         for providing advanced AI capabilities that enhance our project.
       </p>

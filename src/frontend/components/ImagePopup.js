@@ -1,7 +1,7 @@
 // src/frontend/components/ImagePopup.js
 import React, { useState, useEffect } from "react";
-import LoadingOverlay from "./LoadingOverlay";
 import ControlButtons from "./ControlButtons";
+import LoadingOverlay from "./LoadingOverlay";
 import styles from "../styles/ImagePopup.module.css";
 
 const ImagePopup = ({ item, onClose, onNext, onPrevious }) => {

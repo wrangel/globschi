@@ -1,11 +1,11 @@
 // src/frontend/views/HomePage.js
 import React, { useState, useCallback } from "react";
-import PortfolioGrid from "../components/PortfolioGrid";
-import styles from "../styles/Home.module.css";
-import { useItems } from "../hooks/useItems";
 import HamburgerMenu from "../components/HamburgerMenu";
+import PortfolioGrid from "../components/PortfolioGrid";
 import ViewerPopup from "../components/ViewerPopup";
+import { useItems } from "../hooks/useItems";
 import { useNavigate } from "react-router-dom";
+import styles from "../styles/Home.module.css";
 
 function HomePage() {
   const { items, isLoading, error } = useItems();

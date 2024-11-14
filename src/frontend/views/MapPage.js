@@ -3,17 +3,17 @@ import React, { useEffect, useCallback } from "react";
 import { MapContainer, TileLayer, Marker, useMap } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
-import styles from "../styles/Map.module.css";
 import LoadingErrorHandler from "../components/LoadingErrorHandler";
-import { useLoadingError } from "../hooks/useLoadingError";
+import ViewerPopup from "../components/ViewerPopup";
 import { useItems } from "../hooks/useItems";
+import { useLoadingError } from "../hooks/useLoadingError";
+import styles from "../styles/Map.module.css";
 import {
   MAP_INITIAL_CENTER,
   MAP_INITIAL_ZOOM,
   ICON_URLS,
   ICON_SIZES,
 } from "../constants";
-import ViewerPopup from "../components/ViewerPopup";
 
 const redPinIcon = new L.Icon({
   iconUrl: ICON_URLS.RED_MARKER,

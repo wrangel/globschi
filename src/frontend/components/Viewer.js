@@ -1,9 +1,10 @@
 // src/frontend/components/Viewer.js
+
 import React, { useState } from "react";
-import ImagePopup from "./ImagePopup";
-import PanoramaViewer from "./PanoramaViewer";
 import ControlButtons from "./ControlButtons";
-import MetadataPopup from "./MetadataPopup"; // Import the new component
+import ImagePopup from "./ImagePopup";
+import MetadataPopup from "./MetadataPopup";
+import PanoramaViewer from "./PanoramaViewer";
 import styles from "../styles/Viewer.module.css";
 
 const Viewer = ({ item, isOpen, onClose, onNext, onPrevious }) => {

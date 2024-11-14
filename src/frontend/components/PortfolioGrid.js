@@ -2,10 +2,10 @@
 import React from "react";
 import Masonry from "react-masonry-css";
 import LoadingErrorHandler from "./LoadingErrorHandler";
-import styles from "../styles/PortfolioGrid.module.css";
+import PortfolioItem from "./PortfolioItem";
 import { useLoadingError } from "../hooks/useLoadingError";
 import { GRID_BREAKPOINTS } from "../constants";
-import PortfolioItem from "./PortfolioItem";
+import styles from "../styles/PortfolioGrid.module.css";
 
 const PortfolioGrid = ({ items, onItemClick }) => {
   const { isLoading, error } = useLoadingError(false);

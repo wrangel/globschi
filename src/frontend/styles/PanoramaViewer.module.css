@@ -51,5 +51,10 @@
 
 /* Hide the default "Loading" text */
 .psv-loader-message {
-  display: none;
+  display: none !important;
+}
+
+/* Ensure the loading text is hidden */
+:global(.psv-loader-text) {
+  display: none !important;
 }

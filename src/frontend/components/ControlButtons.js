@@ -1,6 +1,6 @@
-// src/components/ControlButtons.js
+// src/frontend/components/ControlButtons.js
 import React from "react";
-import styles from "../styles/ControlButtons.module.css"; // Ensure this file has consistent styles
+import styles from "../styles/ControlButtons.module.css";
 
 const ControlButtons = ({ onClose, onPrevious, onNext, onToggleMetadata }) => {
   return (
@@ -26,13 +26,15 @@ const ControlButtons = ({ onClose, onPrevious, onNext, onToggleMetadata }) => {
       >
         ›
       </button>
-      <button
-        className={`${styles.popupButton} ${styles.metadataButton}`}
-        onClick={onToggleMetadata}
-        aria-label="Toggle Metadata"
-      >
-        i
-      </button>
+      {onToggleMetadata && (
+        <button
+          className={`${styles.popupButton} ${styles.metadataButton}`}
+          onClick={onToggleMetadata}
+          aria-label="Toggle Metadata"
+        >
+          i
+        </button>
+      )}
     </>
   );
 };

@@ -1,6 +1,6 @@
-// src/components/LoadingOverlay.js
+// src/frontend/components/LoadingOverlay.js
 import React from "react";
-import styles from "../styles/LoadingOverlay.module.css"; // Create this CSS file
+import styles from "../styles/LoadingOverlay.module.css";
 
 const LoadingOverlay = ({ thumbnailUrl }) => {
   return (

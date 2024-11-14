@@ -1,10 +1,17 @@
-// src/components/PanoramaViewer.js
+// src/frontend/components/PanoramaViewer.js
 import React, { useState } from "react";
 import { ReactPhotoSphereViewer } from "react-photo-sphere-viewer";
 import LoadingOverlay from "./LoadingOverlay";
+import ControlButtons from "./ControlButtons";
 import styles from "../styles/PanoramaViewer.module.css";
 
-const PanoramaViewer = ({ imageUrl, thumbnailUrl }) => {
+const PanoramaViewer = ({
+  imageUrl,
+  thumbnailUrl,
+  onClose,
+  onNext,
+  onPrevious,
+}) => {
   const [isLoading, setIsLoading] = useState(true);
 
   const handleReady = () => {
@@ -19,7 +26,11 @@ const PanoramaViewer = ({ imageUrl, thumbnailUrl }) => {
         height="100vh"
         width="100%"
         onReady={handleReady}
-        // Other props...
+      />
+      <ControlButtons
+        onClose={onClose}
+        onPrevious={onPrevious}
+        onNext={onNext}
       />
     </div>
   );

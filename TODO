@@ -1,8 +1,11 @@
 - functionality
   - ! pano: full screen button, reset view button
-    - forward backward icons
+
+    - forward backward icons (PER TASTE, hamburger ist zu intensiv weiss)
   - thumbnail while loading, both pano and image
   - same spinner for all media
+
+  
   - ! video
   - number of views
   - pages

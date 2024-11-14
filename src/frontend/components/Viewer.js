@@ -48,6 +48,8 @@ const Viewer = ({ item, isOpen, onClose, onNext, onPrevious }) => {
       {showMetadata && (
         <MetadataPopup
           metadata={item.metadata}
+          latitude={item.latitude} // Pass latitude
+          longitude={item.longitude} // Pass longitude
           onClose={() => setShowMetadata(false)}
         />
       )}

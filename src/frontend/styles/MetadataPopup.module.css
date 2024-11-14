@@ -17,3 +17,9 @@
   font-size: 16px;
   cursor: pointer;
 }
+
+.mapLink {
+  display: block; /* Make it a block element for better spacing */
+  margin-top: 10px; /* Space between metadata and link */
+  color: #00f; /* Link color */
+}

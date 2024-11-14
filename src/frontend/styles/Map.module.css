@@ -1,7 +1,7 @@
 /* src/frontend/styles/Map.module.css */
 
 .leafletContainer {
-  z-index: 1000; /* Ensure this is lower than the hamburger menu’s z-index */
+  z-index: 800; /* Ensure this is lower than the hamburger menu’s z-index */
 }
 
 .leafletMarkerIcon {

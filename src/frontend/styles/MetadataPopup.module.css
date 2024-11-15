@@ -1,7 +1,7 @@
 /* src/frontend/styles/MetadataPopup.module.css */
 .metadataPopup {
   position: absolute;
-  top: 40px; /* Adjust as needed */
+  top: 52px; /* Adjust as needed to position beneath the "i" icon */
   left: 20px; /* Keep the box left-aligned */
   background-color: rgba(0, 0, 0, 0.7); /* Semi-transparent background */
   color: white; /* Text color */
@@ -15,13 +15,13 @@
   text-align: center; /* Center text within this wrapper */
 }
 
-/* Centering the close button */
+/* Centering and styling the close button */
 .closeButton {
   display: block; /* Make it a block element to take full width */
   margin: 0 auto; /* Center it horizontally */
   background: transparent;
   border: none;
-  color: white;
+  color: grey; /* Change close button color to grey */
   font-size: 16px;
   cursor: pointer;
 }

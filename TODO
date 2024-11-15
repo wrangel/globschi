@@ -1,5 +1,6 @@
 - functionality
   - ! pano: full screen button, reset view button
+  - sentry
   - ! video
   - number of views
   - pages
@@ -9,6 +10,9 @@
     - number of views ranges, altitude, country, cantons, drones, yearmonths, authors
   - sentry: REACT_APP_SENTRY_DSN=your_sentry_dsn_here (siehe file)
 - fixes
+  - css deepdive: em statt px
+    +- vs hamburger menu
+    esc first out metadata then medium
   - Error in parsing value for ‘margin-top’.  Declaration dropped.
 - performance
   - improve

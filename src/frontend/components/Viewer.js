@@ -1,5 +1,5 @@
 // src/frontend/components/Viewer.js
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import ControlButtons from "./ControlButtons";
 import ImagePopup from "./ImagePopup";
 import MetadataPopup from "./MetadataPopup";
@@ -21,6 +21,29 @@ const Viewer = ({ item, onClose, onNext, onPrevious }) => {
   const handleContentLoaded = () => {
     setIsLoading(false);
   };
+
+  // Handle Esc key press
+  useEffect(() => {
+    const handleEscKey = (event) => {
+      if (event.key === "Escape") {
+        if (showMetadata) {
+          // Close metadata popup if it's open
+          setShowMetadata(false);
+        } else {
+          // Close the main viewer if metadata is not open
+          onClose();
+        }
+      }
+    };
+
+    // Add event listener for keydown
+    document.addEventListener("keydown", handleEscKey);
+
+    // Cleanup event listener on unmount
+    return () => {
+      document.removeEventListener("keydown", handleEscKey);
+    };
+  }, [showMetadata, onClose]); // Dependency array includes showMetadata and onClose
 
   const renderContent = () => {
     if (item.viewer === "pano") {

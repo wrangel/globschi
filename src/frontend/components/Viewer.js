@@ -8,7 +8,7 @@ import LoadingOverlay from "./LoadingOverlay";
 import useKeyboardNavigation from "../hooks/useKeyboardNavigation";
 import styles from "../styles/Viewer.module.css";
 
-const Viewer = ({ item, isOpen, onClose, onNext, onPrevious }) => {
+const Viewer = ({ item, onClose, onNext, onPrevious }) => {
   const [showMetadata, setShowMetadata] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 

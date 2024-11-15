@@ -1,13 +1,20 @@
+# Dockerfile for Node Backend
+
+# Use Node.js base image
 FROM node:18
 
 # Set working directory
 WORKDIR /app
 
-# Copy package.json and package-lock.json
-COPY package*.json ./
+# Install pnpm globally
+RUN npm install -g pnpm
 
-# Install dependencies
-RUN npm install
+# Copy package.json and pnpm-lock.yaml
+COPY package*.json ./
+COPY pnpm-lock.yaml ./
+
+# Install dependencies using pnpm
+RUN pnpm install
 
 # Copy the rest of the application code
 COPY . .

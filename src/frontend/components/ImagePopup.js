@@ -1,30 +1,24 @@
 // src/frontend/components/ImagePopup.js
 import React, { useState, useEffect } from "react";
-import ControlButtons from "./ControlButtons";
 import LoadingOverlay from "./LoadingOverlay";
 import styles from "../styles/ImagePopup.module.css";
 
-const ImagePopup = ({ item, onClose, onNext, onPrevious }) => {
+const ImagePopup = ({ actualUrl, thumbnailUrl, name }) => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const img = new Image();
-    img.src = item.actualUrl;
+    img.src = actualUrl;
     img.onload = () => setIsLoading(false);
-  }, [item.actualUrl]);
+  }, [actualUrl]);
 
   return (
     <div className={styles.imagePopup}>
-      {isLoading && <LoadingOverlay thumbnailUrl={item.thumbnailUrl} />}
+      {isLoading && <LoadingOverlay thumbnailUrl={thumbnailUrl} />}
       <img
-        src={item.actualUrl}
-        alt={item.name}
+        src={actualUrl}
+        alt={name}
         className={`${styles.image} ${isLoading ? styles.hidden : ""}`}
-      />
-      <ControlButtons
-        onClose={onClose}
-        onPrevious={onPrevious}
-        onNext={onNext}
       />
     </div>
   );

@@ -2,12 +2,19 @@
 .metadataPopup {
   position: absolute;
   top: 40px; /* Adjust as needed to position beneath the "i" icon */
-  left: 20px; /* Positioning for metadata box */
+  left: 20px; /* Keep the box left-aligned */
   background-color: rgba(0, 0, 0, 0.7); /* Semi-transparent background */
   color: white; /* Text color */
   padding: 10px;
   border-radius: 5px;
   z-index: 1200; /* Ensure it's above other elements */
+}
+
+/* Center text inside the popup */
+.metadataPopup pre,
+.metadataPopup a {
+  text-align: center; /* Center text within the popup */
+  margin: 0; /* Remove default margins for better centering */
 }
 
 .closeButton {

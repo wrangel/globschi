@@ -1,4 +1,3 @@
-version: "3"
 services:
   backend:
     build:
@@ -6,13 +5,8 @@ services:
       dockerfile: Dockerfile.backend
     environment:
       - NODE_ENV=production
-      - DOTENV_KEY=${DOTENV_KEY}
+      - DOTENV_KEY=${DOTENV_KEY} # Reference the DOTENV_KEY from your local environment or .env file
       - PORT=8081
-      # You don't need to explicitly set these as they will be loaded from dotenv-vault
-      # - DB_USER
-      # - DB_PASSWORD
-      # - SERVER
-      # - DB
     ports:
       - "8081:8081"
 

@@ -1,7 +1,4 @@
-// src/backend/loadEnv.mjs
-
 import dotenv from "dotenv";
-import dotenvVault from "dotenv-vault-core";
 import { fileURLToPath } from "url";
 import { dirname, resolve } from "path";
 import logger from "./helpers/logger.mjs";
@@ -14,10 +11,8 @@ export function loadEnv(forceReload = false, printVars = false) {
 
   if (env === "production") {
     logger.info("Loading production environment from vault");
-    dotenvVault.config();
-    logger.info(
-      `Loaded environment variables from vault using DOTENV_KEY: ${process.env.DOTENV_KEY}`
-    );
+    dotenv.config({ path: ".env.vault" });
+    logger.info(`Loaded environment variables from vault using DOTENV_KEY`);
   } else {
     const envPath = resolve(__dirname, "..", "..", ".env");
     logger.info(`Attempting to load .env file from: ${envPath}`);

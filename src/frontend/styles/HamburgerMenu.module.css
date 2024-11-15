@@ -1,10 +1,10 @@
 /* src/frontend/styles/HamburgerMenu.module.css */
 
 .hamburgerMenu {
-  position: absolute; /* Position absolute for fixed positioning */
+  position: fixed; /* Change to fixed positioning */
   top: 20px; /* Distance from the top */
-  left: 20px; /* Distance from the left */
-  z-index: 900; /* Lower than the image popup */
+  right: 20px; /* Change from left to right for upper right corner */
+  z-index: 900; /* Ensure it's above other content but below popups */
 }
 
 .menuIcon {
@@ -23,7 +23,7 @@
 .menuDropdown {
   position: absolute; /* Position dropdown absolutely */
   top: 40px; /* Adjust based on your layout */
-  left: 0; /* Align to the left */
+  right: 0; /* Align dropdown to the right edge of the hamburger menu */
   background-color: transparent; /* No background for dropdown */
   padding: 0; /* Remove padding around dropdown items */
   border-radius: 0; /* No rounded corners */

@@ -1,5 +1,3 @@
-// src/frontend/hooks/useItems.js
-
 import { useState, useEffect, useCallback } from "react";
 
 let cachedItems = null;
@@ -15,7 +13,12 @@ export const useItems = () => {
     }
     try {
       setIsLoading(true);
-      const response = await fetch("/api/combined-data");
+      const response = await fetch(
+        `${process.env.REACT_APP_API_URL}/api/combined-data`
+      );
+      console.log(
+        `${process.env.REACT_APP_API_URL}/api/combined-data -------_DDDDDDDDDDDDDDd`
+      );
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }

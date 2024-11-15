@@ -13,7 +13,7 @@ export const useItems = () => {
     }
     try {
       setIsLoading(true);
-      const response = await fetch("http://backend:8081/api/combined-data");
+      const response = await fetch("http://localhost:8081/api/combined-data");
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }

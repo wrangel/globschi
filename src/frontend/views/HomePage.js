@@ -1,52 +1,30 @@
-import React, { useState, useCallback } from "react";
+// src/frontend/views/HomePage.js
+import React from "react";
 import { useNavigate } from "react-router-dom";
 import PortfolioGrid from "../components/PortfolioGrid";
 import ViewerPopup from "../components/ViewerPopup";
 import { useItems } from "../hooks/useItems";
+import { useItemViewer } from "../hooks/useItemViewer";
 import styles from "../styles/Home.module.css";
 
 function HomePage() {
   const { items, isLoading, error } = useItems();
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedItem, setSelectedItem] = useState(null);
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const {
+    selectedItem,
+    isModalOpen,
+    handleItemClick,
+    handleClosePopup,
+    handleNextItem,
+    handlePreviousItem,
+  } = useItemViewer(items);
   const navigate = useNavigate();
 
-  const handleItemClick = useCallback(
-    (item) => {
-      const index = items.findIndex((i) => i.id === item.id);
-      setSelectedItem(item);
-      setCurrentIndex(index);
-      setIsModalOpen(true);
-    },
-    [items]
-  );
-
-  const handleClosePopup = useCallback(() => {
-    setIsModalOpen(false);
-    setSelectedItem(null);
-  }, []);
-
-  const handleNavigate = useCallback(
+  const handleNavigate = React.useCallback(
     (path) => {
       navigate(path);
     },
     [navigate]
   );
-
-  const handleNextItem = useCallback(() => {
-    if (currentIndex < items.length - 1) {
-      setCurrentIndex((prevIndex) => prevIndex + 1);
-      setSelectedItem(items[currentIndex + 1]);
-    }
-  }, [currentIndex, items]);
-
-  const handlePreviousItem = useCallback(() => {
-    if (currentIndex > 0) {
-      setCurrentIndex((prevIndex) => prevIndex - 1);
-      setSelectedItem(items[currentIndex - 1]);
-    }
-  }, [currentIndex, items]);
 
   if (isLoading) {
     return <div className={styles.homePage}>Loading...</div>;

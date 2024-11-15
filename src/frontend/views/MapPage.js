@@ -1,11 +1,12 @@
 // src/frontend/views/MapPage.js
-import React, { useEffect, useCallback, useState } from "react";
+import React, { useEffect } from "react";
 import { MapContainer, TileLayer, Marker, useMap } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import LoadingErrorHandler from "../components/LoadingErrorHandler";
 import ViewerPopup from "../components/ViewerPopup";
 import { useItems } from "../hooks/useItems";
+import { useItemViewer } from "../hooks/useItemViewer";
 import { useLoadingError } from "../hooks/useLoadingError";
 import styles from "../styles/Map.module.css";
 import {
@@ -33,22 +34,20 @@ const FitBounds = ({ items }) => {
       const latitudes = items.map((item) => item.latitude);
       const longitudes = items.map((item) => item.longitude);
 
-      // Calculate the bounding box with larger margins
-      const latOffset = 1.5; // Adjust as needed for more margin
-      const lngOffset = 1.5; // Adjust as needed for more margin
+      const latOffset = 1.5;
+      const lngOffset = 1.5;
 
       const bounds = [
         [
           Math.min(...latitudes) - latOffset,
           Math.min(...longitudes) - lngOffset,
-        ], // Southwest corner
+        ],
         [
           Math.max(...latitudes) + latOffset,
           Math.max(...longitudes) + lngOffset,
-        ], // Northeast corner
+        ],
       ];
 
-      // Fit map to bounds
       map.fitBounds(bounds);
     }
   }, [items, map]);
@@ -60,45 +59,20 @@ const MapPage = () => {
   const { items, isLoading, error } = useItems();
   const { isLoading: loadingError, setErrorMessage } =
     useLoadingError(isLoading);
-
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedItem, setSelectedItem] = useState(null);
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const {
+    selectedItem,
+    isModalOpen,
+    handleItemClick,
+    handleClosePopup,
+    handleNextItem,
+    handlePreviousItem,
+  } = useItemViewer(items);
 
   useEffect(() => {
     if (error) {
       setErrorMessage(error);
     }
   }, [error, setErrorMessage]);
-
-  const handleMarkerClick = useCallback(
-    (item) => {
-      const index = items.findIndex((i) => i.id === item.id);
-      setSelectedItem(item);
-      setCurrentIndex(index);
-      setIsModalOpen(true);
-    },
-    [items]
-  );
-
-  const handleClosePopup = useCallback(() => {
-    setIsModalOpen(false);
-    setSelectedItem(null);
-  }, []);
-
-  const handleNextItem = useCallback(() => {
-    if (currentIndex < items.length - 1) {
-      setCurrentIndex((prevIndex) => prevIndex + 1);
-      setSelectedItem(items[currentIndex + 1]);
-    }
-  }, [currentIndex, items]);
-
-  const handlePreviousItem = useCallback(() => {
-    if (currentIndex > 0) {
-      setCurrentIndex((prevIndex) => prevIndex - 1);
-      setSelectedItem(items[currentIndex - 1]);
-    }
-  }, [currentIndex, items]);
 
   return (
     <LoadingErrorHandler isLoading={loadingError} error={error}>
@@ -124,7 +98,7 @@ const MapPage = () => {
               position={[item.latitude, item.longitude]}
               icon={redPinIcon}
               eventHandlers={{
-                click: () => handleMarkerClick(item),
+                click: () => handleItemClick(item),
               }}
             />
           ))}

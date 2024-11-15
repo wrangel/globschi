@@ -1,10 +1,10 @@
 // src/frontend/views/HomePage.js
 import React from "react";
-import { useNavigate } from "react-router-dom";
 import PortfolioGrid from "../components/PortfolioGrid";
 import ViewerPopup from "../components/ViewerPopup";
 import { useItems } from "../hooks/useItems";
 import { useItemViewer } from "../hooks/useItemViewer";
+import { useNavigate } from "react-router-dom"; // Ensure this is imported
 import styles from "../styles/Home.module.css";
 
 function HomePage() {
@@ -19,12 +19,9 @@ function HomePage() {
   } = useItemViewer(items);
   const navigate = useNavigate();
 
-  const handleNavigate = React.useCallback(
-    (path) => {
-      navigate(path);
-    },
-    [navigate]
-  );
+  const handleNavigate = (path) => {
+    navigate(path); // Use navigate to go to a new path
+  };
 
   if (isLoading) {
     return <div className={styles.homePage}>Loading...</div>;
@@ -44,6 +41,10 @@ function HomePage() {
       ) : (
         <p>No items to display.</p>
       )}
+      <button onClick={() => handleNavigate("/some-path")}>
+        Go to Some Path
+      </button>{" "}
+      {/* Example usage */}
       {isModalOpen && (
         <ViewerPopup
           item={selectedItem}

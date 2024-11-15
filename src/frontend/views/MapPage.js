@@ -8,7 +8,7 @@ import ViewerPopup from "../components/ViewerPopup";
 import { useItems } from "../hooks/useItems";
 import { useItemViewer } from "../hooks/useItemViewer";
 import { useLoadingError } from "../hooks/useLoadingError";
-import styles from "../styles/Map.module.css";
+import styles from "../styles/Map.module.css"; // Ensure this imports your styles
 import {
   MAP_INITIAL_CENTER,
   MAP_INITIAL_ZOOM,
@@ -80,17 +80,14 @@ const MapPage = () => {
         <MapContainer
           center={MAP_INITIAL_CENTER}
           zoom={MAP_INITIAL_ZOOM}
-          className={styles.leafletContainer}
+          className={`${styles.leafletContainer} custom-map`} // Add custom class for additional specificity
           style={{ height: "100vh", width: "100%" }}
-          zoomControl={true}
+          zoomControl={true} // Enable zoom control buttons
           minZoom={2}
           maxZoom={18}
           scrollWheelZoom={true}
           doubleClickZoom={true}
           touchZoom={true}
-          zoomSnap={0.8} // Allow fractional zoom levels
-          zoomDelta={0.8} // Smaller increments for button clicks
-          wheelPxPerZoomLevel={60} // Adjust sensitivity of mouse wheel
         >
           <TileLayer
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"

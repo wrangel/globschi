@@ -13,12 +13,7 @@ export const useItems = () => {
     }
     try {
       setIsLoading(true);
-      const response = await fetch(
-        `${process.env.REACT_APP_API_URL}/api/combined-data`
-      );
-      console.log(
-        `${process.env.REACT_APP_API_URL}/api/combined-data -------_DDDDDDDDDDDDDDd`
-      );
+      const response = await fetch("http://backend:8081/api/combined-data");
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }

@@ -10,15 +10,19 @@ const MetadataPopup = ({ metadata, latitude, longitude, onClose }) => {
       <button className={styles.closeButton} onClick={onClose}>
         ×
       </button>
-      <pre>{metadata}</pre>
-      <a
-        href={googleMapsUrl}
-        target="_blank"
-        rel="noopener noreferrer"
-        className={styles.mapLink}
-      >
-        View on Map
-      </a>
+      <div className={styles.content}>
+        {" "}
+        {/* Wrapper for centering text */}
+        <pre>{metadata}</pre>
+        <a
+          href={googleMapsUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={styles.mapLink}
+        >
+          View on Map
+        </a>
+      </div>
     </div>
   );
 };

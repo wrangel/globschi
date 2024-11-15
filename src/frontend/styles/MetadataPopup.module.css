@@ -1,7 +1,7 @@
 /* src/frontend/styles/MetadataPopup.module.css */
 .metadataPopup {
   position: absolute;
-  top: 40px; /* Adjust as needed to position beneath the "i" icon */
+  top: 40px; /* Adjust as needed */
   left: 20px; /* Keep the box left-aligned */
   background-color: rgba(0, 0, 0, 0.7); /* Semi-transparent background */
   color: white; /* Text color */
@@ -11,13 +11,14 @@
 }
 
 /* Center text inside the popup */
-.metadataPopup pre,
-.metadataPopup a {
-  text-align: center; /* Center text within the popup */
-  margin: 0; /* Remove default margins for better centering */
+.content {
+  text-align: center; /* Center text within this wrapper */
 }
 
+/* Centering the close button */
 .closeButton {
+  display: block; /* Make it a block element to take full width */
+  margin: 0 auto; /* Center it horizontally */
   background: transparent;
   border: none;
   color: white;

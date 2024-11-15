@@ -1,5 +1,3 @@
-// src/views/AboutPage.js
-
 import React from "react";
 import styles from "../styles/About.module.css";
 
@@ -34,13 +32,13 @@ const About = () => {
         >
           DJI
         </a>{" "}
-        for their drones.
+        for their drones
       </p>
       <p>
         <a target="_blank" rel="noopener noreferrer" href="https://ptgui.com">
           PTGui Pro
         </a>{" "}
-        for the equirectangular 360&deg; panorama stitching.
+        for the equirectangular 360&deg; panorama stitching
       </p>
       <p>
         <a
@@ -50,7 +48,7 @@ const About = () => {
         >
           Adobe Lightroom
         </a>{" "}
-        for the wide angle &amp; HDR image creation.
+        for the wide angle &amp; HDR image creation
       </p>
       <p>
         <a
@@ -60,7 +58,7 @@ const About = () => {
         >
           Photo Sphere Viewer
         </a>{" "}
-        for the the 360&deg; panorama display.
+        for the 360&deg; panorama display
       </p>
       <p>
         <a
@@ -70,7 +68,7 @@ const About = () => {
         >
           Marius Hosting
         </a>{" "}
-        for ramping my network knowledge up very quickly.
+        for ramping my network knowledge up very quickly
       </p>
       <p>
         <a
@@ -80,15 +78,7 @@ const About = () => {
         >
           Perplexity AI
         </a>{" "}
-        and{" "}
-        <a
-          target="_blank"
-          rel="noopener noreferrer"
-          href="https://copilot.microsoft.com"
-        >
-          Microsoft Copilot
-        </a>{" "}
-        for providing advanced AI capabilities that enhance our project.
+        for providing advanced AI capabilities that enhance our project
       </p>
     </div>
   );

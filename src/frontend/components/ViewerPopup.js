@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
-import Viewer from "./Viewer";
 import FullScreenModal from "./FullScreenModal";
+import Viewer from "./Viewer";
 
 const ViewerPopup = ({ item, isOpen, onClose, onNext, onPrevious }) => {
   // Handle keyboard navigation using useEffect

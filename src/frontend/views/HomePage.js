@@ -1,10 +1,8 @@
-// src/frontend/views/HomePage.js
 import React, { useState, useCallback } from "react";
-import HamburgerMenu from "../components/HamburgerMenu";
+import { useNavigate } from "react-router-dom";
 import PortfolioGrid from "../components/PortfolioGrid";
 import ViewerPopup from "../components/ViewerPopup";
 import { useItems } from "../hooks/useItems";
-import { useNavigate } from "react-router-dom";
 import styles from "../styles/Home.module.css";
 
 function HomePage() {
@@ -77,7 +75,6 @@ function HomePage() {
           onPrevious={handlePreviousItem}
         />
       )}
-      <HamburgerMenu onNavigate={handleNavigate} />
     </div>
   );
 }

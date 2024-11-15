@@ -82,10 +82,15 @@ const MapPage = () => {
           zoom={MAP_INITIAL_ZOOM}
           className={styles.leafletContainer}
           style={{ height: "100vh", width: "100%" }}
-          zoomControl={false}
-          zoomSnap={0.05}
-          zoomDelta={0.25}
-          wheelPxPerZoomLevel={50}
+          zoomControl={true}
+          minZoom={2}
+          maxZoom={18}
+          scrollWheelZoom={true}
+          doubleClickZoom={true}
+          touchZoom={true}
+          zoomSnap={0.8} // Allow fractional zoom levels
+          zoomDelta={0.8} // Smaller increments for button clicks
+          wheelPxPerZoomLevel={60} // Adjust sensitivity of mouse wheel
         >
           <TileLayer
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"

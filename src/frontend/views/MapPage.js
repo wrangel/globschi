@@ -1,5 +1,5 @@
 // src/frontend/views/MapPage.js
-import React, { useEffect, useCallback } from "react";
+import React, { useEffect, useCallback, useState } from "react";
 import { MapContainer, TileLayer, Marker, useMap } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
@@ -61,9 +61,9 @@ const MapPage = () => {
   const { isLoading: loadingError, setErrorMessage } =
     useLoadingError(isLoading);
 
-  // State for managing selected item and modal visibility
-  const [isModalOpen, setIsModalOpen] = React.useState(false);
-  const [selectedItem, setSelectedItem] = React.useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedItem, setSelectedItem] = useState(null);
+  const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {
     if (error) {
@@ -71,15 +71,34 @@ const MapPage = () => {
     }
   }, [error, setErrorMessage]);
 
-  const handleMarkerClick = useCallback((item) => {
-    setSelectedItem(item); // Set the selected item
-    setIsModalOpen(true); // Open the modal
-  }, []);
+  const handleMarkerClick = useCallback(
+    (item) => {
+      const index = items.findIndex((i) => i.id === item.id);
+      setSelectedItem(item);
+      setCurrentIndex(index);
+      setIsModalOpen(true);
+    },
+    [items]
+  );
 
   const handleClosePopup = useCallback(() => {
-    setIsModalOpen(false); // Close the modal
-    setSelectedItem(null); // Clear the selected item
+    setIsModalOpen(false);
+    setSelectedItem(null);
   }, []);
+
+  const handleNextItem = useCallback(() => {
+    if (currentIndex < items.length - 1) {
+      setCurrentIndex((prevIndex) => prevIndex + 1);
+      setSelectedItem(items[currentIndex + 1]);
+    }
+  }, [currentIndex, items]);
+
+  const handlePreviousItem = useCallback(() => {
+    if (currentIndex > 0) {
+      setCurrentIndex((prevIndex) => prevIndex - 1);
+      setSelectedItem(items[currentIndex - 1]);
+    }
+  }, [currentIndex, items]);
 
   return (
     <LoadingErrorHandler isLoading={loadingError} error={error}>
@@ -99,29 +118,27 @@ const MapPage = () => {
             attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
           />
 
-          {/* Render markers for each item */}
           {items.map((item) => (
             <Marker
               key={item.id}
               position={[item.latitude, item.longitude]}
               icon={redPinIcon}
               eventHandlers={{
-                click: () => handleMarkerClick(item), // Handle marker click to open popup
+                click: () => handleMarkerClick(item),
               }}
             />
           ))}
 
-          {/* Fit bounds when items are rendered */}
           <FitBounds items={items} />
         </MapContainer>
 
-        {/* Render ViewerPopup if an item is selected */}
         {isModalOpen && (
           <ViewerPopup
             item={selectedItem}
             isOpen={isModalOpen}
             onClose={handleClosePopup}
-            // You can add onNext and onPrevious if needed for navigation
+            onNext={handleNextItem}
+            onPrevious={handlePreviousItem}
           />
         )}
       </div>

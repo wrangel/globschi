@@ -1,6 +1,6 @@
 services:
   backend:
-    platform: linux/amd64
+    platform: linux/amd64 # For Synology
     build:
       context: .
       dockerfile: Dockerfile.backend

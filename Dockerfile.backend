@@ -1,5 +1,5 @@
 # Use a smaller base image with fewer vulnerabilities
-FROM node:23-alpine3.19
+FROM node:22-alpine
 
 # Set working directory
 WORKDIR /app

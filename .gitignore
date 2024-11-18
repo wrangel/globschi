@@ -22,3 +22,5 @@ error.log
 .env*
 .env.vault
 !.env.vault
+
+TODO.txt

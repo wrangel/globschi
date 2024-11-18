@@ -20,3 +20,5 @@ src/backend/tests/
 .flaskenv*
 !.env.project
 !.env.vault
+
+TODO.txt

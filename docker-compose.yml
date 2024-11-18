@@ -19,4 +19,4 @@ services:
       dockerfile: Dockerfile.frontend
     image: wrangel/globschi-frontend:1.3amd
     ports:
-      - "3000:3000"
+      - "3003:80"

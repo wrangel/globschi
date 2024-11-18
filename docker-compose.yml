@@ -1,6 +1,6 @@
 services:
   backend:
-    #platform: linux/amd64 # For Synology
+    platform: linux/amd64 # For Synology
     build:
       context: .
       dockerfile: Dockerfile.backend
@@ -13,7 +13,7 @@ services:
       - "8081:8081"
 
   frontend:
-    #platform: linux/amd64
+    platform: linux/amd64
     build:
       context: .
       dockerfile: Dockerfile.frontend

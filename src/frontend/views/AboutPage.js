@@ -23,17 +23,28 @@ const About = () => {
         </a>{" "}
         &amp; dance
       </p>
-      <h2>Acknowledgements</h2>
+
+      <h2>Our drones</h2>
       <p>
         <a
           target="_blank"
           rel="noopener noreferrer"
-          href="https://www.dji.com/ch"
+          href="https://www.dji.com/mini-4-pro"
         >
-          DJI
-        </a>{" "}
-        for their drones
+          DJI Mini 4 Pro
+        </a>
+        {" (Globschi), "}
+        <a
+          target="_blank"
+          rel="noopener noreferrer"
+          href="https://www.dji.com/mini-2"
+        >
+          DJI Mini 2
+        </a>
+        {" (Dronef)"}
       </p>
+
+      <h2>Shouting out to</h2>
       <p>
         <a target="_blank" rel="noopener noreferrer" href="https://ptgui.com">
           PTGui Pro
@@ -68,7 +79,7 @@ const About = () => {
         >
           Marius Hosting
         </a>{" "}
-        for ramping my network knowledge up very quickly
+        for the network knowledge
       </p>
       <p>
         <a
@@ -78,7 +89,7 @@ const About = () => {
         >
           Perplexity AI
         </a>{" "}
-        for providing advanced AI capabilities that enhance our project
+        for providing advanced AI capabilities
       </p>
     </div>
   );

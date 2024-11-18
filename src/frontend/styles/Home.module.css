@@ -7,12 +7,18 @@
 
 .headerWrapper {
   display: flex;
+  flex-direction: column; /* This will stack the children vertically */
   justify-content: center;
   align-items: center;
   height: 10vh; /* Use viewport height to make the header size responsive */
 }
 
-h1 {
-  margin: 0;
-  font-size: 2rem; /* Adjust font size using relative units */
+.headerWrapper h1 {
+  margin: 0; /* Remove default margin */
+  font-size: 2em; /* Adjust font size as needed */
+}
+
+.headerWrapper h2 {
+  margin-top: 0.5em; /* Add space above the h2 */
+  font-size: 1.5em; /* Adjust font size as needed */
 }

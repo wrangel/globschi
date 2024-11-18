@@ -1,6 +1,6 @@
 services:
   backend:
-    platform: linux/amd64 # For Synology
+    #platform: linux/amd64 # For Synology
     build:
       context: .
       dockerfile: Dockerfile.backend
@@ -8,15 +8,15 @@ services:
       - NODE_ENV=production
       - DOTENV_KEY=${DOTENV_KEY} # Reference the DOTENV_KEY from your local environment
       - PORT=8081
-    image: wrangel/globschi-backend:1.3
+    image: wrangel/globschi-backend:1.3arm
     ports:
       - "8081:8081"
 
   frontend:
-    platform: linux/amd64
+    #platform: linux/amd64
     build:
       context: .
       dockerfile: Dockerfile.frontend
-    image: wrangel/globschi-frontend:1.3
+    image: wrangel/globschi-frontend:1.3arm
     ports:
-      - "3000:80"
+      - "3000:3000"

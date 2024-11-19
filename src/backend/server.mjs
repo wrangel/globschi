@@ -29,7 +29,11 @@ const app = express();
 const PORT = process.env.PORT || 8081; // Default to 8081
 
 // Enable CORS
-app.use(cors());
+app.use(
+  cors({
+    origin: "http://localhost:3000",
+  })
+);
 
 // Connect to MongoDB
 mongoose.set("strictQuery", false);

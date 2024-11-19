@@ -15,6 +15,7 @@ export const useItems = () => {
       setIsLoading(true);
       const apiUrl = process.env.REACT_APP_API_URL;
       const response = await fetch(`${apiUrl}/api/combined-data`);
+
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }

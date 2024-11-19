@@ -16,7 +16,7 @@ RUN pnpm install
 # Copy the rest of the application code
 COPY . .
 
-# Build the React app
+# Build the React app (this will use REACT_APP_API_URL from environment)
 RUN pnpm run build
 
 # Stage 2: Serve with Nginx

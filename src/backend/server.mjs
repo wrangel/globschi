@@ -1,11 +1,11 @@
-// src/backend/server.mjs
-
 import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
 import logger from "./helpers/logger.mjs";
 import combinedDataRoute from "./routes/combinedDataRoute.mjs";
 import { loadEnv } from "./loadEnv.mjs";
+import path from "path";
+import { fileURLToPath } from "url";
 
 try {
   loadEnv();
@@ -43,6 +43,11 @@ const connectDB = () =>
       throw err; // Rethrow to be caught in the main connection logic
     });
 
+// Serve static files from the React app
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+app.use(express.static(path.join(__dirname, "../../build"))); // Adjust path as necessary
+
 // Basic route
 app.get("/", (req, res) => {
   res.send("Server is running");
@@ -61,6 +66,11 @@ app.get("/api/test-mongo", async (req, res) => {
 
 // Use the combined data route
 app.use("/api", combinedDataRoute);
+
+// Catch-all handler for any request that doesn't match above routes
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "../../build", "index.html")); // Adjust path as necessary
+});
 
 // Error handling middleware
 app.use((err, req, res, next) => {

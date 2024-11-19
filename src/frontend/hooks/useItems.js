@@ -13,7 +13,9 @@ export const useItems = () => {
     }
     try {
       setIsLoading(true);
-      const apiUrl = process.env.REACT_APP_API_URL;
+      const apiUrl = "http://localhost:8081"; //process.env.REACT_APP_API_URL;
+      console.log("API URL:", apiUrl); // This should log the correct URL ///////////////////// TODO Remove
+
       const response = await fetch(`${apiUrl}/api/combined-data`);
 
       if (!response.ok) {

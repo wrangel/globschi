@@ -3,7 +3,7 @@ import React from "react";
 import styles from "../styles/MetadataPopup.module.css"; // Ensure you have this CSS file
 
 const MetadataPopup = ({ metadata, latitude, longitude, onClose }) => {
-  const googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${latitude},${longitude}`;
+  const googleMapsUrl = `https://www.google.com/maps/embed/v1/view?key=YOUR_API_KEY&center=${latitude},${longitude}&zoom=12&maptype=satellite`;
 
   return (
     <div className={styles.metadataPopup}>

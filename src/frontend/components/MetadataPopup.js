@@ -14,8 +14,7 @@ const MetadataPopup = ({ metadata, latitude, longitude, onClose }) => {
         <iframe
           width="100%"
           height="450"
-          frameBorder="0"
-          style={{ border: 0 }}
+          style={{ border: 0 }} // Use CSS for border styling
           src={googleMapsUrl}
           allowFullScreen
         ></iframe>

@@ -75,6 +75,16 @@ const About = () => {
         <a
           target="_blank"
           rel="noopener noreferrer"
+          href="https://www.mapbox.com/"
+        >
+          Mapbox
+        </a>{" "}
+        for the reverse geocoding
+      </p>
+      <p>
+        <a
+          target="_blank"
+          rel="noopener noreferrer"
           href="https://mariushosting.com/"
         >
           Marius Hosting

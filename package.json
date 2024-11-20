@@ -43,6 +43,7 @@
     "add-field": "node ./src/backend/mongoManagement/newFieldAdder.mjs",
     "debug-mongo": "node ./src/backend/tests/mongoDebugger.mjs",
     "test-aws": "node ./src/backend/tests/awsLoginTester.mjs",
+    "manage": "./scripts/manage-tasks.sh",
     "dev": "./scripts/dev-script.sh",
     "prod": "./scripts/prod-script.sh"
   },

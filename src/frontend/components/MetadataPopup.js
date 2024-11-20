@@ -14,8 +14,9 @@ const MetadataPopup = ({ metadata, latitude, longitude, onClose }) => {
         <iframe
           width="100%"
           height="450"
-          style={{ border: 0 }} // Use CSS for border styling
+          style={{ border: 0 }}
           src={googleMapsUrl}
+          title={`Map showing location at latitude ${latitude} and longitude ${longitude}`} // Added title attribute
           allowFullScreen
         ></iframe>
       </div>

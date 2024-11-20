@@ -26,12 +26,17 @@ requiredEnvVars.forEach((varName) => {
 logger.info("Starting server...");
 
 const app = express();
-const PORT = process.env.PORT || 8081; // Default to 8081
+const PORT = process.env.PORT || 8081;
 
-// Enable CORS
+// Determine environment and set CORS origin accordingly
+const isDev = process.env.NODE_ENV !== "production";
+const corsOrigin = isDev ? "http://localhost:3000" : "http://frontend";
+
+// Enable CORS with dynamic origin
 app.use(
   cors({
-    origin: "http://localhost:3000",
+    origin: corsOrigin,
+    credentials: true,
   })
 );
 
@@ -44,13 +49,13 @@ const connectDB = () =>
     )
     .catch((err) => {
       logger.error("MongoDB connection error:", err);
-      throw err; // Rethrow to be caught in the main connection logic
+      throw err;
     });
 
 // Serve static files from the React app
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-app.use(express.static(path.join(__dirname, "../../build"))); // Adjust path as necessary
+app.use(express.static(path.join(__dirname, "../../build")));
 
 // Basic route
 app.get("/", (req, res) => {
@@ -73,7 +78,7 @@ app.use("/api", combinedDataRoute);
 
 // Catch-all handler for any request that doesn't match above routes
 app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "../../build", "index.html")); // Adjust path as necessary
+  res.sendFile(path.join(__dirname, "../../build", "index.html"));
 });
 
 // Error handling middleware

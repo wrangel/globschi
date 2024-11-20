@@ -4,9 +4,9 @@
   "proxy": "http://localhost:8081",
   "private": true,
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.693.0",
-    "@aws-sdk/lib-storage": "^3.693.0",
-    "@aws-sdk/s3-request-presigner": "^3.693.0",
+    "@aws-sdk/client-s3": "^3.696.0",
+    "@aws-sdk/lib-storage": "^3.696.0",
+    "@aws-sdk/s3-request-presigner": "^3.696.0",
     "@photo-sphere-viewer/core": "^5.11.1",
     "@sentry/react": "^8.39.0",
     "concurrently": "^9.1.0",
@@ -45,7 +45,8 @@
     "test-aws": "node ./src/backend/tests/awsLoginTester.mjs",
     "start:backend": "node ./src/backend/server.mjs",
     "start:frontend": "PORT=3000 react-scripts start",
-    "dev": "concurrently \"npm run start:backend\" \"npm run start:frontend\""
+    "dev": "concurrently \"npm run start:backend\" \"npm run start:frontend\"",
+    "prod": "docker-compose up --build"
   },
   "eslintConfig": {
     "extends": [

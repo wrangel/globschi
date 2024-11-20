@@ -1,3 +1,4 @@
+// src/frontend/hooks/useItems.js
 import { useState, useEffect, useCallback } from "react";
 
 let cachedItems = null;
@@ -13,7 +14,8 @@ export const useItems = () => {
     }
     try {
       setIsLoading(true);
-      const apiUrl = "http://localhost:8081"; //process.env.REACT_APP_API_URL;
+      // Use environment variable for API URL, fallback to localhost for development
+      const apiUrl = process.env.REACT_APP_API_URL || "http://localhost:8081";
       const response = await fetch(`${apiUrl}/api/combined-data`);
 
       if (!response.ok) {

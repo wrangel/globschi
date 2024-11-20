@@ -1,12 +1,12 @@
 services:
   backend:
-    platform: linux/amd64 # For Synology
+    platform: linux/amd64
     build:
       context: .
       dockerfile: Dockerfile.backend
     environment:
       - NODE_ENV=production
-      - DOTENV_KEY=${DOTENV_KEY} # Reference the DOTENV_KEY from your local environment
+      - DOTENV_KEY=${DOTENV_KEY}
       - PORT=8081
     image: wrangel/globschi-backend:1.3amd
     ports:
@@ -19,6 +19,6 @@ services:
       dockerfile: Dockerfile.frontend
     image: wrangel/globschi-frontend:1.3amd
     ports:
-      - "3003:80"
+      - "3000:80"
     environment:
-      - REACT_APP_API_URL=http://backend:8081 # Ensure this is set for runtime access
+      - REACT_APP_API_URL=http://backend:8081

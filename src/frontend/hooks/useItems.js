@@ -14,7 +14,6 @@ export const useItems = () => {
     }
     try {
       setIsLoading(true);
-      console.log("URLEEEEEE", process.env.REACT_APP_API_URL); ////////////
       // Use environment variable for API URL, fallback to localhost for development
       const apiUrl = process.env.REACT_APP_API_URL || "http://localhost:8081";
       const response = await fetch(`${apiUrl}/api/combined-data`);

@@ -29,6 +29,7 @@ logger.info("Starting server...");
 const app = express();
 const PORT = process.env.PORT || 8081;
 
+// CORS configuration
 const corsOrigin = ["http://localhost:3000", "drone.ellesmere.synology.me"];
 
 // Enable CORS with dynamic origin
@@ -38,6 +39,13 @@ app.use(
     credentials: true,
   })
 );
+
+// Middleware to log request origin
+app.use((req, res, next) => {
+  const origin = req.headers.origin; // Get the origin from the request headers
+  logger.info(`Request received from origin: ${origin}`); // Log the origin
+  next(); // Proceed to the next middleware or route handler
+});
 
 // Connect to MongoDB
 mongoose.set("strictQuery", false);

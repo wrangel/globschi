@@ -29,11 +29,7 @@ logger.info("Starting server...");
 const app = express();
 const PORT = process.env.PORT || 8081;
 
-// Determine environment and set CORS origin accordingly
-const isDev = process.env.NODE_ENV !== "production";
-const corsOrigin = isDev
-  ? "http://localhost:3000"
-  : ["http://frontend", "http://localhost:3000"];
+const corsOrigin = ["http://localhost:3000", "drone.ellesmere.synology.me"];
 
 // Enable CORS with dynamic origin
 app.use(

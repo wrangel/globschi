@@ -10,9 +10,6 @@ import styles from "../styles/PortfolioGrid.module.css";
 const PortfolioGrid = ({ items, onItemClick }) => {
   const { isLoading, error } = useLoadingError(false);
 
-  console.log("KKKEEEEEYY", process.env.REACT_APP_GOOGLE_MAPS_API_KEY); ////////////
-  console.log("URLEEEEEE", process.env.REACT_APP_API_URL); ////////////
-
   return (
     <LoadingErrorHandler isLoading={isLoading} error={error}>
       <div>

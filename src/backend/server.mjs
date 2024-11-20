@@ -31,7 +31,9 @@ const PORT = process.env.PORT || 8081;
 
 // Determine environment and set CORS origin accordingly
 const isDev = process.env.NODE_ENV !== "production";
-const corsOrigin = isDev ? "http://localhost:3000" : "http://frontend";
+const corsOrigin = isDev
+  ? "http://localhost:3000"
+  : ["http://frontend", "http://localhost:3000"];
 
 // Enable CORS with dynamic origin
 app.use(

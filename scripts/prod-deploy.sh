@@ -44,4 +44,19 @@ echo "Latest frontend tag: $latest_frontend_tag"
 docker pull "$backend_image:$latest_backend_tag"
 docker pull "$frontend_image:$latest_frontend_tag"
 
-echo "Pulled latest images successfully."
+# Run the frontend container
+echo "Starting frontend container..."
+docker run -d \
+    --name frontend \
+    -p 3000:80 \
+    "$FRONTEND_IMAGE:$latest_frontend_tag"
+
+# Run the backend container with DOTENV_KEY from volume
+echo "Starting backend container..."
+docker run -d \
+    --name backend \
+    -e DOTENV_KEY="$(cat $DOTENV_FILE)" \
+    -v "$DOTENV_FILE:/run/secrets/dotenv_key" \
+    "$BACKEND_IMAGE:$latest_backend_tag"
+
+echo "All containers started successfully."

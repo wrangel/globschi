@@ -2,6 +2,13 @@
 
 # Run on Synology!
 
+# Define image names
+FRONTEND_IMAGE="wrangel/globschi-frontend"
+BACKEND_IMAGE="wrangel/globschi-backend"
+
+# Define the path to the dotenv key
+DOTENV_FILE="/volume1/secrets/dotenv.txt"
+
 # Function to get the latest tag from a Docker repository
 get_latest_tag() {
     local repo=$1
@@ -10,7 +17,7 @@ get_latest_tag() {
     echo "$latest_tag"
 }
 
-# Stop and remove all containers if they exist
+# Stop and remove existing containers if they exist
 echo "Stopping and removing all containers..."
 if [ "$(docker ps -aq)" ]; then
     docker rm -f $(docker ps -aq) || echo "Failed to remove some containers."
@@ -31,18 +38,18 @@ echo "Removing all dangling images..."
 docker image prune -f || echo "No dangling images to remove."
 
 # Get the latest tags for backend and frontend images
-backend_image="wrangel/globschi-backend"
-frontend_image="wrangel/globschi-frontend"
-
-latest_backend_tag=$(get_latest_tag "$backend_image")
-latest_frontend_tag=$(get_latest_tag "$frontend_image")
+latest_backend_tag=$(get_latest_tag "$BACKEND_IMAGE")
+latest_frontend_tag=$(get_latest_tag "$FRONTEND_IMAGE")
 
 echo "Latest backend tag: $latest_backend_tag"
 echo "Latest frontend tag: $latest_frontend_tag"
 
 # Pull the latest images with their respective tags
-docker pull "$backend_image:$latest_backend_tag"
-docker pull "$frontend_image:$latest_frontend_tag"
+docker pull "$BACKEND_IMAGE:$latest_backend_tag"
+docker pull "$FRONTEND_IMAGE:$latest_frontend_tag"
+
+# Read DOTENV_KEY from the secrets file
+DOTENV_KEY=$(cat "$DOTENV_FILE")
 
 # Run the frontend container
 echo "Starting frontend container..."
@@ -51,11 +58,11 @@ docker run -d \
     -p 3000:80 \
     "$FRONTEND_IMAGE:$latest_frontend_tag"
 
-# Run the backend container with DOTENV_KEY from volume
+# Run the backend container with DOTENV_KEY as an environment variable
 echo "Starting backend container..."
 docker run -d \
     --name backend \
-    -e DOTENV_KEY="$(cat $DOTENV_FILE)" \
+    -e DOTENV_KEY="$DOTENV_KEY" \
     -v "$DOTENV_FILE:/run/secrets/dotenv_key" \
     "$BACKEND_IMAGE:$latest_backend_tag"
 

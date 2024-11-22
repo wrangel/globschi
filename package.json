@@ -38,8 +38,9 @@
     "test": "GENERATE_SOURCEMAP=false react-scripts test",
     "eject": "react-scripts eject",
     "manage": "./scripts/manage-tasks.sh",
-    "dev": "./scripts/dev-script.sh",
-    "prod": "./scripts/prod-script.sh"
+    "dev": "./scripts/dev-deploy.sh",
+    "prod-local": "./scripts/prod-local-deploy.sh",
+    "prod": "./scripts/prod-build.sh"
   },
   "eslintConfig": {
     "extends": [

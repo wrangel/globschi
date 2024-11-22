@@ -19,9 +19,7 @@ function HomePage() {
   } = useItemViewer(items);
   const navigate = useNavigate();
 
-  const handleNavigate = (path) => {
-    navigate(path); // Use navigate to go to a new path
-  };
+  // Removed the handleNavigate function since we don't need it anymore
 
   if (isLoading) {
     return <div className={styles.homePage}>Loading...</div>;
@@ -42,10 +40,7 @@ function HomePage() {
       ) : (
         <p>No items to display.</p>
       )}
-      <button onClick={() => handleNavigate("/some-path")}>
-        Go to Some Path
-      </button>{" "}
-      {/* Example usage */}
+      {/* Removed the button */}
       {isModalOpen && (
         <ViewerPopup
           item={selectedItem}

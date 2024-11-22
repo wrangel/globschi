@@ -6,9 +6,6 @@
 FRONTEND_IMAGE="wrangel/globschi-frontend"
 BACKEND_IMAGE="wrangel/globschi-backend"
 
-# Define the path to the dotenv key
-DOTENV_FILE="/volume1/secrets/dotenv.txt"
-
 # Function to get the latest tag from a Docker repository
 get_latest_tag() {
     local repo=$1
@@ -48,11 +45,17 @@ echo "Latest frontend tag: $latest_frontend_tag"
 docker pull "$BACKEND_IMAGE:$latest_backend_tag"
 docker pull "$FRONTEND_IMAGE:$latest_frontend_tag"
 
+# Define the path to the dotenv key
+DOTENV_FILE="/volume1/secrets/dotenv.txt"
+
 # Read DOTENV_KEY from the secrets file
 DOTENV_KEY=$(cat "$DOTENV_FILE")
 
-# Export the DOTENV_KEY for use in Docker Compose
-export DOTENV_KEY
+(
+  # Export the DOTENV_KEY for use in Docker Compose
+  export DOTENV_KEY
 
-# Run Docker Compose
-docker-compose up
+  # Run Docker Compose
+  docker-compose up
+)
+

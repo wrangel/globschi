@@ -8,7 +8,7 @@ services:
       dockerfile: Dockerfile.backend
     environment:
       - NODE_ENV=production
-      - DOTENV_KEY=${DOTENV_KEY} # This will be set from the .env file or environment
+      - DOTENV_KEY=${DOTENV_KEY}
       - PORT=8081
     image: wrangel/globschi-backend:1.4
     ports:

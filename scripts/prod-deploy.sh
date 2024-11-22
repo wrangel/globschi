@@ -52,10 +52,9 @@ DOTENV_FILE="/volume1/secrets/dotenv.txt"
 DOTENV_KEY=$(cat "$DOTENV_FILE")
 
 (
-  # Export the DOTENV_KEY for use in Docker Compose
-  export DOTENV_KEY
+    # Export the DOTENV_KEY for use in Docker Compose
+    export DOTENV_KEY
 
-  # Run Docker Compose
-  docker-compose up
+    # Run Docker Compose
+    docker-compose -f /volumes1/docker/docker-compose.yml up -d
 )
-

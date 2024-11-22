@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Removing conflicting local contains
+docker compose down --rmi all && docker system prune -af
+
 # Update 
 
 #pnpm update

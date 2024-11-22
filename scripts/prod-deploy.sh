@@ -56,5 +56,5 @@ DOTENV_KEY=$(cat "$DOTENV_FILE")
     export DOTENV_KEY
 
     # Run Docker Compose
-    docker-compose -f /volumes1/docker/docker-compose.yml up -d
+    docker-compose -f /volume1/docker/docker-compose.yml up -d
 )

@@ -1,17 +1,24 @@
 #!/bin/bash
 
-# Removing conflicting local contains
-docker compose down --rmi all && docker system prune -af
+# Check for the -u flag
+if [[ "$1" == "-u" ]]; then
+    echo "Updating dependencies..."
 
-# Update 
+    # Removing conflicting local containers
+    docker compose down --rmi all && docker system prune -af
 
-#pnpm update
-#pnpm install
-#pnpm audit --fix
-#pnpm prune
-#pnpm update react-scripts
-#pnpm self-update
-#pnpm depcheck
+    # Update dependencies
+    pnpm update
+    pnpm install
+    pnpm audit --fix
+    pnpm prune
+    pnpm update react-scripts
+    pnpm self-update
+    pnpm depcheck
+
+else
+    echo "Skipping updates..."
+fi
 
 # Start the backend server
 echo "Starting backend server..."

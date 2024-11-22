@@ -1,13 +1,14 @@
 #!/bin/bash
 
 # Update 
-pnpm update
-pnpm install
-pnpm audit --fix
-pnpm prune
-pnpm update react-scripts
-pnpm self-update
-pnpm depcheck
+
+#pnpm update
+#pnpm install
+#pnpm audit --fix
+#pnpm prune
+#pnpm update react-scripts
+#pnpm self-update
+#pnpm depcheck
 
 # Start the backend server
 echo "Starting backend server..."

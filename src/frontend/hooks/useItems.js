@@ -1,4 +1,3 @@
-// src/frontend/hooks/useItems.js
 import { useState, useEffect, useCallback } from "react";
 
 let cachedItems = null;
@@ -14,9 +13,13 @@ export const useItems = () => {
     }
     try {
       setIsLoading(true);
-      // Use environment variable for API URL, fallback to localhost for development
+      // Use environment variable for API URL or fallback to localhost for development
       const apiUrl = process.env.REACT_APP_API_URL || "http://localhost:8081";
-      const response = await fetch(`${apiUrl}/api/combined-data`);
+
+      // Adjusting the fetch URL based on the environment variable
+      const response = await fetch(
+        `${apiUrl}${apiUrl.endsWith("/") ? "" : "/"}combined-data`
+      );
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);

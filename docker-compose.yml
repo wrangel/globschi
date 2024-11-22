@@ -8,13 +8,13 @@ services:
       dockerfile: Dockerfile.backend
     environment:
       - NODE_ENV=production
-      - DOTENV_KEY=${DOTENV_KEY} # Ensure DOTENV_KEY is set in your environment or .env file
+      - DOTENV_KEY=${DOTENV_KEY} # This will be set from the .env file or environment
       - PORT=8081
     image: wrangel/globschi-backend:1.4
     ports:
       - "8081:8081"
-    networks:
-      - globschi_network # Use a custom network
+    volumes:
+      - /volume1/secrets/dotenv.txt:/run/secrets/dotenv_key # Mount the dotenv file
 
   frontend:
     platform: linux/amd64
@@ -26,13 +26,11 @@ services:
         REACT_APP_GOOGLE_MAPS_API_KEY: ${REACT_APP_GOOGLE_MAPS_API_KEY}
     image: wrangel/globschi-frontend:1.4
     ports:
-      - "3000:80" # Map container port 80 to local port 3000
+      - "3000:80"
     environment:
       - REACT_APP_API_URL=${REACT_APP_API_URL}
       - REACT_APP_GOOGLE_MAPS_API_KEY=${REACT_APP_GOOGLE_MAPS_API_KEY}
-    networks:
-      - globschi_network # Use the same custom network
 
 networks:
-  globschi_network:
-    driver: bridge # Use a custom bridge network
+  default:
+    driver: bridge

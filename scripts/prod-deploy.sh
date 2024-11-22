@@ -51,19 +51,8 @@ docker pull "$FRONTEND_IMAGE:$latest_frontend_tag"
 # Read DOTENV_KEY from the secrets file
 DOTENV_KEY=$(cat "$DOTENV_FILE")
 
-# Run the frontend container
-echo "Starting frontend container..."
-docker run -d \
-    --name frontend \
-    -p 3000:80 \
-    "$FRONTEND_IMAGE:$latest_frontend_tag"
+# Export the DOTENV_KEY for use in Docker Compose
+export DOTENV_KEY
 
-# Run the backend container with DOTENV_KEY as an environment variable
-echo "Starting backend container..."
-docker run -d \
-    --name backend \
-    -e DOTENV_KEY="$DOTENV_KEY" \
-    -v "$DOTENV_FILE:/run/secrets/dotenv_key" \
-    "$BACKEND_IMAGE:$latest_backend_tag"
-
-echo "All containers started successfully."
+# Run Docker Compose
+docker-compose up

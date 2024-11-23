@@ -21,3 +21,4 @@ src/backend/tests/
 !.env.vault
 
 TODO.txt
+manual.txt

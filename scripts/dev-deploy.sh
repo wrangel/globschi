@@ -16,6 +16,11 @@ if [[ "$1" == "-u" ]]; then
     pnpm self-update
     pnpm depcheck
 
+    brew update
+    brew cleanup
+    brew doctor 
+    brew autoremove
+
 else
     echo "Skipping updates..."
 fi

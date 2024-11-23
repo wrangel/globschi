@@ -24,4 +24,5 @@ error.log
 !.env.vault
 
 TODO.txt
+manual.txt
 logs

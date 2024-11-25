@@ -45,12 +45,12 @@ const ControlButtons = ({
       </button>
       {isPano && (
         <button
-          className={`${styles.popupButton} ${styles.toggleButton}`}
+          className={`${styles.popupButton} ${styles.toggleButton} ${styles.greyscaleIcon}`}
           onClick={toggleMode}
           aria-label="Toggle Mode"
         >
           {isNavigationMode ? "<>" : "🌍"}{" "}
-          {/* Arrows for navigation mode and globe for interaction mode */}
+          {/* Apply greyscale filter to globe */}
         </button>
       )}
       {onToggleMetadata && (

@@ -28,6 +28,15 @@
 .toggleButton {
   top: 20px; /* Same distance from the top */
   right: calc(
-    20px + 40px
+    20px + 30px
   ); /* Position next to close button with reduced spacing */
+}
+
+.greyscaleIcon {
+  filter: grayscale(100%);
+  transition: filter 0.3s ease; /* Smooth transition */
+}
+
+.greyscaleIcon:hover {
+  filter: none; /* Removes greyscale on hover */
 }

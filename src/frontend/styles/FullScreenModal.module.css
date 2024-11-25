@@ -6,7 +6,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.9);
+  background-color: var(--overlay-bg-color); /* Use variable */
   display: flex;
   justify-content: center;
   align-items: center;
@@ -24,21 +24,21 @@
 
 .closeButton {
   position: absolute;
-  top: 20px;
-  right: 20px;
+  top: var(--spacing-medium); /* Use variable */
+  right: var(--spacing-medium); /* Use variable */
   background: none;
   border: none;
   color: white;
-  font-size: 1.875rem; /* Use rem for scalable font size */
+  font-size: var(--font-size-large); /* Use variable for scalable font size */
   cursor: pointer;
 }
 
 .visuallyHidden {
   position: absolute;
-  width: 1px;
-  height: 1px;
+  width: 0.0625rem; /* 1px equivalent */
+  height: 0.0625rem; /* 1px equivalent */
   padding: 0;
-  margin: -1px;
+  margin: -0.0625rem; /* -1px equivalent */
   overflow: hidden;
   clip-path: inset(50%);
   white-space: nowrap; /* Prevents text wrapping */
@@ -53,6 +53,8 @@
   }
 
   .closeButton {
-    font-size: 1.5rem; /* Adjust font size for smaller screens */
+    font-size: var(
+      --font-size-medium
+    ); /* Adjust font size for smaller screens */
   }
 }

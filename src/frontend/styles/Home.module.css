@@ -24,7 +24,7 @@
 }
 
 /* Media Queries for Responsive Design */
-@media (max-width: 768px) {
+@media (max-width: 48em) {
   .headerWrapper h1 {
     font-size: var(
       --font-size-medium
@@ -38,12 +38,14 @@
   }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 30em) {
   .headerWrapper h1 {
-    font-size: 1.25rem; /* Even smaller font size for very small screens */
+    font-size: var(
+      --font-size-small
+    ); /* Even smaller font size for very small screens */
   }
 
   .headerWrapper h2 {
-    font-size: 1rem; /* Even smaller font size for very small screens */
+    font-size: calc(var(--font-size-small) - 0.25rem); /* Slightly smaller */
   }
 }

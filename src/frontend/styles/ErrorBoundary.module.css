@@ -2,33 +2,8 @@
 
 .errorBoundary {
   text-align: center; /* Center the text */
-  padding: 20px; /* Add some padding */
-  border: 1px solid #f44336; /* Red border for error indication */
-  background-color: #ffe6e6; /* Light red background */
-  color: #f44336; /* Red text color */
-}
-
-.errorBoundary h1 {
-  margin-bottom: 15px; /* Space below the heading */
-}
-
-.errorBoundary button {
-  background-color: #4da6ff; /* Button color */
-  color: white; /* Button text color */
-  border: none;
-  padding: 10px 20px;
-  cursor: pointer;
-}
-
-.errorBoundary button:hover {
-  background-color: #3b8cc2; /* Darker blue on hover */
-}
-/* src/frontend/styles/ErrorBoundary.module.css */
-
-.errorBoundary {
-  text-align: center; /* Center the text */
   padding: var(--spacing-medium); /* Use variable for padding */
-  border: 1px solid var(--error-border-color); /* Red border for error indication */
+  border: 0.0625rem solid var(--error-border-color); /* Red border for error indication */
   background-color: var(--error-bg-color); /* Light red background */
   color: var(--error-text-color); /* Red text color */
 }

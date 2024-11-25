@@ -2,8 +2,10 @@
 
 .hamburgerMenu {
   position: fixed; /* Change to fixed positioning */
-  top: 20px; /* Distance from the top */
-  right: 20px; /* Change from left to right for upper right corner */
+  top: var(--spacing-medium); /* Distance from the top */
+  right: var(
+    --spacing-medium
+  ); /* Change from left to right for upper right corner */
   z-index: 900; /* Ensure it's above other content but below popups */
 }
 
@@ -16,13 +18,13 @@
     255,
     0.9
   ); /* Slightly less transparent white for better visibility */
-  font-size: 28px; /* Increase size of the icon */
+  font-size: var(--font-size-large); /* Increase size of the icon */
   cursor: pointer; /* Pointer cursor on hover */
 }
 
 .menuDropdown {
   position: absolute; /* Position dropdown absolutely */
-  top: 40px; /* Adjust based on your layout */
+  top: calc(var(--spacing-large) * 2); /* Adjust based on your layout */
   right: 0; /* Align dropdown to the right edge of the hamburger menu */
   background-color: transparent; /* No background for dropdown */
   padding: 0; /* Remove padding around dropdown items */
@@ -36,12 +38,17 @@
 .menuDropdown button {
   display: block; /* Block display for links */
   color: rgba(255, 255, 255, 0.9); /* Use a more visible white color for text */
-  font-size: 18px; /* Increase font size for dropdown items */
+  font-size: var(
+    --font-size-medium
+  ); /* Increase font size for dropdown items */
   text-decoration: none; /* Remove underline */
-  padding: 5px; /* Slight padding for better click area */
+  padding: calc(
+    var(--spacing-small) / 4
+  ); /* Slight padding for better click area */
   margin: 0; /* Remove margin for a minimalist look */
   border: none; /* Remove border around button */
   background-color: transparent; /* Make button background transparent to see dropdown bg */
+  text-align: right;
 }
 
 .menuDropdown button:hover {

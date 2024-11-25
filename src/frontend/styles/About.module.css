@@ -5,8 +5,8 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: 100vh; /* Full viewport height */
-  width: 100vw; /* Full viewport width */
+  height: 100vh; /* Full viewport height is fine */
+  width: 100vw; /* Full viewport width is fine */
   text-align: center;
   padding: var(--spacing-large); /* Use CSS variables for responsive padding */
   box-sizing: border-box; /* Ensure padding doesn't affect the overall width/height */

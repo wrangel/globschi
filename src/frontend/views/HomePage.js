@@ -5,7 +5,6 @@ import PortfolioGrid from "../components/PortfolioGrid";
 import ViewerPopup from "../components/ViewerPopup";
 import { useItems } from "../hooks/useItems";
 import { useItemViewer } from "../hooks/useItemViewer";
-import { useNavigate } from "react-router-dom"; // Ensure this is imported
 import styles from "../styles/Home.module.css";
 
 function HomePage() {
@@ -18,7 +17,6 @@ function HomePage() {
     handleNextItem,
     handlePreviousItem,
   } = useItemViewer(items);
-  const navigate = useNavigate();
 
   // Removed the handleNavigate function since we don't need it anymore
 

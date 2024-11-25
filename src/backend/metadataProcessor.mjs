@@ -117,7 +117,7 @@ function formatMetadata(doc) {
   return [
     formattedDate,
     formattedTime,
-    `${doc.altitude ? doc.altitude.toFixed(1) : ""}m above ground`,
+    `${doc.altitude ? doc.altitude.toFixed(1) : ""}m above sea level`,
     road,
     location1,
     location2,

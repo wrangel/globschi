@@ -1,16 +1,17 @@
 // src/frontend/components/ControlButtons.js
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useSwipeable } from "react-swipeable";
 import styles from "../styles/ControlButtons.module.css";
 
-const ControlButtons = ({ onClose, onPrevious, onNext, onToggleMetadata }) => {
-  const [isNavigationMode, setIsNavigationMode] = useState(true);
-
-  const toggleMode = () => {
-    setIsNavigationMode((prevMode) => !prevMode);
-  };
-
+const ControlButtons = ({
+  onClose,
+  onPrevious,
+  onNext,
+  onToggleMetadata,
+  isNavigationMode,
+  toggleMode,
+}) => {
   useEffect(() => {
     const handleKeyDown = (event) => {
       if (event.key === "ArrowLeft" && isNavigationMode) {

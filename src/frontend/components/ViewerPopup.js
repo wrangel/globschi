@@ -1,3 +1,5 @@
+// src/frontend/components/ViewerPopup.js
+
 import React, { useState } from "react";
 import { useSwipeable } from "react-swipeable";
 import FullScreenModal from "./FullScreenModal";
@@ -11,12 +13,20 @@ const ViewerPopup = ({ item, isOpen, onClose, onNext, onPrevious }) => {
   };
 
   const handlers = useSwipeable({
-    onSwipedLeft: () => isNavigationMode && onNext(),
-    onSwipedRight: () => isNavigationMode && onPrevious(),
+    onSwipedLeft: () => {
+      if (isNavigationMode) {
+        console.log("Swiped left");
+        onNext();
+      }
+    },
+    onSwipedRight: () => {
+      if (isNavigationMode) {
+        console.log("Swiped right");
+        onPrevious();
+      }
+    },
     preventDefaultTouchmoveEvent: true,
     trackMouse: true,
-    delta: 50,
-    swipeDuration: 500,
   });
 
   if (!item) return null;
@@ -30,8 +40,8 @@ const ViewerPopup = ({ item, isOpen, onClose, onNext, onPrevious }) => {
           onClose={onClose}
           onNext={onNext}
           onPrevious={onPrevious}
-          isNavigationMode={isNavigationMode}
-          toggleMode={toggleMode}
+          isNavigationMode={isNavigationMode} // Pass down the navigation mode state
+          toggleMode={toggleMode} // Pass down the toggle function
         />
       </div>
     </FullScreenModal>

@@ -9,10 +9,18 @@ import LoadingOverlay from "./LoadingOverlay";
 import useKeyboardNavigation from "../hooks/useKeyboardNavigation";
 import styles from "../styles/Viewer.module.css";
 
-const Viewer = ({ item, onClose, onNext, onPrevious }) => {
+const Viewer = ({
+  item,
+  onClose,
+  onNext,
+  onPrevious,
+  isNavigationMode,
+  toggleMode,
+}) => {
   const [showMetadata, setShowMetadata] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
+  // Handle keyboard navigation
   useKeyboardNavigation(onClose, onPrevious, onNext);
 
   const toggleMetadata = () => {
@@ -76,6 +84,8 @@ const Viewer = ({ item, onClose, onNext, onPrevious }) => {
         onNext={onNext}
         onPrevious={onPrevious}
         onToggleMetadata={toggleMetadata}
+        isNavigationMode={isNavigationMode} // Pass the navigation mode state
+        toggleMode={toggleMode} // Pass the toggle function
       />
       {showMetadata && (
         <MetadataPopup

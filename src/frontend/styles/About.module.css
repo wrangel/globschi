@@ -8,17 +8,21 @@
   height: 100vh; /* Full viewport height */
   width: 100vw; /* Full viewport width */
   text-align: center;
-  padding: 20px; /* Optional: Add some padding for content spacing */
+  padding: 2rem; /* Use rem for responsive padding */
   box-sizing: border-box; /* Ensure padding doesn't affect the overall width/height */
 }
 
+h1,
 h2 {
-  margin-bottom: 15px; /* Add some space below the h2 heading */
+  margin: 0; /* Remove default margin */
+}
+
+h2 {
+  margin-bottom: 1rem; /* Add some space below the h2 heading */
 }
 
 h1 {
-  margin-top: 20px; /* Add space above each h1 */
-  margin-bottom: 10px; /* Add space below each h1 */
+  margin-top: 2rem; /* Add space above each h1 */
 }
 
 a {
@@ -28,4 +32,19 @@ a {
 
 a:hover {
   text-decoration: underline; /* Underline on hover */
+}
+
+/* Media Queries for Responsive Design */
+@media (max-width: 768px) {
+  .aboutContainer {
+    padding: 1rem; /* Adjust padding for smaller screens */
+  }
+
+  h1 {
+    font-size: 1.5rem; /* Smaller font size on smaller screens */
+  }
+
+  h2 {
+    font-size: 1.25rem; /* Smaller font size on smaller screens */
+  }
 }

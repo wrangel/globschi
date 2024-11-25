@@ -6,8 +6,8 @@
   color: rgba(255, 255, 255, 0.9); /* Same color for all buttons */
   border: none;
   cursor: pointer;
-  font-size: 24px;
-  z-index: 1100;
+  font-size: 1.5rem; /* Use rem for scalable font size */
+  z-index: 1100; /* Ensure buttons are above other elements */
   transition: color 0.3s ease; /* Smooth color transition */
 }
 
@@ -16,20 +16,18 @@
 }
 
 .closeButton {
-  top: 20px; /* Same distance from the top */
-  right: 20px; /* Positioning for close button */
+  top: 1rem; /* Use rem for consistent spacing */
+  right: 1rem; /* Consistent spacing */
 }
 
 .metadataButton {
-  top: 20px; /* Same distance from the top */
-  left: 20px; /* Positioning for metadata button */
+  top: 1rem; /* Consistent spacing */
+  left: 1rem; /* Consistent spacing */
 }
 
 .toggleButton {
-  top: 20px; /* Same distance from the top */
-  right: calc(
-    20px + 30px
-  ); /* Position next to close button with reduced spacing */
+  top: 1rem; /* Consistent spacing */
+  right: 3rem; /* Adjusted for better placement next to close button */
 }
 
 .greyscaleIcon {
@@ -39,4 +37,19 @@
 
 .greyscaleIcon:hover {
   filter: none; /* Removes greyscale on hover */
+}
+
+/* Media Queries for Responsive Design */
+@media (max-width: 768px) {
+  .popupButton {
+    font-size: 1.25rem; /* Adjust font size for smaller screens */
+  }
+
+  .closeButton,
+  .metadataButton,
+  .toggleButton {
+    top: 0.75rem;
+    right: 0.75rem;
+    left: 0.75rem;
+  }
 }

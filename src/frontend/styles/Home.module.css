@@ -2,23 +2,48 @@
 
 .homePage {
   text-align: center;
-  padding: var(--gutter-size);
+  padding: var(--gutter-size); /* Use CSS variable for padding */
 }
 
 .headerWrapper {
   display: flex;
-  flex-direction: column; /* This will stack the children vertically */
+  flex-direction: column; /* Stack children vertically */
   justify-content: center;
   align-items: center;
-  height: 10vh; /* Use viewport height to make the header size responsive */
+  height: 10vh; /* Use viewport height for responsive header size */
 }
 
 .headerWrapper h1 {
   margin: 0; /* Remove default margin */
-  font-size: 2em; /* Adjust font size as needed */
+  font-size: var(--font-size-large); /* Use CSS variable for font size */
 }
 
 .headerWrapper h2 {
-  margin-top: 0.5em; /* Add space above the h2 */
-  font-size: 1.5em; /* Adjust font size as needed */
+  margin-top: var(--spacing-small); /* Add space above the h2 */
+  font-size: var(--font-size-medium); /* Use CSS variable for font size */
+}
+
+/* Media Queries for Responsive Design */
+@media (max-width: 768px) {
+  .headerWrapper h1 {
+    font-size: var(
+      --font-size-medium
+    ); /* Adjust font size for smaller screens */
+  }
+
+  .headerWrapper h2 {
+    font-size: var(
+      --font-size-small
+    ); /* Adjust font size for smaller screens */
+  }
+}
+
+@media (max-width: 480px) {
+  .headerWrapper h1 {
+    font-size: 1.25rem; /* Even smaller font size for very small screens */
+  }
+
+  .headerWrapper h2 {
+    font-size: 1rem; /* Even smaller font size for very small screens */
+  }
 }

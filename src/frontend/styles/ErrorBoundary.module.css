@@ -23,3 +23,29 @@
 .errorBoundary button:hover {
   background-color: #3b8cc2; /* Darker blue on hover */
 }
+/* src/frontend/styles/ErrorBoundary.module.css */
+
+.errorBoundary {
+  text-align: center; /* Center the text */
+  padding: var(--spacing-medium); /* Use variable for padding */
+  border: 1px solid var(--error-border-color); /* Red border for error indication */
+  background-color: var(--error-bg-color); /* Light red background */
+  color: var(--error-text-color); /* Red text color */
+}
+
+.errorBoundary h1 {
+  margin-bottom: var(--spacing-small); /* Space below the heading */
+}
+
+.errorBoundary button {
+  background-color: var(--primary-color); /* Button color */
+  color: white; /* Button text color */
+  border: none;
+  padding: var(--spacing-small) var(--spacing-medium); /* Use variables for padding */
+  cursor: pointer;
+  transition: background-color var(--transition-duration); /* Smooth background transition */
+}
+
+.errorBoundary button:hover {
+  background-color: var(--primary-color-dark); /* Darker blue on hover */
+}

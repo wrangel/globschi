@@ -12,11 +12,21 @@
     monospace;
 
   --primary-color: #4da6ff;
+  --primary-color-dark: #3b8cc2;
+  --error-border-color: #f44336;
+  --error-bg-color: #ffe6e6;
+  --error-text-color: #f44336;
   --spacing-large: 2rem;
   --spacing-medium: 1rem;
+  --spacing-small: 0.75rem;
   --font-size-large: 2rem;
   --font-size-medium: 1.5rem;
   --font-size-small: 1.25rem;
+
+  --spinner-size: 50px;
+  --spinner-border: 3px;
+  --spinner-color: rgba(255, 255, 255, 0.3);
+  --spinner-border-top: #fff;
 }
 
 body {

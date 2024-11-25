@@ -30,6 +30,10 @@
 
   --message-font-size: 1.2rem;
   --message-color: #333;
+
+  --zoom-control-bg: white;
+  --zoom-control-border-radius: 4px;
+  --zoom-control-box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
 }
 
 body {

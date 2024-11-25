@@ -16,9 +16,19 @@
 
 .custom-map .leaflet-control-zoom {
   position: absolute !important; /* Use absolute positioning */
-  top: 10px !important; /* Adjust as needed for spacing from the top */
-  right: 10px !important; /* Position it in the upper right corner */
-  background: white; /* Optional: Add a background for better visibility */
-  border-radius: 4px; /* Optional: Add rounded corners */
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5); /* Optional: Add a shadow for depth */
+  top: var(
+    --spacing-small
+  ) !important; /* Adjust as needed for spacing from the top */
+  right: var(
+    --spacing-small
+  ) !important; /* Position it in the upper right corner */
+  background: var(
+    --zoom-control-bg
+  ); /* Optional: Add a background for better visibility */
+  border-radius: var(
+    --zoom-control-border-radius
+  ); /* Optional: Add rounded corners */
+  box-shadow: var(
+    --zoom-control-box-shadow
+  ); /* Optional: Add a shadow for depth */
 }

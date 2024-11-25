@@ -28,12 +28,23 @@
   --spinner-color: rgba(255, 255, 255, 0.3);
   --spinner-border-top: #fff;
 
+  --overlay-bg-color: rgba(0, 0, 0, 0.7);
+  --thumbnail-opacity: 0.5;
+
   --message-font-size: 1.2rem;
   --message-color: #333;
 
   --zoom-control-bg: white;
   --zoom-control-border-radius: 4px;
   --zoom-control-box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+
+  --popup-bg-color: rgba(0, 0, 0, 0.7);
+  --popup-text-color: white;
+  --popup-padding: 10px;
+  --popup-border-radius: 5px;
+  --close-button-color: grey;
+  --close-button-font-size: 16px;
+  --link-color: #00f;
 }
 
 body {

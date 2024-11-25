@@ -8,8 +8,7 @@ const HomePage = () => {
     <div className={styles.homePage}>
       <img src="/globschi.jpg" alt="Globschi" className={styles.image} />{" "}
       {/* Use the image */}
-      <h1>Welcome to Marvels From Above</h1>
-      <h2>Your view from the air</h2>
+      <h1>Marvels From Above</h1>
     </div>
   );
 };

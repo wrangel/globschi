@@ -45,6 +45,9 @@
   --close-button-color: grey;
   --close-button-font-size: 16px;
   --link-color: #00f;
+
+  --panorama-bg-color: black;
+  --thumbnail-opacity: 0.5;
 }
 
 body {

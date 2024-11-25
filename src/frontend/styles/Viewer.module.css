@@ -8,10 +8,14 @@
 
 .metadataPopup {
   position: absolute;
-  bottom: 20px;
-  left: 20px;
-  background-color: rgba(0, 0, 0, 0.7);
-  color: white;
-  padding: 10px;
-  border-radius: 5px;
+  bottom: var(--spacing-medium); /* Use variable for spacing */
+  left: var(--spacing-medium); /* Use variable for spacing */
+  background-color: var(
+    --popup-bg-color
+  ); /* Use variable for background color */
+  color: var(--popup-text-color); /* Use variable for text color */
+  padding: var(--popup-padding); /* Use variable for padding */
+  border-radius: var(
+    --popup-border-radius
+  ); /* Use variable for border radius */
 }

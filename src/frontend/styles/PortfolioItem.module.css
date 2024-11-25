@@ -1,7 +1,7 @@
 /* src/styles/PortfolioItem.module.css */
 
 .portfolioItem {
-  margin-bottom: var(--gutter-size);
+  margin-bottom: var(--gutter-size); /* Use variable for margin */
   overflow: hidden;
   cursor: pointer;
 }
@@ -10,9 +10,9 @@
   width: 100%;
   height: auto;
   display: block;
-  transition: transform var(--transition-duration) ease;
+  transition: transform var(--transition-duration) ease; /* Use variable for transition duration */
 }
 
 .portfolioItem:hover img {
-  transform: scale(1.08);
+  transform: scale(1.08); /* Scale image on hover */
 }

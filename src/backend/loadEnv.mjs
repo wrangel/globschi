@@ -1,3 +1,5 @@
+// src/backend/loadEnv.mjs
+
 import dotenv from "dotenv";
 import { fileURLToPath } from "url";
 import { dirname, resolve } from "path";

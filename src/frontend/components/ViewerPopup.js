@@ -1,3 +1,5 @@
+// src/frontend/components/ViewerPopup.js
+
 import React, { useEffect } from "react";
 import FullScreenModal from "./FullScreenModal";
 import Viewer from "./Viewer";

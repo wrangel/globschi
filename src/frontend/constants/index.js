@@ -1,4 +1,5 @@
 // src/frontend/constants/index.js
+
 import L from "leaflet"; // Import Leaflet
 
 // Grid breakpoints

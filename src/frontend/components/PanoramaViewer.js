@@ -1,4 +1,5 @@
 // src/components/PanoramaViewer.js
+
 import React, { useState } from "react";
 import { ReactPhotoSphereViewer } from "react-photo-sphere-viewer";
 import styles from "../styles/PanoramaViewer.module.css";

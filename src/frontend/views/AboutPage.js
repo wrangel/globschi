@@ -1,3 +1,5 @@
+/* src/frontend/views/AboutPage.js */
+
 import React from "react";
 import styles from "../styles/About.module.css";
 

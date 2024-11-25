@@ -26,9 +26,10 @@ This project is built using the following technologies:
 
 - **Frontend**: React.js
 - **Backend**: Node.js with Express
-- **Database**: MongoDB
-- **Cloud Storage**: AWS S3 for image hosting
-- **Image Processing**: Sharp for image manipulation
+- **Metadata Database**: MongoDB Atlas
+- **Cloud Storage**: AWS S3
+- **Image Processing**: Sharp
+- **Reverse Geocoding**: Mapbox
 - **Environment Management**: dotenv for managing environment variables
 
 ## Installation

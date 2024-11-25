@@ -1,3 +1,5 @@
+// src/backend/management/metadataCollector.mjs
+
 import ExifReader from "exifreader";
 import fs from "fs/promises";
 import path from "path";

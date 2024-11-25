@@ -1,4 +1,5 @@
 /* src/frontend/styles/MetadataPopup.module.css */
+
 .metadataPopup {
   position: absolute;
   top: 52px; /* Adjust as needed to position beneath the "i" icon */

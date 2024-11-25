@@ -1,4 +1,5 @@
 // src/frontend/views/HomePage.js
+
 import React from "react";
 import PortfolioGrid from "../components/PortfolioGrid";
 import ViewerPopup from "../components/ViewerPopup";

@@ -1,3 +1,5 @@
+// src/backend/management/bookKeeper.mjs
+
 import { DeleteObjectsCommand } from "@aws-sdk/client-s3";
 import { s3Client } from "../helpers/awsHelpers.mjs";
 import { MEDIA_FORMATS, THUMBNAIL_ID } from "../constants.mjs";

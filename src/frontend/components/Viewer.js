@@ -1,4 +1,5 @@
 // src/frontend/components/Viewer.js
+
 import React, { useState, useEffect } from "react";
 import ControlButtons from "./ControlButtons";
 import ImagePopup from "./ImagePopup";

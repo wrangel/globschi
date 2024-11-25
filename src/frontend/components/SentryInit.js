@@ -1,4 +1,5 @@
 // src/SentryInit.js
+
 import * as Sentry from "@sentry/react";
 
 const initSentry = () => {

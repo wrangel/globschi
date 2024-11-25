@@ -1,4 +1,5 @@
 // src/frontend/views/MapPage.js
+
 import React, { useEffect } from "react";
 import { MapContainer, TileLayer, Marker, useMap } from "react-leaflet";
 import L from "leaflet";

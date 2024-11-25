@@ -1,3 +1,5 @@
+// src/frontend/components/MetadataPopup.js
+
 import React from "react";
 import styles from "../styles/MetadataPopup.module.css";
 

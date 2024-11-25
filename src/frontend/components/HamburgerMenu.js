@@ -1,4 +1,5 @@
 // src/components/HamburgerMenu.js
+
 import React, { useState, memo } from "react";
 import PropTypes from "prop-types";
 import styles from "../styles/HamburgerMenu.module.css";

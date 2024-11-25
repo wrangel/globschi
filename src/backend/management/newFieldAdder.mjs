@@ -1,4 +1,4 @@
-// src/backend/mongoManagement/newFieldAdder.mjs
+// src/backend/management/newFieldAdder.mjs
 
 import logger from "../helpers/logger.mjs";
 import { Island } from "../models/islandModel.mjs";

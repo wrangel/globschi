@@ -1,3 +1,5 @@
+// src/backend/management/mediaUploader.mjs
+
 import fs from "fs";
 import path from "path";
 import sharp from "sharp";

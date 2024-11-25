@@ -11,6 +11,7 @@ const ControlButtons = ({
   onToggleMetadata,
   isNavigationMode,
   toggleMode,
+  isPano,
 }) => {
   useEffect(() => {
     const handleKeyDown = (event) => {
@@ -42,14 +43,16 @@ const ControlButtons = ({
       >
         ×
       </button>
-      <button
-        className={`${styles.popupButton} ${styles.toggleButton}`}
-        onClick={toggleMode}
-        aria-label="Toggle Mode"
-      >
-        {isNavigationMode ? "← →" : "🌍"}{" "}
-        {/* Arrows for navigation mode and globe for interaction mode */}
-      </button>
+      {isPano && (
+        <button
+          className={`${styles.popupButton} ${styles.toggleButton}`}
+          onClick={toggleMode}
+          aria-label="Toggle Mode"
+        >
+          {isNavigationMode ? "<>" : "🌍"}{" "}
+          {/* Arrows for navigation mode and globe for interaction mode */}
+        </button>
+      )}
       {onToggleMetadata && (
         <button
           className={`${styles.popupButton} ${styles.metadataButton}`}

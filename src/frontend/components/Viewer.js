@@ -75,6 +75,8 @@ const Viewer = ({
     }
   };
 
+  const isPano = item.viewer === "pano";
+
   return (
     <div className={styles.viewer}>
       {isLoading && <LoadingOverlay thumbnailUrl={item.thumbnailUrl} />}
@@ -86,6 +88,7 @@ const Viewer = ({
         onToggleMetadata={toggleMetadata}
         isNavigationMode={isNavigationMode} // Pass the navigation mode state
         toggleMode={toggleMode} // Pass the toggle function
+        isPano={isPano} // Pass the isPano state
       />
       {showMetadata && (
         <MetadataPopup

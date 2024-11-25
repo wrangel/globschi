@@ -10,6 +10,13 @@
     sans-serif;
   --code-font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
+
+  --primary-color: #4da6ff;
+  --spacing-large: 2rem;
+  --spacing-medium: 1rem;
+  --font-size-large: 2rem;
+  --font-size-medium: 1.5rem;
+  --font-size-small: 1.25rem;
 }
 
 body {

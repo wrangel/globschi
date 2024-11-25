@@ -8,7 +8,7 @@
   height: 100vh; /* Full viewport height */
   width: 100vw; /* Full viewport width */
   text-align: center;
-  padding: 2rem; /* Use rem for responsive padding */
+  padding: var(--spacing-large); /* Use CSS variables for responsive padding */
   box-sizing: border-box; /* Ensure padding doesn't affect the overall width/height */
 }
 
@@ -18,15 +18,15 @@ h2 {
 }
 
 h2 {
-  margin-bottom: 1rem; /* Add some space below the h2 heading */
+  margin-bottom: var(--spacing-medium); /* Add space below the h2 heading */
 }
 
 h1 {
-  margin-top: 2rem; /* Add space above each h1 */
+  margin-top: var(--spacing-large); /* Add space above each h1 */
 }
 
 a {
-  color: #4da6ff; /* Link color */
+  color: var(--primary-color); /* Link color */
   text-decoration: none; /* Remove underline from links */
 }
 
@@ -37,14 +37,28 @@ a:hover {
 /* Media Queries for Responsive Design */
 @media (max-width: 768px) {
   .aboutContainer {
-    padding: 1rem; /* Adjust padding for smaller screens */
+    padding: var(--spacing-medium); /* Adjust padding for smaller screens */
   }
 
   h1 {
-    font-size: 1.5rem; /* Smaller font size on smaller screens */
+    font-size: var(
+      --font-size-medium
+    ); /* Smaller font size on smaller screens */
   }
 
   h2 {
-    font-size: 1.25rem; /* Smaller font size on smaller screens */
+    font-size: var(
+      --font-size-small
+    ); /* Smaller font size on smaller screens */
+  }
+}
+
+@media (max-width: 480px) {
+  h1 {
+    font-size: 1.25rem; /* Even smaller font size for very small screens */
+  }
+
+  h2 {
+    font-size: 1rem; /* Even smaller font size for very small screens */
   }
 }

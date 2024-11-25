@@ -48,7 +48,7 @@ const ControlButtons = ({
         aria-label="Toggle Mode"
       >
         {isNavigationMode ? "← →" : "🌍"}{" "}
-        {/* Use arrows for navigation mode and globe for interaction mode */}
+        {/* Arrows for navigation mode and globe for interaction mode */}
       </button>
       {onToggleMetadata && (
         <button

@@ -8,7 +8,7 @@
   cursor: pointer;
   font-size: 1.5rem; /* Use rem for scalable font size */
   z-index: 1100; /* Ensure buttons are above other elements */
-  transition: color 0.3s ease; /* Smooth color transition */
+  transition: color var(--transition-duration) ease; /* Smooth color transition */
 }
 
 .popupButton:hover {
@@ -16,23 +16,25 @@
 }
 
 .closeButton {
-  top: 1rem; /* Use rem for consistent spacing */
-  right: 1rem; /* Consistent spacing */
+  top: var(--spacing-medium); /* Use rem for consistent spacing */
+  right: var(--spacing-medium); /* Consistent spacing */
 }
 
 .metadataButton {
-  top: 1rem; /* Consistent spacing */
-  left: 1rem; /* Consistent spacing */
+  top: var(--spacing-medium); /* Consistent spacing */
+  left: var(--spacing-medium); /* Consistent spacing */
 }
 
 .toggleButton {
-  top: 1rem; /* Consistent spacing */
-  right: 3rem; /* Adjusted for better placement next to close button */
+  top: var(--spacing-medium); /* Consistent spacing */
+  right: calc(
+    var(--spacing-medium) * 3
+  ); /* Adjusted for better placement next to close button */
 }
 
 .greyscaleIcon {
   filter: grayscale(100%);
-  transition: filter 0.3s ease; /* Smooth transition */
+  transition: filter var(--transition-duration) ease; /* Smooth transition */
 }
 
 .greyscaleIcon:hover {
@@ -48,8 +50,8 @@
   .closeButton,
   .metadataButton,
   .toggleButton {
-    top: 0.75rem;
-    right: 0.75rem;
-    left: 0.75rem;
+    top: var(--spacing-small);
+    right: var(--spacing-small);
+    left: var(--spacing-small);
   }
 }

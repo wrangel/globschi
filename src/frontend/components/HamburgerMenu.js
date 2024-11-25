@@ -28,6 +28,7 @@ const HamburgerMenu = memo(({ onNavigate }) => {
       {isOpen && (
         <div className={styles.menuDropdown}>
           <button onClick={() => handleNavigation("/")}>Home</button>
+          <button onClick={() => handleNavigation("/grid")}>Grid</button>
           <button onClick={() => handleNavigation("/map")}>Map</button>
           <button onClick={() => handleNavigation("/about")}>About</button>
         </div>

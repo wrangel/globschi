@@ -1,55 +1,17 @@
 // src/frontend/views/HomePage.js
 
 import React from "react";
-import PortfolioGrid from "../components/PortfolioGrid";
-import ViewerPopup from "../components/ViewerPopup";
-import { useItems } from "../hooks/useItems";
-import { useItemViewer } from "../hooks/useItemViewer";
-import styles from "../styles/Home.module.css";
+import styles from "../styles/Home.module.css"; // Adjust the path if necessary
 
-function HomePage() {
-  const { items, isLoading, error } = useItems();
-  const {
-    selectedItem,
-    isModalOpen,
-    handleItemClick,
-    handleClosePopup,
-    handleNextItem,
-    handlePreviousItem,
-  } = useItemViewer(items);
-
-  // Removed the handleNavigate function since we don't need it anymore
-
-  if (isLoading) {
-    return <div className={styles.homePage}>Loading...</div>;
-  }
-
-  if (error) {
-    return <div className={styles.homePage}>Error: {error}</div>;
-  }
-
+const HomePage = () => {
   return (
     <div className={styles.homePage}>
-      <div className={styles.headerWrapper}>
-        <h1>Airborne Marvels</h1>
-      </div>
-      {items.length > 0 ? (
-        <PortfolioGrid items={items} onItemClick={handleItemClick} />
-      ) : (
-        <p>No items to display.</p>
-      )}
-      {/* Removed the button */}
-      {isModalOpen && (
-        <ViewerPopup
-          item={selectedItem}
-          isOpen={isModalOpen}
-          onClose={handleClosePopup}
-          onNext={handleNextItem}
-          onPrevious={handlePreviousItem}
-        />
-      )}
+      <img src="/globschi.jpg" alt="Globschi" className={styles.image} />{" "}
+      {/* Use the image */}
+      <h1>Welcome to Marvels From Above</h1>
+      <h2>Your view from the air</h2>
     </div>
   );
-}
+};
 
-export default React.memo(HomePage);
+export default HomePage;

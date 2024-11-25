@@ -1,0 +1,14 @@
+/* src/frontend/styles/Grid.module.css */
+
+.gridPage {
+  text-align: center;
+  padding: var(--gutter-size); /* Use CSS variable for padding */
+}
+
+.headerWrapper {
+  display: flex;
+  flex-direction: column; /* Stack children vertically */
+  justify-content: center;
+  align-items: center;
+  height: 10vh; /* Use viewport height for responsive header size */
+}

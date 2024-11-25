@@ -1,37 +1,41 @@
-/* src/frontend/styles/Home.modules.css */
+/* src/frontend/styles/Home.module.css */
 
 .homePage {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh; /* Full viewport height */
+  width: 100vw; /* Full viewport width */
   text-align: center;
-  padding: var(--gutter-size); /* Use CSS variable for padding */
+  background-size: cover; /* Cover the entire container */
 }
 
 .headerWrapper {
   display: flex;
-  flex-direction: column; /* Stack children vertically */
+  flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: 10vh; /* Use viewport height for responsive header size */
 }
 
-.headerWrapper h1 {
+h1,
+h2 {
   margin: 0; /* Remove default margin */
-  font-size: var(--font-size-large); /* Use CSS variable for font size */
+  color: var(--text-color); /* Ensure text is visible */
 }
 
-.headerWrapper h2 {
+h2 {
   margin-top: var(--spacing-small); /* Add space above the h2 */
-  font-size: var(--font-size-medium); /* Use CSS variable for font size */
 }
 
 /* Media Queries for Responsive Design */
 @media (max-width: 48em) {
-  .headerWrapper h1 {
+  h1 {
     font-size: var(
       --font-size-medium
     ); /* Adjust font size for smaller screens */
   }
 
-  .headerWrapper h2 {
+  h2 {
     font-size: var(
       --font-size-small
     ); /* Adjust font size for smaller screens */
@@ -39,13 +43,13 @@
 }
 
 @media (max-width: 30em) {
-  .headerWrapper h1 {
+  h1 {
     font-size: var(
       --font-size-small
     ); /* Even smaller font size for very small screens */
   }
 
-  .headerWrapper h2 {
+  h2 {
     font-size: calc(var(--font-size-small) - 0.25rem); /* Slightly smaller */
   }
 }

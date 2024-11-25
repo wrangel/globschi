@@ -3,11 +3,16 @@
 .popupButton {
   position: absolute;
   background-color: transparent;
-  color: rgba(255, 255, 255, 0.6);
+  color: rgba(255, 255, 255, 0.9); /* Slightly brighter for better visibility */
   border: none;
   cursor: pointer;
   font-size: 24px;
   z-index: 1100;
+  transition: color 0.3s ease; /* Smooth color transition */
+}
+
+.popupButton:hover {
+  color: rgba(255, 255, 255, 1); /* Full color on hover */
 }
 
 .closeButton {
@@ -15,17 +20,12 @@
   right: 20px; /* Positioning for close button */
 }
 
-.prevButton {
-  left: 10px;
-  top: calc(50% - (20px)); /* Center vertically in the middle of the popup */
-}
-
-.nextButton {
-  right: 10px;
-  top: calc(50% - (20px)); /* Center vertically in the middle of the popup */
-}
-
 .metadataButton {
   top: 20px;
   left: 20px; /* Positioning for metadata button */
+}
+
+.toggleButton {
+  top: 20px; /* Adjust as needed */
+  right: calc(20px + 50px); /* Position next to close button */
 }

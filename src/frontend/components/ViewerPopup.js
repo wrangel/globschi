@@ -1,39 +1,39 @@
-// src/frontend/components/ViewerPopup.js
-
-import React, { useEffect } from "react";
+import React, { useState } from "react";
+import { useSwipeable } from "react-swipeable";
 import FullScreenModal from "./FullScreenModal";
 import Viewer from "./Viewer";
 
 const ViewerPopup = ({ item, isOpen, onClose, onNext, onPrevious }) => {
-  // Handle keyboard navigation using useEffect
-  useEffect(() => {
-    const handleKeyDown = (event) => {
-      if (event.key === "Escape") {
-        onClose(); // Close modal when Escape key is pressed
-      }
-    };
+  const [isNavigationMode, setIsNavigationMode] = useState(true);
 
-    // Only add event listener if isOpen is true
-    if (isOpen) {
-      document.addEventListener("keydown", handleKeyDown);
-    }
+  const toggleMode = () => {
+    setIsNavigationMode((prevMode) => !prevMode);
+  };
 
-    return () => {
-      document.removeEventListener("keydown", handleKeyDown);
-    };
-  }, [isOpen, onClose]);
+  const handlers = useSwipeable({
+    onSwipedLeft: () => isNavigationMode && onNext(),
+    onSwipedRight: () => isNavigationMode && onPrevious(),
+    preventDefaultTouchmoveEvent: true,
+    trackMouse: true,
+    delta: 50,
+    swipeDuration: 500,
+  });
 
   if (!item) return null;
 
   return (
     <FullScreenModal isOpen={isOpen} onClose={onClose}>
-      <Viewer
-        item={item}
-        isOpen={isOpen}
-        onClose={onClose}
-        onNext={onNext}
-        onPrevious={onPrevious}
-      />
+      <div {...handlers} style={{ width: "100%", height: "100%" }}>
+        <Viewer
+          item={item}
+          isOpen={isOpen}
+          onClose={onClose}
+          onNext={onNext}
+          onPrevious={onPrevious}
+          isNavigationMode={isNavigationMode}
+          toggleMode={toggleMode}
+        />
+      </div>
     </FullScreenModal>
   );
 };

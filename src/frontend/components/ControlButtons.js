@@ -1,29 +1,33 @@
 // src/frontend/components/ControlButtons.js
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useSwipeable } from "react-swipeable";
 import styles from "../styles/ControlButtons.module.css";
 
 const ControlButtons = ({ onClose, onPrevious, onNext, onToggleMetadata }) => {
+  const [isNavigationMode, setIsNavigationMode] = useState(true);
+
+  const toggleMode = () => {
+    setIsNavigationMode((prevMode) => !prevMode);
+  };
+
   useEffect(() => {
     const handleKeyDown = (event) => {
-      if (event.key === "ArrowLeft") {
+      if (event.key === "ArrowLeft" && isNavigationMode) {
         onPrevious();
-      } else if (event.key === "ArrowRight") {
+      } else if (event.key === "ArrowRight" && isNavigationMode) {
         onNext();
       }
     };
-
     document.addEventListener("keydown", handleKeyDown);
-
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
     };
-  }, [onPrevious, onNext]);
+  }, [onPrevious, onNext, isNavigationMode]);
 
   const handlers = useSwipeable({
-    onSwipedLeft: onNext,
-    onSwipedRight: onPrevious,
+    onSwipedLeft: () => isNavigationMode && onNext(),
+    onSwipedRight: () => isNavigationMode && onPrevious(),
     preventDefaultTouchmoveEvent: true,
     trackMouse: true,
   });
@@ -36,6 +40,15 @@ const ControlButtons = ({ onClose, onPrevious, onNext, onToggleMetadata }) => {
         aria-label="Close"
       >
         ×
+      </button>
+      <button
+        className={`${styles.popupButton}`}
+        onClick={toggleMode}
+        aria-label="Toggle Mode"
+      >
+        {isNavigationMode
+          ? "Switch to Interaction Mode"
+          : "Switch to Navigation Mode"}
       </button>
       {onToggleMetadata && (
         <button

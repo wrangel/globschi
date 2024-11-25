@@ -8,7 +8,7 @@
   color: white; /* Text color */
   padding: 10px;
   border-radius: 5px;
-  z-index: 2000; /* Ensure it's above other elements */
+  z-index: 1500; /* Ensure it's above other elements */
 }
 
 /* Center text inside the popup */

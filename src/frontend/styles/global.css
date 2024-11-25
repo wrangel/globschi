@@ -27,6 +27,9 @@
   --spinner-border: 3px;
   --spinner-color: rgba(255, 255, 255, 0.3);
   --spinner-border-top: #fff;
+
+  --message-font-size: 1.2rem;
+  --message-color: #333;
 }
 
 body {

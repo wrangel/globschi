@@ -3,7 +3,7 @@
 .popupButton {
   position: absolute;
   background-color: transparent;
-  color: rgba(255, 255, 255, 0.9); /* Slightly brighter for better visibility */
+  color: rgba(255, 255, 255, 0.9); /* Match color with other buttons */
   border: none;
   cursor: pointer;
   font-size: 24px;
@@ -26,6 +26,8 @@
 }
 
 .toggleButton {
-  top: 20px; /* Adjust as needed */
+  top: calc(
+    20px + 40px
+  ); /* Adjust as needed to position below the close button */
   right: calc(20px + 50px); /* Position next to close button */
 }

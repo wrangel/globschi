@@ -1,3 +1,5 @@
+// src/frontend/components/ControlButtons.js
+
 import React, { useEffect } from "react";
 import { useSwipeable } from "react-swipeable";
 import styles from "../styles/ControlButtons.module.css";
@@ -45,8 +47,8 @@ const ControlButtons = ({
         onClick={toggleMode}
         aria-label="Toggle Mode"
       >
-        {isNavigationMode ? "🔄" : "🖐️"}{" "}
-        {/* Use icons or emojis for visual appeal */}
+        {isNavigationMode ? "← →" : "🌍"}{" "}
+        {/* Use arrows for navigation mode and globe for interaction mode */}
       </button>
       {onToggleMetadata && (
         <button

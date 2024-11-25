@@ -31,8 +31,7 @@ function HomePage() {
   return (
     <div className={styles.homePage}>
       <div className={styles.headerWrapper}>
-        <h1>Globschi Kollege von Dronef</h1>
-        <h2>Der arme Dronef versunken im See</h2>
+        <h1>Airborne Marvels</h1>
       </div>
       {items.length > 0 ? (
         <PortfolioGrid items={items} onItemClick={handleItemClick} />

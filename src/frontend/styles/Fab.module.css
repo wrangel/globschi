@@ -1,7 +1,7 @@
 /* src/frontend/styles/Fab.module.css */
 :root {
-  --fab-color: rgba(128, 128, 128, 0.7); /* Semi-transparent grey */
-  --fab-hover-color: rgba(105, 105, 105, 0.7); /* Slightly darker grey */
+  --fab-color: rgba(153, 153, 153, 0.7); /* Semi-transparent grey */
+  --fab-hover-color: rgba(124, 124, 124, 0.7); /* Slightly darker grey */
 }
 
 .fabContainer {

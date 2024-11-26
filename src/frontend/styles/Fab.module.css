@@ -1,9 +1,3 @@
-/* src/frontend/styles/Fab.module.css */
-:root {
-  --fab-color: rgba(153, 153, 153, 0.7); /* Semi-transparent grey */
-  --fab-hover-color: rgba(124, 124, 124, 0.7); /* Slightly darker grey */
-}
-
 .fabContainer {
   position: fixed;
   bottom: 20px;

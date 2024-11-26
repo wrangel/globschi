@@ -6,44 +6,41 @@
   align-items: center;
   height: 100vh; /* Full viewport height */
   width: 100vw; /* Full viewport width */
-}
-
-.contentWrapper {
-  display: flex;
   flex-direction: column; /* Default to column for portrait view */
-  width: 100%; /* Full width */
+  gap: var(--spacing-medium); /* Add spacing between elements */
 }
 
-.image {
-  width: 100%; /* Make image responsive */
-  height: auto; /* Maintain aspect ratio */
-}
-
-.textWrapper {
+.textWrapper,
+.imageWrapper {
   display: flex;
-  flex-direction: column; /* Stack text vertically */
   justify-content: center;
   align-items: center;
 }
 
-/* Media Query for Landscape Viewports */
+.image {
+  width: auto; /* Maintain aspect ratio */
+  height: auto; /* Maintain aspect ratio */
+  max-width: 80vw; /* Responsive width */
+  max-height: 40vh; /* Responsive height */
+}
+
 @media (orientation: landscape) {
-  .contentWrapper {
+  .homePage {
     flex-direction: row; /* Change to row for landscape view */
   }
 
-  .image {
-    width: 50%; /* Half width for image */
-    height: auto; /* Maintain aspect ratio */
+  .textWrapper {
+    margin-right: var(
+      --spacing-large
+    ); /* Increase space between text and image */
   }
 
-  .textWrapper {
-    width: 50%; /* Half width for text */
-    text-align: center; /* Center text */
+  .image {
+    max-width: 30vw; /* Adjust image size for landscape */
+    max-height: 80vh; /* Adjust image size for landscape */
   }
 }
 
-/* Additional styling for headers if needed */
 h1,
 h2 {
   margin: 0; /* Remove default margin */
@@ -52,4 +49,31 @@ h2 {
 
 h2 {
   margin-top: var(--spacing-small); /* Add space above the h2 */
+}
+
+/* Media Queries for Responsive Design */
+@media (max-width: 48em) {
+  h1 {
+    font-size: var(
+      --font-size-medium
+    ); /* Adjust font size for smaller screens */
+  }
+
+  h2 {
+    font-size: var(
+      --font-size-small
+    ); /* Adjust font size for smaller screens */
+  }
+}
+
+@media (max-width: 30em) {
+  h1 {
+    font-size: var(
+      --font-size-small
+    ); /* Even smaller font size for very small screens */
+  }
+
+  h2 {
+    font-size: calc(var(--font-size-small) - 0.25rem); /* Slightly smaller */
+  }
 }

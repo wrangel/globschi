@@ -6,9 +6,12 @@ import styles from "../styles/Home.module.css"; // Adjust the path if necessary
 const HomePage = () => {
   return (
     <div className={styles.homePage}>
-      <img src="/globschi.jpg" alt="Globschi" className={styles.image} />{" "}
-      {/* Use the image */}
-      <h1>Marvels From Above</h1>
+      <div className={styles.textWrapper}>
+        <h1>Marvels From Above</h1>
+      </div>
+      <div className={styles.imageWrapper}>
+        <img src="/globschi.jpg" alt="Globschi" className={styles.image} />
+      </div>
     </div>
   );
 };

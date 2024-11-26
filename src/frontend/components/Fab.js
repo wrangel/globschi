@@ -11,14 +11,8 @@ const Fab = ({ onNavigate }) => {
 
   return (
     <div className={styles.fabContainer}>
-      <button
-        className={`${styles.fab} ${styles.mainFab}`}
-        onClick={toggleFab}
-        aria-label="Navigation"
-      >
-        Nav
-      </button>
-      {isOpen && (
+      {isOpen ? (
+        // Render only the navigation buttons when expanded
         <div className={styles.fabMenu}>
           <button
             className={styles.fab}
@@ -61,6 +55,15 @@ const Fab = ({ onNavigate }) => {
             About
           </button>
         </div>
+      ) : (
+        // Render the main FAB button when not expanded
+        <button
+          className={`${styles.fab} ${styles.mainFab}`}
+          onClick={toggleFab}
+          aria-label="Navigation"
+        >
+          Nav
+        </button>
       )}
     </div>
   );

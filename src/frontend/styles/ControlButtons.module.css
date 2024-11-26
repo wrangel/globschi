@@ -47,11 +47,24 @@
     font-size: 1.25rem; /* Adjust font size for smaller screens */
   }
 
-  .closeButton,
-  .metadataButton,
+  .closeButton {
+    top: var(--spacing-small);
+    right: var(
+      --spacing-small
+    ); /* Keep the close button in the top-right corner */
+  }
+
+  .metadataButton {
+    top: var(--spacing-small);
+    left: var(
+      --spacing-small
+    ); /* Keep the metadata button in the top-left corner */
+  }
+
   .toggleButton {
     top: var(--spacing-small);
-    right: var(--spacing-small);
-    left: var(--spacing-small);
+    right: calc(
+      var(--spacing-small) * 3
+    ); /* Keep the toggle button next to the close button */
   }
 }

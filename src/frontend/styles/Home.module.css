@@ -41,39 +41,27 @@
   }
 }
 
-h1,
-h2 {
+h1 {
   margin: 0; /* Remove default margin */
   color: var(--text-color); /* Ensure text is visible */
+  text-align: center;
 }
 
-h2 {
-  margin-top: var(--spacing-small); /* Add space above the h2 */
+.break {
+  display: block;
+}
+
+@media (min-width: 48em) {
+  .break {
+    display: inline;
+  }
 }
 
 /* Media Queries for Responsive Design */
-@media (max-width: 48em) {
-  h1 {
-    font-size: var(
-      --font-size-medium
-    ); /* Adjust font size for smaller screens */
-  }
-
-  h2 {
-    font-size: var(
-      --font-size-small
-    ); /* Adjust font size for smaller screens */
-  }
-}
-
 @media (max-width: 30em) {
   h1 {
     font-size: var(
       --font-size-small
     ); /* Even smaller font size for very small screens */
-  }
-
-  h2 {
-    font-size: calc(var(--font-size-small) - 0.25rem); /* Slightly smaller */
   }
 }

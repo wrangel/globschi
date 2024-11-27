@@ -1,11 +1,9 @@
-/* src/frontend/styles/MetadataPopup.module.css */
-
 .metadataPopup {
   position: absolute;
   top: calc(
     var(--spacing-large) * 2
   ); /* Use a variable for spacing beneath the "i" icon */
-  left: var(--spacing-small); /* Use variable for spacing */
+  left: var(--spacing-small); /* Use variable for spacing on larger screens */
   background-color: var(
     --popup-bg-color
   ); /* Use variable for background color */
@@ -16,7 +14,9 @@
   ); /* Use variable for border radius */
   z-index: 1500; /* Ensure it's above other elements */
   max-width: 280px; /* Set a maximum width for the popup (adjust as needed) */
-  width: 100%; /* Ensure it takes full width of parent container up to max-width */
+  width: calc(
+    100% - var(--spacing-small) * 2
+  ); /* Full width minus side margins */
 }
 
 /* Center text inside the popup */
@@ -46,4 +46,22 @@
   width: 100%; /* Full width of parent container */
   height: auto; /* Allow height to adjust automatically */
   max-height: 450px; /* Set a maximum height if necessary */
+}
+
+/* Media query for smaller screens (portrait mode) */
+@media (max-width: 768px) {
+  /* Adjust this breakpoint as needed */
+  .metadataPopup {
+    left: 50%; /* Center horizontally on smaller screens */
+    transform: translateX(
+      -50%
+    ); /* Shift left by half its own width to center it */
+    width: calc(
+      100% - var(--spacing-small) * 2
+    ); /* Ensure it still respects side margins */
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: var(--spacing-small);
+    padding-right: var(--spacing-small);
+  }
 }

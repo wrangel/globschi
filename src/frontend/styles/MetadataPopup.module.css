@@ -16,6 +16,7 @@
   max-width: var(--max-width-popup); /* Maximum width with variable */
   width: 100%; /* Full width */
   box-sizing: border-box; /* Include padding in width calculation */
+  font-family: var(--font-family); /* Ensure consistent font family */
 }
 
 /* Center text inside the popup */
@@ -37,8 +38,9 @@
 .maplink {
   display: block; /* Block element */
   margin-top: var(--spacing-small); /* Spacing */
-  color: var(--linkColor);
+  color: var(--linkColor); /* Use brighter blue color for better legibility */
   text-decoration: none;
+  font-family: inherit; /* Inherit font from parent */
 }
 
 /* Styles for the map iframe */

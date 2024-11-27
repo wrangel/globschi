@@ -1,4 +1,3 @@
-// src/components/Fab.js
 import React, { useState } from "react";
 import styles from "../styles/Fab.module.css";
 
@@ -12,27 +11,16 @@ const Fab = ({ onNavigate }) => {
   return (
     <div className={styles.fabContainer}>
       {isOpen ? (
-        // Render only the navigation buttons when expanded
         <div className={styles.fabMenu}>
           <button
             className={styles.fab}
             onClick={() => {
-              onNavigate("/");
+              onNavigate("/about");
               setIsOpen(false);
             }}
-            aria-label="Go to Home"
+            aria-label="Go to About"
           >
-            Home
-          </button>
-          <button
-            className={styles.fab}
-            onClick={() => {
-              onNavigate("/grid");
-              setIsOpen(false);
-            }}
-            aria-label="Go to Grid"
-          >
-            Grid
+            About
           </button>
           <button
             className={styles.fab}
@@ -47,16 +35,25 @@ const Fab = ({ onNavigate }) => {
           <button
             className={styles.fab}
             onClick={() => {
-              onNavigate("/about");
+              onNavigate("/grid");
               setIsOpen(false);
             }}
-            aria-label="Go to About"
+            aria-label="Go to Grid"
           >
-            About
+            Grid
+          </button>
+          <button
+            className={styles.fab}
+            onClick={() => {
+              onNavigate("/");
+              setIsOpen(false);
+            }}
+            aria-label="Go to Home"
+          >
+            Home
           </button>
         </div>
       ) : (
-        // Render the main FAB button when not expanded
         <button
           className={`${styles.fab} ${styles.mainFab}`}
           onClick={toggleFab}

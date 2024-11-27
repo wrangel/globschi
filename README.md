@@ -63,7 +63,7 @@ To get started with this project, follow these steps:
    npm run manage {keep-books|collect-metadata|upload-media|add-field|debug-mongo|test-aws}
    ```
 
-6. Start the server:
+6. Start the application:
 
    ```bash
    pnpm run dev -u # Run locally after updating the project

@@ -3,8 +3,11 @@
 import React from "react";
 import styles from "../styles/MetadataPopup.module.css";
 
+// Establishing the google maps zoom level
+const zoomLevel = 15;
+
 const MetadataPopup = ({ metadata, latitude, longitude, onClose }) => {
-  const googleMapsUrl = `https://www.google.com/maps/embed/v1/place?key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}&q=${latitude},${longitude}&zoom=18&maptype=satellite`;
+  const googleMapsUrl = `https://www.google.com/maps/embed/v1/place?key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}&q=${latitude},${longitude}&zoom=${zoomLevel}&maptype=satellite`;
 
   return (
     <div className={styles.metadataPopup}>

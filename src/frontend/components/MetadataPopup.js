@@ -28,9 +28,6 @@ const MetadataPopup = ({ metadata, latitude, longitude, onClose }) => {
           title={`Map showing location at latitude ${latitude} and longitude ${longitude}`}
           allowFullScreen
         ></iframe>
-        <button onClick={zoomOutTwoSteps} className={styles.zoomButton}>
-          Zoom Out Two Steps
-        </button>
       </div>
     </div>
   );

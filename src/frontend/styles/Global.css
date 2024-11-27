@@ -53,5 +53,28 @@
   /* New variables */
   --adjustment-height: 15px;
   --max-width-popup: 280px;
-  --linkColor: #ffffff;
+  --linkColor: #ffffff; /* Bright blue color for better legibility */
+}
+
+body {
+  background-color: var(--background-color);
+  color: var(--text-color);
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-family);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: var(--code-font-family);
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }

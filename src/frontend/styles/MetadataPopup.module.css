@@ -38,7 +38,7 @@
 .maplink {
   display: block; /* Block element */
   margin-top: var(--spacing-small); /* Spacing */
-  color: var(--linkColor); /* Use brighter blue color for better legibility */
+  color: var(--linkColor); /* Use bright color for better legibility */
   text-decoration: none;
   font-family: inherit; /* Inherit font from parent */
 }

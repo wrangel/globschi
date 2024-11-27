@@ -1,6 +1,8 @@
+// src/App.js
+
 import React, { Suspense } from "react";
 import { Routes, Route, useNavigate } from "react-router-dom";
-import ErrorBoundary from "./components/ErrorBoundary";
+import ErrorBoundary from "./components/ErrorBoundary"; // Import ErrorBoundary
 import Fab from "./components/Fab"; // Import the Fab component
 
 // Lazy load the components

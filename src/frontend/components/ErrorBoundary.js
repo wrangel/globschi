@@ -20,8 +20,8 @@ class ErrorBoundary extends React.Component {
   }
 
   componentDidCatch(error, errorInfo) {
-    // Log the error to Sentry
-    Sentry.captureException(error);
+    // Log the error to Sentry with additional context
+    Sentry.captureException(error, { extra: errorInfo });
     console.error("Uncaught error:", error, errorInfo);
   }
 
@@ -34,15 +34,13 @@ class ErrorBoundary extends React.Component {
       // Custom fallback UI with a retry button
       return (
         <div className={styles.errorBoundary}>
-          {" "}
-          {/* Use styles from the module */}
           <h1>Something went wrong.</h1>
           <button onClick={this.handleRetry}>Try Again</button>
         </div>
       );
     }
 
-    return this.props.children;
+    return this.props.children; // Render children if no error
   }
 }
 

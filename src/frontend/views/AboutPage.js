@@ -1,12 +1,10 @@
-/* src/frontend/views/AboutPage.js */
-
 import React from "react";
 import styles from "../styles/About.module.css";
 
 const About = () => {
   return (
     <div className={styles.aboutContainer}>
-      <h2>That's us!</h2>
+      <h2>That's Us!</h2>
       <p>
         <a
           target="_blank"
@@ -26,7 +24,7 @@ const About = () => {
         &amp; dance
       </p>
 
-      <h2>Our drones</h2>
+      <h2>Our Drones</h2>
       <p>
         <a
           target="_blank"
@@ -46,53 +44,85 @@ const About = () => {
         {" (Dronef)"}
       </p>
 
-      <h2>Shouting out to</h2>
+      <h2>Image Processing</h2>
       <p>
         <a target="_blank" rel="noopener noreferrer" href="https://ptgui.com">
           PTGui Pro
-        </a>{" "}
-        for the equirectangular 360&deg; panorama stitching
-      </p>
-      <p>
+        </a>
+        ,{" "}
         <a
           target="_blank"
           rel="noopener noreferrer"
           href="https://www.adobe.com/products/photoshop-lightroom.html"
         >
           Adobe Lightroom
-        </a>{" "}
-        for the wide angle &amp; HDR image creation
+        </a>
       </p>
+
+      <h2>Tech Stack</h2>
       <p>
+        <a
+          target="_blank"
+          rel="noopener noreferrer"
+          href="https://reactjs.org/"
+        >
+          React.js
+        </a>
+        ,{" "}
+        <a target="_blank" rel="noopener noreferrer" href="https://nodejs.org/">
+          Node.js
+        </a>{" "}
+        with{" "}
+        <a
+          target="_blank"
+          rel="noopener noreferrer"
+          href="https://expressjs.com/"
+        >
+          Express
+        </a>
+        ,{" "}
+        <a
+          target="_blank"
+          rel="noopener noreferrer"
+          href="https://aws.amazon.com/s3/"
+        >
+          AWS S3
+        </a>
+        ,{" "}
+        <a
+          target="_blank"
+          rel="noopener noreferrer"
+          href="https://www.mongodb.com/cloud/atlas"
+        >
+          MongoDB Atlas
+        </a>
+        ,{" "}
         <a
           target="_blank"
           rel="noopener noreferrer"
           href="https://photo-sphere-viewer.js.org/"
         >
           Photo Sphere Viewer
-        </a>{" "}
-        for the 360&deg; panorama display
-      </p>
-      <p>
+        </a>
+        ,{" "}
         <a
           target="_blank"
           rel="noopener noreferrer"
           href="https://www.mapbox.com/"
         >
           Mapbox
-        </a>{" "}
-        for the reverse geocoding
-      </p>
-      <p>
+        </a>
+        ,{" "}
         <a
           target="_blank"
           rel="noopener noreferrer"
-          href="https://mariushosting.com/"
+          href="https://sharp.pixelplumbing.com/"
         >
-          Marius Hosting
-        </a>{" "}
-        for the network knowledge
+          Sharp
+        </a>
       </p>
+
+      <h2>Shouting Out To</h2>
       <p>
         <a
           target="_blank"
@@ -100,8 +130,23 @@ const About = () => {
           href="https://www.perplexity.ai/"
         >
           Perplexity AI
-        </a>{" "}
-        for providing advanced AI capabilities
+        </a>
+        ,{" "}
+        <a
+          target="_blank"
+          rel="noopener noreferrer"
+          href="https://www.copilot.com/"
+        >
+          Copilot
+        </a>
+        ,{" "}
+        <a
+          target="_blank"
+          rel="noopener noreferrer"
+          href="https://mariushosting.com/"
+        >
+          Marius Hosting
+        </a>
       </p>
     </div>
   );

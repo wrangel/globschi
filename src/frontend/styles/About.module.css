@@ -1,5 +1,3 @@
-/* src/frontend/styles/About.modules.css */
-
 .aboutContainer {
   display: flex;
   flex-direction: column;
@@ -18,11 +16,15 @@ h2 {
 }
 
 h2 {
-  margin-bottom: var(--spacing-medium); /* Add space below the h2 heading */
+  margin-top: var(--spacing-medium); /* Reduce space above the h2 heading */
+  margin-bottom: var(
+    --spacing-small
+  ); /* Add smaller space below the h2 heading */
 }
 
-h1 {
-  margin-top: var(--spacing-large); /* Add space above each h1 */
+p {
+  margin-top: var(--spacing-small); /* Add smaller space above the paragraph */
+  margin-bottom: var(--spacing-large); /* Add space below the paragraph */
 }
 
 a {

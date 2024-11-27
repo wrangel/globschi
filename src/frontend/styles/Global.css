@@ -1,5 +1,3 @@
-/* src/styles/Global.css */
-
 :root {
   --background-color: black;
   --text-color: white;
@@ -55,4 +53,5 @@
   /* New variables */
   --adjustment-height: 15px;
   --max-width-popup: 280px;
+  --linkColor: #ffffff;
 }

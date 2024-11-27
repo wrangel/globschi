@@ -1,5 +1,3 @@
-/* src/styles/MetadataPopup.module.css */
-
 .metadataPopup {
   position: absolute;
   top: calc(var(--spacing-large) * 2); /* Spacing beneath the "i" icon */
@@ -38,6 +36,7 @@
   display: block; /* Block element */
   margin-top: var(--spacing-small); /* Spacing */
   color: var(--link-color, #00f); /* Link color */
+  text-decoration: underline; /* Underline link */
 }
 
 /* Styles for the map iframe */
@@ -48,7 +47,7 @@
 }
 
 /* Media query for larger screens */
-@media (min-width: 330px) {
+@media (min-width: 320px) {
   .metadataPopup {
     left: var(--spacing-small); /* Align to the left margin */
     transform: none; /* Remove center shift */

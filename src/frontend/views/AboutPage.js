@@ -131,7 +131,7 @@ const About = () => {
         >
           Perplexity AI
         </a>
-        ,{" "}
+        {" for everything "},
         <a
           target="_blank"
           rel="noopener noreferrer"
@@ -139,7 +139,7 @@ const About = () => {
         >
           Copilot
         </a>
-        ,{" "}
+        {" for CSS "},
         <a
           target="_blank"
           rel="noopener noreferrer"

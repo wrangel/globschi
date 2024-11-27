@@ -48,7 +48,7 @@
 }
 
 /* Media query for larger screens */
-@media (min-width: 320px) {
+@media (min-width: 330px) {
   .metadataPopup {
     left: var(--spacing-small); /* Align to the left margin */
     transform: none; /* Remove center shift */

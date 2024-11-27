@@ -1,67 +1,59 @@
+/* src/styles/MetadataPopup.module.css */
+
 .metadataPopup {
   position: absolute;
-  top: calc(
-    var(--spacing-large) * 2
-  ); /* Use a variable for spacing beneath the "i" icon */
-  left: var(--spacing-small); /* Use variable for spacing on larger screens */
+  top: calc(var(--spacing-large) * 2); /* Spacing beneath the "i" icon */
+  left: 50%;
+  transform: translateX(-50%); /* Center horizontally */
   background-color: var(
-    --popup-bg-color
-  ); /* Use variable for background color */
-  color: var(--popup-text-color); /* Use variable for text color */
-  padding: var(--popup-padding); /* Use variable for padding */
-  border-radius: var(
-    --popup-border-radius
-  ); /* Use variable for border radius */
-  z-index: 1500; /* Ensure it's above other elements */
-  max-width: 280px; /* Set a maximum width for the popup (adjust as needed) */
-  width: calc(
-    100% - var(--spacing-small) * 2
-  ); /* Full width minus side margins */
+    --popup-bg-color,
+    #000
+  ); /* Background color with fallback */
+  color: var(--popup-text-color, #fff); /* Text color with fallback */
+  padding: var(--popup-padding); /* Padding */
+  border-radius: var(--popup-border-radius); /* Border radius */
+  z-index: 1500; /* Above other elements */
+  max-width: 280px; /* Maximum width */
+  width: 100%; /* Full width */
+  box-sizing: border-box; /* Include padding in width calculation */
 }
 
 /* Center text inside the popup */
 .content {
-  text-align: center; /* Center text within this wrapper */
+  text-align: center; /* Center text */
 }
 
 /* Centering and styling the close button */
 .closeButton {
-  display: block; /* Make it a block element to take full width */
-  margin: 0 auto; /* Center it horizontally */
+  display: block; /* Full width */
+  margin: 0 auto; /* Center horizontally */
   background: transparent;
   border: none;
-  color: var(--close-button-color); /* Use variable for color */
-  font-size: var(--close-button-font-size); /* Use variable for font size */
+  color: var(--close-button-color, grey); /* Fallback color */
+  font-size: var(--close-button-font-size); /* Font size */
   cursor: pointer;
 }
 
 .mapLink {
-  display: block; /* Make it a block element for better spacing */
-  margin-top: var(--spacing-small); /* Use variable for spacing */
-  color: var(--link-color); /* Use variable for link color */
+  display: block; /* Block element */
+  margin-top: var(--spacing-small); /* Spacing */
+  color: var(--link-color, #00f); /* Link color */
 }
 
-/* New styles for the map iframe with max width */
+/* Styles for the map iframe */
 .mapIframe {
-  width: 100%; /* Full width of parent container */
-  height: auto; /* Allow height to adjust automatically */
-  max-height: 450px; /* Set a maximum height if necessary */
+  width: 100%; /* Full width */
+  height: auto; /* Auto height */
+  max-height: 450px; /* Maximum height */
 }
 
-/* Media query for smaller screens (portrait mode) */
-@media (max-width: 768px) {
-  /* Adjust this breakpoint as needed */
+/* Media query for larger screens */
+@media (min-width: 320px) {
   .metadataPopup {
-    left: 50%; /* Center horizontally on smaller screens */
-    transform: translateX(
-      -50%
-    ); /* Shift left by half its own width to center it */
-    width: calc(
-      100% - var(--spacing-small) * 2
-    ); /* Ensure it still respects side margins */
-    margin-left: auto;
-    margin-right: auto;
-    padding-left: var(--spacing-small);
-    padding-right: var(--spacing-small);
+    left: var(--spacing-small); /* Align to the left margin */
+    transform: none; /* Remove center shift */
+    width: calc(100% - var(--spacing-small) * 2); /* Full width minus margins */
+    margin-left: 0; /* No auto margins */
+    margin-right: 0; /* No auto margins */
   }
 }

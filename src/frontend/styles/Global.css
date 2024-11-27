@@ -51,27 +51,8 @@
 
   --fab-color: rgba(153, 153, 153, 0.7);
   --fab-hover-color: rgba(124, 124, 124, 0.7);
-}
 
-body {
-  background-color: var(--background-color);
-  color: var(--text-color);
-  margin: 0;
-  padding: 0;
-  font-family: var(--font-family);
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-code {
-  font-family: var(--code-font-family);
-}
-
-@keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
+  /* New variables */
+  --adjustment-height: 15px;
+  --max-width-popup: 280px;
 }

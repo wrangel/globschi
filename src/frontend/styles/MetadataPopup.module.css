@@ -1,6 +1,10 @@
+/* src/styles/MetadataPopup.module.css */
+
 .metadataPopup {
   position: absolute;
-  top: calc(var(--spacing-large) * 2 - 15px); /* Push 15px higher */
+  top: calc(
+    var(--spacing-large) * 2 - var(--adjustment-height)
+  ); /* Push higher with variable */
   left: 50%;
   transform: translateX(-50%); /* Center horizontally */
   background-color: var(
@@ -11,7 +15,7 @@
   padding: var(--popup-padding); /* Padding */
   border-radius: var(--popup-border-radius); /* Border radius */
   z-index: 1500; /* Above other elements */
-  max-width: 280px; /* Maximum width */
+  max-width: var(--max-width-popup); /* Maximum width with variable */
   width: 100%; /* Full width */
   box-sizing: border-box; /* Include padding in width calculation */
 }
@@ -43,7 +47,7 @@
 .mapIframe {
   width: 100%; /* Full width */
   height: auto; /* Auto height */
-  max-height: 450px; /* Maximum height */
+  max-height: var(--max-width-popup); /* Maximum height with variable */
 }
 
 /* Media query for larger screens */

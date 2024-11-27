@@ -6,12 +6,6 @@ keep_books() {
     node ./src/backend/management/bookKeeper.mjs
 }
 
-# Function to collect metadata
-collect_metadata() {
-    echo "Collecting metadata..."
-    node ./src/backend/management/metadataCollector.mjs
-}
-
 # Function to upload media
 upload_media() {
     echo "Uploading media..."

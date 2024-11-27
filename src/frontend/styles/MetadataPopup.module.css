@@ -1,6 +1,6 @@
 .metadataPopup {
   position: absolute;
-  top: calc(var(--spacing-large) * 2); /* Spacing beneath the "i" icon */
+  top: calc(var(--spacing-large) * 2 - 15px); /* Push 15px higher */
   left: 50%;
   transform: translateX(-50%); /* Center horizontally */
   background-color: var(

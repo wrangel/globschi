@@ -15,6 +15,8 @@
     --popup-border-radius
   ); /* Use variable for border radius */
   z-index: 1500; /* Ensure it's above other elements */
+  max-width: 280px; /* Set a maximum width for the popup (adjust as needed) */
+  width: 100%; /* Ensure it takes full width of parent container up to max-width */
 }
 
 /* Center text inside the popup */
@@ -37,4 +39,11 @@
   display: block; /* Make it a block element for better spacing */
   margin-top: var(--spacing-small); /* Use variable for spacing */
   color: var(--link-color); /* Use variable for link color */
+}
+
+/* New styles for the map iframe with max width */
+.mapIframe {
+  width: 100%; /* Full width of parent container */
+  height: auto; /* Allow height to adjust automatically */
+  max-height: 450px; /* Set a maximum height if necessary */
 }

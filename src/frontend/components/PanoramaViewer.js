@@ -30,9 +30,6 @@ const PanoramaViewer = ({ imageUrl, thumbnailUrl, onClose }) => {
         <div className={styles.errorMessage}>
           <h1>Safari Does Not Support This Feature</h1>
           <p>Please try using a different browser like Chrome or Firefox.</p>
-          <button onClick={onClose} className={styles.closeButton}>
-            × Close
-          </button>
         </div>
       </div>
     );

@@ -63,7 +63,7 @@ To get started with this project, follow these steps:
    pnpm run manage {keep-books|upload-media|add-field|debug-mongo|test-aws}
    pnpm run manage keep-books # Synchronizes data and metadata between and within data and metadata storages
    pnpm run manage upload-media # Upload media to data and metadata storages
-   pnpm run manage add-field # Add a field to the collection in the metadata storage
+   pnpm run manage add-field <> # Add a field to the collection in the metadata storage
    pnpm run manage debug-mongo # Test if metadata storage is available
    pnpm run manage test-aws # Test if data storage is available
    ```

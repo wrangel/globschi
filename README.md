@@ -1,6 +1,6 @@
-# Drone Imagery Showcase
+# Marvels From Above
 
-Welcome to the **Drone Imagery Showcase**! This website is designed to display stunning aerial photography and videography captured during my drone flights. Explore the beauty of landscapes, cityscapes, and unique perspectives that only drone photography can provide.
+Welcome to the **Marvels From Above**! This website is designed to display stunning aerial photography and videography captured during my drone flights. Explore the beauty of landscapes, cityscapes, and unique perspectives that only drone photography can provide.
 
 ## Table of Contents
 
@@ -17,7 +17,6 @@ Welcome to the **Drone Imagery Showcase**! This website is designed to display s
 
 - **Image Gallery**: View high-quality images organized by categories.
 - **Detailed Metadata**: Each image includes EXIF data such as date, location, and camera settings.
-- **User Interaction**: Users can provide feedback on images and share their favorites.
 - **Responsive Design**: The website is optimized for both desktop and mobile devices.
 
 ## Technologies Used
@@ -56,28 +55,28 @@ To get started with this project, follow these steps:
 
 4. Set up your environment variables:
 
-   - Create a `.env` file in the root directory and add your configuration (e.g., database credentials, AWS keys).
+   - Create a `.env` file in the root directory and add your configuration (e.g., MongoDB Atlas credentials, AWS keys).
 
 5. Use the helper functions:
 
    ```bash
-   pnpm debug-mongo # Test the connection to MongoDB
-   pnpm test-aws # Test the connection to AWS S3
-   pnpm keep-books # Synchronize you data and metadata
-   pnpm upload-media # Upload new media
+   npm run manage {keep-books|collect-metadata|upload-media|add-field|debug-mongo|test-aws}
    ```
 
 6. Start the server:
 
    ```bash
-   pnpm run start
+   pnpm run dev -u # Run locally after updating the project
+   pnpm run dev # Run locally
+   pnpm run prod-local # Run containerized app locally
+   pnpm run prod # Deploy images to Docker Hub
    ```
 
-7. Open your browser and navigate to `http://localhost:8081` to view the application.
+7. Open your browser and navigate to `http://localhost:3000` to view the application.
 
 ## Usage
 
-Once the application is running, you can explore the gallery of images. Click on any image to view it in detail, along with its metadata. You can also interact with the site by providing feedback or sharing your favorite images.
+Once the application is running, you can explore the gallery of images. Click on any image to view it in detail, along with its metadata.
 
 ## Contributing
 
@@ -105,4 +104,4 @@ I would like to express my gratitude to **Perplexity.ai**, which has been instru
 
 ---
 
-Thank you for visiting my Drone Imagery Showcase!
+Thank you for visiting my Marvels From Above!

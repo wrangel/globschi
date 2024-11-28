@@ -59,69 +59,6 @@ const About = () => {
         </a>
       </p>
 
-      <h2>Tech Stack</h2>
-      <p>
-        <a
-          target="_blank"
-          rel="noopener noreferrer"
-          href="https://reactjs.org/"
-        >
-          React.js
-        </a>
-        ,{" "}
-        <a target="_blank" rel="noopener noreferrer" href="https://nodejs.org/">
-          Node.js
-        </a>{" "}
-        with{" "}
-        <a
-          target="_blank"
-          rel="noopener noreferrer"
-          href="https://expressjs.com/"
-        >
-          Express
-        </a>
-        ,{" "}
-        <a
-          target="_blank"
-          rel="noopener noreferrer"
-          href="https://aws.amazon.com/s3/"
-        >
-          AWS S3
-        </a>
-        ,{" "}
-        <a
-          target="_blank"
-          rel="noopener noreferrer"
-          href="https://www.mongodb.com/cloud/atlas"
-        >
-          MongoDB Atlas
-        </a>
-        ,{" "}
-        <a
-          target="_blank"
-          rel="noopener noreferrer"
-          href="https://photo-sphere-viewer.js.org/"
-        >
-          Photo Sphere Viewer
-        </a>
-        ,{" "}
-        <a
-          target="_blank"
-          rel="noopener noreferrer"
-          href="https://www.mapbox.com/"
-        >
-          Mapbox
-        </a>
-        ,{" "}
-        <a
-          target="_blank"
-          rel="noopener noreferrer"
-          href="https://sharp.pixelplumbing.com/"
-        >
-          Sharp
-        </a>
-      </p>
-
       <h2>Shouting Out To</h2>
       <p>
         <a
@@ -130,7 +67,7 @@ const About = () => {
           href="https://www.perplexity.ai/"
         >
           Perplexity AI
-        </a>{" "}
+        </a>
         ,{" "}
         <a
           target="_blank"
@@ -139,7 +76,7 @@ const About = () => {
         >
           Photo Sphere Viewer
         </a>
-        ,
+        ,{" "}
         <a
           target="_blank"
           rel="noopener noreferrer"

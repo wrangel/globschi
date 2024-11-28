@@ -130,16 +130,16 @@ const About = () => {
           href="https://www.perplexity.ai/"
         >
           Perplexity AI
-        </a>
-        {" for everything "},
+        </a>{" "}
+        ,{" "}
         <a
           target="_blank"
           rel="noopener noreferrer"
-          href="https://www.copilot.com/"
+          href="https://photo-sphere-viewer.js.org/"
         >
-          Copilot
+          Photo Sphere Viewer
         </a>
-        {" for CSS "},
+        ,
         <a
           target="_blank"
           rel="noopener noreferrer"

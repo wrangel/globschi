@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import styles from "../styles/MetadataPopup.module.css";
 
 const MetadataPopup = ({ metadata, latitude, longitude, onClose }) => {
-  const [zoomLevel, setZoomLevel] = useState(18); // Initial zoom level
+  const [zoomLevel, setZoomLevel] = useState(13); // Initial zoom level
   const [isBelowThreshold, setIsBelowThreshold] = useState(false);
 
   useEffect(() => {

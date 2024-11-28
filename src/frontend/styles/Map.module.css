@@ -32,3 +32,18 @@
     --zoom-control-box-shadow
   ); /* Optional: Add a shadow for depth */
 }
+
+.custom-map .leaflet-tile {
+  filter: brightness(0.6); /* Darken the tiles for a dark theme effect */
+}
+
+.leaflet-popup-content-wrapper {
+  background-color: var(--popup-bg-color); /* Dark background for popups */
+  color: var(--popup-text-color); /* Light text for popups */
+}
+
+.leaflet-popup-tip {
+  background-color: var(
+    --popup-bg-color
+  ); /* Match popup tip with popup background */
+}

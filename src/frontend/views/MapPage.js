@@ -1,7 +1,11 @@
-// src/frontend/views/MapPage.js
-
 import React, { useEffect } from "react";
-import { MapContainer, TileLayer, Marker, useMap } from "react-leaflet";
+import {
+  MapContainer,
+  TileLayer,
+  Marker,
+  LayersControl,
+  useMap,
+} from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import LoadingErrorHandler from "../components/LoadingErrorHandler";
@@ -16,6 +20,8 @@ import {
   ICON_URLS,
   ICON_SIZES,
 } from "../constants";
+
+const { BaseLayer } = LayersControl;
 
 const redPinIcon = new L.Icon({
   iconUrl: ICON_URLS.RED_MARKER,
@@ -92,10 +98,31 @@ const MapPage = () => {
           doubleClickZoom={true}
           touchZoom={true}
         >
-          <TileLayer
-            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-            attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-          />
+          <LayersControl position="topright">
+            <BaseLayer checked name="OpenStreetMap">
+              <TileLayer
+                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+              />
+            </BaseLayer>
+            <BaseLayer name="Dark Theme">
+              <TileLayer
+                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+                className={styles.darkTileLayer} /* Apply dark theme via CSS */
+              />
+            </BaseLayer>
+            <BaseLayer name="Satellite">
+              <TileLayer
+                url="https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}"
+                attribution="© Mapbox © OpenStreetMap"
+                tileSize={512}
+                zoomOffset={-1}
+                id="mapbox/satellite-v9"
+                accessToken={process.env.REACT_APP_MAPBOX_ACCESS_TOKEN}
+              />
+            </BaseLayer>
+          </LayersControl>
 
           {items.map((item) => (
             <Marker

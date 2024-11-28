@@ -32,8 +32,9 @@ const FitBounds = ({ items }) => {
       const latitudes = items.map((item) => item.latitude);
       const longitudes = items.map((item) => item.longitude);
 
-      const latOffset = 1.5;
-      const lngOffset = 1.5;
+      // Adjust offsets for tighter fit
+      const latOffset = 0.5;
+      const lngOffset = 0.5;
 
       const bounds = [
         [
@@ -46,7 +47,7 @@ const FitBounds = ({ items }) => {
         ],
       ];
 
-      map.fitBounds(bounds);
+      map.fitBounds(bounds, { padding: [10, 10] }); // Optional padding
     }
   }, [items, map]);
 

@@ -9,7 +9,7 @@ import ViewerPopup from "../components/ViewerPopup";
 import { useItems } from "../hooks/useItems";
 import { useItemViewer } from "../hooks/useItemViewer";
 import { useLoadingError } from "../hooks/useLoadingError";
-import styles from "../styles/Map.module.css"; // Ensure this imports your styles
+import styles from "../styles/Map.module.css";
 import {
   MAP_INITIAL_CENTER,
   MAP_INITIAL_ZOOM,
@@ -26,7 +26,6 @@ const redPinIcon = new L.Icon({
   shadowSize: ICON_SIZES.SHADOW,
 });
 
-// Custom hook to fit bounds based on all items
 const FitBounds = ({ items }) => {
   const map = useMap();
 
@@ -57,9 +56,9 @@ const FitBounds = ({ items }) => {
 };
 
 const MapPage = () => {
-  const { items, isLoading, error } = useItems();
-  const { isLoading: loadingError, setErrorMessage } =
-    useLoadingError(isLoading);
+  const { items, isLoading: isItemsLoading, error: itemsError } = useItems();
+  const { isLoading, error, setErrorMessage, stopLoading } =
+    useLoadingError(true);
   const {
     selectedItem,
     isModalOpen,
@@ -70,20 +69,23 @@ const MapPage = () => {
   } = useItemViewer(items);
 
   useEffect(() => {
-    if (error) {
-      setErrorMessage(error);
+    if (!isItemsLoading) {
+      stopLoading();
     }
-  }, [error, setErrorMessage]);
+    if (itemsError) {
+      setErrorMessage(itemsError);
+    }
+  }, [isItemsLoading, itemsError, stopLoading, setErrorMessage]);
 
   return (
-    <LoadingErrorHandler isLoading={loadingError} error={error}>
+    <LoadingErrorHandler isLoading={isLoading} error={error}>
       <div className={styles.mapPageContainer}>
         <MapContainer
           center={MAP_INITIAL_CENTER}
           zoom={MAP_INITIAL_ZOOM}
-          className={`${styles.leafletContainer} custom-map`} // Add custom class for additional specificity
+          className={`${styles.leafletContainer} custom-map`}
           style={{ height: "100vh", width: "100%" }}
-          zoomControl={true} // Enable zoom control buttons
+          zoomControl={true}
           minZoom={2}
           maxZoom={18}
           scrollWheelZoom={true}

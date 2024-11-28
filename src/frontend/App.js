@@ -1,15 +1,15 @@
-// src/App.js
+// src/frontend/App.js
 
-import React, { Suspense } from "react";
+import React, { Suspense, lazy } from "react";
 import { Routes, Route, useNavigate } from "react-router-dom";
-import ErrorBoundary from "./components/ErrorBoundary"; // Import ErrorBoundary
-import Fab from "./components/Fab"; // Import the Fab component
+import ErrorBoundary from "./components/ErrorBoundary";
+import Fab from "./components/Fab";
 
 // Lazy load the components
-const HomePage = React.lazy(() => import("./views/HomePage"));
-const GridPage = React.lazy(() => import("./views/GridPage"));
-const MapPage = React.lazy(() => import("./views/MapPage"));
-const AboutPage = React.lazy(() => import("./views/AboutPage"));
+const HomePage = lazy(() => import("./views/HomePage"));
+const GridPage = lazy(() => import("./views/GridPage"));
+const MapPage = lazy(() => import("./views/MapPage"));
+const AboutPage = lazy(() => import("./views/AboutPage"));
 
 function App() {
   const navigate = useNavigate();
@@ -26,7 +26,7 @@ function App() {
           </Routes>
         </Suspense>
       </ErrorBoundary>
-      <Fab onNavigate={navigate} /> {/* Add the FAB here */}
+      <Fab onNavigate={navigate} />
     </div>
   );
 }

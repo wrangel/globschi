@@ -6,7 +6,7 @@ import styles from "../styles/PanoramaViewer.module.css";
 
 const PanoramaViewer = ({ imageUrl, thumbnailUrl, onClose }) => {
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [setError] = useState(null);
 
   // Function to detect if the browser is Safari
   const isSafari = () => {

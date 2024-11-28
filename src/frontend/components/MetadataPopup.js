@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import styles from "../styles/MetadataPopup.module.css";
 
 const MetadataPopup = ({ metadata, latitude, longitude, onClose }) => {
-  const [zoomLevel, setZoomLevel] = useState(13); // Initial zoom level
+  const zoomLevel = useState(13); // Initial zoom level
   const [isBelowThreshold, setIsBelowThreshold] = useState(false);
 
   useEffect(() => {
@@ -18,10 +18,6 @@ const MetadataPopup = ({ metadata, latitude, longitude, onClose }) => {
 
   const googleMapsUrl = `https://www.google.com/maps/embed/v1/place?key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}&q=${latitude},${longitude}&zoom=${zoomLevel}&maptype=satellite`;
   const googleMapsLink = `https://www.google.com/maps?q=${latitude},${longitude}&zoom=${zoomLevel}&maptype=satellite`;
-
-  const zoomOutTwoSteps = () => {
-    setZoomLevel((prevZoom) => Math.max(prevZoom - 2, 0)); // Decrease zoom level by 2
-  };
 
   return (
     <div className={styles.metadataPopup}>

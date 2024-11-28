@@ -1,5 +1,3 @@
-// src/frontend/hooks/useItems.js
-
 import { useState, useEffect, useCallback } from "react";
 
 let cachedItems = null;
@@ -11,27 +9,35 @@ export const useItems = () => {
 
   const fetchData = useCallback(async () => {
     if (cachedItems) {
-      return; // Use cached data if available
+      setItems(cachedItems);
+      return;
     }
     try {
       setIsLoading(true);
-      // Use environment variable for API URL or fallback to localhost for development
-      const apiUrl = process.env.REACT_APP_API_URL;
+      setError(null); // Reset error state before fetching
 
-      // Adjusting the fetch URL based on the environment variable
-      const response = await fetch(
-        `${apiUrl}${apiUrl.endsWith("/") ? "" : "/"}combined-data`
-      );
+      const apiUrl = process.env.REACT_APP_API_URL || "http://localhost:8081"; // Fallback URL
+      const url = `${apiUrl}${apiUrl.endsWith("/") ? "" : "/"}combined-data`;
+
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+
+      const response = await fetch(url, { signal: controller.signal });
+      clearTimeout(timeoutId);
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       const data = await response.json();
       setItems(data);
-      cachedItems = data; // Cache the fetched data
+      cachedItems = data;
     } catch (e) {
       console.error("Error fetching data:", e);
-      setError("Failed to load items. Please try again later.");
+      setError(
+        e.name === "AbortError"
+          ? "Request timed out. Please try again."
+          : "Failed to load items. Please try again later."
+      );
     } finally {
       setIsLoading(false);
     }
@@ -41,5 +47,12 @@ export const useItems = () => {
     fetchData();
   }, [fetchData]);
 
-  return { items, isLoading, error, refetch: fetchData };
+  const clearCache = useCallback(() => {
+    cachedItems = null;
+    setItems([]);
+    setIsLoading(true);
+    fetchData();
+  }, [fetchData]);
+
+  return { items, isLoading, error, refetch: fetchData, clearCache };
 };

@@ -1,5 +1,3 @@
-/* src/frontend/styles/Map.module.css */
-
 .leafletContainer {
   z-index: 800; /* Ensure this is lower than the hamburger menu’s z-index */
 }
@@ -33,8 +31,9 @@
   ); /* Optional: Add a shadow for depth */
 }
 
+/* You may want to adjust or remove the dark theme effect on tiles */
 .custom-map .leaflet-tile {
-  filter: brightness(0.6); /* Darken the tiles for a dark theme effect */
+  /* filter: brightness(0.6); */ /* Darken the tiles for a dark theme effect - may not be needed for satellite view */
 }
 
 .leaflet-popup-content-wrapper {

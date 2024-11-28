@@ -46,7 +46,7 @@ docker pull "$BACKEND_IMAGE:$latest_backend_tag"
 docker pull "$FRONTEND_IMAGE:$latest_frontend_tag"
 
 # Define the path to the dotenv key
-DOTENV_FILE="/volume1/secrets/dotenv.txt"
+DOTENV_FILE="/volume1/docker/dotenv.txt"
 
 # Read DOTENV_KEY from the secrets file
 DOTENV_KEY=$(cat "$DOTENV_FILE")

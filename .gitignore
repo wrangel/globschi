@@ -26,3 +26,4 @@ error.log
 TODO.txt
 manual.txt
 logs/
+scripts/prod-deploy.sh

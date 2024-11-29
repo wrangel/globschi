@@ -23,7 +23,6 @@ error.log
 .env.vault
 !.env.vault
 
-TODO.txt
-manual.txt
+Material/
 logs/
 scripts/prod-deploy.sh

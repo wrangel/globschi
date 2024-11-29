@@ -20,5 +20,5 @@ src/backend/tests/
 !.env.project
 !.env.vault
 
-TODO.txt
-manual.txt
+Material/
+logs/

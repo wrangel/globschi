@@ -1,66 +1,86 @@
+/* src/frontend/styles/About.module.css */
+
 .aboutContainer {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: 100vh; /* Full viewport height is fine */
-  width: 100vw; /* Full viewport width is fine */
+  min-height: 100vh;
+  width: 100%;
   text-align: center;
-  padding: var(--spacing-large); /* Use CSS variables for responsive padding */
-  box-sizing: border-box; /* Ensure padding doesn't affect the overall width/height */
+  padding: var(--spacing-large);
+  box-sizing: border-box;
+  background-color: var(--background-color);
+  color: var(--text-color);
 }
 
 h1,
-h2 {
-  margin: 0; /* Remove default margin */
+h2,
+p {
+  margin: 0;
+  font-family: var(--font-family);
+}
+
+h1 {
+  font-size: var(--font-size-large);
+  margin-bottom: var(--spacing-medium);
 }
 
 h2 {
-  margin-top: var(--spacing-medium); /* Reduce space above the h2 heading */
-  margin-bottom: var(
-    --spacing-small
-  ); /* Add smaller space below the h2 heading */
+  font-size: var(--font-size-medium);
+  margin-bottom: var(--spacing-small);
 }
 
 p {
-  margin-top: var(--spacing-small); /* Add smaller space above the paragraph */
-  margin-bottom: var(--spacing-large); /* Add space below the paragraph */
+  font-size: var(--font-size-small);
+  margin-bottom: var(--spacing-large);
+  max-width: 600px;
 }
 
 a {
-  color: var(--primary-color); /* Link color */
-  text-decoration: none; /* Remove underline from links */
+  color: var(--primary-color);
+  text-decoration: none;
+  transition: color var(--transition-duration);
 }
 
-a:hover {
-  text-decoration: underline; /* Underline on hover */
+a:hover,
+a:focus {
+  color: var(--primary-color-dark);
+  text-decoration: underline;
 }
 
-/* Media Queries for Responsive Design */
 @media (max-width: 768px) {
   .aboutContainer {
-    padding: var(--spacing-medium); /* Adjust padding for smaller screens */
+    padding: var(--spacing-medium);
   }
 
   h1 {
-    font-size: var(
-      --font-size-medium
-    ); /* Smaller font size on smaller screens */
+    font-size: var(--font-size-medium);
   }
 
   h2 {
-    font-size: var(
-      --font-size-small
-    ); /* Smaller font size on smaller screens */
+    font-size: var(--font-size-small);
+  }
+
+  p {
+    font-size: calc(var(--font-size-small) - 0.25rem);
   }
 }
 
 @media (max-width: 480px) {
+  .aboutContainer {
+    padding: var(--spacing-small);
+  }
+
   h1 {
-    font-size: var(--font-size-small); /* Consistent font size variable */
+    font-size: var(--font-size-small);
   }
 
   h2 {
-    font-size: calc(var(--font-size-small) - 0.25rem); /* Slightly smaller */
+    font-size: calc(var(--font-size-small) - 0.25rem);
+  }
+
+  p {
+    font-size: calc(var(--font-size-small) - 0.5rem);
   }
 }

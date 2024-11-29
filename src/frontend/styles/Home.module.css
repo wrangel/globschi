@@ -1,11 +1,9 @@
 /* src/frontend/styles/Home.module.css */
 
-/* src/frontend/styles/Home.module.css */
-
 .homePage {
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: center; /* Center children vertically */
   min-height: 100vh;
   width: 100%;
   flex-direction: column;
@@ -25,16 +23,17 @@
 
 .imageWrapper {
   display: flex;
-  justify-content: center;
-  align-items: center;
+  justify-content: center; /* Center image horizontally */
+  align-items: center; /* Center image vertically */
 }
 
 .image {
   width: auto;
   height: auto;
-  max-width: 80vw;
-  max-height: 40vh;
-  object-fit: contain;
+  max-width: 95vw; /* Keep the larger size */
+  max-height: 60vh; /* Keep the larger size */
+  object-fit: contain; /* Maintain aspect ratio */
+  border-radius: 8px; /* Adjust this value for more or less rounding */
 }
 
 .homePage h1 {
@@ -54,8 +53,6 @@
 .break {
   display: block; /* This will force a line break in h1 if used */
 }
-
-/* Media queries remain unchanged... */
 
 @media (orientation: landscape) and (min-width: 48em) {
   .homePage {

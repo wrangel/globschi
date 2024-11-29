@@ -3,8 +3,7 @@
   --text-color: white;
   --gutter-size: 20px;
   --transition-duration: 0.3s;
-  --font-family: "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell",
-    "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+  --font-family: "Helvetica Neue";
 
   --primary-color: #4da6ff;
   --primary-color-dark: #3b8cc2;

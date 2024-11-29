@@ -2,16 +2,15 @@
 
 .metadataPopup {
   position: absolute;
-  top: calc(var(--spacing-large) * 2 - var(--adjustment-height));
-  left: 50%;
-  transform: translateX(-50%);
+  top: var(--spacing-medium); /* Margin from the top */
+  left: var(--spacing-medium); /* Margin from the left */
   background-color: var(--popup-bg-color, #000);
   color: var(--popup-text-color, #fff);
   padding: var(--popup-padding);
   border-radius: var(--popup-border-radius);
   z-index: 1500;
   max-width: var(--max-width-popup);
-  width: 100%;
+  width: auto; /* Adjusted to fit content */
   box-sizing: border-box;
   font-family: var(--font-family);
   font-size: inherit;
@@ -61,8 +60,8 @@
 
 @media (min-width: 320px) {
   .metadataPopup {
-    left: var(--spacing-small);
-    transform: none;
+    top: var(--spacing-small); /* Adjusted for smaller screens */
+    left: var(--spacing-small); /* Adjusted for smaller screens */
     width: calc(100% - var(--spacing-small) * 2);
     margin: 0;
   }

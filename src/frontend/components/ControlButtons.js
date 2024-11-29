@@ -22,9 +22,7 @@ const ControlButtons = ({
         onNext();
       }
     };
-
     document.addEventListener("keydown", handleKeyDown);
-
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
     };
@@ -38,7 +36,7 @@ const ControlButtons = ({
   });
 
   return (
-    <div {...handlers}>
+    <div className={styles.buttonContainer} {...handlers}>
       <button
         className={`${styles.popupButton} ${styles.closeButton}`}
         onClick={onClose}
@@ -46,15 +44,6 @@ const ControlButtons = ({
       >
         ×
       </button>
-      {isPano && (
-        <button
-          className={`${styles.popupButton} ${styles.toggleButton} ${styles.greyscaleIcon}`}
-          onClick={toggleMode}
-          aria-label="Toggle Mode"
-        >
-          {isNavigationMode ? "<>" : "🌍"}{" "}
-        </button>
-      )}
       <button
         className={`${styles.popupButton} ${styles.fullScreenButton}`}
         onClick={onToggleFullScreen} // Handle full-screen toggle
@@ -62,6 +51,15 @@ const ControlButtons = ({
       >
         ⛶
       </button>
+      {isPano && (
+        <button
+          className={`${styles.popupButton} ${styles.toggleButton} ${styles.greyscaleIcon}`}
+          onClick={toggleMode}
+          aria-label="Toggle Mode"
+        >
+          🌍{" "}
+        </button>
+      )}
       {onToggleMetadata && (
         <button
           className={`${styles.popupButton} ${styles.metadataButton}`}

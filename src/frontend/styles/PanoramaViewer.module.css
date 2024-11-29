@@ -51,11 +51,7 @@
 }
 
 /* Hide the default "Loading" text */
-.psv-loader-message {
-  display: none !important;
-}
-
-/* Ensure the loading text is hidden */
+.psv-loader-message,
 :global(.psv-loader-text) {
   display: none !important;
 }
@@ -69,13 +65,13 @@
   display: flex;
   justify-content: center; /* Center horizontally */
   align-items: center; /* Center vertically */
-  background-color: var(--background-color); /* Solid black background */
+  background-color: var(--background-color); /* Solid background */
   z-index: 1060; /* Ensure it's above other elements */
 }
 
 .errorMessage {
   text-align: center; /* Center text */
-  color: var(--text-color); /* Set text color to white for contrast */
+  color: var(--text-color); /* Set text color for contrast */
 }
 
 .errorMessage h1 {

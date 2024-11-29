@@ -27,26 +27,22 @@
 
 .closeButton {
   top: var(--spacing-medium);
-  right: calc(var(--spacing-medium) * 1);
+  right: calc(var(--spacing-medium) * 1); /* Close button spacing */
 }
 
 .fullScreenButton {
   top: var(--spacing-medium);
-  right: calc(
-    var(--spacing-medium) * 5
-  ); /* Adjust this to space out properly */
+  right: calc(var(--spacing-medium) * 4); /* Adjusted for closer spacing */
 }
 
 .metadataButton {
   top: var(--spacing-medium);
-  left: var(--spacing-medium);
+  left: calc(var(--spacing-medium) * 1); /* Metadata button spacing */
 }
 
 .toggleButton {
   top: var(--spacing-medium);
-  right: calc(
-    var(--spacing-medium) * 9
-  ); /* Adjust this to keep spacing consistent */
+  right: calc(var(--spacing-medium) * 7); /* Adjusted for closer spacing */
 }
 
 .greyscaleIcon {
@@ -76,7 +72,7 @@
   }
 
   .fullScreenButton {
-    right: calc(var(--spacing-small) * 4);
+    right: calc(var(--spacing-small) * 4); /* Adjusted for closer spacing */
   }
 
   .metadataButton {
@@ -84,8 +80,6 @@
   }
 
   .toggleButton {
-    right: calc(
-      var(--spacing-small) * 8
-    ); /* Adjust this to keep spacing consistent */
+    right: calc(var(--spacing-small) * 7); /* Adjusted for closer spacing */
   }
 }

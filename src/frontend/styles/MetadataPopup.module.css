@@ -1,62 +1,52 @@
+/* src/frontend/styles/Metadata.module.css */
+
 .metadataPopup {
   position: absolute;
-  top: calc(
-    var(--spacing-large) * 2 - var(--adjustment-height)
-  ); /* Push higher with variable */
+  top: calc(var(--spacing-large) * 2 - var(--adjustment-height));
   left: 50%;
-  transform: translateX(-50%); /* Center horizontally */
-  background-color: var(
-    --popup-bg-color,
-    #000
-  ); /* Background color with fallback */
-  color: var(--popup-text-color, #fff); /* Text color with fallback */
-  padding: var(--popup-padding); /* Padding */
-  border-radius: var(--popup-border-radius); /* Border radius */
-  z-index: 1500; /* Above other elements */
-  max-width: var(--max-width-popup); /* Maximum width with variable */
-  width: 100%; /* Full width */
-  box-sizing: border-box; /* Include padding in width calculation */
-  font-family: var(--font-family); /* Ensure consistent font family */
+  transform: translateX(-50%);
+  background-color: var(--popup-bg-color, #000);
+  color: var(--popup-text-color, #fff);
+  padding: var(--popup-padding);
+  border-radius: var(--popup-border-radius);
+  z-index: 1500;
+  max-width: var(--max-width-popup);
+  width: 100%;
+  box-sizing: border-box;
 }
 
-/* Center text inside the popup */
 .content {
-  text-align: center; /* Center text */
+  text-align: center;
 }
 
-/* Centering and styling the close button */
 .closeButton {
-  display: block; /* Full width */
-  margin: 0 auto; /* Center horizontally */
+  display: block;
+  margin: 0 auto;
   background: transparent;
   border: none;
-  color: var(--close-button-color, grey); /* Fallback color */
-  font-size: var(--close-button-font-size); /* Font size */
+  color: var(--close-button-color, grey);
+  font-size: var(--close-button-font-size);
   cursor: pointer;
 }
 
 .maplink {
-  display: block; /* Block element */
-  margin-top: var(--spacing-small); /* Spacing */
-  color: var(--linkColor); /* Use bright color for better legibility */
+  display: block;
+  margin-top: var(--spacing-small);
+  color: var(--linkColor);
   text-decoration: none;
-  font-family: inherit; /* Inherit font from parent */
 }
 
-/* Styles for the map iframe */
 .mapIframe {
-  width: 100%; /* Full width */
-  height: auto; /* Auto height */
-  max-height: var(--max-width-popup); /* Maximum height with variable */
+  width: 100%;
+  height: auto;
+  max-height: var(--max-width-popup);
 }
 
-/* Media query for larger screens */
 @media (min-width: 320px) {
   .metadataPopup {
-    left: var(--spacing-small); /* Align to the left margin */
-    transform: none; /* Remove center shift */
-    width: calc(100% - var(--spacing-small) * 2); /* Full width minus margins */
-    margin-left: 0; /* No auto margins */
-    margin-right: 0; /* No auto margins */
+    left: var(--spacing-small);
+    transform: none;
+    width: calc(100% - var(--spacing-small) * 2);
+    margin: 0;
   }
 }

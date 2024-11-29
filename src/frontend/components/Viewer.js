@@ -1,6 +1,6 @@
 // src/frontend/components/Viewer.js
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import ControlButtons from "./ControlButtons";
 import ImagePopup from "./ImagePopup";
 import MetadataPopup from "./MetadataPopup";
@@ -19,6 +19,7 @@ const Viewer = ({
 }) => {
   const [showMetadata, setShowMetadata] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const viewerRef = useRef(null); // Reference for the viewer element
 
   // Handle keyboard navigation
   useKeyboardNavigation(onClose, onPrevious, onNext);
@@ -36,23 +37,31 @@ const Viewer = ({
     const handleEscKey = (event) => {
       if (event.key === "Escape") {
         if (showMetadata) {
-          // Close metadata popup if it's open
           setShowMetadata(false);
         } else {
-          // Close the main viewer if metadata is not open
           onClose();
         }
       }
     };
 
-    // Add event listener for keydown
     document.addEventListener("keydown", handleEscKey);
-
-    // Cleanup event listener on unmount
     return () => {
       document.removeEventListener("keydown", handleEscKey);
     };
-  }, [showMetadata, onClose]); // Dependency array includes showMetadata and onClose
+  }, [showMetadata, onClose]);
+
+  // Full-screen toggle function
+  const toggleFullScreen = () => {
+    if (!document.fullscreenElement) {
+      viewerRef.current.requestFullscreen().catch((err) => {
+        console.error(
+          `Error attempting to enable full-screen mode: ${err.message} (${err.name})`
+        );
+      });
+    } else {
+      document.exitFullscreen();
+    }
+  };
 
   const renderContent = () => {
     if (item.viewer === "pano") {
@@ -78,7 +87,7 @@ const Viewer = ({
   const isPano = item.viewer === "pano";
 
   return (
-    <div className={styles.viewer}>
+    <div className={styles.viewer} ref={viewerRef}>
       {isLoading && <LoadingOverlay thumbnailUrl={item.thumbnailUrl} />}
       {renderContent()}
       <ControlButtons
@@ -86,9 +95,10 @@ const Viewer = ({
         onNext={onNext}
         onPrevious={onPrevious}
         onToggleMetadata={toggleMetadata}
-        isNavigationMode={isNavigationMode} // Pass the navigation mode state
-        toggleMode={toggleMode} // Pass the toggle function
-        isPano={isPano} // Pass the isPano state
+        isNavigationMode={isNavigationMode}
+        toggleMode={toggleMode}
+        isPano={isPano}
+        onToggleFullScreen={toggleFullScreen} // Pass down the full-screen toggle function
       />
       {showMetadata && (
         <MetadataPopup

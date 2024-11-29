@@ -2,13 +2,45 @@
 
 .gridPage {
   text-align: center;
-  padding: var(--gutter-size); /* Use CSS variable for padding */
+  padding: var(--spacing-large);
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
 .headerWrapper {
   display: flex;
-  flex-direction: column; /* Stack children vertically */
+  flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: 10vh; /* Use viewport height for responsive header size */
+  min-height: 10vh;
+  padding: var(--spacing-medium) 0;
+}
+
+.headerWrapper h1 {
+  font-size: var(--font-size-large);
+  margin-bottom: var(--spacing-small);
+}
+
+.headerWrapper p {
+  font-size: var(--font-size-medium);
+  color: var(--text-color);
+  max-width: 600px;
+}
+
+@media (max-width: 768px) {
+  .gridPage {
+    padding: var(--spacing-medium);
+  }
+
+  .headerWrapper {
+    min-height: 15vh;
+  }
+
+  .headerWrapper h1 {
+    font-size: var(--font-size-medium);
+  }
+
+  .headerWrapper p {
+    font-size: var(--font-size-small);
+  }
 }

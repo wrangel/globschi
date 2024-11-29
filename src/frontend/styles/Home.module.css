@@ -1,5 +1,7 @@
 /* src/frontend/styles/Home.module.css */
 
+/* src/frontend/styles/Home.module.css */
+
 .homePage {
   display: flex;
   justify-content: center;
@@ -12,16 +14,19 @@
   box-sizing: border-box;
 }
 
-.textWrapper,
+.textWrapper {
+  display: flex;
+  flex-direction: column; /* Stack children vertically */
+  justify-content: center;
+  align-items: center;
+  max-width: 100%;
+  text-align: center; /* Center text */
+}
+
 .imageWrapper {
   display: flex;
   justify-content: center;
   align-items: center;
-  max-width: 100%;
-}
-
-.textWrapper {
-  text-align: center;
 }
 
 .image {
@@ -40,9 +45,17 @@
   line-height: 1.2;
 }
 
-.break {
-  display: block;
+.homePage h2 {
+  margin-top: var(--spacing-small); /* Add some space above h2 if needed */
+  color: var(--text-color); /* Match text color */
+  font-size: var(--font-size-medium); /* Adjust font size as needed */
 }
+
+.break {
+  display: block; /* This will force a line break in h1 if used */
+}
+
+/* Media queries remain unchanged... */
 
 @media (orientation: landscape) and (min-width: 48em) {
   .homePage {

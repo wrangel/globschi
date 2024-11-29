@@ -1,6 +1,6 @@
-# Marvels From Above
+# Abstract Altitudes
 
-Welcome to the **Marvels From Above**! This website is designed to display stunning aerial photography and videography captured during my drone flights. Explore the beauty of landscapes, cityscapes, and unique perspectives that only drone photography can provide.
+Welcome to the **Abstract Altitudes**! This website is designed to display stunning aerial photography and videography captured during my drone flights. Explore the beauty of landscapes, cityscapes, and unique perspectives that only drone photography can provide.
 
 ## Table of Contents
 
@@ -109,4 +109,4 @@ I would like to express my gratitude to **Perplexity.ai**, which has been instru
 
 ---
 
-Thank you for visiting my Marvels From Above!
+Thank you for visiting my Abstract Altitudes!

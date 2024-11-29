@@ -1,7 +1,7 @@
 /* src/styles/LoadingOverlay.module.css */
 
 .loadingOverlay {
-  position: absolute;
+  position: fixed; /* Changed to fixed for full viewport coverage */
   top: 0;
   left: 0;
   width: 100%;
@@ -10,6 +10,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 1050; /* Ensure it appears above other content */
 }
 
 .thumbnail {
@@ -28,12 +29,34 @@
   animation: spin 1s linear infinite;
 }
 
+/* Optional Accessibility Improvement */
+.spinner::after {
+  content: "Loading..."; /* Screen reader text for accessibility */
+  position: absolute;
+  left: -9999px; /* Visually hide but keep accessible */
+}
+
 @keyframes spin {
-  0% {
+  from {
     transform: rotate(0deg);
   }
 
-  100% {
+  to {
     transform: rotate(360deg);
+  }
+}
+
+/* Media Queries for Responsiveness */
+@media (max-width: 768px) {
+  .thumbnail {
+    max-width: 90%; /* Allow more space on smaller screens */
+    max-height: 90%;
+  }
+
+  .spinner {
+    width: calc(
+      var(--spinner-size) * 0.8
+    ); /* Slightly smaller spinner on mobile */
+    height: calc(var(--spinner-size) * 0.8);
   }
 }

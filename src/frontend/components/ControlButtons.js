@@ -12,6 +12,7 @@ const ControlButtons = ({
   isNavigationMode,
   toggleMode,
   isPano,
+  onToggleFullScreen, // New prop for handling full-screen toggle
 }) => {
   useEffect(() => {
     const handleKeyDown = (event) => {
@@ -50,9 +51,15 @@ const ControlButtons = ({
           aria-label="Toggle Mode"
         >
           {isNavigationMode ? "<>" : "🌍"}{" "}
-          {/* Apply greyscale filter to globe */}
         </button>
       )}
+      <button
+        className={`${styles.popupButton} ${styles.fullScreenButton}`}
+        onClick={onToggleFullScreen} // Handle full-screen toggle
+        aria-label="Full Screen"
+      >
+        ⛶
+      </button>
       {onToggleMetadata && (
         <button
           className={`${styles.popupButton} ${styles.metadataButton}`}

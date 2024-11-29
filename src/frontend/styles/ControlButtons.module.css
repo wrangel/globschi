@@ -27,7 +27,7 @@
 
 .closeButton {
   top: var(--spacing-medium);
-  right: var(--spacing-medium);
+  right: calc(var(--spacing-medium) * 1);
 }
 
 .fullScreenButton {
@@ -44,7 +44,9 @@
 
 .toggleButton {
   top: var(--spacing-medium);
-  right: calc(var(--spacing-medium) * 8); /* Adjust this if necessary */
+  right: calc(
+    var(--spacing-medium) * 9
+  ); /* Adjust this to keep spacing consistent */
 }
 
 .greyscaleIcon {
@@ -82,6 +84,8 @@
   }
 
   .toggleButton {
-    right: calc(var(--spacing-small) * 6); /* Adjust this if necessary */
+    right: calc(
+      var(--spacing-small) * 8
+    ); /* Adjust this to keep spacing consistent */
   }
 }

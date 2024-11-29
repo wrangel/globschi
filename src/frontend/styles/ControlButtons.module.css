@@ -3,68 +3,73 @@
 .popupButton {
   position: absolute;
   background-color: transparent;
-  color: rgba(255, 255, 255, 0.9); /* Same color for all buttons */
+  color: var(--text-color);
   border: none;
   cursor: pointer;
-  font-size: 1.5rem; /* Use rem for scalable font size */
-  z-index: 1100; /* Ensure buttons are above other elements */
-  transition: color var(--transition-duration) ease; /* Smooth color transition */
+  font-size: var(--font-size-medium);
+  font-family: var(--font-family);
+  z-index: 1100;
+  transition: color var(--transition-duration) ease,
+    opacity var(--transition-duration) ease;
+  opacity: 0.9;
+  padding: var(--spacing-small);
 }
 
-.popupButton:hover {
-  color: rgba(255, 255, 255, 1); /* Full color on hover */
+.popupButton:hover,
+.popupButton:focus {
+  opacity: 1;
+  outline: none;
+}
+
+.popupButton:focus-visible {
+  box-shadow: 0 0 0 2px var(--primary-color);
 }
 
 .closeButton {
-  top: var(--spacing-medium); /* Use rem for consistent spacing */
-  right: var(--spacing-medium); /* Consistent spacing */
+  top: var(--spacing-medium);
+  right: var(--spacing-medium);
 }
 
 .metadataButton {
-  top: var(--spacing-medium); /* Consistent spacing */
-  left: var(--spacing-medium); /* Consistent spacing */
+  top: var(--spacing-medium);
+  left: var(--spacing-medium);
 }
 
 .toggleButton {
-  top: var(--spacing-medium); /* Consistent spacing */
-  right: calc(
-    var(--spacing-medium) * 3
-  ); /* Adjusted for better placement next to close button */
+  top: var(--spacing-medium);
+  right: calc(var(--spacing-medium) * 3);
 }
 
 .greyscaleIcon {
   filter: grayscale(100%);
-  transition: filter var(--transition-duration) ease; /* Smooth transition */
+  transition: filter var(--transition-duration) ease;
 }
 
-.greyscaleIcon:hover {
-  filter: none; /* Removes greyscale on hover */
+.greyscaleIcon:hover,
+.greyscaleIcon:focus {
+  filter: none;
 }
 
-/* Media Queries for Responsive Design */
 @media (max-width: 768px) {
   .popupButton {
-    font-size: 1.25rem; /* Adjust font size for smaller screens */
+    font-size: var(--font-size-small);
+  }
+
+  .closeButton,
+  .metadataButton,
+  .toggleButton {
+    top: var(--spacing-small);
   }
 
   .closeButton {
-    top: var(--spacing-small);
-    right: var(
-      --spacing-small
-    ); /* Keep the close button in the top-right corner */
+    right: var(--spacing-small);
   }
 
   .metadataButton {
-    top: var(--spacing-small);
-    left: var(
-      --spacing-small
-    ); /* Keep the metadata button in the top-left corner */
+    left: var(--spacing-small);
   }
 
   .toggleButton {
-    top: var(--spacing-small);
-    right: calc(
-      var(--spacing-small) * 3
-    ); /* Keep the toggle button next to the close button */
+    right: calc(var(--spacing-small) * 3);
   }
 }

@@ -5,8 +5,6 @@ import { useEffect, useCallback } from "react";
 const useKeyboardNavigation = (onClose, onPrevious, onNext) => {
   const handleKeyDown = useCallback(
     (event) => {
-      console.log("Key pressed:", event.key);
-      console.log("onClose type:", typeof onClose);
       if (event.key === "Escape" && typeof onClose === "function") {
         onClose();
       } else if (

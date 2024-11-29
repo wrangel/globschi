@@ -15,13 +15,11 @@ const ViewerPopup = ({ item, isOpen, onClose, onNext, onPrevious }) => {
   const handlers = useSwipeable({
     onSwipedLeft: () => {
       if (isNavigationMode) {
-        console.log("Swiped left");
         onNext();
       }
     },
     onSwipedRight: () => {
       if (isNavigationMode) {
-        console.log("Swiped right");
         onPrevious();
       }
     },

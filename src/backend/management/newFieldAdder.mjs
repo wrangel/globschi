@@ -21,14 +21,6 @@ import { executeMongoQuery } from "../helpers/mongoHelpers.mjs";
  * @function updateIslandsWithDroneField
  * @throws {Error} If there's an issue connecting to the database or performing the update.
  * @returns {Promise<void>}
- *
- * @example
- * try {
- *   await updateIslandsWithDroneField();
- *   console.log("Update completed successfully");
- * } catch (error) {
- *   console.error("Error updating islands:", error);
- * }
  */
 async function updateIslandsWithDroneField() {
   try {

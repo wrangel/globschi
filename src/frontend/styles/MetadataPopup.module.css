@@ -14,6 +14,7 @@
   width: 100%;
   box-sizing: border-box;
   font-family: var(--font-family);
+  font-size: inherit;
 }
 
 .content {
@@ -41,7 +42,7 @@
   margin-top: var(--spacing-small);
   color: var(--linkColor);
   text-decoration: none;
-  font-family: inherit;
+  font-family: var(--font-family);
   font-size: inherit;
   transition: color var(--transition-duration);
 }

@@ -1,26 +1,58 @@
 /* src/frontend/styles/ErrorBoundary.module.css */
 
 .errorBoundary {
-  text-align: center; /* Center the text */
-  padding: var(--spacing-medium); /* Use variable for padding */
-  border: 0.0625rem solid var(--error-border-color); /* Red border for error indication */
-  background-color: var(--error-bg-color); /* Light red background */
-  color: var(--error-text-color); /* Red text color */
+  text-align: center;
+  padding: var(--spacing-large);
+  border: 0.0625rem solid var(--error-border-color);
+  background-color: var(--error-bg-color);
+  color: var(--error-text-color);
+  font-family: var(--font-family);
+  max-width: 600px;
+  margin: var(--spacing-large) auto;
+  border-radius: var(--popup-border-radius);
 }
 
 .errorBoundary h1 {
-  margin-bottom: var(--spacing-small); /* Space below the heading */
+  margin-bottom: var(--spacing-medium);
+  font-size: var(--font-size-large);
+}
+
+.errorBoundary p {
+  margin-bottom: var(--spacing-medium);
+  font-size: var(--font-size-small);
 }
 
 .errorBoundary button {
-  background-color: var(--primary-color); /* Button color */
-  color: white; /* Button text color */
+  background-color: var(--primary-color);
+  color: white;
   border: none;
-  padding: var(--spacing-small) var(--spacing-medium); /* Use variables for padding */
+  padding: var(--spacing-small) var(--spacing-medium);
   cursor: pointer;
-  transition: background-color var(--transition-duration); /* Smooth background transition */
+  transition: background-color var(--transition-duration),
+    transform var(--transition-duration);
+  font-size: var(--font-size-small);
+  font-family: inherit;
+  border-radius: 4px;
 }
 
-.errorBoundary button:hover {
-  background-color: var(--primary-color-dark); /* Darker blue on hover */
+.errorBoundary button:hover,
+.errorBoundary button:focus {
+  background-color: var(--primary-color-dark);
+  transform: translateY(-2px);
+}
+
+.errorBoundary button:focus-visible {
+  outline: 2px solid var(--primary-color);
+  outline-offset: 2px;
+}
+
+@media (max-width: 768px) {
+  .errorBoundary {
+    padding: var(--spacing-medium);
+    margin: var(--spacing-medium);
+  }
+
+  .errorBoundary h1 {
+    font-size: var(--font-size-medium);
+  }
 }

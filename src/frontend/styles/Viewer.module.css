@@ -4,6 +4,7 @@
   position: relative;
   width: 100%;
   height: 100%;
+  overflow: hidden; /* Prevent overflow for better layout control */
 }
 
 .metadataPopup {
@@ -18,4 +19,26 @@
   border-radius: var(
     --popup-border-radius
   ); /* Use variable for border radius */
+  box-shadow: var(--box-shadow); /* Optional: Add shadow for depth */
+  transition: opacity var(--transition-duration) ease; /* Smooth transition for visibility changes */
+}
+
+/* Optional: Focus styles for accessibility */
+.metadataPopup:focus {
+  outline: none; /* Remove default outline */
+  box-shadow: 0 0 0 2px var(--primary-color); /* Custom focus outline */
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .metadataPopup {
+    left: var(--spacing-small); /* Adjust left spacing on smaller screens */
+    bottom: var(--spacing-small); /* Adjust bottom spacing on smaller screens */
+    padding: var(
+      --popup-padding-small
+    ); /* Use a smaller padding variable if available */
+    font-size: var(
+      --font-size-small
+    ); /* Adjust font size for smaller screens */
+  }
 }

@@ -1,7 +1,7 @@
 /* src/frontend/styles/ControlButton.module.css */
 
 .popupButton {
-  position: relative; /* Changed to relative for better alignment */
+  position: relative;
   background-color: transparent;
   color: var(--text-color);
   border: none;
@@ -10,7 +10,8 @@
   font-family: var(--font-family);
   z-index: 1100;
   transition: color var(--transition-duration) ease,
-    opacity var(--transition-duration) ease;
+    opacity var(--transition-duration) ease,
+    background-color var(--transition-duration) ease; /* Added background-color transition */
   opacity: 0.9;
   padding: var(--spacing-small);
 }
@@ -19,6 +20,7 @@
 .popupButton:focus {
   opacity: 1;
   outline: none;
+  background-color: var(--fab-color);
 }
 
 .popupButton:focus-visible {
@@ -30,8 +32,8 @@
   top: var(--spacing-medium);
   right: var(--spacing-medium);
   display: flex;
-  flex-direction: column; /* Stack buttons vertically */
-  gap: calc(var(--spacing-small) / 2); /* Adjust spacing between buttons */
+  flex-direction: column;
+  gap: calc(var(--spacing-small) / 2);
 }
 
 .greyscaleIcon {
@@ -52,8 +54,6 @@
   .buttonContainer {
     top: var(--spacing-small);
     right: var(--spacing-small);
-    gap: calc(
-      var(--spacing-small) / 2
-    ); /* Adjust spacing for smaller screens */
+    gap: calc(var(--spacing-small) / 2);
   }
 }

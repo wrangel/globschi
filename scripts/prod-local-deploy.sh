@@ -1,3 +1,5 @@
+open -a Docker
+
 (
   export DOTENV_KEY=$(pnpx dotenv-vault keys production)
   docker compose down --rmi all && docker system prune -af

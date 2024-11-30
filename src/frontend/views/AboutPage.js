@@ -21,7 +21,7 @@ const About = () => {
         >
           beat maker
         </a>{" "}
-        &amp; dance
+        &amp; Anna
       </p>
 
       <h2>Our Drones</h2>

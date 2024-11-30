@@ -35,9 +35,6 @@ case "$1" in
     upload-media)
         upload_media
         ;;
-    add-field)
-        add_field
-        ;;
     debug-mongo)
         debug_mongo
         ;;
@@ -45,7 +42,7 @@ case "$1" in
         test_aws
         ;;
     *)
-        echo "Usage: pnpm run manage {keep-books|collect-metadata|upload-media|add-field|debug-mongo|test-aws}"
+        echo "Usage: pnpm run manage {keep-books|collect-metadata|upload-media|debug-mongo|test-aws}"
         exit 1
         ;;
 esac

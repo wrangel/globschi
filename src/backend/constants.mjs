@@ -9,7 +9,7 @@
 export const ACTUAL_ID = "actual";
 
 /** List of contributors */
-export const CONTRIBUTORS = Object.freeze(["wrangel", "beat_maker", "dance"]);
+export const CONTRIBUTORS = Object.freeze(["wrangel", "beat_maker", "Anna"]);
 
 /** List of drones */
 export const DRONES = Object.freeze(["DJI Mini 4 Pro", "DJI Mini 2"]); // NOTE: Newest must be first in array

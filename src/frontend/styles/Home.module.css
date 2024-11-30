@@ -30,8 +30,8 @@
 .image {
   width: auto;
   height: auto;
-  max-width: 95vw; /* Keep the larger size */
-  max-height: 60vh; /* Keep the larger size */
+  max-width: 105vw; /* Keep the larger size */
+  max-height: 105vh; /* Keep the larger size */
   object-fit: contain; /* Maintain aspect ratio */
   border-radius: 8px; /* Adjust this value for more or less rounding */
 }

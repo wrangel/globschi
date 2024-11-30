@@ -12,12 +12,6 @@ upload_media() {
     node ./src/backend/management/mediaUploader.mjs
 }
 
-# Function to add a new field in MongoDB
-add_field() {
-    echo "Adding new field in MongoDB..."
-    node ./src/backend/management/newFieldAdder.mjs
-}
-
 # Function to debug MongoDB
 debug_mongo() {
     echo "Debugging MongoDB..."

@@ -16,12 +16,10 @@ const HomePage = () => {
     <div className={styles.homePage}>
       <div className={styles.textWrapper}>
         <h1>
-          Abstract <span className={styles.break}>Altitudes</span>
-        </h1>
-        <h2 className={styles.subheading}>
           From lofty heights,
-          <br /> we muse on marvels.
-        </h2>
+          <br />
+          <span className={styles.break}>we muse on marvels</span>
+        </h1>
       </div>
       <div className={styles.imageWrapper}>
         <img

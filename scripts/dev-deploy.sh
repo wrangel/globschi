@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# Run locally!
+
 # Removing conflicting local containers
 docker compose down --rmi all && docker system prune -af
 

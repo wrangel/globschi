@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# Run locally!
+
 # Function to keep books
 keep_books() {
     echo "Keeping books..."

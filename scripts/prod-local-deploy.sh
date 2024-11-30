@@ -1,3 +1,7 @@
+#!/bin/bash
+
+# Run locally!
+
 open -a Docker
 
 (

@@ -2,6 +2,8 @@
 
 # Run locally!
 
+open -a Docker
+
 # Clean up 
 docker compose down --rmi all && docker system prune -af
 
@@ -23,3 +25,5 @@ echo "All images pushed successfully."
 
 # Clean up 
 docker compose down --rmi all && docker system prune -af
+
+killall docker

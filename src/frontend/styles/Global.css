@@ -38,8 +38,8 @@
   --popup-text-color: white;
   --popup-padding: 10px;
   --popup-border-radius: 5px;
-  --close-button-color: grey;
-  --close-button-font-size: 16px;
+  --close-button-color: #ffffff; /* Change to white or your desired color */
+  --close-button-font-size: 16px; /* Adjust font size as needed */
   --link-color: #00f;
 
   --panorama-bg-color: black;

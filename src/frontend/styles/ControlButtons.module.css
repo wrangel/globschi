@@ -46,6 +46,15 @@
   filter: none;
 }
 
+.closeButton {
+  color: var(
+    --close-button-color
+  ); /* Ensure the color is taken from the global variable */
+  font-size: var(
+    --close-button-font-size
+  ); /* Ensure font size is taken from the global variable */
+}
+
 @media (max-width: 768px) {
   .popupButton {
     font-size: var(--font-size-small);

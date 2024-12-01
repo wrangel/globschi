@@ -4,7 +4,7 @@ import styles from "../styles/About.module.css";
 const About = () => {
   return (
     <div className={styles.aboutContainer}>
-      <h2>That's Us!</h2>
+      <h2>That's us!</h2>
       <p>
         <a
           target="_blank"
@@ -23,8 +23,11 @@ const About = () => {
         </a>{" "}
         &amp; Anna
       </p>
+      <p className={styles.contact}>
+        <a href="mailto:contact@abstractaltitudes.com">Contact</a>
+      </p>
 
-      <h2>Our Drones</h2>
+      <h2>Our drones</h2>
       <p>
         <a
           target="_blank"
@@ -44,7 +47,7 @@ const About = () => {
         {" (Dronef)"}
       </p>
 
-      <h2>Image Processing</h2>
+      <h2>Image processing</h2>
       <p>
         <a target="_blank" rel="noopener noreferrer" href="https://ptgui.com">
           PTGui Pro
@@ -59,7 +62,7 @@ const About = () => {
         </a>
       </p>
 
-      <h2>Shouting Out To</h2>
+      <h2>Shouting out to</h2>
       <p>
         <a
           target="_blank"

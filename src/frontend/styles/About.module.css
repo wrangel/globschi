@@ -31,6 +31,11 @@ h2 {
   margin-bottom: var(--spacing-small);
 }
 
+.contact {
+  margin-top: calc(-0.5 * var(--spacing-large));
+  margin-bottom: var(--spacing-large);
+}
+
 p {
   font-size: var(--font-size-small);
   margin-bottom: var(--spacing-large);

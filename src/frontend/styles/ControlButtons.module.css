@@ -2,7 +2,7 @@
 
 .popupButton {
   position: relative;
-  background-color: transparent;
+  background-color: transparent; /* This ensures no default background */
   color: var(--text-color);
   border: none;
   cursor: pointer;
@@ -11,7 +11,7 @@
   z-index: 1100;
   transition: color var(--transition-duration) ease,
     opacity var(--transition-duration) ease,
-    background-color var(--transition-duration) ease; /* Added background-color transition */
+    background-color var(--transition-duration) ease;
   opacity: 0.9;
   padding: var(--spacing-small);
 }
@@ -20,7 +20,7 @@
 .popupButton:focus {
   opacity: 1;
   outline: none;
-  background-color: var(--fab-color);
+  background-color: var(--fab-color); /* Grey background only on hover/focus */
 }
 
 .popupButton:focus-visible {

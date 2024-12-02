@@ -1,8 +1,6 @@
-// src/frontend/components/ControlButtons.js
-
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useSwipeable } from "react-swipeable";
-import styles from "../styles/ControlButtons.module.css";
+import styles from "../styles/Fab.module.css"; // Use Fab styles for consistency
 
 const ControlButtons = ({
   onClose,
@@ -12,8 +10,10 @@ const ControlButtons = ({
   isNavigationMode,
   toggleMode,
   isPano,
-  onToggleFullScreen, // New prop for handling full-screen toggle
+  onToggleFullScreen,
 }) => {
+  const [isOpen, setIsOpen] = useState(false);
+
   useEffect(() => {
     const handleKeyDown = (event) => {
       if (event.key === "ArrowLeft" && isNavigationMode) {
@@ -35,38 +35,56 @@ const ControlButtons = ({
     trackMouse: true,
   });
 
+  const toggleMenu = () => {
+    setIsOpen((prev) => !prev);
+  };
+
   return (
-    <div className={styles.buttonContainer} {...handlers}>
-      <button
-        className={`${styles.popupButton} ${styles.closeButton}`}
-        onClick={onClose}
-        aria-label="Close"
-      >
-        ×
-      </button>
-      <button
-        className={`${styles.popupButton} ${styles.fullScreenButton}`}
-        onClick={onToggleFullScreen} // Handle full-screen toggle
-        aria-label="Full Screen"
-      >
-        ⛶
-      </button>
-      {isPano && (
+    <div
+      className={styles.fabContainer}
+      style={{ zIndex: 1100 }} // Ensure correct z-index for ControlButtons
+      {...handlers}
+    >
+      {isOpen ? (
+        <div className={styles.fabMenu}>
+          <button
+            className={styles.fab}
+            onClick={onToggleFullScreen}
+            aria-label="Full Screen"
+          >
+            ⛶ {/* Fullscreen icon */}
+          </button>
+          <button
+            className={styles.fab}
+            onClick={onToggleMetadata}
+            aria-label="Toggle Metadata"
+          >
+            i {/* Info icon */}
+          </button>
+          {isPano && (
+            <button
+              className={styles.fab}
+              onClick={toggleMode}
+              aria-label="Toggle Mode"
+            >
+              🌍 {/* Globe icon */}
+            </button>
+          )}
+          <button
+            className={`${styles.fab} ${styles.mainFab}`}
+            onClick={toggleMenu}
+            aria-label="Close"
+          >
+            × {/* Close icon */}
+          </button>
+        </div>
+      ) : (
         <button
-          className={`${styles.popupButton} ${styles.toggleButton} ${styles.greyscaleIcon}`}
-          onClick={toggleMode}
-          aria-label="Toggle Mode"
+          className={`${styles.fab} ${styles.mainFab}`}
+          onClick={toggleMenu}
+          aria-label="Navigation"
         >
-          🌍{" "}
-        </button>
-      )}
-      {onToggleMetadata && (
-        <button
-          className={`${styles.popupButton} ${styles.metadataButton}`}
-          onClick={onToggleMetadata}
-          aria-label="Toggle Metadata"
-        >
-          i
+          Nav
         </button>
       )}
     </div>

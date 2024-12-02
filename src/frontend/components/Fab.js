@@ -9,7 +9,7 @@ const Fab = ({ onNavigate }) => {
   };
 
   return (
-    <div className={styles.fabContainer}>
+    <div className={styles.fabContainer} style={{ zIndex: 950 }}>
       {isOpen ? (
         <div className={styles.fabMenu}>
           <button
@@ -43,14 +43,11 @@ const Fab = ({ onNavigate }) => {
             Grid
           </button>
           <button
-            className={styles.fab}
-            onClick={() => {
-              onNavigate("/");
-              setIsOpen(false);
-            }}
-            aria-label="Go to Home"
+            className={`${styles.fab} ${styles.mainFab}`}
+            onClick={toggleFab}
+            aria-label="Close"
           >
-            Home
+            ×
           </button>
         </div>
       ) : (

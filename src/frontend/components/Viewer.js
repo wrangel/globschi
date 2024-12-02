@@ -1,5 +1,3 @@
-// src/frontend/components/Viewer.js
-
 import React, { useState, useEffect, useRef } from "react";
 import ControlButtons from "./ControlButtons";
 import ImagePopup from "./ImagePopup";
@@ -19,7 +17,7 @@ const Viewer = ({
 }) => {
   const [showMetadata, setShowMetadata] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const viewerRef = useRef(null); // Reference for the viewer element
+  const viewerRef = useRef(null);
 
   // Handle keyboard navigation
   useKeyboardNavigation(onClose, onPrevious, onNext);
@@ -98,7 +96,7 @@ const Viewer = ({
         isNavigationMode={isNavigationMode}
         toggleMode={toggleMode}
         isPano={isPano}
-        onToggleFullScreen={toggleFullScreen} // Pass down the full-screen toggle function
+        onToggleFullScreen={toggleFullScreen}
       />
       {showMetadata && (
         <MetadataPopup

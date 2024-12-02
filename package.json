@@ -3,12 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.701.0",
-    "@aws-sdk/lib-storage": "^3.701.0",
-    "@aws-sdk/s3-request-presigner": "^3.701.0",
+    "@aws-sdk/client-s3": "^3.703.0",
+    "@aws-sdk/lib-storage": "^3.703.0",
+    "@aws-sdk/s3-request-presigner": "^3.703.0",
     "@photo-sphere-viewer/core": "^5.11.1",
     "@react-google-maps/api": "^2.20.3",
-    "@sentry/react": "^8.41.0",
+    "@sentry/react": "^8.42.0",
     "@sentry/tracing": "^7.114.0",
     "cors": "^2.8.5",
     "depcheck": "^1.4.7",
@@ -69,12 +69,12 @@
     }
   },
   "devDependencies": {
-    "@eslint/js": "^9.15.0",
+    "@eslint/js": "^9.16.0",
     "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.0.1",
     "eslint": "^8.57.1",
     "eslint-plugin-react": "^7.37.2",
-    "globals": "^15.12.0"
+    "globals": "^15.13.0"
   }
 }

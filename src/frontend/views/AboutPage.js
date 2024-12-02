@@ -87,6 +87,14 @@ const About = () => {
         >
           Marius Hosting
         </a>
+        ,{" "}
+        <a
+          target="_blank"
+          rel="noopener noreferrer"
+          href="https://www.microsoft.com"
+        >
+          Microsoft Copilot
+        </a>
       </p>
     </div>
   );

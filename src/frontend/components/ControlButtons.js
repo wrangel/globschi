@@ -72,7 +72,7 @@ const ControlButtons = ({
           )}
           <button
             className={`${styles.fab} ${styles.mainFab}`}
-            onClick={toggleMenu}
+            onClick={onClose} // Ensure it closes the viewer
             aria-label="Close"
           >
             × {/* Close icon */}

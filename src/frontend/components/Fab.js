@@ -44,10 +44,13 @@ const Fab = ({ onNavigate }) => {
           </button>
           <button
             className={`${styles.fab} ${styles.mainFab}`}
-            onClick={toggleFab}
-            aria-label="Close"
+            onClick={() => {
+              onNavigate("/");
+              setIsOpen(false);
+            }}
+            aria-label="Go to Home"
           >
-            ×
+            Home
           </button>
         </div>
       ) : (

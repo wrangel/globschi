@@ -53,11 +53,13 @@ const ControlButtons = ({
 
   return (
     <div
-      className={styles.fabContainer}
+      className={`${styles.fabContainer} ${
+        isFullscreen ? styles.fullscreen : ""
+      }`}
       style={{ zIndex: 1100 }} // Ensure correct z-index for ControlButtons
       {...handlers}
     >
-      {!isFullscreen && (
+      {!isFullscreen ? (
         <>
           {isOpen ? (
             <div className={styles.fabMenu}>
@@ -102,6 +104,14 @@ const ControlButtons = ({
             </button>
           )}
         </>
+      ) : (
+        <button
+          className={`${styles.fab} ${styles.mainFab} ${styles.fullscreenButton}`}
+          onClick={onClose} // Ensure it closes the viewer
+          aria-label="Close"
+        >
+          × {/* Close icon */}
+        </button>
       )}
     </div>
   );

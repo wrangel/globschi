@@ -59,3 +59,13 @@
 .controlButtonsContainer {
   z-index: 1100; /* Ensure this is high enough for ControlButtons */
 }
+
+/* Add new styles for fullscreen mode */
+.fullscreen .fabMenu {
+  display: none;
+}
+
+.fullscreenButton {
+  background-color: transparent; /* Remove the grey bubble background */
+  box-shadow: none; /* Remove the box shadow */
+}

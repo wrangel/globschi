@@ -13,6 +13,18 @@ const ControlButtons = ({
   onToggleFullScreen,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [isFullscreen, setIsFullscreen] = useState(false);
+
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      setIsFullscreen(!!document.fullscreenElement);
+    };
+
+    document.addEventListener("fullscreenchange", handleFullscreenChange);
+    return () => {
+      document.removeEventListener("fullscreenchange", handleFullscreenChange);
+    };
+  }, []);
 
   useEffect(() => {
     const handleKeyDown = (event) => {
@@ -45,47 +57,51 @@ const ControlButtons = ({
       style={{ zIndex: 1100 }} // Ensure correct z-index for ControlButtons
       {...handlers}
     >
-      {isOpen ? (
-        <div className={styles.fabMenu}>
-          <button
-            className={styles.fab}
-            onClick={onToggleFullScreen}
-            aria-label="Full Screen"
-          >
-            ⛶ {/* Fullscreen icon */}
-          </button>
-          <button
-            className={styles.fab}
-            onClick={onToggleMetadata}
-            aria-label="Toggle Metadata"
-          >
-            i {/* Info icon */}
-          </button>
-          {isPano && (
+      {!isFullscreen && (
+        <>
+          {isOpen ? (
+            <div className={styles.fabMenu}>
+              <button
+                className={styles.fab}
+                onClick={onToggleFullScreen}
+                aria-label="Full Screen"
+              >
+                ⛶ {/* Fullscreen icon */}
+              </button>
+              <button
+                className={styles.fab}
+                onClick={onToggleMetadata}
+                aria-label="Toggle Metadata"
+              >
+                i {/* Info icon */}
+              </button>
+              {isPano && (
+                <button
+                  className={styles.fab}
+                  onClick={toggleMode}
+                  aria-label="Toggle Mode"
+                >
+                  🌍 {/* Globe icon */}
+                </button>
+              )}
+              <button
+                className={`${styles.fab} ${styles.mainFab}`}
+                onClick={onClose} // Ensure it closes the viewer
+                aria-label="Close"
+              >
+                × {/* Close icon */}
+              </button>
+            </div>
+          ) : (
             <button
-              className={styles.fab}
-              onClick={toggleMode}
-              aria-label="Toggle Mode"
+              className={`${styles.fab} ${styles.mainFab}`}
+              onClick={toggleMenu}
+              aria-label="Navigation"
             >
-              🌍 {/* Globe icon */}
+              Nav
             </button>
           )}
-          <button
-            className={`${styles.fab} ${styles.mainFab}`}
-            onClick={onClose} // Ensure it closes the viewer
-            aria-label="Close"
-          >
-            × {/* Close icon */}
-          </button>
-        </div>
-      ) : (
-        <button
-          className={`${styles.fab} ${styles.mainFab}`}
-          onClick={toggleMenu}
-          aria-label="Navigation"
-        >
-          Nav
-        </button>
+        </>
       )}
     </div>
   );

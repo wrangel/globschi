@@ -67,7 +67,7 @@
 
 .fullscreenButton {
   background-color: transparent; /* Remove the bubble background */
-  color: rgba(100, 100, 100, 0.7); /* Grey color for the X */
+  color: rgba(185, 185, 185, 0.7); /* Grey color for the X */
   box-shadow: none; /* Remove the box shadow */
   font-size: 24px; /* Increase font size for better visibility */
 }

@@ -13,6 +13,19 @@ const ImagePopup = ({ actualUrl, thumbnailUrl, name }) => {
     img.onload = () => setIsLoading(false);
   }, [actualUrl]);
 
+  useEffect(() => {
+    if (!isLoading) {
+      document.body.classList.add("hide-scrollbar");
+    } else {
+      document.body.classList.remove("hide-scrollbar");
+    }
+
+    // Cleanup when the component is unmounted
+    return () => {
+      document.body.classList.remove("hide-scrollbar");
+    };
+  }, [isLoading]);
+
   return (
     <div className={`${styles.imagePopup} ${!isLoading ? styles.loaded : ""}`}>
       {isLoading && <LoadingOverlay thumbnailUrl={thumbnailUrl} />}

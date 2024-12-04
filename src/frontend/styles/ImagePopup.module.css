@@ -11,10 +11,18 @@
   align-items: center;
   z-index: 1050; /* Ensure this is lower than the MetadataPopup */
   background-color: transparent; /* Start with transparent background */
+  overflow: hidden; /* Hide any overflow content */
 }
 
+/* Hide scrollbar when popup is loaded */
 .imagePopup.loaded {
   background-color: black; /* Switch to solid black when loaded */
+  overflow: hidden; /* Ensure no overflow when loaded */
+}
+
+/* Utility class to hide body scrollbar */
+.hide-scrollbar {
+  overflow: hidden;
 }
 
 .image {

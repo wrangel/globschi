@@ -31,11 +31,6 @@
   ); /* Optional: Add a shadow for depth */
 }
 
-/* You may want to adjust or remove the dark theme effect on tiles */
-.custom-map .leaflet-tile {
-  /* filter: brightness(0.6); */ /* Darken the tiles for a dark theme effect - may not be needed for satellite view */
-}
-
 .leaflet-popup-content-wrapper {
   background-color: var(--popup-bg-color); /* Dark background for popups */
   color: var(--popup-text-color); /* Light text for popups */

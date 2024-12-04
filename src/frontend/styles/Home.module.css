@@ -45,9 +45,9 @@
 }
 
 .homePage h2 {
-  margin-top: var(--spacing-small); /* Add some space above h2 if needed */
-  color: var(--text-color); /* Match text color */
-  font-size: var(--font-size-medium); /* Adjust font size as needed */
+  margin-top: var(--spacing-small);
+  color: var(--text-color);
+  font-size: var(--font-size-medium);
 }
 
 .break {

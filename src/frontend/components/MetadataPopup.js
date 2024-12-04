@@ -10,7 +10,7 @@ const MetadataPopup = ({ metadata, latitude, longitude, onClose }) => {
 
   useEffect(() => {
     const handleResize = () => {
-      setIsBelowThreshold(window.innerHeight < 500); // Adjust threshold as needed
+      setIsBelowThreshold(window.innerHeight < 500);
     };
 
     handleResize();

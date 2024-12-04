@@ -10,16 +10,12 @@
 
 .metadataPopup {
   position: absolute;
-  bottom: var(--spacing-medium); /* Use variable for spacing */
-  left: var(--spacing-medium); /* Use variable for spacing */
-  background-color: var(
-    --popup-bg-color
-  ); /* Use variable for background color */
-  color: var(--popup-text-color); /* Use variable for text color */
-  padding: var(--popup-padding); /* Use variable for padding */
-  border-radius: var(
-    --popup-border-radius
-  ); /* Use variable for border radius */
+  bottom: var(--spacing-medium);
+  left: var(--spacing-medium);
+  background-color: var(--popup-bg-color);
+  color: var(--popup-text-color);
+  padding: var(--popup-padding);
+  border-radius: var(--popup-border-radius);
   box-shadow: var(--box-shadow); /* Optional: Add shadow for depth */
   transition: opacity var(--transition-duration) ease; /* Smooth transition for visibility changes */
   z-index: 1500; /* Ensure this is higher than the ImagePopup */

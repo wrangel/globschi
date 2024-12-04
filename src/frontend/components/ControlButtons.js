@@ -1,3 +1,5 @@
+// src/components/Controlbuttons.js
+
 import React, { useState, useEffect } from "react";
 import { useSwipeable } from "react-swipeable";
 import styles from "../styles/Fab.module.css"; // Use Fab styles for consistency
@@ -56,7 +58,7 @@ const ControlButtons = ({
       className={`${styles.fabContainer} ${
         isFullscreen ? styles.fullscreen : ""
       }`}
-      style={{ zIndex: 1100 }} // Ensure correct z-index for ControlButtons
+      style={{ zIndex: 1100 }}
       {...handlers}
     >
       {!isFullscreen ? (

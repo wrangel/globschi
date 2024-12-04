@@ -1,3 +1,5 @@
+// src/components/Viewer.js
+
 import React, { useState, useEffect, useRef } from "react";
 import ControlButtons from "./ControlButtons";
 import ImagePopup from "./ImagePopup";

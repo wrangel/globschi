@@ -8,7 +8,7 @@
   color: var(--popup-text-color, #fff);
   padding: var(--popup-padding);
   border-radius: var(--popup-border-radius);
-  z-index: 1500;
+  z-index: 1600; /* Ensure this is higher than the ImagePopup */
   max-width: var(--max-width-popup);
   width: auto; /* Adjusted to fit content */
   box-sizing: border-box;

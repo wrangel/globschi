@@ -5,6 +5,7 @@
   width: 100%;
   height: 100%;
   overflow: hidden; /* Prevent overflow for better layout control */
+  z-index: 1000; /* Ensure the viewer is behind the popups */
 }
 
 .metadataPopup {
@@ -21,6 +22,7 @@
   ); /* Use variable for border radius */
   box-shadow: var(--box-shadow); /* Optional: Add shadow for depth */
   transition: opacity var(--transition-duration) ease; /* Smooth transition for visibility changes */
+  z-index: 1500; /* Ensure this is higher than the ImagePopup */
 }
 
 /* Optional: Focus styles for accessibility */

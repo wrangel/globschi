@@ -106,7 +106,7 @@ const ControlButtons = ({
         </>
       ) : (
         <button
-          className={`${styles.fab} ${styles.mainFab} ${styles.fullscreenButton}`}
+          className={`${styles.fab} ${styles.fullscreenButton}`}
           onClick={onClose} // Ensure it closes the viewer
           aria-label="Close"
         >

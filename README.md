@@ -71,7 +71,7 @@ To get started with this project, follow these steps:
    ```bash
    pnpm run dev -u # Run locally after updating the project
    pnpm run dev # Run locally
-   pnpm run prod-local # Run containerized app locally
+   pnpm run test # Run containerized app locally
    pnpm run prod # Deploy images to Docker Hub
    ```
 

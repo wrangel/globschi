@@ -14,7 +14,7 @@ const ImagePopup = ({ actualUrl, thumbnailUrl, name }) => {
   }, [actualUrl]);
 
   return (
-    <div className={styles.imagePopup}>
+    <div className={`${styles.imagePopup} ${!isLoading ? styles.loaded : ""}`}>
       {isLoading && <LoadingOverlay thumbnailUrl={thumbnailUrl} />}
       <img
         src={actualUrl}

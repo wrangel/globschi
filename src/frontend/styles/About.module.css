@@ -1,12 +1,10 @@
-/* src/frontend/styles/About.module.css */
-
 .aboutContainer {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  width: 100%;
+  width: 100%; /* Adjust width to fit content */
   text-align: center;
   padding: var(--spacing-large);
   box-sizing: border-box;
@@ -29,11 +27,6 @@ h1 {
 h2 {
   font-size: var(--font-size-medium);
   margin-bottom: var(--spacing-small);
-}
-
-.contact {
-  margin-top: calc(-0.5 * var(--spacing-large));
-  margin-bottom: var(--spacing-large);
 }
 
 p {

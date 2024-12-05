@@ -4,7 +4,9 @@ import styles from "../styles/About.module.css";
 const About = () => {
   return (
     <div className={styles.aboutContainer}>
-      <h2>That's us!</h2>
+      <h2>
+        That's <a href="mailto:contact@abstractaltitudes.com">us</a>!
+      </h2>
       <p>
         <a
           target="_blank"
@@ -22,9 +24,6 @@ const About = () => {
           beat maker
         </a>{" "}
         &amp; Anna
-      </p>
-      <p className={styles.contact}>
-        <a href="mailto:contact@abstractaltitudes.com">Contact</a>
       </p>
 
       <h2>Our drones</h2>

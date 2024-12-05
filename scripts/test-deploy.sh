@@ -2,7 +2,7 @@
 
 # Run locally!
 
-open -a Docker
+open --background -a Docker
 
 (
   export DOTENV_KEY=$(pnpx dotenv-vault keys production)

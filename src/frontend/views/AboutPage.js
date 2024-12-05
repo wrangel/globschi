@@ -15,15 +15,16 @@ const About = () => {
         >
           wrangel
         </a>
-        ,{" "}
+        <br />
         <a
           target="_blank"
           rel="noopener noreferrer"
           href="https://www.youtube.com/@beatmaker3462"
         >
           beat maker
-        </a>{" "}
-        &amp; Anna
+        </a>
+        <br />
+        Anna
       </p>
 
       <h2>Our drones</h2>
@@ -35,7 +36,8 @@ const About = () => {
         >
           DJI Mini 4 Pro
         </a>
-        {" (Globschi), "}
+        {" (Globschi)"}
+        <br />
         <a
           target="_blank"
           rel="noopener noreferrer"
@@ -51,7 +53,7 @@ const About = () => {
         <a target="_blank" rel="noopener noreferrer" href="https://ptgui.com">
           PTGui Pro
         </a>
-        ,{" "}
+        <br />
         <a
           target="_blank"
           rel="noopener noreferrer"
@@ -70,7 +72,7 @@ const About = () => {
         >
           Perplexity AI
         </a>
-        ,{" "}
+        <br />
         <a
           target="_blank"
           rel="noopener noreferrer"
@@ -78,7 +80,7 @@ const About = () => {
         >
           Photo Sphere Viewer
         </a>
-        ,{" "}
+        <br />
         <a
           target="_blank"
           rel="noopener noreferrer"
@@ -86,7 +88,7 @@ const About = () => {
         >
           Marius Hosting
         </a>
-        ,{" "}
+        <br />
         <a
           target="_blank"
           rel="noopener noreferrer"

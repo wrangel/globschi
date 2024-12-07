@@ -179,6 +179,8 @@ async function uploadStreamToS3(bucketName, key, body) {
       Bucket: bucketName,
       Key: key,
       Body: stream,
+      StorageClass: "INTELLIGENT_TIERING", // Add this line to use S3 Intelligent-Tiering
+      ServerSideEncryption: "AES256", // Add this line for server-side encryption
     },
     queueSize: 4,
     partSize: 5 * 1024 * 1024,

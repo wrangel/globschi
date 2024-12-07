@@ -1,7 +1,7 @@
 // src/backend/helpers/awsHelpers.mjs
 
 import { S3Client } from "@aws-sdk/client-s3";
-import { ListObjectsCommand } from "@aws-sdk/client-s3";
+import { ListObjectsV2Command } from "@aws-sdk/client-s3";
 import logger from "../helpers/logger.mjs";
 import { getId } from "./helpers.mjs";
 import { loadEnv } from "../loadEnv.mjs";
@@ -31,7 +31,8 @@ function createS3Client() {
       secretAccessKey: process.env.SECRET_ACCESS_KEY,
     },
     region: process.env.BUCKET_REGION,
-    maxAttempts: 3, // Optional: Add custom retry strategy
+    maxAttempts: 3,
+    useAccelerateEndpoint: true, // Add this line to enable S3 Transfer Acceleration
   });
 }
 
@@ -46,31 +47,51 @@ export { s3Client };
  * @returns {Promise<Array>} - The bucket contents or an empty array if none found.
  * @throws {Error} If there's an issue listing the bucket contents.
  */
-export async function listS3BucketContents(bucketName, adapt = false) {
+export async function listS3BucketContents(
+  bucketName,
+  adapt = false,
+  maxKeys = 1000
+) {
   if (typeof adapt !== "boolean") {
     throw new TypeError("adapt parameter must be a boolean");
   }
 
-  try {
-    const command = new ListObjectsCommand({ Bucket: bucketName });
-    const response = await s3Client.send(command);
+  let allContents = [];
+  let continuationToken = undefined;
 
-    if (!response?.Contents?.length) {
-      logger.warn(`No contents found in bucket: ${bucketName}`);
-      return [];
+  do {
+    try {
+      const command = new ListObjectsV2Command({
+        Bucket: bucketName,
+        MaxKeys: maxKeys,
+        ContinuationToken: continuationToken,
+      });
+      const response = await s3Client.send(command);
+
+      if (response.Contents && response.Contents.length > 0) {
+        allContents = allContents.concat(
+          adapt
+            ? response.Contents.map((file) => ({
+                key: getId(file.Key),
+                path: file.Key,
+              }))
+            : response.Contents
+        );
+      }
+
+      continuationToken = response.NextContinuationToken;
+    } catch (error) {
+      logger.error(
+        `Error listing contents of bucket ${bucketName}: ${error.message}`,
+        { error }
+      );
+      throw error;
     }
+  } while (continuationToken);
 
-    return adapt
-      ? response.Contents.map((file) => ({
-          key: getId(file.Key),
-          path: file.Key,
-        }))
-      : response.Contents; // Return raw response if not adapting
-  } catch (error) {
-    logger.error(
-      `Error listing contents of bucket ${bucketName}: ${error.message}`,
-      { error }
-    );
-    throw error;
+  if (allContents.length === 0) {
+    logger.warn(`No contents found in bucket: ${bucketName}`);
   }
+
+  return allContents;
 }

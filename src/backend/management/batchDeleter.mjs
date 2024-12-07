@@ -1,10 +1,11 @@
-import fs from "fs";
+import fs from "fs/promises";
 import path from "path";
 import readline from "readline";
-import { deleteS3Objects } from "../helpers/awsHelpers.mjs";
+import { deleteS3Objects, downloadS3Object } from "../helpers/awsHelpers.mjs";
 
 const MATERIAL_FOLDER = path.join(process.cwd(), "Material");
 const DELETE_LIST_FILE = path.join(MATERIAL_FOLDER, "deleteObjects.txt");
+const DOWNLOAD_DIRECTORY = process.env.DOWNLOAD_DIRECTORY;
 
 // Function to read and parse the delete list
 async function readDeleteList() {
@@ -56,11 +57,45 @@ async function confirmDeletion() {
   });
 }
 
+// Function to check if file exists
+async function fileExists(filePath) {
+  try {
+    await fs.access(filePath);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+// Function to download images
+async function downloadImages(objectsToDelete) {
+  for (const { Key } of objectsToDelete) {
+    const localPath = path.join(DOWNLOAD_DIRECTORY, Key);
+
+    // Check if the file already exists
+    const exists = await fileExists(localPath);
+    if (!exists) {
+      console.log(`Downloading ${Key}...`);
+      await downloadS3Object(process.env.ORIGINALS_BUCKET, Key, localPath);
+    } else {
+      console.log(`${Key} already downloaded.`);
+    }
+  }
+}
+
 // Main function to execute the deletion process
 async function main() {
+  if (!DOWNLOAD_DIRECTORY) {
+    console.error("DOWNLOAD_DIRECTORY environment variable is not set.");
+    return;
+  }
+
   try {
     const objectsToDelete = await readDeleteList();
     console.log(`Found ${objectsToDelete.length} objects to delete.`);
+
+    // Download images before deletion
+    await downloadImages(objectsToDelete);
 
     const confirmed = await confirmDeletion();
     if (!confirmed) {

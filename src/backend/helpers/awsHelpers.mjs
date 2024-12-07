@@ -170,7 +170,7 @@ export async function processS3Objects(bucketName, objectsList) {
   const downloadPromises = objectsList.map((item) => {
     // Since object names already include the correct suffix, we can use them directly
     const key = `${item.root_folder}/${item.object}`; // No need to append fileType here
-    const localPath = path.join(process.cwd(), item.object); // Local path also uses the object name directly
+    const localPath = path.join(process.env.DOWNLOAD_DIRECTORY, item.object); // Local path also uses the object name directly
     return downloadS3Object(bucketName, key, localPath);
   });
 

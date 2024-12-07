@@ -4,7 +4,9 @@ import {
   S3Client,
   ListObjectsV2Command,
   DeleteObjectsCommand,
+  GetObjectCommand,
 } from "@aws-sdk/client-s3";
+
 import fs from "fs/promises";
 import path from "path";
 import logger from "../helpers/logger.mjs";
@@ -37,7 +39,6 @@ function createS3Client() {
     },
     region: process.env.BUCKET_REGION,
     maxAttempts: 3,
-    //useAccelerateEndpoint: true, // Add this line to enable S3 Transfer Acceleration
   });
 }
 
@@ -136,14 +137,25 @@ export async function deleteS3Objects(bucketName, objects) {
       Bucket: bucketName,
       Delete: { Objects: objects },
     });
+
     const result = await s3Client.send(command);
+
     logger.info(`Deleted ${result.Deleted.length} objects from ${bucketName}`);
+
+    // Log any errors for objects that were not found
+    if (result.Errors && result.Errors.length > 0) {
+      result.Errors.forEach((error) => {
+        logger.warn(`Failed to delete object ${error.Key}: ${error.Message}`);
+      });
+    }
+
     return result;
   } catch (error) {
     logger.error(
       `Error deleting objects from bucket ${bucketName}: ${error.message}`,
       { error }
     );
+
     throw error;
   }
 }
@@ -156,15 +168,17 @@ export async function deleteS3Objects(bucketName, objects) {
  */
 export async function processS3Objects(bucketName, objectsList) {
   const downloadPromises = objectsList.map((item) => {
-    const key = `${item.root_folder}/${item.object}`;
-    const localPath = path.join(process.cwd(), item.object);
+    // Since object names already include the correct suffix, we can use them directly
+    const key = `${item.root_folder}/${item.object}`; // No need to append fileType here
+    const localPath = path.join(process.cwd(), item.object); // Local path also uses the object name directly
     return downloadS3Object(bucketName, key, localPath);
   });
 
-  await Promise.all(downloadPromises);
+  await Promise.all(downloadPromises); // Wait for all downloads to complete
 
   const deleteObjects = objectsList.map((item) => ({
-    Key: `${item.root_folder}/${item.object}`,
+    Key: `${item.root_folder}/${item.object}`, // No need to append fileType here for deletion
   }));
+
   await deleteS3Objects(bucketName, deleteObjects);
 }

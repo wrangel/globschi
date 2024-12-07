@@ -14,6 +14,12 @@ upload_media() {
     node ./src/backend/management/mediaUploader.mjs
 }
 
+# Function to run batch delete
+batch_delete() {
+    echo "Running batch delete..."
+    node ./src/backend/management/batchDeleterRunner.mjs
+}
+
 # Function to debug MongoDB
 debug_mongo() {
     echo "Debugging MongoDB..."
@@ -43,8 +49,11 @@ case "$1" in
     test-aws)
         test_aws
         ;;
+    batch-delete)
+        batch_delete
+        ;;
     *)
-        echo "Usage: pnpm run manage {keep-books|collect-metadata|upload-media|debug-mongo|test-aws}"
+        echo "Usage: pnpm run manage {keep-books|collect-metadata|upload-media|debug-mongo|test-aws|batch-delete}"
         exit 1
         ;;
 esac

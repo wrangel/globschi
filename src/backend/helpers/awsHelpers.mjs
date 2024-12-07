@@ -1,7 +1,12 @@
 // src/backend/helpers/awsHelpers.mjs
 
-import { S3Client } from "@aws-sdk/client-s3";
-import { ListObjectsV2Command } from "@aws-sdk/client-s3";
+import {
+  S3Client,
+  ListObjectsV2Command,
+  DeleteObjectsCommand,
+} from "@aws-sdk/client-s3";
+import fs from "fs/promises";
+import path from "path";
 import logger from "../helpers/logger.mjs";
 import { getId } from "./helpers.mjs";
 import { loadEnv } from "../loadEnv.mjs";
@@ -32,7 +37,7 @@ function createS3Client() {
     },
     region: process.env.BUCKET_REGION,
     maxAttempts: 3,
-    useAccelerateEndpoint: true, // Add this line to enable S3 Transfer Acceleration
+    //useAccelerateEndpoint: true, // Add this line to enable S3 Transfer Acceleration
   });
 }
 
@@ -94,4 +99,72 @@ export async function listS3BucketContents(
   }
 
   return allContents;
+}
+
+/**
+ * Downloads an object from S3 bucket.
+ * @param {string} bucketName - The name of the S3 bucket.
+ * @param {string} key - The key of the object in S3.
+ * @param {string} localPath - The local path to save the downloaded file.
+ * @returns {Promise<void>}
+ */
+export async function downloadS3Object(bucketName, key, localPath) {
+  try {
+    const command = new GetObjectCommand({ Bucket: bucketName, Key: key });
+    const response = await s3Client.send(command);
+
+    await fs.writeFile(localPath, response.Body);
+    logger.info(`Downloaded ${key} to ${localPath}`);
+  } catch (error) {
+    logger.error(
+      `Error downloading object ${key} from bucket ${bucketName}: ${error.message}`,
+      { error }
+    );
+    throw error;
+  }
+}
+
+/**
+ * Deletes multiple objects from S3 bucket.
+ * @param {string} bucketName - The name of the S3 bucket.
+ * @param {Array<{Key: string}>} objects - Array of objects to delete.
+ * @returns {Promise<Object>} - Deletion result.
+ */
+export async function deleteS3Objects(bucketName, objects) {
+  try {
+    const command = new DeleteObjectsCommand({
+      Bucket: bucketName,
+      Delete: { Objects: objects },
+    });
+    const result = await s3Client.send(command);
+    logger.info(`Deleted ${result.Deleted.length} objects from ${bucketName}`);
+    return result;
+  } catch (error) {
+    logger.error(
+      `Error deleting objects from bucket ${bucketName}: ${error.message}`,
+      { error }
+    );
+    throw error;
+  }
+}
+
+/**
+ * Processes (downloads and deletes) objects from S3.
+ * @param {string} bucketName - The name of the S3 bucket.
+ * @param {Array<{root_folder: string, object: string}>} objectsList - List of objects to process.
+ * @returns {Promise<void>}
+ */
+export async function processS3Objects(bucketName, objectsList) {
+  const downloadPromises = objectsList.map((item) => {
+    const key = `${item.root_folder}/${item.object}`;
+    const localPath = path.join(process.cwd(), item.object);
+    return downloadS3Object(bucketName, key, localPath);
+  });
+
+  await Promise.all(downloadPromises);
+
+  const deleteObjects = objectsList.map((item) => ({
+    Key: `${item.root_folder}/${item.object}`,
+  }));
+  await deleteS3Objects(bucketName, deleteObjects);
 }

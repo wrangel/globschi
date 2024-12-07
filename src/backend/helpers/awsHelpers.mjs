@@ -127,11 +127,21 @@ export async function downloadS3Object(bucketName, key, localPath) {
 
 /**
  * Deletes multiple objects from S3 bucket.
- * @param {string} bucketName - The name of the S3 bucket.
  * @param {Array<{Key: string}>} objects - Array of objects to delete.
  * @returns {Promise<Object>} - Deletion result.
  */
-export async function deleteS3Objects(bucketName, objects) {
+export async function deleteS3Objects(objects) {
+  // Check if the bucket name is defined
+  const bucketName = process.env.ORIGINALS_BUCKET;
+  if (!bucketName) {
+    throw new Error("Bucket name is not defined in environment variables.");
+  }
+
+  // Input validation
+  if (!Array.isArray(objects) || objects.length === 0) {
+    throw new Error("Invalid input: objects must be a non-empty array.");
+  }
+
   try {
     const command = new DeleteObjectsCommand({
       Bucket: bucketName,
@@ -158,27 +168,4 @@ export async function deleteS3Objects(bucketName, objects) {
 
     throw error;
   }
-}
-
-/**
- * Processes (downloads and deletes) objects from S3.
- * @param {string} bucketName - The name of the S3 bucket.
- * @param {Array<{root_folder: string, object: string}>} objectsList - List of objects to process.
- * @returns {Promise<void>}
- */
-export async function processS3Objects(bucketName, objectsList) {
-  const downloadPromises = objectsList.map((item) => {
-    // Since object names already include the correct suffix, we can use them directly
-    const key = `${item.root_folder}/${item.object}`; // No need to append fileType here
-    const localPath = path.join(process.env.DOWNLOAD_DIRECTORY, item.object); // Local path also uses the object name directly
-    return downloadS3Object(bucketName, key, localPath);
-  });
-
-  await Promise.all(downloadPromises); // Wait for all downloads to complete
-
-  const deleteObjects = objectsList.map((item) => ({
-    Key: `${item.root_folder}/${item.object}`, // No need to append fileType here for deletion
-  }));
-
-  await deleteS3Objects(bucketName, deleteObjects);
 }

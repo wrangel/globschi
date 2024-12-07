@@ -49,9 +49,6 @@ async function synchronizeMedia() {
     await handleUniqueOriginals(comparisons);
 
     logger.info("Media synchronization complete.");
-    logger.info(
-      "If there are any media only in the originals bucket, please download them, delete them in the originals bucket and upload them again."
-    );
   } catch (error) {
     logger.error("Error during media synchronization:", { error });
   }

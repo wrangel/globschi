@@ -1,33 +1,79 @@
-// src/backend/batchDeleter.mjs
+import fs from "fs";
+import path from "path";
+import readline from "readline";
+import { deleteS3Objects } from "../helpers/awsHelpers.mjs";
 
-import { processS3Objects } from "../helpers/awsHelpers.mjs";
-import logger from "../helpers/logger.mjs";
+const MATERIAL_FOLDER = path.join(process.cwd(), "Material");
+const DELETE_LIST_FILE = path.join(MATERIAL_FOLDER, "deleteObjects.txt");
 
-/**
- * Manages the processing of S3 objects by coordinating downloads and deletions.
- *
- * This function initiates the process of downloading and deleting specified objects
- * from an S3 bucket. It logs the start and successful completion of the process,
- * as well as any errors that occur during execution.
- *
- * @param {string} bucketName - The name of the S3 bucket from which to manage objects.
- * @param {Array<{root_folder: string, object: string}>} objectsList - An array of objects to process,
- *        where each object contains:
- *        - `root_folder`: The folder in the S3 bucket where the object is located.
- *        - `object`: The name of the object (with file type suffix).
- *
- * @returns {Promise<void>} A promise that resolves when the processing is complete.
- *
- * @throws {Error} Throws an error if there is an issue during the processing of S3 objects,
- *         which will be logged for debugging purposes.
- */
-export async function manageS3Objects(bucketName, objectsList) {
+// Function to read and parse the delete list
+async function readDeleteList() {
+  return new Promise((resolve, reject) => {
+    fs.readFile(DELETE_LIST_FILE, "utf8", (err, data) => {
+      if (err) {
+        return reject(`Error reading file: ${err.message}`);
+      }
+      try {
+        // Remove comments and parse JSON-like structure
+        const cleanedData = data
+          .replace(/\/\/.*$/gm, "") // Remove comments
+          .replace(/[\[\]]/g, "") // Remove brackets
+          .split(",")
+          .map((line) => line.trim().replace(/^['"]|['"]$/g, "")) // Trim and remove quotes
+          .filter((line) => line); // Filter out empty lines
+
+        const invalidEntries = cleanedData.filter(
+          (item) => !item.endsWith(".tif")
+        );
+        if (invalidEntries.length > 0) {
+          return reject(`Invalid entries found: ${invalidEntries.join(", ")}`);
+        }
+
+        const objectsToDelete = cleanedData.map((key) => ({ Key: key }));
+        resolve(objectsToDelete);
+      } catch (parseError) {
+        reject(`Error parsing file: ${parseError.message}`);
+      }
+    });
+  });
+}
+
+// Function to prompt for confirmation
+async function confirmDeletion() {
+  const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout,
+  });
+
+  return new Promise((resolve) => {
+    rl.question(
+      "Are you sure you want to delete these objects? (yes/no): ",
+      (answer) => {
+        rl.close();
+        resolve(answer.toLowerCase() === "yes");
+      }
+    );
+  });
+}
+
+// Main function to execute the deletion process
+async function main() {
   try {
-    logger.info(`Starting S3 object management for bucket: ${bucketName}`);
-    await processS3Objects(bucketName, objectsList); // No need to pass fileType
-    logger.info("S3 objects processed successfully");
+    const objectsToDelete = await readDeleteList();
+    console.log(`Found ${objectsToDelete.length} objects to delete.`);
+
+    const confirmed = await confirmDeletion();
+    if (!confirmed) {
+      console.log("Deletion cancelled.");
+      return;
+    }
+
+    const result = await deleteS3Objects(objectsToDelete);
+    console.log(`Deletion result:`, result);
   } catch (error) {
-    logger.error("Error processing S3 objects:", error);
-    throw error;
+    console.error(error);
   }
 }
+
+// Execute the main function
+main();

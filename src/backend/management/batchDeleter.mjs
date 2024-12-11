@@ -4,6 +4,7 @@ import readline from "readline";
 import chardet from "chardet";
 import iconv from "iconv-lite";
 import { deleteS3Objects, downloadS3Object } from "../helpers/awsHelpers.mjs";
+import logger from "../helpers/logger.mjs";
 
 const DELETE_LIST_FILE = path.join(
   process.cwd(),
@@ -12,37 +13,42 @@ const DELETE_LIST_FILE = path.join(
 );
 const DOWNLOAD_DIRECTORY = process.env.DOWNLOAD_DIRECTORY;
 
+/**
+ * Reads and parses the delete list file.
+ * @returns {Promise<Array<{Key: string}>>} An array of objects to delete.
+ * @throws {Error} If there's an error reading or parsing the file.
+ */
 async function readDeleteList() {
   try {
     const buffer = await fs.readFile(DELETE_LIST_FILE);
     const detectedEncoding = chardet.detect(buffer);
 
-    let data;
-    if (detectedEncoding === "ISO-8859-1") {
-      data = iconv.decode(buffer, "ISO-8859-1");
-    } else {
-      data = buffer.toString(detectedEncoding);
-    }
+    let data =
+      detectedEncoding === "ISO-8859-1"
+        ? iconv.decode(buffer, "ISO-8859-1")
+        : buffer.toString(detectedEncoding);
 
-    const lines = data.split("\n");
-
-    const objectsToDelete = lines
+    const objectsToDelete = data
+      .split("\n")
       .map((line) => line.replace(/\/\/.*$/, "").trim())
-      .filter((line) => line)
+      .filter((line) => line && line.endsWith(".tif"))
       .map((line) => line.replace(/^['"]|['"]$/g, ""))
-      .filter((line) => line.endsWith(".tif"));
+      .map((key) => ({ Key: key }));
 
     if (objectsToDelete.length === 0) {
       throw new Error("No valid entries found in the file");
     }
 
-    return objectsToDelete.map((key) => ({ Key: key }));
+    return objectsToDelete;
   } catch (error) {
     throw new Error(`Error reading or parsing file: ${error.message}`);
   }
 }
 
-// Function to prompt for confirmation
+/**
+ * Prompts for user confirmation before deletion.
+ * @returns {Promise<boolean>} True if user confirms, false otherwise.
+ */
 async function confirmDeletion() {
   const rl = readline.createInterface({
     input: process.stdin,
@@ -60,7 +66,11 @@ async function confirmDeletion() {
   });
 }
 
-// Function to check if file exists
+/**
+ * Checks if a file exists at the given path.
+ * @param {string} filePath - The path to check.
+ * @returns {Promise<boolean>} True if the file exists, false otherwise.
+ */
 async function fileExists(filePath) {
   try {
     await fs.access(filePath);
@@ -70,47 +80,50 @@ async function fileExists(filePath) {
   }
 }
 
-// Function to download images
+/**
+ * Downloads images from S3 to the local directory.
+ * @param {Array<{Key: string}>} objectsToDelete - Array of objects to download.
+ */
 async function downloadImages(objectsToDelete) {
   for (const { Key } of objectsToDelete) {
     const fileName = path.basename(Key);
     const localPath = path.join(DOWNLOAD_DIRECTORY, fileName);
 
-    // Check if the file already exists
     const exists = await fileExists(localPath);
     if (!exists) {
-      console.log(`Downloading ${fileName}...`);
+      logger.info(`Downloading ${fileName}...`);
       await downloadS3Object(process.env.ORIGINALS_BUCKET, Key, localPath);
     } else {
-      console.log(`${fileName} already downloaded.`);
+      logger.info(`${fileName} already downloaded.`);
     }
   }
 }
 
-// Main function to execute the deletion process
+/**
+ * Main function to execute the deletion process.
+ */
 async function main() {
   if (!DOWNLOAD_DIRECTORY) {
-    console.error("DOWNLOAD_DIRECTORY environment variable is not set.");
+    logger.error("DOWNLOAD_DIRECTORY environment variable is not set.");
     return;
   }
 
   try {
     const objectsToDelete = await readDeleteList();
-    console.log(`Found ${objectsToDelete.length} objects to delete.`);
+    logger.info(`Found ${objectsToDelete.length} objects to delete.`);
 
-    // Download images before deletion
     await downloadImages(objectsToDelete);
 
     const confirmed = await confirmDeletion();
     if (!confirmed) {
-      console.log("Deletion cancelled.");
+      logger.info("Deletion cancelled.");
       return;
     }
 
     const result = await deleteS3Objects(objectsToDelete);
-    console.log(`Deletion result:`, result);
+    logger.info("Deletion result:", result);
   } catch (error) {
-    console.error(error);
+    logger.error("Error in main process:", error);
   }
 }
 

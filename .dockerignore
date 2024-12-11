@@ -22,4 +22,4 @@ src/backend/tests/
 
 Material/
 logs/
-backend/management/manipulateMongo.mjs
+backend/management/

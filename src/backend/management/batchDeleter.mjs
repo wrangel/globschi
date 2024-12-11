@@ -73,15 +73,16 @@ async function fileExists(filePath) {
 // Function to download images
 async function downloadImages(objectsToDelete) {
   for (const { Key } of objectsToDelete) {
-    const localPath = path.join(DOWNLOAD_DIRECTORY, Key);
+    const fileName = path.basename(Key);
+    const localPath = path.join(DOWNLOAD_DIRECTORY, fileName);
 
     // Check if the file already exists
     const exists = await fileExists(localPath);
     if (!exists) {
-      console.log(`Downloading ${Key}...`);
+      console.log(`Downloading ${fileName}...`);
       await downloadS3Object(process.env.ORIGINALS_BUCKET, Key, localPath);
     } else {
-      console.log(`${Key} already downloaded.`);
+      console.log(`${fileName} already downloaded.`);
     }
   }
 }

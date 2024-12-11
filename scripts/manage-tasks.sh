@@ -18,7 +18,7 @@ upload_media() {
 batch_delete() {
     echo "Running batch delete..."
     node ./src/backend/management/batchDeleter.mjs
-    node ./src/backend/management/bookKeeper.mjs
+    #####node ./src/backend/management/bookKeeper.mjs
 }
 
 # Function to debug MongoDB

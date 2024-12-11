@@ -1,42 +1,45 @@
 import fs from "fs/promises";
 import path from "path";
 import readline from "readline";
+import chardet from "chardet";
+import iconv from "iconv-lite";
 import { deleteS3Objects, downloadS3Object } from "../helpers/awsHelpers.mjs";
 
-const MATERIAL_FOLDER = path.join(process.cwd(), "Material");
-const DELETE_LIST_FILE = path.join(MATERIAL_FOLDER, "deleteObjects.txt");
+const DELETE_LIST_FILE = path.join(
+  process.cwd(),
+  "Material",
+  "deleteObjects.txt"
+);
 const DOWNLOAD_DIRECTORY = process.env.DOWNLOAD_DIRECTORY;
 
-// Function to read and parse the delete list
 async function readDeleteList() {
-  return new Promise((resolve, reject) => {
-    fs.readFile(DELETE_LIST_FILE, "utf8", (err, data) => {
-      if (err) {
-        return reject(`Error reading file: ${err.message}`);
-      }
-      try {
-        // Remove comments and parse JSON-like structure
-        const cleanedData = data
-          .replace(/\/\/.*$/gm, "") // Remove comments
-          .replace(/[\[\]]/g, "") // Remove brackets
-          .split(",")
-          .map((line) => line.trim().replace(/^['"]|['"]$/g, "")) // Trim and remove quotes
-          .filter((line) => line); // Filter out empty lines
+  try {
+    const buffer = await fs.readFile(DELETE_LIST_FILE);
+    const detectedEncoding = chardet.detect(buffer);
 
-        const invalidEntries = cleanedData.filter(
-          (item) => !item.endsWith(".tif")
-        );
-        if (invalidEntries.length > 0) {
-          return reject(`Invalid entries found: ${invalidEntries.join(", ")}`);
-        }
+    let data;
+    if (detectedEncoding === "ISO-8859-1") {
+      data = iconv.decode(buffer, "ISO-8859-1");
+    } else {
+      data = buffer.toString(detectedEncoding);
+    }
 
-        const objectsToDelete = cleanedData.map((key) => ({ Key: key }));
-        resolve(objectsToDelete);
-      } catch (parseError) {
-        reject(`Error parsing file: ${parseError.message}`);
-      }
-    });
-  });
+    const lines = data.split("\n");
+
+    const objectsToDelete = lines
+      .map((line) => line.replace(/\/\/.*$/, "").trim())
+      .filter((line) => line)
+      .map((line) => line.replace(/^['"]|['"]$/g, ""))
+      .filter((line) => line.endsWith(".tif"));
+
+    if (objectsToDelete.length === 0) {
+      throw new Error("No valid entries found in the file");
+    }
+
+    return objectsToDelete.map((key) => ({ Key: key }));
+  } catch (error) {
+    throw new Error(`Error reading or parsing file: ${error.message}`);
+  }
 }
 
 // Function to prompt for confirmation

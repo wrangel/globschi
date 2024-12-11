@@ -23,17 +23,33 @@ async function readDeleteList() {
     const buffer = await fs.readFile(DELETE_LIST_FILE);
     const detectedEncoding = chardet.detect(buffer);
 
+    logger.info(`Detected file encoding: ${detectedEncoding}`);
+
     let data =
       detectedEncoding === "ISO-8859-1"
         ? iconv.decode(buffer, "ISO-8859-1")
         : buffer.toString(detectedEncoding);
 
-    const objectsToDelete = data
-      .split("\n")
-      .map((line) => line.replace(/\/\/.*$/, "").trim())
-      .filter((line) => line && line.endsWith(".tif"))
+    logger.info(`Raw file contents:\n${data}`);
+
+    const lines = data.split("\n");
+    logger.info(`Number of lines: ${lines.length}`);
+
+    const objectsToDelete = lines
+      .map((line) => {
+        const trimmed = line.replace(/\/\/.*$/, "").trim();
+        logger.info(`Processed line: "${trimmed}"`);
+        return trimmed;
+      })
+      .filter((line) => {
+        const valid = line && line.endsWith(".tif");
+        logger.info(`Line "${line}" is ${valid ? "valid" : "invalid"}`);
+        return valid;
+      })
       .map((line) => line.replace(/^['"]|['"]$/g, ""))
       .map((key) => ({ Key: key }));
+
+    logger.info(`Number of valid objects: ${objectsToDelete.length}`);
 
     if (objectsToDelete.length === 0) {
       throw new Error("No valid entries found in the file");
@@ -41,6 +57,7 @@ async function readDeleteList() {
 
     return objectsToDelete;
   } catch (error) {
+    logger.error(`Error in readDeleteList: ${error.message}`);
     throw new Error(`Error reading or parsing file: ${error.message}`);
   }
 }

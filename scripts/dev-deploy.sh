@@ -11,7 +11,7 @@ if [[ "$1" == "-u" ]]; then
 
     # Update dependencies
     pnpm update
-    pnpm install
+    pnpm install # When this pnpm install command is executed, it will automatically trigger the postinstall script defined in the package.json file.
     pnpm audit --fix
     pnpm prune
     pnpm update react-scripts

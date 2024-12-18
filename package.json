@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.714.0",
-    "@aws-sdk/lib-storage": "^3.714.0",
-    "@aws-sdk/s3-request-presigner": "^3.714.0",
+    "@aws-sdk/client-s3": "^3.715.0",
+    "@aws-sdk/lib-storage": "^3.715.0",
+    "@aws-sdk/s3-request-presigner": "^3.715.0",
     "@photo-sphere-viewer/core": "^5.11.2",
     "chardet": "^2.0.0",
     "cors": "^2.8.5",

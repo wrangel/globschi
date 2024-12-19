@@ -2,6 +2,14 @@
 
 # Run locally!
 
+# Kill existing backend server process
+echo "Stopping existing backend server..."
+pkill -f "node ./src/backend/server.mjs"
+
+# Kill existing frontend server process
+echo "Stopping existing frontend server..."
+pkill -f "react-scripts start"
+
 open --background -a Docker
 
 (

@@ -27,13 +27,14 @@ export async function getCombinedData() {
 }
 
 /**
- * Fetches data from MongoDB.
+ * Fetches data from MongoDB with default sorting by dateTime descending.
  * @returns {Promise<Array>} Data from MongoDB.
  * @throws {Error} If there's an issue fetching data from MongoDB.
  */
 async function fetchMongoData() {
   try {
-    const data = await Island.find().lean().exec();
+    // Fetch data sorted by dateTime in descending order
+    const data = await Island.find().lean().sort({ dateTime: -1 }).exec(); // -1 for descending order
     if (!data || data.length === 0) {
       console.warn("No data found in MongoDB");
     }

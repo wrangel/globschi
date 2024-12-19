@@ -56,16 +56,19 @@ const Fab = ({ onNavigate }) => {
       {isOpen ? (
         <div className={styles.fabMenu}>
           {renderButtons()}
-          <button
-            className={`${styles.fab} ${styles.mainFab}`}
-            onClick={() => {
-              onNavigate("/");
-              setIsOpen(false);
-            }}
-            aria-label="Go to Home"
-          >
-            Home
-          </button>
+          {/* Only show Home button if not on the homepage */}
+          {location.pathname !== "/" && (
+            <button
+              className={`${styles.fab} ${styles.mainFab}`}
+              onClick={() => {
+                onNavigate("/");
+                setIsOpen(false);
+              }}
+              aria-label="Go to Home"
+            >
+              Home
+            </button>
+          )}
         </div>
       ) : (
         <button

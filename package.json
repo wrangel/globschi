@@ -35,10 +35,10 @@
   "scripts": {
     "start": "GENERATE_SOURCEMAP=false react-scripts start",
     "build": "GENERATE_SOURCEMAP=false react-scripts build",
-    "test": "./scripts/test-deploy.sh",
     "eject": "react-scripts eject",
     "manage": "./scripts/manage-tasks.sh",
     "dev": "./scripts/dev-deploy.sh",
+    "test": "./scripts/test-deploy.sh",
     "prod": "./scripts/prod-build.sh"
   },
   "eslintConfig": {

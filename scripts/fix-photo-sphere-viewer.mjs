@@ -1,4 +1,5 @@
-/*  Used solely to fix the issue with the missing export of index.css 
+/*  # TODO Remove as soon as fixed from PSV side
+    Used to fix the issue with the missing export of index.css 
     in @photo-sphere-viewer/core package.json:
 
     "exports": {

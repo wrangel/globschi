@@ -11,7 +11,7 @@ RUN npm install -g pnpm
 COPY package*.json ./
 COPY pnpm-lock.yaml ./
 
-# Copy the specific script file needed for postinstall
+# Copy the script to fix the photo sphere viewer package.json exports
 COPY scripts/fix-photo-sphere-viewer.mjs ./scripts/
 
 # Set environment variables as build arguments

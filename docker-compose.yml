@@ -10,7 +10,7 @@ services:
       - NODE_ENV=production
       - DOTENV_KEY=${DOTENV_KEY}
       - PORT=8081
-    image: wrangel/globschi-backend:1.4
+    image: wrangel/globschi-backend:1.5
     ports:
       - "8081:8081"
 
@@ -23,7 +23,7 @@ services:
         REACT_APP_API_URL: ${REACT_APP_API_URL}
         REACT_APP_GOOGLE_MAPS_API_KEY: ${REACT_APP_GOOGLE_MAPS_API_KEY}
         REACT_APP_MAPBOX_ACCESS_TOKEN: ${REACT_APP_MAPBOX_ACCESS_TOKEN}
-    image: wrangel/globschi-frontend:1.4
+    image: wrangel/globschi-frontend:1.5
     ports:
       - "3000:80"
     environment:

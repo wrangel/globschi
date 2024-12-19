@@ -27,6 +27,9 @@ ENV REACT_APP_MAPBOX_ACCESS_TOKEN=$REACT_APP_MAPBOX_ACCESS_TOKEN
 # Install dependencies using pnpm
 RUN pnpm install
 
+# Run the postinstall script to fix the CSS export issue
+RUN node ./scripts/fix-photo-sphere-viewer.mjs
+
 # Copy the rest of the application code
 COPY . .
 

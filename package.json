@@ -6,7 +6,7 @@
     "@aws-sdk/client-s3": "^3.715.0",
     "@aws-sdk/lib-storage": "^3.715.0",
     "@aws-sdk/s3-request-presigner": "^3.715.0",
-    "@photo-sphere-viewer/core": "^5.11.2",
+    "@photo-sphere-viewer/core": "^5.11.4",
     "chardet": "^2.0.0",
     "cors": "^2.8.5",
     "depcheck": "^1.4.7",
@@ -39,8 +39,7 @@
     "eject": "react-scripts eject",
     "manage": "./scripts/manage-tasks.sh",
     "dev": "./scripts/dev-deploy.sh",
-    "prod": "./scripts/prod-build.sh",
-    "postinstall": "node ./scripts/fix-photo-sphere-viewer.mjs"
+    "prod": "./scripts/prod-build.sh"
   },
   "eslintConfig": {
     "extends": [

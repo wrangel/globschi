@@ -8,7 +8,7 @@ open -a Docker
 docker compose down --rmi all && docker system prune -af
 
 # Set the DOTENV_KEY and build images using docker-compose
-docker compose --env-file .env.production build
+docker compose --env-file .env.production build --no-cache -d
 
 # Log in to Docker registry (if needed)
 docker login

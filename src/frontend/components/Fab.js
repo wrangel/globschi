@@ -1,4 +1,4 @@
-// src/components/Fab.js
+// src/frontend/components/Fab.js
 
 import React, { useState } from "react";
 import { useLocation } from "react-router-dom";

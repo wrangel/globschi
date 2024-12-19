@@ -4,6 +4,7 @@ import React, { Suspense, lazy } from "react";
 import { Routes, Route, useNavigate } from "react-router-dom";
 import ErrorBoundary from "./components/ErrorBoundary";
 import Fab from "./components/Fab";
+import LoadingOverlay from "./components/LoadingOverlay";
 
 // Lazy load the components
 const HomePage = lazy(() => import("./views/HomePage"));
@@ -17,7 +18,9 @@ function App() {
   return (
     <div className="App">
       <ErrorBoundary>
-        <Suspense fallback={<div>Loading...</div>}>
+        <Suspense fallback={<LoadingOverlay />}>
+          {" "}
+          {/* Use LoadingOverlay here */}
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/grid" element={<GridPage />} />

@@ -6,6 +6,7 @@ import ViewerPopup from "../components/ViewerPopup";
 import { useItems } from "../hooks/useItems";
 import { useItemViewer } from "../hooks/useItemViewer";
 import styles from "../styles/Grid.module.css";
+import LoadingOverlay from "../components/LoadingOverlay";
 
 function GridPage() {
   const { items, isLoading, error } = useItems();
@@ -19,7 +20,7 @@ function GridPage() {
   } = useItemViewer(items);
 
   if (isLoading) {
-    return <div className={styles.homePage}>Loading...</div>;
+    return <LoadingOverlay />;
   }
 
   if (error) {
@@ -28,7 +29,6 @@ function GridPage() {
 
   return (
     <div className={styles.homePage}>
-      {/* Removed the header wrapper and h1 */}
       {items.length > 0 ? (
         <PortfolioGrid items={items} onItemClick={handleItemClick} />
       ) : (

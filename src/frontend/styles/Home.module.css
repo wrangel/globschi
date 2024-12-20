@@ -117,7 +117,7 @@
 .helpContainer {
   position: fixed;
   bottom: 80px;
-  left: 70px;
+  left: 42px;
   text-align: center;
   font-family: var(--font-family);
   color: variables(--text-color);

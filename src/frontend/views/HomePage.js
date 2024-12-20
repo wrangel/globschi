@@ -1,6 +1,6 @@
 // src/frontend/views/HomePage.js
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import GlobeButton from "../components/GlobeButton";
 import styles from "../styles/Home.module.css";
@@ -9,6 +9,18 @@ import { ReactComponent as ArrowIcon } from "../../assets/arrow.svg";
 
 const HomePage = () => {
   const navigate = useNavigate();
+  const [isPortrait, setIsPortrait] = useState(
+    window.innerHeight > window.innerWidth
+  );
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsPortrait(window.innerHeight > window.innerWidth);
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   const handleImageClick = () => {
     const randomPage = Math.random() < 0.5 ? "/grid" : "/map";
@@ -16,7 +28,11 @@ const HomePage = () => {
   };
 
   return (
-    <div className={styles.homePage}>
+    <div
+      className={`${styles.homePage} ${
+        isPortrait ? styles.portraitLayout : ""
+      }`}
+    >
       <div className={styles.textWrapper}>
         <h1>
           From lofty heights,
@@ -35,9 +51,8 @@ const HomePage = () => {
       </div>
       <div className={styles.helpContainer}>
         <div className={styles.helpText}>
-          If you find yourself in a panorama popup, get ready to dive into a
-          world of wonders! Click on the globe to explore every nook and cranny.
-          Click again for the next adventure! 🚀
+          If you find yourself in a panorama popup: Click on the globe to
+          explore every nook and cranny. Click again for the next adventure! 🚀
         </div>
         <ArrowIcon className={styles.arrow} />
       </div>

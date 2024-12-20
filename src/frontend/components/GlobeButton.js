@@ -3,9 +3,9 @@
 import React from "react";
 import styles from "../styles/Fab.module.css";
 
-const GlobeButton = () => {
+const GlobeButton = ({ onClick }) => {
   return (
-    <button className={styles.fab} aria-label="Toggle Mode">
+    <button className={styles.fab} onClick={onClick} aria-label="Toggle Mode">
       🌍 {/* Globe icon */}
     </button>
   );

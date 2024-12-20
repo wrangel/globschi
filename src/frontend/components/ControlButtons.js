@@ -1,7 +1,6 @@
-// src/components/Controlbuttons.js
-
 import React, { useState, useEffect } from "react";
 import { useSwipeable } from "react-swipeable";
+import GlobeButton from "./GlobeButton"; // Import GlobeButton component
 import styles from "../styles/Fab.module.css"; // Use Fab styles for consistency
 
 const ControlButtons = ({
@@ -80,13 +79,7 @@ const ControlButtons = ({
                 i {/* Info icon */}
               </button>
               {isPano && (
-                <button
-                  className={styles.fab}
-                  onClick={toggleMode}
-                  aria-label="Toggle Mode"
-                >
-                  🌍 {/* Globe icon */}
-                </button>
+                <GlobeButton onClick={toggleMode} /> // Use GlobeButton component
               )}
               <button
                 className={`${styles.fab} ${styles.mainFab}`}

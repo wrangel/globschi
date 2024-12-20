@@ -1,7 +1,6 @@
-// src/frontend/views/HomePage.js
-
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import GlobeButton from "../components/GlobeButton";
 import styles from "../styles/Home.module.css";
 
 const HomePage = () => {
@@ -29,6 +28,15 @@ const HomePage = () => {
           onClick={handleImageClick}
           style={{ cursor: "pointer" }}
         />
+      </div>
+      <div className={styles.helpContainer}>
+        <div className={styles.helpText}>
+          Click to explore the view. Click again for the next adventure! 🚀
+        </div>
+        <div className={styles.arrow}></div>
+      </div>
+      <div className={styles.globeButtonContainer}>
+        <GlobeButton />
       </div>
     </div>
   );

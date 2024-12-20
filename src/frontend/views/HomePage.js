@@ -1,7 +1,10 @@
+// src/frontend/views/HomePage.js
+
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import GlobeButton from "../components/GlobeButton";
 import styles from "../styles/Home.module.css";
+import { ReactComponent as ArrowIcon } from "../../assets/arrow.svg";
 
 const HomePage = () => {
   const navigate = useNavigate();
@@ -33,7 +36,7 @@ const HomePage = () => {
         <div className={styles.helpText}>
           Click to explore the view. Click again for the next adventure! 🚀
         </div>
-        <div className={styles.arrow}></div>
+        <ArrowIcon className={styles.arrow} /> {/* Use the arrow SVG */}
       </div>
       <div className={styles.globeButtonContainer}>
         <GlobeButton />

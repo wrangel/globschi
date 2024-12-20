@@ -31,7 +31,7 @@ const HomePage = () => {
       </div>
       <div className={styles.helpContainer}>
         <div className={styles.helpText}>
-          Click to explore the view. Thenlick again for the next adventure! 🚀
+          Click to explore the view. Click again for the next adventure! 🚀
         </div>
         <div className={styles.arrow}></div>
       </div>

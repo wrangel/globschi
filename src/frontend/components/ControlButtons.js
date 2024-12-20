@@ -1,7 +1,9 @@
+// src/frontend/components/ControlButtons.js
+
 import React, { useState, useEffect } from "react";
 import { useSwipeable } from "react-swipeable";
-import GlobeButton from "./GlobeButton"; // Import GlobeButton component
-import styles from "../styles/Fab.module.css"; // Use Fab styles for consistency
+import GlobeButton from "./GlobeButton";
+import styles from "../styles/Fab.module.css";
 
 const ControlButtons = ({
   onClose,

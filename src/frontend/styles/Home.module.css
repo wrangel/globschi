@@ -85,10 +85,9 @@
 }
 
 .helpContainer {
-  position: absolute;
-  bottom: 150px; /* Adjusted for proper positioning */
-  left: 50%; /* Adjusted for proper positioning */
-  transform: translateX(-50%);
+  position: fixed;
+  bottom: 100px;
+  left: 100px;
   text-align: center;
   font-family: var(--font-family);
   color: var(--text-color);
@@ -101,10 +100,11 @@
 }
 
 .arrow {
-  position: relative;
+  position: absolute;
+  bottom: -30px; /* Adjust to point correctly to the globe button */
+  left: 80px; /* Adjust to point correctly to the globe button */
   width: 100px;
   height: 50px;
-  margin: 0 auto;
 }
 
 .arrow::before {
@@ -123,15 +123,15 @@
 .arrow::after {
   content: "";
   position: absolute;
-  bottom: 0;
-  left: 0;
+  bottom: -10px;
+  left: 70px; /* Adjust to align with the arrow body */
   width: 20px;
   height: 20px;
   border: solid var(--text-color);
   border-width: 0 3px 3px 0;
   display: inline-block;
   padding: 3px;
-  transform: translate(80%, 120%) rotate(-135deg);
+  transform: rotate(-45deg);
 }
 
 .globeButtonContainer {
@@ -140,5 +140,5 @@
   left: 20px; /* Position it in the lower-left corner */
   display: flex;
   flex-direction: column;
-  align-items: flex-start; /* Adjust alignment as needed */
+  align-items: flex-start;
 }

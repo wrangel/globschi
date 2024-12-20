@@ -1,3 +1,5 @@
+// src/frontend/components/GlobeButton.js
+
 import React from "react";
 import styles from "../styles/Fab.module.css";
 

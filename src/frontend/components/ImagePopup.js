@@ -5,9 +5,10 @@ import LoadingOverlay from "./LoadingOverlay";
 import panzoom from "panzoom";
 import styles from "../styles/ImagePopup.module.css";
 
-const ImagePopup = ({ actualUrl, thumbnailUrl, name }) => {
+const ImagePopup = ({ actualUrl, thumbnailUrl, name, isNavigationMode }) => {
   const [isLoading, setIsLoading] = useState(true);
   const imgRef = useRef(null);
+  const panZoomInstanceRef = useRef(null);
 
   useEffect(() => {
     const img = new Image();
@@ -22,7 +23,6 @@ const ImagePopup = ({ actualUrl, thumbnailUrl, name }) => {
       document.body.classList.remove("hide-scrollbar");
     }
 
-    // Cleanup when the component is unmounted
     return () => {
       document.body.classList.remove("hide-scrollbar");
     };
@@ -30,12 +30,23 @@ const ImagePopup = ({ actualUrl, thumbnailUrl, name }) => {
 
   useEffect(() => {
     if (!isLoading && imgRef.current) {
-      const panZoomInstance = panzoom(imgRef.current);
+      const instance = panzoom(imgRef.current);
+      panZoomInstanceRef.current = instance;
       return () => {
-        panZoomInstance.dispose(); // Clean up panzoom instance
+        instance.dispose(); // Clean up panzoom instance
       };
     }
   }, [isLoading]);
+
+  useEffect(() => {
+    if (panZoomInstanceRef.current) {
+      if (isNavigationMode) {
+        panZoomInstanceRef.current.resume();
+      } else {
+        panZoomInstanceRef.current.pause();
+      }
+    }
+  }, [isNavigationMode]);
 
   return (
     <div className={`${styles.imagePopup} ${!isLoading ? styles.loaded : ""}`}>

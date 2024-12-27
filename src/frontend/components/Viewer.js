@@ -77,12 +77,11 @@ const Viewer = ({
           thumbnailUrl={item.thumbnailUrl}
           name={item.name}
           onLoad={handleContentLoaded}
+          isNavigationMode={isNavigationMode} // Pass the prop for consistent functionality
         />
       );
     }
   };
-
-  const isPano = item.viewer === "pano";
 
   return (
     <div className={styles.viewer} ref={viewerRef}>
@@ -95,7 +94,7 @@ const Viewer = ({
         onToggleMetadata={toggleMetadata}
         isNavigationMode={isNavigationMode}
         toggleMode={toggleMode}
-        isPano={isPano}
+        isPano={item.viewer === "pano"} // Optional: keep for conditional styling
         onToggleFullScreen={toggleFullScreen}
       />
       {showMetadata && (

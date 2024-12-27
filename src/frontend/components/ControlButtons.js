@@ -80,12 +80,11 @@ const ControlButtons = ({
               >
                 i {/* Info icon */}
               </button>
-              {isPano && (
-                <GlobeButton onClick={toggleMode} /> // Use GlobeButton component
-              )}
+              <GlobeButton onClick={toggleMode} />{" "}
+              {/* Use GlobeButton component */}
               <button
                 className={`${styles.fab} ${styles.mainFab}`}
-                onClick={onClose} // Ensure it closes the viewer
+                onClick={onClose}
                 aria-label="Close"
               >
                 × {/* Close icon */}
@@ -104,7 +103,7 @@ const ControlButtons = ({
       ) : (
         <button
           className={`${styles.fab} ${styles.fullscreenButton}`}
-          onClick={onClose} // Ensure it closes the viewer
+          onClick={onClose}
           aria-label="Close"
         >
           × {/* Close icon */}

@@ -51,8 +51,8 @@ const HomePage = () => {
       </div>
       <div className={styles.helpContainer}>
         <div className={styles.helpText}>
-          If you find yourself in a panorama popup: Click on the globe to
-          explore every nook and cranny. Click again for the next adventure! 🚀
+          Click on the globe to explore every nook and cranny. Click again to
+          move on to the next adventure! 🚀
         </div>
         <ArrowIcon className={styles.arrow} />
       </div>

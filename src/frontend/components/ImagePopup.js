@@ -1,11 +1,13 @@
 // src/frontend/components/ImagePopup.js
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import LoadingOverlay from "./LoadingOverlay";
+import panzoom from "panzoom";
 import styles from "../styles/ImagePopup.module.css";
 
 const ImagePopup = ({ actualUrl, thumbnailUrl, name }) => {
   const [isLoading, setIsLoading] = useState(true);
+  const imgRef = useRef(null);
 
   useEffect(() => {
     const img = new Image();
@@ -26,14 +28,25 @@ const ImagePopup = ({ actualUrl, thumbnailUrl, name }) => {
     };
   }, [isLoading]);
 
+  useEffect(() => {
+    if (!isLoading && imgRef.current) {
+      const panZoomInstance = panzoom(imgRef.current);
+      return () => {
+        panZoomInstance.dispose(); // Clean up panzoom instance
+      };
+    }
+  }, [isLoading]);
+
   return (
     <div className={`${styles.imagePopup} ${!isLoading ? styles.loaded : ""}`}>
       {isLoading && <LoadingOverlay thumbnailUrl={thumbnailUrl} />}
-      <img
-        src={actualUrl}
-        alt={name}
-        className={`${styles.image} ${isLoading ? styles.hidden : ""}`}
-      />
+      <div ref={imgRef} className={styles.panzoomContainer}>
+        <img
+          src={actualUrl}
+          alt={name}
+          className={`${styles.image} ${isLoading ? styles.hidden : ""}`}
+        />
+      </div>
     </div>
   );
 };

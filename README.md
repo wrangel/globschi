@@ -1,6 +1,6 @@
 # Abstract Altitudes
 
-Welcome to the **Abstract Altitudes**! This website is designed to display stunning aerial photography and videography captured during my drone flights. Explore the beauty of landscapes, cityscapes, and unique perspectives that only drone photography can provide.
+This website is designed to display aerial photography and videography captured during our drone flights. Explore the beauty of landscapes, cityscapes, and unique perspectives that only drone photography can provide.
 
 ## Table of Contents
 
@@ -15,7 +15,7 @@ Welcome to the **Abstract Altitudes**! This website is designed to display stunn
 
 ## Features
 
-- **Image Gallery**: View high-quality images organized by categories.
+- **Image Gallery**: High-quality images.
 - **Detailed Metadata**: Each image includes EXIF data such as date, location, and camera settings.
 - **Responsive Design**: The website is optimized for both desktop and mobile devices.
 

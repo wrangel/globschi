@@ -97,7 +97,7 @@ const ControlButtons = ({
               onClick={toggleMenu}
               aria-label="Navigation"
             >
-              Nav
+              Explore
             </button>
           )}
         </>

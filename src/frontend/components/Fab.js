@@ -76,7 +76,7 @@ const Fab = ({ onNavigate }) => {
           onClick={toggleFab}
           aria-label="Navigation"
         >
-          Nav
+          Views
         </button>
       )}
     </div>

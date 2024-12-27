@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import GlobeButton from "../components/GlobeButton";
 import styles from "../styles/Home.module.css";
 import fabStyles from "../styles/Fab.module.css";
-import { ReactComponent as ArrowIcon } from "../../assets/arrow.svg";
+import { ReactComponent as ArrowIcon } from "../assets/arrow.svg";
 
 const HomePage = () => {
   const navigate = useNavigate();

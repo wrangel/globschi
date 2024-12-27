@@ -6,24 +6,25 @@ import styles from "../styles/PanoramaViewer.module.css";
 
 const PanoramaViewer = ({ imageUrl, thumbnailUrl, onClose }) => {
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [setError] = useState(null);
+
+  // Function to detect if the browser is Safari
+  const isSafari = () => {
+    const ua = navigator.userAgent.toLowerCase();
+    return ua.indexOf("safari") > -1 && ua.indexOf("chrome") === -1;
+  };
 
   const handleReady = () => {
     setIsLoading(false);
   };
 
-  const handleError = (err) => {
-    setError(err.toString());
-    setIsLoading(false);
-  };
-
-  if (error) {
+  // Check if the browser is Safari and display a message
+  if (isSafari()) {
     return (
       <div className={styles.errorOverlay}>
         <div className={styles.errorMessage}>
-          <h1>Error Loading Panorama</h1>
-          <p>{error}</p>
-          <button onClick={onClose}>Close</button>
+          <h1>Safari Does Not Support This Feature</h1>
+          <p>Please try using a different browser like Chrome or Firefox.</p>
         </div>
       </div>
     );
@@ -36,8 +37,7 @@ const PanoramaViewer = ({ imageUrl, thumbnailUrl, onClose }) => {
         height="100vh"
         width="100%"
         onReady={handleReady}
-        onError={handleError}
-        navbar={false}
+        navbar={false} // Disable navbar if not needed
       />
       {isLoading && thumbnailUrl && (
         <img src={thumbnailUrl} alt="Thumbnail" className={styles.thumbnail} />

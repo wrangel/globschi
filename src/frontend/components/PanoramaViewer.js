@@ -34,7 +34,7 @@ const PanoramaViewer = ({ imageUrl, thumbnailUrl, onClose }) => {
     return (
       <div className={styles.errorOverlay}>
         <div className={styles.errorMessage}>
-          <h1>Unsupported Browser</h1>
+          <h1>Your Browser Does Not Support The Panorama Viewer</h1>
           <p>
             This feature is not supported in your current browser. Please try
             using a Chromium-based browser like Chrome, Edge, or Brave.

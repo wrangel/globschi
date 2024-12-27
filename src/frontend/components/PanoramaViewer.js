@@ -37,7 +37,7 @@ const PanoramaViewer = ({ imageUrl, thumbnailUrl, isNavigationMode }) => {
     return (
       <div className={styles.errorOverlay}>
         <div className={styles.errorMessage}>
-          <h1>Safari Does Not Support This Feature</h1>
+          <h1>Safari Does Not Support This Feature.</h1>
           <p>Please try using a different browser like Chrome or Firefox.</p>
         </div>
       </div>

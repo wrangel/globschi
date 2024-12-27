@@ -73,6 +73,8 @@ const ControlButtons = ({
               >
                 ⛶ {/* Fullscreen icon */}
               </button>
+              <GlobeButton onClick={toggleMode} />{" "}
+              {/* Use GlobeButton component */}
               <button
                 className={styles.fab}
                 onClick={onToggleMetadata}
@@ -80,8 +82,6 @@ const ControlButtons = ({
               >
                 i {/* Info icon */}
               </button>
-              <GlobeButton onClick={toggleMode} />{" "}
-              {/* Use GlobeButton component */}
               <button
                 className={`${styles.fab} ${styles.mainFab}`}
                 onClick={onClose}

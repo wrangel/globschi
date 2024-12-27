@@ -21,7 +21,6 @@ const Viewer = ({
   const [isLoading, setIsLoading] = useState(true);
   const viewerRef = useRef(null);
 
-  // Handle keyboard navigation
   useKeyboardNavigation(onClose, onPrevious, onNext);
 
   const toggleMetadata = () => {
@@ -32,7 +31,6 @@ const Viewer = ({
     setIsLoading(false);
   };
 
-  // Handle Esc key press
   useEffect(() => {
     const handleEscKey = (event) => {
       if (event.key === "Escape") {
@@ -50,7 +48,6 @@ const Viewer = ({
     };
   }, [showMetadata, onClose]);
 
-  // Full-screen toggle function
   const toggleFullScreen = () => {
     if (!document.fullscreenElement) {
       viewerRef.current.requestFullscreen().catch((err) => {
@@ -70,6 +67,7 @@ const Viewer = ({
           imageUrl={item.actualUrl}
           thumbnailUrl={item.thumbnailUrl}
           onReady={handleContentLoaded}
+          isNavigationMode={isNavigationMode}
         />
       );
     } else {

@@ -1,23 +1,38 @@
 // src/components/PanoramaViewer.js
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { ReactPhotoSphereViewer } from "react-photo-sphere-viewer";
+import { AutorotatePlugin } from "@photo-sphere-viewer/autorotate-plugin";
 import styles from "../styles/PanoramaViewer.module.css";
 
-const PanoramaViewer = ({ imageUrl, thumbnailUrl, onClose }) => {
+const PanoramaViewer = ({ imageUrl, thumbnailUrl, isNavigationMode }) => {
   const [isLoading, setIsLoading] = useState(true);
+  const [viewer, setViewer] = useState(null);
 
-  // Function to detect if the browser is Safari
   const isSafari = () => {
     const ua = navigator.userAgent.toLowerCase();
     return ua.indexOf("safari") > -1 && ua.indexOf("chrome") === -1;
   };
 
-  const handleReady = () => {
+  const handleReady = (instance) => {
     setIsLoading(false);
+    setViewer(instance);
+    if (!isNavigationMode) {
+      instance.getPlugin(AutorotatePlugin).start();
+    }
   };
 
-  // Check if the browser is Safari and display a message
+  useEffect(() => {
+    if (viewer) {
+      const autorotatePlugin = viewer.getPlugin(AutorotatePlugin);
+      if (isNavigationMode) {
+        autorotatePlugin.stop();
+      } else {
+        autorotatePlugin.start();
+      }
+    }
+  }, [isNavigationMode, viewer]);
+
   if (isSafari()) {
     return (
       <div className={styles.errorOverlay}>
@@ -36,7 +51,10 @@ const PanoramaViewer = ({ imageUrl, thumbnailUrl, onClose }) => {
         height="100vh"
         width="100%"
         onReady={handleReady}
-        navbar={false} // Disable navbar if not needed
+        plugins={[AutorotatePlugin]}
+        navbar="false"
+        autorotateSpeed="0.5rpm"
+        autorotateDelay={3}
       />
       {isLoading && thumbnailUrl && (
         <img src={thumbnailUrl} alt="Thumbnail" className={styles.thumbnail} />

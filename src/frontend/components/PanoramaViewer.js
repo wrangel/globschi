@@ -52,9 +52,7 @@ const PanoramaViewer = ({ imageUrl, thumbnailUrl, isNavigationMode }) => {
         width="100%"
         onReady={handleReady}
         plugins={[AutorotatePlugin]}
-        navbar="false"
-        autorotateSpeed="0.5rpm"
-        autorotateDelay={3}
+        navbar={false}
       />
       {isLoading && thumbnailUrl && (
         <img src={thumbnailUrl} alt="Thumbnail" className={styles.thumbnail} />

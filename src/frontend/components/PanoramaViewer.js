@@ -8,10 +8,16 @@ const PanoramaViewer = ({ imageUrl, thumbnailUrl, onClose }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [setError] = useState(null);
 
-  // Function to detect if the browser is Safari
-  const isSafari = () => {
+  // Function to detect non-Chromium browsers
+  const isNonChromiumBrowser = () => {
     const ua = navigator.userAgent.toLowerCase();
-    return ua.indexOf("safari") > -1 && ua.indexOf("chrome") === -1;
+
+    // Check for Chromium-based browsers (Chrome, Edge, Brave, etc.)
+    const isChromium =
+      ua.includes("chrome") || ua.includes("chromium") || ua.includes("edg");
+
+    // Return true if the browser is not Chromium-based
+    return !isChromium;
   };
 
   const handleReady = () => {
@@ -23,13 +29,16 @@ const PanoramaViewer = ({ imageUrl, thumbnailUrl, onClose }) => {
     setIsLoading(false);
   };
 
-  // Check if the browser is Safari and display a message
-  if (isSafari()) {
+  // Check if the browser is non-Chromium and display a message
+  if (isNonChromiumBrowser()) {
     return (
       <div className={styles.errorOverlay}>
         <div className={styles.errorMessage}>
-          <h1>Safari Does Not Support This Feature</h1>
-          <p>Please try using a different browser like Chrome or Firefox.</p>
+          <h1>Unsupported Browser</h1>
+          <p>
+            This feature is not supported in your current browser. Please try
+            using a Chromium-based browser like Chrome, Edge, or Brave.
+          </p>
         </div>
       </div>
     );

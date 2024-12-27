@@ -111,6 +111,7 @@ function formatMetadata(doc) {
   });
 
   const road = doc.road ? doc.road.replace(/^,\s*/, "") : "";
+  const formattedRoad = formatRoadWithLineBreaks(road, 29);
   const location1 = `${doc.postalCode || ""} ${doc.location || ""}`.trim();
   const location2 = `${doc.region || ""}, ${doc.country || ""}`.trim();
 
@@ -118,15 +119,56 @@ function formatMetadata(doc) {
     formattedDate,
     formattedTime,
     `${doc.altitude ? doc.altitude.toFixed(1) : ""}m above sea level`,
-    road,
+    formattedRoad,
     location1,
     location2,
     `Author: ${doc.author || ""}`,
     `Drone: ${doc.drone || ""}`,
   ]
-    .map((item) => (item === undefined || item === "undefined" ? "" : item)) // Replace 'undefined' with empty string
-    .filter(Boolean) // Remove any empty strings
+    .map((item) => (item === undefined || item === "undefined" ? "" : item))
+    .filter(Boolean)
     .join("\n");
+}
+
+/**
+ * Formats road name with line breaks if it exceeds the maximum length.
+ * @param {string} road - The road name to format.
+ * @param {number} maxLength - The maximum length of each line.
+ * @returns {string} Formatted road name with line breaks if necessary.
+ */
+function formatRoadWithLineBreaks(road, maxLength) {
+  if (road.length <= maxLength) {
+    return road;
+  }
+
+  const words = road.split(" ");
+  let currentLine = "";
+  const lines = [];
+
+  for (const word of words) {
+    if ((currentLine + word).length > maxLength) {
+      if (currentLine) {
+        lines.push(currentLine.trim());
+        currentLine = "";
+      }
+      if (word.length > maxLength) {
+        // If a single word is longer than maxLength, split it
+        for (let i = 0; i < word.length; i += maxLength) {
+          lines.push(word.substr(i, maxLength));
+        }
+      } else {
+        currentLine = word;
+      }
+    } else {
+      currentLine += (currentLine ? " " : "") + word;
+    }
+  }
+
+  if (currentLine) {
+    lines.push(currentLine.trim());
+  }
+
+  return lines.join("\n");
 }
 
 /**

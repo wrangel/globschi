@@ -6,19 +6,7 @@ import styles from "../styles/PanoramaViewer.module.css";
 
 const PanoramaViewer = ({ imageUrl, thumbnailUrl, onClose }) => {
   const [isLoading, setIsLoading] = useState(true);
-  const [setError] = useState(null);
-
-  // Function to detect non-Chromium browsers
-  const isNonChromiumBrowser = () => {
-    const ua = navigator.userAgent.toLowerCase();
-
-    // Check for Chromium-based browsers (Chrome, Edge, Brave, etc.)
-    const isChromium =
-      ua.includes("chrome") || ua.includes("chromium") || ua.includes("edg");
-
-    // Return true if the browser is not Chromium-based
-    return !isChromium;
-  };
+  const [error, setError] = useState(null);
 
   const handleReady = () => {
     setIsLoading(false);
@@ -29,16 +17,13 @@ const PanoramaViewer = ({ imageUrl, thumbnailUrl, onClose }) => {
     setIsLoading(false);
   };
 
-  // Check if the browser is non-Chromium and display a message
-  if (isNonChromiumBrowser()) {
+  if (error) {
     return (
       <div className={styles.errorOverlay}>
         <div className={styles.errorMessage}>
-          <h1>Your Browser Does Not Support The Panorama Viewer</h1>
-          <p>
-            This feature is not supported in your current browser. Please try
-            using a Chromium-based browser like Chrome, Edge, or Brave.
-          </p>
+          <h1>Error Loading Panorama</h1>
+          <p>{error}</p>
+          <button onClick={onClose}>Close</button>
         </div>
       </div>
     );
@@ -52,7 +37,7 @@ const PanoramaViewer = ({ imageUrl, thumbnailUrl, onClose }) => {
         width="100%"
         onReady={handleReady}
         onError={handleError}
-        navbar={false} // Disable navbar if not needed
+        navbar={false}
       />
       {isLoading && thumbnailUrl && (
         <img src={thumbnailUrl} alt="Thumbnail" className={styles.thumbnail} />

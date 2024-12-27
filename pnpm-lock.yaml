@@ -22,6 +22,9 @@ importers:
       '@aws-sdk/s3-request-presigner':
         specifier: ^3.717.0
         version: 3.717.0
+      '@photo-sphere-viewer/autorotate-plugin':
+        specifier: ^5.11.4
+        version: 5.11.4(@photo-sphere-viewer/core@5.11.4)
       '@photo-sphere-viewer/core':
         specifier: ^5.11.4
         version: 5.11.4
@@ -1421,6 +1424,11 @@ packages:
     resolution: {integrity: sha512-yx6KAqlt3TAHBduS2fMQtJDL2ufIHnDRArrJEOoTTuizxqmjLT+psGYOHpmMl3gvQpFJ11Hs76guUUktzAF9Bg==}
     engines: {node: '>=12.0.0'}
     deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
+
+  '@photo-sphere-viewer/autorotate-plugin@5.11.4':
+    resolution: {integrity: sha512-7eGnHAA75V/1+bMR9UWOvQUMq7QNhnePxnNNmsSHcWHGX0eTfjNoTY9ORbmFIO969bwJ87URWmdkeDUulXWc8g==}
+    peerDependencies:
+      '@photo-sphere-viewer/core': 5.11.4
 
   '@photo-sphere-viewer/core@5.11.4':
     resolution: {integrity: sha512-T3WrwJK0FxLHFHO0wBVzCGu9zYijW4pHEqcXva2HVBa0etOCDPAGmY8X03OidaDueFqsd9YGCizlW1VQzzI0yw==}
@@ -8745,6 +8753,10 @@ snapshots:
       - typescript
 
   '@oclif/screen@3.0.8': {}
+
+  '@photo-sphere-viewer/autorotate-plugin@5.11.4(@photo-sphere-viewer/core@5.11.4)':
+    dependencies:
+      '@photo-sphere-viewer/core': 5.11.4
 
   '@photo-sphere-viewer/core@5.11.4':
     dependencies:

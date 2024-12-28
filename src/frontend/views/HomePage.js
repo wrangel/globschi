@@ -6,7 +6,7 @@ import { Helmet } from "react-helmet-async";
 import GlobeButton from "../components/GlobeButton";
 import styles from "../styles/Home.module.css";
 import fabStyles from "../styles/Fab.module.css";
-import { domain } from "../constants";
+import { DOMAIN } from "../constants";
 import { ReactComponent as ArrowIcon } from "../assets/arrow.svg";
 
 const HomePage = () => {
@@ -32,7 +32,7 @@ const HomePage = () => {
   return (
     <>
       <Helmet>
-        <link rel="canonical" href={domain} />
+        <link rel="canonical" href={DOMAIN} />
         <title>Abstract Altitudes - Drone-borne Aerial Imagery</title>
         <meta
           name="description"

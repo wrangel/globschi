@@ -2,14 +2,14 @@
 
 import React from "react";
 import { Helmet } from "react-helmet-async";
-import { domain } from "../constants";
+import { DOMAIN } from "../constants";
 import styles from "../styles/About.module.css";
 
 const About = () => {
   return (
     <>
       <Helmet>
-        <link rel="canonical" href={`${domain}about`} />
+        <link rel="canonical" href={`${DOMAIN}about`} />
         <title>About Abstract Altitudes - Our Team and Tools</title>
         <meta
           name="description"

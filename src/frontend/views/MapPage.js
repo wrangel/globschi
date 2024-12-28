@@ -13,7 +13,7 @@ import {
   MAP_INITIAL_ZOOM,
   ICON_URLS,
   ICON_SIZES,
-  domain,
+  DOMAIN,
 } from "../constants";
 import styles from "../styles/Map.module.css";
 
@@ -81,7 +81,7 @@ const MapPage = () => {
   return (
     <>
       <Helmet>
-        <link rel="canonical" href={`${domain}map`} />
+        <link rel="canonical" href={`${DOMAIN}map`} />
         <title>Abstract Altitudes - Interactive Drone Imagery Map</title>
         <meta
           name="description"

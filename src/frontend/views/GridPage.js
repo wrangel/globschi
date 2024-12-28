@@ -6,7 +6,7 @@ import { useItems } from "../hooks/useItems";
 import { useItemViewer } from "../hooks/useItemViewer";
 import LoadingOverlay from "../components/LoadingOverlay";
 import styles from "../styles/Grid.module.css";
-import { domain } from "../constants";
+import { DOMAIN } from "../constants";
 
 function GridPage() {
   const { items, isLoading, error } = useItems();
@@ -30,7 +30,7 @@ function GridPage() {
   return (
     <>
       <Helmet>
-        <link rel="canonical" href={`${domain}grid`} />
+        <link rel="canonical" href={`${DOMAIN}grid`} />
         <title>Abstract Altitudes - Drone Imagery Gallery</title>
         <meta
           name="description"

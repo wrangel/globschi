@@ -51,3 +51,6 @@ export const redPinIcon = new L.Icon({
   popupAnchor: ICON_SIZES.POPUP_ANCHOR,
   shadowSize: ICON_SIZES.SHADOW,
 });
+
+// Domain
+export const domain = "https://abstractaltitudes.com/"; // Ensure trailing slash: This avoids issues where some tools or search engines might treat URLs with and without a trailing slash as different.

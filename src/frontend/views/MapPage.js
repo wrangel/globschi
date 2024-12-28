@@ -1,6 +1,5 @@
-// src/frontend/views/MapPage.js
-
 import React, { useEffect } from "react";
+import { Helmet } from "react-helmet-async";
 import { MapContainer, TileLayer, Marker, useMap } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
@@ -9,13 +8,14 @@ import ViewerPopup from "../components/ViewerPopup";
 import { useItems } from "../hooks/useItems";
 import { useItemViewer } from "../hooks/useItemViewer";
 import { useLoadingError } from "../hooks/useLoadingError";
-import styles from "../styles/Map.module.css";
 import {
   MAP_INITIAL_CENTER,
   MAP_INITIAL_ZOOM,
   ICON_URLS,
   ICON_SIZES,
+  domain,
 } from "../constants";
+import styles from "../styles/Map.module.css";
 
 const redPinIcon = new L.Icon({
   iconUrl: ICON_URLS.RED_MARKER,
@@ -79,54 +79,64 @@ const MapPage = () => {
   }, [isItemsLoading, itemsError, stopLoading, setErrorMessage]);
 
   return (
-    <LoadingErrorHandler isLoading={isLoading} error={error}>
-      <div className={styles.mapPageContainer}>
-        <MapContainer
-          center={MAP_INITIAL_CENTER}
-          zoom={MAP_INITIAL_ZOOM}
-          className={`${styles.leafletContainer} custom-map`}
-          style={{ height: "100vh", width: "100%" }}
-          zoomControl={true}
-          minZoom={2}
-          maxZoom={18}
-          scrollWheelZoom={true}
-          doubleClickZoom={true}
-          touchZoom={true}
-        >
-          <TileLayer
-            url="https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}"
-            attribution="© Mapbox © OpenStreetMap"
-            tileSize={512}
-            zoomOffset={-1}
-            id="mapbox/satellite-v9"
-            accessToken={process.env.REACT_APP_MAPBOX_ACCESS_TOKEN}
-          />
-
-          {items.map((item) => (
-            <Marker
-              key={item.id}
-              position={[item.latitude, item.longitude]}
-              icon={redPinIcon}
-              eventHandlers={{
-                click: () => handleItemClick(item),
-              }}
+    <>
+      <Helmet>
+        <link rel="canonical" href={`${domain}map`} />
+        <title>Abstract Altitudes - Interactive Drone Imagery Map</title>
+        <meta
+          name="description"
+          content="Explore our interactive map showcasing stunning drone-captured aerial images from various locations. Discover breathtaking views and unique perspectives from above."
+        />
+      </Helmet>
+      <LoadingErrorHandler isLoading={isLoading} error={error}>
+        <div className={styles.mapPageContainer}>
+          <MapContainer
+            center={MAP_INITIAL_CENTER}
+            zoom={MAP_INITIAL_ZOOM}
+            className={`${styles.leafletContainer} custom-map`}
+            style={{ height: "100vh", width: "100%" }}
+            zoomControl={true}
+            minZoom={2}
+            maxZoom={18}
+            scrollWheelZoom={true}
+            doubleClickZoom={true}
+            touchZoom={true}
+          >
+            <TileLayer
+              url="https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}"
+              attribution="© Mapbox © OpenStreetMap"
+              tileSize={512}
+              zoomOffset={-1}
+              id="mapbox/satellite-v9"
+              accessToken={process.env.REACT_APP_MAPBOX_ACCESS_TOKEN}
             />
-          ))}
 
-          <FitBounds items={items} />
-        </MapContainer>
+            {items.map((item) => (
+              <Marker
+                key={item.id}
+                position={[item.latitude, item.longitude]}
+                icon={redPinIcon}
+                eventHandlers={{
+                  click: () => handleItemClick(item),
+                }}
+              />
+            ))}
 
-        {isModalOpen && (
-          <ViewerPopup
-            item={selectedItem}
-            isOpen={isModalOpen}
-            onClose={handleClosePopup}
-            onNext={handleNextItem}
-            onPrevious={handlePreviousItem}
-          />
-        )}
-      </div>
-    </LoadingErrorHandler>
+            <FitBounds items={items} />
+          </MapContainer>
+
+          {isModalOpen && (
+            <ViewerPopup
+              item={selectedItem}
+              isOpen={isModalOpen}
+              onClose={handleClosePopup}
+              onNext={handleNextItem}
+              onPrevious={handlePreviousItem}
+            />
+          )}
+        </div>
+      </LoadingErrorHandler>
+    </>
   );
 };
 

@@ -2,6 +2,7 @@
 
 import React, { Suspense, lazy } from "react";
 import { Routes, Route, useNavigate } from "react-router-dom";
+import { HelmetProvider } from "react-helmet-async"; // Add this import
 import ErrorBoundary from "./components/ErrorBoundary";
 import Fab from "./components/Fab";
 import LoadingOverlay from "./components/LoadingOverlay";
@@ -16,21 +17,21 @@ function App() {
   const navigate = useNavigate();
 
   return (
-    <div className="App">
-      <ErrorBoundary>
-        <Suspense fallback={<LoadingOverlay />}>
-          {" "}
-          {/* Use LoadingOverlay here */}
-          <Routes>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/grid" element={<GridPage />} />
-            <Route path="/map" element={<MapPage />} />
-            <Route path="/about" element={<AboutPage />} />
-          </Routes>
-        </Suspense>
-      </ErrorBoundary>
-      <Fab onNavigate={navigate} />
-    </div>
+    <HelmetProvider>
+      <div className="App">
+        <ErrorBoundary>
+          <Suspense fallback={<LoadingOverlay />}>
+            <Routes>
+              <Route path="/" element={<HomePage />} />
+              <Route path="/grid" element={<GridPage />} />
+              <Route path="/map" element={<MapPage />} />
+              <Route path="/about" element={<AboutPage />} />
+            </Routes>
+          </Suspense>
+        </ErrorBoundary>
+        <Fab onNavigate={navigate} />
+      </div>
+    </HelmetProvider>
   );
 }
 

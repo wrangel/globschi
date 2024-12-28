@@ -39,6 +39,7 @@ const HomePage = () => {
           <br />
           <span className={styles.break}>we muse on marvels</span>
         </h1>
+        <h2>Drone-borne aerial imagery</h2>
       </div>
       <div className={styles.imageWrapper}>
         <img

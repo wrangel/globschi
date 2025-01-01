@@ -1,3 +1,5 @@
+// src/frontend/views/MapPage.js
+
 import React, { useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import { MapContainer, TileLayer, Marker, useMap } from "react-leaflet";

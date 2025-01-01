@@ -1,3 +1,5 @@
+// src/frontend/views/GidPage.js
+
 import React from "react";
 import { Helmet } from "react-helmet-async";
 import PortfolioGrid from "../components/PortfolioGrid";

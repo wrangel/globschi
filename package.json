@@ -3,9 +3,9 @@
   "version": "1.4.0",
   "private": true,
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.717.0",
-    "@aws-sdk/lib-storage": "^3.717.0",
-    "@aws-sdk/s3-request-presigner": "^3.717.0",
+    "@aws-sdk/client-s3": "^3.721.0",
+    "@aws-sdk/lib-storage": "^3.721.0",
+    "@aws-sdk/s3-request-presigner": "^3.721.0",
     "@photo-sphere-viewer/autorotate-plugin": "^5.11.4",
     "@photo-sphere-viewer/core": "^5.11.4",
     "chardet": "^2.0.0",

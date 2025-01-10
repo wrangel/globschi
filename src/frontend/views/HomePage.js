@@ -82,17 +82,6 @@ const HomePage = () => {
             style={{ cursor: "pointer" }}
           />
         </div>
-        <div className={styles.helpContainer}>
-          <div className={styles.helpText}>
-            If you find yourself in a panorama popup: Click on the globe to
-            explore every nook and cranny. Click again to move on to the next
-            adventure! 🚀
-          </div>
-          <ArrowIcon className={styles.arrow} />
-        </div>
-        <div className={styles.globeButtonContainer}>
-          <GlobeButton className={fabStyles.fabNoHover} />
-        </div>
       </div>
     </>
   );

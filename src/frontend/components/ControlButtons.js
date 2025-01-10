@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect } from "react";
 import { useSwipeable } from "react-swipeable";
-import GlobeButton from "./GlobeButton";
 import styles from "../styles/Fab.module.css";
 
 const ControlButtons = ({
@@ -73,8 +72,17 @@ const ControlButtons = ({
               >
                 ⛶ {/* Fullscreen icon */}
               </button>
-              <GlobeButton onClick={toggleMode} />{" "}
-              {/* Use GlobeButton component */}
+              <button
+                className={`${styles.fab} ${
+                  isNavigationMode
+                    ? styles.navigationMode
+                    : styles.explorationMode
+                }`}
+                onClick={toggleMode}
+                aria-label="Toggle Exploration Mode"
+              >
+                🔍 {/* Magnifying glass icon */}
+              </button>
               <button
                 className={styles.fab}
                 onClick={onToggleMetadata}

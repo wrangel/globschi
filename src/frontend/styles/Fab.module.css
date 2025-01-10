@@ -41,20 +41,25 @@
   background-color: var(--fab-hover-color);
 }
 
-/* In src/frontend/styles/Fab.module.css */
 .fabNoHover {
-  pointer-events: none; /* Prevents hover and click interactions */
+  pointer-events: none;
 }
 
 .fabNoHover:hover {
-  background-color: var(
-    --fab-color
-  ); /* Keeps original background color on hover */
+  background-color: var(--fab-color);
 }
 
 .fab:focus {
   outline: none;
   box-shadow: 0px 0px 0px 3px rgba(66, 153, 225, 0.6);
+}
+
+.navigationMode {
+  background-color: var(--fab-color);
+}
+
+.explorationMode {
+  background-color: var(--fab-hover-color);
 }
 
 @media (max-width: 600px) {
@@ -70,7 +75,7 @@
 }
 
 .controlButtonsContainer {
-  z-index: 1100; /* Ensure this is high enough for ControlButtons */
+  z-index: 1100;
 }
 
 .fullscreen .fabMenu {
@@ -78,8 +83,8 @@
 }
 
 .fullscreenButton {
-  background-color: transparent; /* Remove the bubble background */
-  color: rgba(185, 185, 185, 0.7); /* Grey color for the X */
-  box-shadow: none; /* Remove the box shadow */
-  font-size: 24px; /* Increase font size for better visibility */
+  background-color: transparent;
+  color: rgba(185, 185, 185, 0.7);
+  box-shadow: none;
+  font-size: 24px;
 }

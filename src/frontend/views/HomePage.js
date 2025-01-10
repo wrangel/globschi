@@ -3,11 +3,8 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
-import GlobeButton from "../components/GlobeButton";
 import styles from "../styles/Home.module.css";
-import fabStyles from "../styles/Fab.module.css";
 import { DOMAIN } from "../constants";
-import { ReactComponent as ArrowIcon } from "../assets/arrow.svg";
 
 const HomePage = () => {
   const navigate = useNavigate();

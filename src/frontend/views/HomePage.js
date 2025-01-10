@@ -3,11 +3,8 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
-import GlobeButton from "../components/GlobeButton";
 import styles from "../styles/Home.module.css";
-import fabStyles from "../styles/Fab.module.css";
 import { DOMAIN } from "../constants";
-import { ReactComponent as ArrowIcon } from "../assets/arrow.svg";
 
 const HomePage = () => {
   const navigate = useNavigate();
@@ -81,17 +78,6 @@ const HomePage = () => {
             onClick={handleImageClick}
             style={{ cursor: "pointer" }}
           />
-        </div>
-        <div className={styles.helpContainer}>
-          <div className={styles.helpText}>
-            If you find yourself in a panorama popup: Click on the globe to
-            explore every nook and cranny. Click again to move on to the next
-            adventure! 🚀
-          </div>
-          <ArrowIcon className={styles.arrow} />
-        </div>
-        <div className={styles.globeButtonContainer}>
-          <GlobeButton className={fabStyles.fabNoHover} />
         </div>
       </div>
     </>

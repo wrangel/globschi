@@ -14,7 +14,7 @@
     "dotenv": "^16.4.7",
     "dotenv-vault": "^1.26.2",
     "eslint-config-react-app": "^7.0.1",
-    "exifreader": "^4.26.0",
+    "exifreader": "^4.26.1",
     "express": "^4.21.2",
     "iconv-lite": "^0.6.3",
     "leaflet": "^1.9.4",

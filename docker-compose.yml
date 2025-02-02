@@ -13,8 +13,6 @@ services:
     image: wrangel/globschi-backend:1.4
     ports:
       - "8081:8081"
-    labels:
-      - "com.centurylinklabs.watchtower.enable=true"
 
   frontend:
     platform: linux/amd64
@@ -32,26 +30,6 @@ services:
       - REACT_APP_API_URL=${REACT_APP_API_URL}
       - REACT_APP_GOOGLE_MAPS_API_KEY=${REACT_APP_GOOGLE_MAPS_API_KEY}
       - REACT_APP_MAPBOX_ACCESS_TOKEN=${REACT_APP_MAPBOX_ACCESS_TOKEN}
-    labels:
-      - "com.centurylinklabs.watchtower.enable=true"
-
-  watchtower:
-    image: containrrr/watchtower:latest
-    container_name: watchtower
-    restart: always
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - /volume1/homes/Matthias/Drive/Programming/globschi/scripts:/scripts
-    command: >
-      --interval 300
-      --cleanup
-      --label-enable
-      wrangel/globschi-frontend wrangel/globschi-backend
-    environment:
-      - WATCHTOWER_LIFECYCLE_HOOKS=true
-      - WATCHTOWER_NOTIFICATION_URL=shoutrrr://script:///scripts/prod-deploy.sh
-      - WATCHTOWER_INCLUDE_RESTARTING=true
-      - WATCHTOWER_DEBUG=true
 
 networks:
   default:

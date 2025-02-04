@@ -29,7 +29,7 @@ const HomePage = () => {
   return (
     <>
       <Helmet>
-        <title>Abstract Altitudes - Drone-borne Aerial Imagery</title>
+        <title>Abstract Altitudes - Aerial Imagery</title>
         <link rel="canonical" href={DOMAIN} />
         <meta
           name="description"
@@ -37,7 +37,7 @@ const HomePage = () => {
         />
         <meta
           property="og:title"
-          content="Abstract Altitudes - Drone-borne Aerial Imagery"
+          content="Abstract Altitudes - Aerial Imagery"
         />
         <meta
           property="og:description"
@@ -47,10 +47,7 @@ const HomePage = () => {
         <meta property="og:url" content={DOMAIN} />
         <meta property="og:type" content="website" />
         <meta name="x:card" content="summary_large_image" />
-        <meta
-          name="x:title"
-          content="Abstract Altitudes - Drone-borne Aerial Imagery"
-        />
+        <meta name="x:title" content="Abstract Altitudes - Aerial Imagery" />
         <meta
           name="x:description"
           content="Explore drone-captured aerial imagery. From lofty heights, we muse on marvels."
@@ -68,7 +65,7 @@ const HomePage = () => {
             <br />
             <span className={styles.break}>we muse on marvels</span>
           </h1>
-          <h2>Drone-borne aerial imagery</h2>
+          <h2>Aerial imagery</h2>
         </div>
         <div className={styles.imageWrapper}>
           <img

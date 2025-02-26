@@ -3,12 +3,12 @@
   "version": "1.4.0",
   "private": true,
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.741.0",
-    "@aws-sdk/lib-storage": "^3.741.0",
-    "@aws-sdk/s3-request-presigner": "^3.741.0",
-    "@photo-sphere-viewer/autorotate-plugin": "^5.11.5",
-    "@photo-sphere-viewer/core": "^5.11.5",
-    "chardet": "^2.0.0",
+    "@aws-sdk/client-s3": "^3.750.0",
+    "@aws-sdk/lib-storage": "^3.750.0",
+    "@aws-sdk/s3-request-presigner": "^3.750.0",
+    "@photo-sphere-viewer/autorotate-plugin": "^5.12.1",
+    "@photo-sphere-viewer/core": "^5.12.1",
+    "chardet": "^2.1.0",
     "cors": "^2.8.5",
     "depcheck": "^1.4.7",
     "dotenv": "^16.4.7",
@@ -18,7 +18,7 @@
     "express": "^4.21.2",
     "iconv-lite": "^0.6.3",
     "leaflet": "^1.9.4",
-    "mongoose": "^8.9.7",
+    "mongoose": "^8.10.2",
     "node-cache": "^5.1.2",
     "panzoom": "^9.4.3",
     "prop-types": "^15.8.1",
@@ -67,16 +67,17 @@
     "overrides": {
       "three@<0.125.0": ">=0.125.0",
       "postcss@<8.4.31": ">=8.4.31",
-      "nth-check@<2.0.1": ">=2.0.1"
+      "nth-check@<2.0.1": ">=2.0.1",
+      "serialize-javascript@<6.0.2": ">=6.0.2"
     }
   },
   "devDependencies": {
-    "@eslint/js": "^9.19.0",
+    "@eslint/js": "^9.21.0",
     "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.2.0",
     "eslint": "^8.57.1",
     "eslint-plugin-react": "^7.37.4",
-    "globals": "^15.14.0"
+    "globals": "^15.15.0"
   }
 }

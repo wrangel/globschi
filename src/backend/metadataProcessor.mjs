@@ -4,7 +4,7 @@ import { MEDIA_PAGES } from "./constants.mjs";
 import logger from "./helpers/logger.mjs";
 
 /**
- * Beautifies and processes MongoDB data.
+ * Beautifies MongoDB data and provides local media URLs.
  * @param {Array} mongoData - Data from MongoDB.
  * @returns {Array} Beautified data.
  * @throws {Error} If there's an issue processing the data.
@@ -32,11 +32,13 @@ function validateInput(mongoData) {
 }
 
 /**
- * Processes a single document, adding media URLs and formatting metadata.
+ * Processes a single document to create local media URLs and format metadata.
  * @param {Object} doc - MongoDB document.
  * @returns {Object} Processed document.
  */
 function processDocument(doc) {
+  const filename = doc.name || "default"; // Default to 'default' if name is missing
+
   return {
     id: doc._id.toString(),
     viewer: doc.type === MEDIA_PAGES[1] ? "pano" : "img",
@@ -44,8 +46,8 @@ function processDocument(doc) {
     metadata: formatMetadata(doc),
     latitude: doc.latitude,
     longitude: doc.longitude,
-    thumbnailUrl: `/media/${doc.filename}`, // Local file path for thumbnail
-    actualUrl: `/media/${doc.filename}`, // Local file path for actual media
+    thumbnailUrl: `/media/${filename}.webp`, // Construct local media URL
+    actualUrl: `/media/${filename}.webp`, // Construct local media URL
   };
 }
 

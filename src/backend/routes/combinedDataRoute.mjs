@@ -1,5 +1,3 @@
-// src/backend/routes/combinedDataRoute.mjs
-
 import express from "express";
 import { getCombinedData } from "../dataHandler.mjs";
 import { getCachedData, setCachedData, invalidateCache } from "../cache.mjs";
@@ -20,8 +18,12 @@ router.get("/combined-data", async (req, res) => {
   }
 
   try {
+    // Fetch combined data using the updated logic
     const combinedData = await getCombinedData();
-    setCachedData(cacheKey, combinedData); // Cache the fetched data
+
+    // Cache the fetched data
+    setCachedData(cacheKey, combinedData);
+
     res.status(200).json(combinedData);
   } catch (error) {
     console.error("Error fetching combined data:", error);
@@ -29,7 +31,10 @@ router.get("/combined-data", async (req, res) => {
   }
 });
 
-// Example route to modify data (this is just an example; replace with actual routes)
+/**
+ * POST /update-data
+ * Example route to modify data (replace with actual implementation).
+ */
 router.post("/update-data", async (req, res) => {
   try {
     // Assume update logic here...

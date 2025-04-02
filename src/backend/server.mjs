@@ -1,5 +1,3 @@
-// src/backend/server.mjs
-
 import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
@@ -32,8 +30,6 @@ const PORT = process.env.PORT || 8081;
 
 // CORS configuration
 const corsOrigin = ["http://localhost:3000", "drone.ellesmere.synology.me"];
-
-// Enable CORS with dynamic origin
 app.use(
   cors({
     origin: corsOrigin,
@@ -43,9 +39,9 @@ app.use(
 
 // Middleware to log request origin
 app.use((req, res, next) => {
-  const origin = req.headers.origin; // Get the origin from the request headers
-  logger.info(`Request received from origin: ${origin}`); // Log the origin
-  next(); // Proceed to the next middleware or route handler
+  const origin = req.headers.origin;
+  logger.info(`Request received from origin: ${origin}`);
+  next();
 });
 
 // Connect to MongoDB
@@ -59,6 +55,14 @@ const connectDB = () =>
       logger.error("MongoDB connection error:", err);
       throw err;
     });
+
+// Serve static files from the shared folder
+const sharedFolderPath =
+  process.env.NODE_ENV === "production"
+    ? "/volume1/docker/Webseiten-Medien" // TODO add to .env
+    : "/Volumes/docker/Webseiten-Medien";
+
+app.use("/media", express.static(sharedFolderPath));
 
 // Serve static files from the React app
 const __filename = fileURLToPath(import.meta.url);
@@ -104,7 +108,6 @@ app.use((err, req, res, next) => {
 // Check if this module is the main module
 const isMainModule = import.meta.url === `file://${process.argv[1]}`;
 
-// Start server if this is the main module
 if (isMainModule) {
   connectDB()
     .then(() => {

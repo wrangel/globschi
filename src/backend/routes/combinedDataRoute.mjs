@@ -1,3 +1,5 @@
+// src/backend/routes/com.mjs
+
 import express from "express";
 import { getCombinedData } from "../dataHandler.mjs";
 import { getCachedData, setCachedData, invalidateCache } from "../cache.mjs";
@@ -11,17 +13,19 @@ const router = express.Router();
 router.get("/combined-data", async (req, res) => {
   const cacheKey = "combined-data"; // Define a cache key
 
-  // Check if the data is cached
-  const cachedData = getCachedData(cacheKey);
-  if (cachedData) {
-    return res.status(200).json(cachedData); // Return cached data
-  }
-
   try {
-    // Fetch combined data using the updated logic
-    const combinedData = await getCombinedData();
+    console.log("Checking cache...");
+    const cachedData = getCachedData(cacheKey);
+    if (cachedData) {
+      console.log("Cache hit! Returning cached data.");
+      return res.status(200).json(cachedData); // Return cached data
+    }
 
-    // Cache the fetched data
+    console.log("Cache miss. Fetching combined data...");
+    const combinedData = await getCombinedData();
+    console.log("Combined data fetched successfully:", combinedData);
+
+    console.log("Setting cache...");
     setCachedData(cacheKey, combinedData);
 
     res.status(200).json(combinedData);

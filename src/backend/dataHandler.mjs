@@ -1,3 +1,5 @@
+// src/backend/dataHandler.mjs
+
 import { Island } from "./models/islandModel.mjs";
 import { beautify } from "./metadataProcessor.mjs";
 
@@ -8,17 +10,20 @@ import { beautify } from "./metadataProcessor.mjs";
  */
 export async function getCombinedData() {
   try {
-    // Fetch data from MongoDB
+    console.log("Fetching data from MongoDB...");
     const mongoData = await fetchMongoData();
+    console.log("MongoDB data fetched successfully:", mongoData);
 
-    // Add media URLs based on filenames stored in MongoDB
     const combinedData = mongoData.map((item) => ({
       ...item,
-      mediaUrl: `/media/${item.filename}`, // Replace 'filename' with the actual field in your schema
+      mediaUrl: `/media/${item.filename}`, // Ensure 'filename' exists
     }));
+    console.log("Combined data constructed successfully:", combinedData);
 
     // Optionally process the data further using beautify
     const processedData = await beautify(combinedData);
+    console.log("Processed combined data:", processedData);
+
     return processedData;
   } catch (error) {
     console.error("Error in getCombinedData:", error);
@@ -33,14 +38,17 @@ export async function getCombinedData() {
  */
 async function fetchMongoData() {
   try {
-    // Fetch data sorted by dateTime in descending order
+    console.log("Querying MongoDB for Island documents...");
     const data = await Island.find().lean().sort({ dateTime: -1 }).exec();
+    console.log("MongoDB query completed. Fetched documents:", data);
+
     if (!data || data.length === 0) {
-      console.warn("No data found in MongoDB");
+      console.warn("No documents found in the Island collection.");
     }
+
     return data;
   } catch (error) {
-    console.error("Error fetching data from MongoDB:", error);
+    console.error("Error querying MongoDB:", error);
     throw new Error("Failed to fetch data from MongoDB");
   }
 }

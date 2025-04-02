@@ -1,24 +1,25 @@
-// src/backend/dataHandler.mjs
-
 import { Island } from "./models/islandModel.mjs";
 import { beautify } from "./metadataProcessor.mjs";
 
 /**
- * Fetches and combines data from MongoDB and AWS S3.
+ * Fetches and combines data from MongoDB and local media files.
  * @returns {Promise<Array>} Combined and processed data.
  * @throws {Error} If there's an issue fetching or processing the data.
  */
 export async function getCombinedData() {
   try {
-    // Fetch data from MongoDB and S3 concurrently
-    const [mongoData, presignedUrls] = await Promise.all([
-      fetchMongoData(),
-      getUrls(),
-    ]);
+    // Fetch data from MongoDB
+    const mongoData = await fetchMongoData();
 
-    // Combine and process the data
-    const combinedData = await beautify(mongoData, presignedUrls);
-    return combinedData;
+    // Add media URLs based on filenames stored in MongoDB
+    const combinedData = mongoData.map((item) => ({
+      ...item,
+      mediaUrl: `/media/${item.filename}`, // Replace 'filename' with the actual field in your schema
+    }));
+
+    // Optionally process the data further using beautify
+    const processedData = await beautify(combinedData);
+    return processedData;
   } catch (error) {
     console.error("Error in getCombinedData:", error);
     throw new Error("Failed to fetch or process combined data");
@@ -33,7 +34,7 @@ export async function getCombinedData() {
 async function fetchMongoData() {
   try {
     // Fetch data sorted by dateTime in descending order
-    const data = await Island.find().lean().sort({ dateTime: -1 }).exec(); // -1 for descending order
+    const data = await Island.find().lean().sort({ dateTime: -1 }).exec();
     if (!data || data.length === 0) {
       console.warn("No data found in MongoDB");
     }

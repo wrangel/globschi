@@ -38,7 +38,7 @@ function validateInput(mongoData) {
  */
 function processDocument(doc) {
   const filename = doc.name || "default"; // Default to 'default' if name is missing
-
+  const actualSubfolder = doc.type;
   return {
     id: doc._id.toString(),
     viewer: doc.type === MEDIA_PAGES[1] ? "pano" : "img",
@@ -46,8 +46,8 @@ function processDocument(doc) {
     metadata: formatMetadata(doc),
     latitude: doc.latitude,
     longitude: doc.longitude,
-    thumbnailUrl: `/media/${filename}.webp`, // Construct local media URL
-    actualUrl: `/media/${filename}.webp`, // Construct local media URL
+    thumbnailUrl: `/thumbnails/${filename}.webp`, // Construct thumbnail URL
+    actualUrl: `/${actualSubfolder}/${filename}.webp`, // Construct actual URL
   };
 }
 

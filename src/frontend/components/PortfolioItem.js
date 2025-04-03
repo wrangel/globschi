@@ -24,6 +24,9 @@ const PortfolioItem = memo(({ item, onItemClick }) => {
     return null; // Gracefully handle invalid item data
   }
 
+  console.log("PortfolioItem: item =", item);
+  console.log("PortfolioItem: thumbnailUrl =", item.thumbnailUrl);
+
   return (
     <div
       className={styles.portfolioItem}

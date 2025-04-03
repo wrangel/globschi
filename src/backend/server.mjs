@@ -59,10 +59,10 @@ const connectDB = () =>
     });
 
 // Serve static files from the shared folder
-const sharedFolderPath =
-  process.env.NODE_ENV === "production"
+const sharedFolderPath = "/Volumes/docker/Webseiten-Medien"; // TODO add to .env
+/*process.env.NODE_ENV === "production"
     ? "/volume1/docker/Webseiten-Medien" // TODO add to .env
-    : "/Volumes/docker/Webseiten-Medien";
+    : "/Volumes/docker/Webseiten-Medien";*/
 
 app.use("/media", express.static(sharedFolderPath));
 

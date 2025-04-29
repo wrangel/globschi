@@ -1,5 +1,5 @@
 # Use a smaller base image with fewer vulnerabilities
-FROM node:23-slim
+FROM node:slim
 
 # Set working directory
 WORKDIR /app

@@ -22,6 +22,7 @@ error.log
 .env*
 .env.vault
 !.env.vault
+*.pem
 
 Material/
 logs/

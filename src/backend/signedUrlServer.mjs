@@ -1,17 +1,24 @@
 // src/backend/signedUrlServer.mjs
 
-import { GetObjectCommand } from "@aws-sdk/client-s3";
-import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { listS3BucketContents } from "./helpers/awsHelpers.mjs";
-import { s3Client } from "./helpers/awsHelpers.mjs";
 import { ACTUAL_ID, THUMBNAIL_ID, EXPIRATION_TIME } from "./constants.mjs";
 import { loadEnv } from "./loadEnv.mjs";
 import { getId } from "./helpers/helpers.mjs";
+import { getSignedUrl as getCloudFrontSignedUrl } from "@aws-sdk/cloudfront-signer";
+import fs from "fs";
+import path from "path";
 
 loadEnv();
 
+// Read CloudFront signing configuration
+const CLOUDFRONT_KEY_PAIR_ID = process.env.CLOUDFRONT_KEY_PAIR_ID;
+const CLOUDFRONT_DOMAIN = process.env.CLOUDFRONT_DOMAIN;
+// Read private key from secrets/private_key.pem
+const privateKeyPath = path.resolve(process.cwd(), "secrets/private_key.pem");
+const CLOUDFRONT_PRIVATE_KEY = fs.readFileSync(privateKeyPath, "utf8");
+
 /**
- * Generates signed URLs for S3 objects.
+ * Generates signed URLs for CloudFront objects.
  * @returns {Promise<Array>} Array of objects with name and URLs.
  */
 export async function getUrls() {
@@ -27,7 +34,7 @@ export async function getUrls() {
 }
 
 /**
- * Generates signed URLs for each object in the bucket.
+ * Generates CloudFront signed URLs for each object in the bucket.
  * @param {Array} contents - Bucket contents.
  * @returns {Promise<Array>} Array of objects with id, type, and signed URL.
  */
@@ -36,14 +43,21 @@ async function generateSignedUrls(contents) {
     contents.map(async (content) => {
       const key = content.Key;
       const type = key.startsWith(THUMBNAIL_ID) ? THUMBNAIL_ID : ACTUAL_ID;
+      // Build the CloudFront URL
+      const url = `https://${CLOUDFRONT_DOMAIN}/${key}`;
+      // Set expiration date (CloudFront expects an ISO string or Date)
+      const expires = new Date(Date.now() + EXPIRATION_TIME * 1000);
+      // Generate CloudFront signed URL
+      const sigUrl = getCloudFrontSignedUrl({
+        url,
+        keyPairId: CLOUDFRONT_KEY_PAIR_ID,
+        privateKey: CLOUDFRONT_PRIVATE_KEY,
+        dateLessThan: expires.toISOString(),
+      });
       return {
         id: getId(key),
         type,
-        sigUrl: await getSignedUrl(
-          s3Client,
-          new GetObjectCommand({ Bucket: process.env.SITE_BUCKET, Key: key }),
-          { expiresIn: EXPIRATION_TIME }
-        ),
+        sigUrl,
       };
     })
   );

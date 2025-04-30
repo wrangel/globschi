@@ -8,11 +8,14 @@ services:
       - NODE_ENV=production
       - DOTENV_KEY=${DOTENV_KEY}
       - PORT=8081
+      - CLOUDFRONT_DOMAIN=${CLOUDFRONT_DOMAIN}
+      - CLOUDFRONT_KEY_PAIR_ID=${CLOUDFRONT_KEY_PAIR_ID}
+      # Add any other env vars needed by your backend
+    volumes:
+      - ./secrets:/app/secrets:ro # Mount secrets folder read-only
     image: wrangel/globschi-backend:1.4
     ports:
       - "8081:8081"
-    volumes:
-      - ./secrets:/app/secrets:ro # Mount secrets folder read-only
 
   frontend:
     platform: linux/amd64
@@ -26,7 +29,7 @@ services:
     image: wrangel/globschi-frontend:1.4
     ports:
       - "3000:80"
-    # Do NOT include environment block for frontend to avoid secrets in ENV
+    # No environment block for frontend to avoid leaking secrets
 
 networks:
   default:

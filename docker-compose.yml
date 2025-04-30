@@ -11,6 +11,8 @@ services:
     image: wrangel/globschi-backend:1.4
     ports:
       - "8081:8081"
+    volumes:
+      - ./secrets:/app/secrets:ro # Mount secrets folder read-only
 
   frontend:
     platform: linux/amd64

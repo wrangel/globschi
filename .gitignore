@@ -27,3 +27,6 @@ Material/
 logs/
 scripts/prod-deploy.sh
 backend/management/manipulateMongo.mjs
+
+secrets/
+*.pem

@@ -25,5 +25,6 @@ error.log
 
 Material/
 logs/
+secrets/
 scripts/prod-deploy.sh
 backend/management/manipulateMongo.mjs

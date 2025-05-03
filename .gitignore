@@ -22,9 +22,11 @@ error.log
 .env*
 .env.vault
 !.env.vault
-*.pem
 
 Material/
 logs/
 scripts/prod-deploy.sh
 backend/management/manipulateMongo.mjs
+ 
+secrets/
+*.pem

@@ -2,7 +2,8 @@
 
 import React, { useEffect } from "react";
 import { Helmet } from "react-helmet-async";
-import { MapContainer, TileLayer, Marker, useMap } from "react-leaflet";
+import { MapContainer, TileLayer, Marker } from "react-leaflet";
+// import { useMap } from "react-leaflet"; // Not needed now
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import LoadingErrorHandler from "../components/LoadingErrorHandler";
@@ -28,35 +29,32 @@ const redPinIcon = new L.Icon({
   shadowSize: ICON_SIZES.SHADOW,
 });
 
-const FitBounds = ({ items }) => {
-  const map = useMap();
-
-  useEffect(() => {
-    if (items.length > 0) {
-      const latitudes = items.map((item) => item.latitude);
-      const longitudes = items.map((item) => item.longitude);
-
-      // Adjust offsets for tighter fit
-      const latOffset = 0.5;
-      const lngOffset = 0.5;
-
-      const bounds = [
-        [
-          Math.min(...latitudes) - latOffset,
-          Math.min(...longitudes) - lngOffset,
-        ],
-        [
-          Math.max(...latitudes) + latOffset,
-          Math.max(...longitudes) + lngOffset,
-        ],
-      ];
-
-      map.fitBounds(bounds, { padding: [10, 10] }); // Optional padding
-    }
-  }, [items, map]);
-
-  return null;
-};
+/*
+// ------ FitBounds logic commented out ------
+// const FitBounds = ({ items }) => {
+//   const map = useMap();
+//   useEffect(() => {
+//     if (items.length > 0) {
+//       const latitudes = items.map((item) => item.latitude);
+//       const longitudes = items.map((item) => item.longitude);
+//       const latOffset = 0.5;
+//       const lngOffset = 0.5;
+//       const bounds = [
+//         [
+//           Math.min(...latitudes) - latOffset,
+//           Math.min(...longitudes) - lngOffset,
+//         ],
+//         [
+//           Math.max(...latitudes) + latOffset,
+//           Math.max(...longitudes) + lngOffset,
+//         ],
+//       ];
+//       map.fitBounds(bounds, { padding: [10, 10] });
+//     }
+//   }, [items, map]);
+//   return null;
+// };
+*/
 
 const MapPage = () => {
   const { items, isLoading: isItemsLoading, error: itemsError } = useItems();
@@ -124,7 +122,7 @@ const MapPage = () => {
               />
             ))}
 
-            <FitBounds items={items} />
+            {/* <FitBounds items={items} /> */}
           </MapContainer>
 
           {isModalOpen && (

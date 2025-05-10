@@ -1,6 +1,18 @@
+// src/frontend/hooks/useItems.js
+
 import { useState, useEffect, useCallback } from "react";
 
 let cachedItems = null;
+
+function isValidItem(item) {
+  return (
+    item &&
+    typeof item.latitude === "number" &&
+    !isNaN(item.latitude) &&
+    typeof item.longitude === "number" &&
+    !isNaN(item.longitude)
+  );
+}
 
 export const useItems = () => {
   const [items, setItems] = useState(cachedItems || []);
@@ -14,13 +26,13 @@ export const useItems = () => {
     }
     try {
       setIsLoading(true);
-      setError(null); // Reset error state before fetching
+      setError(null);
 
-      const apiUrl = process.env.REACT_APP_API_URL || "http://localhost:8081"; // Fallback URL
+      const apiUrl = process.env.REACT_APP_API_URL || "http://localhost:8081";
       const url = `${apiUrl}${apiUrl.endsWith("/") ? "" : "/"}combined-data`;
 
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+      const timeoutId = setTimeout(() => controller.abort(), 10000);
 
       const response = await fetch(url, { signal: controller.signal });
       clearTimeout(timeoutId);
@@ -28,9 +40,31 @@ export const useItems = () => {
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
+
       const data = await response.json();
-      setItems(data);
-      cachedItems = data;
+
+      // Defensive validation and filtering
+      if (!Array.isArray(data)) {
+        console.error("Fetched data is not an array:", data);
+        setItems([]);
+        cachedItems = [];
+        return;
+      }
+
+      const validItems = data.filter(isValidItem);
+
+      if (validItems.length !== data.length) {
+        const invalidItems = data.filter((item) => !isValidItem(item));
+        console.warn(
+          `Filtered out ${
+            data.length - validItems.length
+          } invalid items from API response:`,
+          invalidItems
+        );
+      }
+
+      setItems(validItems);
+      cachedItems = validItems;
     } catch (e) {
       console.error("Error fetching data:", e);
       setError(

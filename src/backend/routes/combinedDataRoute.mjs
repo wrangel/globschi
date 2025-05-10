@@ -41,12 +41,14 @@ router.get("/combined-data", async (req, res) => {
   try {
     const combinedData = await getCombinedData();
 
-    // Validate items
+    // Validate items (triggered by http://localhost:8081/api/combined-data)
     const invalidItems = combinedData.filter((item) => !isValidItem(item));
     if (invalidItems.length > 0) {
       console.error("Found invalid items:", invalidItems);
       // Exit process with failure code 1 after logging
       process.exit(1);
+    } else {
+      console.error("All items are valid");
     }
 
     setCachedData(cacheKey, combinedData);

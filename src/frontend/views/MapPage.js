@@ -1,11 +1,8 @@
 // src/frontend/views/MapPage.js
 
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { Helmet } from "react-helmet-async";
-import { MapContainer, TileLayer, Marker } from "react-leaflet";
-// import { useMap } from "react-leaflet"; // Not needed now
-import L from "leaflet";
-import "leaflet/dist/leaflet.css";
+import { APIProvider, Map, Marker } from "@vis.gl/react-google-maps";
 import LoadingErrorHandler from "../components/LoadingErrorHandler";
 import ViewerPopup from "../components/ViewerPopup";
 import { useItems } from "../hooks/useItems";
@@ -15,46 +12,48 @@ import {
   MAP_INITIAL_CENTER,
   MAP_INITIAL_ZOOM,
   ICON_URLS,
-  ICON_SIZES,
   DOMAIN,
 } from "../constants";
 import styles from "../styles/Map.module.css";
 
-const redPinIcon = new L.Icon({
-  iconUrl: ICON_URLS.RED_MARKER,
-  shadowUrl: ICON_URLS.MARKER_SHADOW,
-  iconSize: ICON_SIZES.MARKER,
-  iconAnchor: ICON_SIZES.MARKER_ANCHOR,
-  popupAnchor: ICON_SIZES.POPUP_ANCHOR,
-  shadowSize: ICON_SIZES.SHADOW,
-});
+// Google Maps API key from .env
+const GOOGLE_MAPS_API_KEY = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
 
-/*
-// ------ FitBounds logic commented out ------
-// const FitBounds = ({ items }) => {
-//   const map = useMap();
-//   useEffect(() => {
-//     if (items.length > 0) {
-//       const latitudes = items.map((item) => item.latitude);
-//       const longitudes = items.map((item) => item.longitude);
-//       const latOffset = 0.5;
-//       const lngOffset = 0.5;
-//       const bounds = [
-//         [
-//           Math.min(...latitudes) - latOffset,
-//           Math.min(...longitudes) - lngOffset,
-//         ],
-//         [
-//           Math.max(...latitudes) + latOffset,
-//           Math.max(...longitudes) + lngOffset,
-//         ],
-//       ];
-//       map.fitBounds(bounds, { padding: [10, 10] });
-//     }
-//   }, [items, map]);
-//   return null;
-// };
-*/
+// Helper: calculate bounds for all markers
+function getLatLngBounds(items) {
+  if (!Array.isArray(items) || items.length === 0) return null;
+  let minLat = Infinity,
+    maxLat = -Infinity,
+    minLng = Infinity,
+    maxLng = -Infinity;
+  items.forEach(({ latitude, longitude }) => {
+    if (typeof latitude === "number" && typeof longitude === "number") {
+      minLat = Math.min(minLat, latitude);
+      maxLat = Math.max(maxLat, latitude);
+      minLng = Math.min(minLng, longitude);
+      maxLng = Math.max(maxLng, longitude);
+    }
+  });
+  if (
+    isFinite(minLat) &&
+    isFinite(maxLat) &&
+    isFinite(minLng) &&
+    isFinite(maxLng) &&
+    minLat < maxLat &&
+    minLng < maxLng
+  ) {
+    // Add a small offset for padding
+    const latOffset = 0.5,
+      lngOffset = 0.5;
+    return {
+      south: minLat - latOffset,
+      west: minLng - lngOffset,
+      north: maxLat + latOffset,
+      east: maxLng + lngOffset,
+    };
+  }
+  return null;
+}
 
 const MapPage = () => {
   const { items, isLoading: isItemsLoading, error: itemsError } = useItems();
@@ -69,13 +68,28 @@ const MapPage = () => {
     handlePreviousItem,
   } = useItemViewer(items);
 
+  // Ref to the map instance for fitBounds
+  const mapRef = useRef(null);
+
+  // Fit bounds when items change
   useEffect(() => {
-    if (!isItemsLoading) {
-      stopLoading();
+    if (mapRef.current && Array.isArray(items) && items.length > 0) {
+      const bounds = getLatLngBounds(items);
+      if (bounds) {
+        // Google Maps API: fitBounds expects a LatLngBoundsLiteral
+        mapRef.current.fitBounds({
+          north: bounds.north,
+          south: bounds.south,
+          east: bounds.east,
+          west: bounds.west,
+        });
+      }
     }
-    if (itemsError) {
-      setErrorMessage(itemsError);
-    }
+  }, [items]);
+
+  useEffect(() => {
+    if (!isItemsLoading) stopLoading();
+    if (itemsError) setErrorMessage(itemsError);
   }, [isItemsLoading, itemsError, stopLoading, setErrorMessage]);
 
   return (
@@ -90,41 +104,36 @@ const MapPage = () => {
       </Helmet>
       <LoadingErrorHandler isLoading={isLoading} error={error}>
         <div className={styles.mapPageContainer}>
-          <MapContainer
-            center={MAP_INITIAL_CENTER}
-            zoom={MAP_INITIAL_ZOOM}
-            className={`${styles.leafletContainer} custom-map`}
-            style={{ height: "100vh", width: "100%" }}
-            zoomControl={true}
-            minZoom={2}
-            maxZoom={18}
-            scrollWheelZoom={true}
-            doubleClickZoom={true}
-            touchZoom={true}
-          >
-            <TileLayer
-              url="https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}"
-              attribution="© Mapbox © OpenStreetMap"
-              tileSize={512}
-              zoomOffset={-1}
-              id="mapbox/satellite-v9"
-              accessToken={process.env.REACT_APP_MAPBOX_ACCESS_TOKEN}
-            />
-
-            {items.map((item) => (
-              <Marker
-                key={item.id}
-                position={[item.latitude, item.longitude]}
-                icon={redPinIcon}
-                eventHandlers={{
-                  click: () => handleItemClick(item),
-                }}
-              />
-            ))}
-
-            {/* <FitBounds items={items} /> */}
-          </MapContainer>
-
+          <APIProvider apiKey={GOOGLE_MAPS_API_KEY}>
+            <Map
+              ref={mapRef}
+              style={{ height: "100vh", width: "100%" }}
+              defaultCenter={{
+                lat: MAP_INITIAL_CENTER[0],
+                lng: MAP_INITIAL_CENTER[1],
+              }}
+              defaultZoom={MAP_INITIAL_ZOOM}
+              gestureHandling="greedy"
+              disableDefaultUI={false}
+              mapId={process.env.REACT_APP_GOOGLE_MAP_ID} // Optional: for custom styling
+              onLoad={(mapInstance) => {
+                mapRef.current = mapInstance;
+              }}
+            >
+              {items.map((item) => (
+                <Marker
+                  key={item.id}
+                  position={{ lat: item.latitude, lng: item.longitude }}
+                  icon={{
+                    url: ICON_URLS.RED_MARKER, // Your red pin icon URL
+                    scaledSize: { width: 32, height: 32 }, // adjust as needed
+                  }}
+                  onClick={() => handleItemClick(item)}
+                />
+              ))}
+              {/* InfoWindow or popup logic can go here if needed */}
+            </Map>
+          </APIProvider>
           {isModalOpen && (
             <ViewerPopup
               item={selectedItem}

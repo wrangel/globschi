@@ -30,22 +30,36 @@ logger.info("Starting server...");
 const app = express();
 const PORT = process.env.PORT || 8081;
 
-// CORS configuration
-const corsOrigin = ["http://localhost:3000", "drone.ellesmere.synology.me"];
+// --- CORS configuration (robust version) ---
+const whitelist = [
+  "http://localhost:3000",
+  "drone.ellesmere.synology.me",
+  // Add more trusted origins as needed
+];
 
-// Enable CORS with dynamic origin
-app.use(
-  cors({
-    origin: corsOrigin,
-    credentials: true,
-  })
-);
+const corsOptions = {
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like curl, server-to-server, SSR, Docker/Nginx internal)
+    if (!origin) return callback(null, true);
+
+    // Allow whitelisted origins
+    if (whitelist.includes(origin)) {
+      return callback(null, true);
+    }
+
+    // Otherwise, block it
+    return callback(new Error("Not allowed by CORS"));
+  },
+  credentials: true,
+};
+
+app.use(cors(corsOptions));
 
 // Middleware to log request origin
 app.use((req, res, next) => {
-  const origin = req.headers.origin; // Get the origin from the request headers
-  logger.info(`Request received from origin: ${origin}`); // Log the origin
-  next(); // Proceed to the next middleware or route handler
+  const origin = req.headers.origin;
+  logger.info(`Request received from origin: ${origin}`);
+  next();
 });
 
 // Connect to MongoDB

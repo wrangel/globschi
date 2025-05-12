@@ -29,7 +29,6 @@ const MapPage = () => {
   const mapRef = useRef(null);
   const [mapLoaded, setMapLoaded] = useState(false);
 
-  // Fit bounds when items or map are ready
   useEffect(() => {
     if (
       mapLoaded &&
@@ -40,6 +39,7 @@ const MapPage = () => {
       items.length > 0
     ) {
       const bounds = new window.google.maps.LatLngBounds();
+
       items.forEach(({ latitude, longitude }) => {
         if (
           typeof latitude === "number" &&
@@ -47,15 +47,20 @@ const MapPage = () => {
           typeof longitude === "number" &&
           !isNaN(longitude)
         ) {
-          bounds.extend({ lat: latitude, lng: longitude });
+          bounds.extend(new window.google.maps.LatLng(latitude, longitude));
         }
       });
 
+      console.log("Fitting bounds:", bounds);
+
       if (items.length === 1) {
-        mapRef.current.setCenter(bounds.getCenter());
+        mapRef.current.panTo(bounds.getCenter());
         mapRef.current.setZoom(12);
+        console.log(
+          "Zoom after centering single marker:",
+          mapRef.current.getZoom()
+        );
       } else {
-        // Expand bounds by ~100km margin
         const marginKm = 100;
         const ne = bounds.getNorthEast();
         const sw = bounds.getSouthWest();
@@ -65,16 +70,23 @@ const MapPage = () => {
           marginKm / (111 * Math.cos((avgLat * Math.PI) / 180) || 1);
 
         const expandedBounds = new window.google.maps.LatLngBounds(
-          {
-            lat: sw.lat() - latMargin,
-            lng: sw.lng() - lngMargin,
-          },
-          {
-            lat: ne.lat() + latMargin,
-            lng: ne.lng() + lngMargin,
-          }
+          new window.google.maps.LatLng(
+            sw.lat() - latMargin,
+            sw.lng() - lngMargin
+          ),
+          new window.google.maps.LatLng(
+            ne.lat() + latMargin,
+            ne.lng() + lngMargin
+          )
         );
-        mapRef.current.fitBounds(expandedBounds, { padding: 50 });
+
+        console.log("Expanded bounds:", expandedBounds);
+
+        mapRef.current.fitBounds(expandedBounds, { padding: 100 });
+
+        setTimeout(() => {
+          console.log("Final zoom level:", mapRef.current.getZoom());
+        }, 1000);
       }
     }
   }, [items, mapLoaded]);
@@ -112,13 +124,13 @@ const MapPage = () => {
               onLoad={(mapInstance) => {
                 mapRef.current = mapInstance;
                 setMapLoaded(true);
+                console.log("Map instance loaded:", mapInstance);
               }}
             >
               {items.map((item) => (
                 <Marker
                   key={item.id}
                   position={{ lat: item.latitude, lng: item.longitude }}
-                  // No icon prop = default Google Maps pin!
                   onClick={() => handleItemClick(item)}
                 />
               ))}

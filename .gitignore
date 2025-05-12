@@ -24,6 +24,7 @@ error.log
 !.env.vault
 
 Material/
+secrets/
 logs/
 scripts/prod-deploy.sh
 backend/management/manipulateMongo.mjs

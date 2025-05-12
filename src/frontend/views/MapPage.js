@@ -16,55 +16,7 @@ import {
 } from "../constants";
 import styles from "../styles/Map.module.css";
 
-// Google Maps API key from .env
 const GOOGLE_MAPS_API_KEY = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
-
-// Helper: calculate bounds for all markers
-function getLatLngBounds(items) {
-  if (!Array.isArray(items) || items.length === 0) return null;
-  let minLat = Infinity,
-    maxLat = -Infinity,
-    minLng = Infinity,
-    maxLng = -Infinity;
-  items.forEach(({ latitude, longitude }) => {
-    if (typeof latitude === "number" && typeof longitude === "number") {
-      minLat = Math.min(minLat, latitude);
-      maxLat = Math.max(maxLat, latitude);
-      minLng = Math.min(minLng, longitude);
-      maxLng = Math.max(maxLng, longitude);
-    }
-  });
-  if (
-    isFinite(minLat) &&
-    isFinite(maxLat) &&
-    isFinite(minLng) &&
-    isFinite(maxLng)
-  ) {
-    return {
-      south: minLat,
-      west: minLng,
-      north: maxLat,
-      east: maxLng,
-    };
-  }
-  return null;
-}
-
-// Helper: expand bounds by ~marginKm (in kilometers)
-function expandBounds(bounds, marginKm = 100) {
-  // 1 degree latitude ≈ 111km
-  const latMargin = marginKm / 111;
-  // 1 degree longitude ≈ 111km * cos(latitude)
-  const avgLat = (bounds.north + bounds.south) / 2;
-  const lngMargin = marginKm / (111 * Math.cos((avgLat * Math.PI) / 180) || 1); // avoid div by 0
-
-  return {
-    north: bounds.north + latMargin,
-    south: bounds.south - latMargin,
-    east: bounds.east + lngMargin,
-    west: bounds.west - lngMargin,
-  };
-}
 
 const MapPage = () => {
   const { items, isLoading: isItemsLoading, error: itemsError } = useItems();
@@ -79,26 +31,21 @@ const MapPage = () => {
     handlePreviousItem,
   } = useItemViewer(items);
 
-  // Ref to the map instance for fitBounds
   const mapRef = useRef(null);
 
-  // Fit bounds when items change
   useEffect(() => {
-    if (mapRef.current && Array.isArray(items) && items.length > 0) {
+    if (mapRef.current && items.length > 0) {
+      const bounds = new window.google.maps.LatLngBounds();
+
+      items.forEach(({ latitude, longitude }) => {
+        bounds.extend(new window.google.maps.LatLng(latitude, longitude));
+      });
+
       if (items.length === 1) {
-        // Only one marker: pan to it and zoom in
-        mapRef.current.panTo({
-          lat: items[0].latitude,
-          lng: items[0].longitude,
-        });
-        mapRef.current.setZoom(12); // or your preferred zoom level
+        mapRef.current.panTo(bounds.getCenter());
+        mapRef.current.setZoom(12);
       } else {
-        // Multiple markers: fit expanded bounds
-        const bounds = getLatLngBounds(items);
-        if (bounds) {
-          const expanded = expandBounds(bounds, 100); // 100km margin
-          mapRef.current.fitBounds(expanded, { padding: 50 });
-        }
+        mapRef.current.fitBounds(bounds);
       }
     }
   }, [items]);
@@ -132,7 +79,7 @@ const MapPage = () => {
               defaultZoom={MAP_INITIAL_ZOOM}
               gestureHandling="greedy"
               disableDefaultUI={false}
-              mapId={process.env.REACT_APP_GOOGLE_MAP_ID} // Optional: for custom styling
+              mapId={process.env.REACT_APP_GOOGLE_MAP_ID}
               onLoad={(mapInstance) => {
                 mapRef.current = mapInstance;
               }}
@@ -142,13 +89,12 @@ const MapPage = () => {
                   key={item.id}
                   position={{ lat: item.latitude, lng: item.longitude }}
                   icon={{
-                    url: ICON_URLS.RED_MARKER, // Your red pin icon URL
-                    scaledSize: { width: 32, height: 32 }, // adjust as needed
+                    url: ICON_URLS.RED_MARKER,
+                    scaledSize: { width: 32, height: 32 },
                   }}
                   onClick={() => handleItemClick(item)}
                 />
               ))}
-              {/* InfoWindow or popup logic can go here if needed */}
             </Map>
           </APIProvider>
           {isModalOpen && (

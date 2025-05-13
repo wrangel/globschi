@@ -51,15 +51,9 @@ const MapPage = () => {
         }
       });
 
-      console.log("Fitting bounds:", bounds);
-
       if (items.length === 1) {
         mapRef.current.panTo(bounds.getCenter());
         mapRef.current.setZoom(12);
-        console.log(
-          "Zoom after centering single marker:",
-          mapRef.current.getZoom()
-        );
       } else {
         const marginKm = 100;
         const ne = bounds.getNorthEast();
@@ -80,13 +74,7 @@ const MapPage = () => {
           )
         );
 
-        console.log("Expanded bounds:", expandedBounds);
-
         mapRef.current.fitBounds(expandedBounds, { padding: 100 });
-
-        setTimeout(() => {
-          console.log("Final zoom level:", mapRef.current.getZoom());
-        }, 1000);
       }
     }
   }, [items, mapLoaded]);
@@ -124,7 +112,21 @@ const MapPage = () => {
               onLoad={(mapInstance) => {
                 mapRef.current = mapInstance;
                 setMapLoaded(true);
-                console.log("Map instance loaded:", mapInstance);
+              }}
+              options={{
+                streetViewControl: false, // Remove Pegman (Street View)
+                rotateControl: false, // Remove tilt/rotate control (<^>)
+                fullscreenControl: false, // Remove fullscreen button (upper right)
+                mapTypeControl: false, // Remove map/satellite toggle (upper left)
+                scaleControl: false, // Remove scale bar
+                cameraControl: false, // Remove Map Camera Control (new in 2025)
+                zoomControl: true, // Show zoom buttons
+                zoomControlOptions: {
+                  position:
+                    window.google && window.google.maps
+                      ? window.google.maps.ControlPosition.RIGHT_TOP
+                      : 3, // 3 is RIGHT_TOP in the Google Maps API
+                },
               }}
             >
               {items.map((item) => (

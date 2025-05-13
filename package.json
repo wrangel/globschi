@@ -3,10 +3,10 @@
   "version": "1.4.0",
   "private": true,
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.806.0",
+    "@aws-sdk/client-s3": "^3.808.0",
     "@aws-sdk/cloudfront-signer": "^3.804.0",
-    "@aws-sdk/lib-storage": "^3.806.0",
-    "@aws-sdk/s3-request-presigner": "^3.806.0",
+    "@aws-sdk/lib-storage": "^3.808.0",
+    "@aws-sdk/s3-request-presigner": "^3.808.0",
     "@photo-sphere-viewer/autorotate-plugin": "^5.13.2",
     "@photo-sphere-viewer/core": "^5.13.2",
     "@vis.gl/react-google-maps": "^1.5.2",

@@ -39,7 +39,6 @@ const MapPage = () => {
       items.length > 0
     ) {
       const bounds = new window.google.maps.LatLngBounds();
-
       items.forEach(({ latitude, longitude }) => {
         if (
           typeof latitude === "number" &&
@@ -50,31 +49,15 @@ const MapPage = () => {
           bounds.extend(new window.google.maps.LatLng(latitude, longitude));
         }
       });
+      console.log("Items:", items);
+      console.log("Bounds SW:", bounds.getSouthWest().toJSON());
+      console.log("Bounds NE:", bounds.getNorthEast().toJSON());
 
       if (items.length === 1) {
         mapRef.current.panTo(bounds.getCenter());
         mapRef.current.setZoom(12);
       } else {
-        const marginKm = 100;
-        const ne = bounds.getNorthEast();
-        const sw = bounds.getSouthWest();
-        const avgLat = (ne.lat() + sw.lat()) / 2;
-        const latMargin = marginKm / 111;
-        const lngMargin =
-          marginKm / (111 * Math.cos((avgLat * Math.PI) / 180) || 1);
-
-        const expandedBounds = new window.google.maps.LatLngBounds(
-          new window.google.maps.LatLng(
-            sw.lat() - latMargin,
-            sw.lng() - lngMargin
-          ),
-          new window.google.maps.LatLng(
-            ne.lat() + latMargin,
-            ne.lng() + lngMargin
-          )
-        );
-
-        mapRef.current.fitBounds(expandedBounds, { padding: 100 });
+        mapRef.current.fitBounds(bounds, { padding: 100 });
       }
     }
   }, [items, mapLoaded]);
@@ -114,18 +97,15 @@ const MapPage = () => {
                 setMapLoaded(true);
               }}
               options={{
-                streetViewControl: false, // Remove Pegman (Street View)
-                rotateControl: false, // Remove tilt/rotate control (<^>)
-                fullscreenControl: false, // Remove fullscreen button (upper right)
-                mapTypeControl: false, // Remove map/satellite toggle (upper left)
-                scaleControl: false, // Remove scale bar
-                cameraControl: false, // Remove Map Camera Control (new in 2025)
-                zoomControl: true, // Show zoom buttons
+                streetViewControl: false,
+                rotateControl: false,
+                fullscreenControl: false,
+                mapTypeControl: false,
+                scaleControl: false,
+                cameraControl: false,
+                zoomControl: true,
                 zoomControlOptions: {
-                  position:
-                    window.google && window.google.maps
-                      ? window.google.maps.ControlPosition.RIGHT_TOP
-                      : 3, // 3 is RIGHT_TOP in the Google Maps API
+                  position: 3, // 3 = RIGHT_TOP
                 },
               }}
             >

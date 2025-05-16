@@ -3,10 +3,10 @@
   "version": "1.4.0",
   "private": true,
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.808.0",
+    "@aws-sdk/client-s3": "^3.810.0",
     "@aws-sdk/cloudfront-signer": "^3.804.0",
-    "@aws-sdk/lib-storage": "^3.808.0",
-    "@aws-sdk/s3-request-presigner": "^3.808.0",
+    "@aws-sdk/lib-storage": "^3.810.0",
+    "@aws-sdk/s3-request-presigner": "^3.810.0",
     "@photo-sphere-viewer/autorotate-plugin": "^5.13.2",
     "@photo-sphere-viewer/core": "^5.13.2",
     "@vis.gl/react-google-maps": "^1.5.2",
@@ -20,7 +20,7 @@
     "express": "^4.21.2",
     "iconv-lite": "^0.6.3",
     "leaflet": "^1.9.4",
-    "mongoose": "^8.14.2",
+    "mongoose": "^8.15.0",
     "node-cache": "^5.1.2",
     "panzoom": "^9.4.3",
     "prop-types": "^15.8.1",
@@ -76,7 +76,7 @@
     }
   },
   "devDependencies": {
-    "@eslint/js": "^9.26.0",
+    "@eslint/js": "^9.27.0",
     "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.3.0",

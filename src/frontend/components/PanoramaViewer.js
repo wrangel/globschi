@@ -9,6 +9,28 @@ const PanoramaViewer = ({ imageUrl, thumbnailUrl, isNavigationMode }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [viewer, setViewer] = useState(null);
 
+  // Log and check image availability on mount or when imageUrl changes
+  useEffect(() => {
+    console.log("PanoramaViewer: imageUrl at mount:", imageUrl);
+    if (imageUrl) {
+      fetch(imageUrl, { method: "HEAD" })
+        .then((res) => {
+          if (res.ok) {
+            console.log("PanoramaViewer: Image is reachable:", imageUrl);
+          } else {
+            console.error(
+              "PanoramaViewer: Image not reachable:",
+              imageUrl,
+              res.status
+            );
+          }
+        })
+        .catch((err) => {
+          console.error("PanoramaViewer: Error fetching image:", imageUrl, err);
+        });
+    }
+  }, [imageUrl]);
+
   const isSafari = () => {
     const ua = navigator.userAgent.toLowerCase();
     return ua.indexOf("safari") > -1 && ua.indexOf("chrome") === -1;

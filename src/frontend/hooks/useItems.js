@@ -16,7 +16,7 @@ export const useItems = () => {
       setIsLoading(true);
       setError(null); // Reset error state before fetching
 
-      const apiUrl = process.env.REACT_APP_API_URL || "http://localhost:8081"; // Fallback URL
+      const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:8081"; // Fallback URL
       const url = `${apiUrl}${apiUrl.endsWith("/") ? "" : "/"}combined-data`;
 
       const controller = new AbortController();

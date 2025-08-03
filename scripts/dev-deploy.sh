@@ -2,33 +2,35 @@
 
 # Run locally!
 
-# Removing conflicting local containers
-docker compose down --rmi all && docker system prune -af
+# Remove Docker containers if Docker is running
+if docker info >/dev/null 2>&1; then
+    echo "Stopping Docker containers and cleaning up..."
+    docker compose down --rmi all && docker system prune -af
+else
+    echo "⚠️  Docker not running or not installed — skipping Docker cleanup."
+fi
 
-# Check for the -u flag
+# Check for the -u flag to update dependencies
 if [[ "$1" == "-u" ]]; then
-    echo "Updating dependencies..."
+    echo "📦 Updating dependencies..."
 
-    # Update dependencies
     pnpm update
-    pnpm install && node ./scripts/fix-photo-sphere-viewer.mjs # Postinstall script would not work in docker setting
+    pnpm install && node ./scripts/fix-photo-sphere-viewer.mjs
     pnpm audit --fix
     pnpm prune
-    pnpm update react-scripts
     pnpm self-update
     pnpm depcheck
-
 else
-    echo "Skipping updates..."
+    echo "✅ Skipping dependency updates..."
 fi
 
 # Start the backend server
-echo "Starting backend server..."
+echo "🚀 Starting backend server..."
 node ./src/backend/server.mjs &
 
-# Start the frontend server
-echo "Starting frontend server on port 3000..."
-PORT=3000 react-scripts start &
+# Start the frontend Vite dev server
+echo "🚀 Starting Vite frontend on port 3000..."
+pnpm run frontend:dev &
 
-# Wait for both processes to finish
+# Wait for both processes to finish (Ctrl+C will kill both)
 wait

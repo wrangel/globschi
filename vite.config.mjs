@@ -1,9 +1,6 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 
-// If you need to expose environment variables,
-// make sure to rename them as VITE_* in .env files.
-
 export default defineConfig({
   plugins: [react()],
   server: {

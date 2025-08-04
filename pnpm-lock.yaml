@@ -16,13 +16,13 @@ importers:
   .:
     dependencies:
       '@aws-sdk/client-s3':
-        specifier: ^3.850.0
+        specifier: ^3.859.0
         version: 3.859.0
       '@aws-sdk/lib-storage':
-        specifier: ^3.850.0
+        specifier: ^3.859.0
         version: 3.859.0(@aws-sdk/client-s3@3.859.0)
       '@aws-sdk/s3-request-presigner':
-        specifier: ^3.850.0
+        specifier: ^3.859.0
         version: 3.859.0
       '@photo-sphere-viewer/autorotate-plugin':
         specifier: ^5.13.4
@@ -85,10 +85,10 @@ importers:
         specifier: ^6.2.3
         version: 6.2.3(@photo-sphere-viewer/core@5.13.4)(prop-types@15.8.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       react-router:
-        specifier: ^7.7.0
+        specifier: ^7.7.1
         version: 7.7.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       react-router-dom:
-        specifier: ^7.7.0
+        specifier: ^7.7.1
         version: 7.7.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       react-swipeable:
         specifier: ^7.0.2
@@ -107,13 +107,13 @@ importers:
         version: 5.0.0(winston@3.17.0)
     devDependencies:
       '@eslint/js':
-        specifier: ^9.31.0
+        specifier: ^9.32.0
         version: 9.32.0
       '@testing-library/dom':
-        specifier: ^10.4.0
+        specifier: ^10.4.1
         version: 10.4.1
       '@testing-library/jest-dom':
-        specifier: ^6.6.3
+        specifier: ^6.6.4
         version: 6.6.4
       '@testing-library/react':
         specifier: ^16.3.0
@@ -2238,8 +2238,8 @@ packages:
     resolution: {integrity: sha512-H0dkQoCa3b2VEeKQBOxFph+JAbcrQdE7KC0UkqwpLmv2EC4P41QXP+rqo9wYodACiG5/WM5s9oDApTU8utwj9g==}
     engines: {node: '>= 0.4'}
 
-  jake@10.9.2:
-    resolution: {integrity: sha512-2P4SQ0HrLQ+fw6llpLnOaGAvN2Zu6778SJMrCUwns4fOoG9ayrTiZk3VV8sCPkVZF8ab0zksVpS8FDY5pRCNBA==}
+  jake@10.9.4:
+    resolution: {integrity: sha512-wpHYzhxiVQL+IV05BLE2Xn34zW1S223hvjtqk0+gsPrwd/8JNLXJgZZM/iPFsYc1xyphF+6M6EvdE5E9MBGkDA==}
     engines: {node: '>=10'}
     hasBin: true
 
@@ -5319,7 +5319,7 @@ snapshots:
 
   ejs@3.1.10:
     dependencies:
-      jake: 10.9.2
+      jake: 10.9.4
 
   electron-to-chromium@1.5.194: {}
 
@@ -6097,12 +6097,11 @@ snapshots:
       has-symbols: 1.1.0
       set-function-name: 2.0.2
 
-  jake@10.9.2:
+  jake@10.9.4:
     dependencies:
       async: 3.2.6
-      chalk: 4.1.2
       filelist: 1.0.4
-      minimatch: 3.1.2
+      picocolors: 1.1.1
 
   js-tokens@4.0.0: {}
 

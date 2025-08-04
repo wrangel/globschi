@@ -53,6 +53,8 @@ const PanoramaViewer = ({ imageUrl, thumbnailUrl, isNavigationMode }) => {
         onReady={handleReady}
         plugins={[AutorotatePlugin]}
         navbar={false}
+        wrapHorizontal={true} // enable horizontal wraparound
+        longitudeRange={[0, 2 * Math.PI]} // set longitude limits explicitly
       />
       {isLoading && thumbnailUrl && (
         <img src={thumbnailUrl} alt="Thumbnail" className={styles.thumbnail} />

@@ -2,7 +2,12 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 
 export default defineConfig({
-  plugins: [react()],
+  plugins: [
+    react({
+      // Tell the plugin to parse JSX also in .js files
+      jsxInclude: ["**/*.jsx", "**/*.js"],
+    }),
+  ],
   server: {
     port: 3000, // fallback: match CRA port
     proxy: {

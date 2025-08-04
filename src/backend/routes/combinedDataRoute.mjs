@@ -12,6 +12,7 @@ const router = express.Router();
  */
 router.get("/combined-data", async (req, res) => {
   const cacheKey = "combined-data"; // Define a cache key
+  console.log("here");
 
   // Check if the data is cached
   const cachedData = getCachedData(cacheKey);

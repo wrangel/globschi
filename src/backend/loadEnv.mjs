@@ -11,27 +11,29 @@ const __dirname = dirname(__filename);
 export function loadEnv(forceReload = false, printVars = false) {
   const env = process.env.NODE_ENV || "development";
 
+  let envPath;
   if (env === "production") {
-    logger.info("Loading production environment from vault");
-    dotenv.config({ path: ".env.vault" });
-    logger.info(`Loaded environment variables from vault using DOTENV_KEY`);
+    logger.info("Loading production environment from .env.production file");
+    envPath = resolve(__dirname, "..", "..", ".env.production");
   } else {
-    const envPath = resolve(__dirname, "..", "..", ".env");
-    logger.info(`Attempting to load .env file from: ${envPath}`);
-
-    const result = dotenv.config({ path: envPath, override: forceReload });
-
-    if (result.error) {
-      logger.error("Failed to load .env file:", {
-        message: result.error.message,
-      });
-      throw new Error(
-        "Could not load .env file. Please check the file path and format."
-      );
-    }
-
-    logger.info(".env file loaded successfully for development.");
+    logger.info("Loading development environment from .env file");
+    envPath = resolve(__dirname, "..", "..", ".env");
   }
+
+  logger.info(`Attempting to load environment file from: ${envPath}`);
+
+  const result = dotenv.config({ path: envPath, override: forceReload });
+
+  if (result.error) {
+    logger.error("Failed to load environment file:", {
+      message: result.error.message,
+    });
+    throw new Error(
+      "Could not load environment file. Please check the file path and format."
+    );
+  }
+
+  logger.info(`${env} environment file loaded successfully.`);
 
   if (printVars) {
     logger.info("Loaded environment variables:");

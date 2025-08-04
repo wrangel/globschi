@@ -85,7 +85,7 @@ app.get("/api/test-mongo", async (req, res) => {
 app.use("/api", combinedDataRoute);
 
 // Catch-all handler for any request that doesn't match above routes
-app.get("*", (req, res) => {
+app.get("/*rest", (req, res) => {
   res.sendFile(path.join(__dirname, "../../build", "index.html"));
 });
 

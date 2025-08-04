@@ -13,7 +13,7 @@ pkill -f "react-scripts start"
 open --background -a Docker
 
 (
-  export DOTENV_KEY=$(pnpx dotenv-vault keys production)
+  # No dotenv-vault keys export here, just run docker compose with local env file
   docker compose down --rmi all && docker system prune -af
   docker compose --env-file .env.production up --build
 )

@@ -1,4 +1,4 @@
-// src/frontend/components/ImagePopup.js
+// src/frontend/components/ImagePopup.jsx
 
 import { useState, useEffect, useRef } from "react";
 import LoadingOverlay from "./LoadingOverlay";

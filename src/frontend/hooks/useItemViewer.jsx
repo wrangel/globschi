@@ -1,4 +1,4 @@
-// src/frontend/hooks/useItemViewer.js
+// src/frontend/hooks/useItemViewer.jsx
 
 import { useState, useCallback, useMemo } from "react";
 

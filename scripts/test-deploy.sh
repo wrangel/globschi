@@ -8,7 +8,7 @@ pkill -f "node ./src/backend/server.mjs"
 
 # Kill existing frontend server process
 echo "Stopping existing frontend server..."
-pkill -f "react-scripts start"
+pkill -f "vite"
 
 open --background -a Docker
 

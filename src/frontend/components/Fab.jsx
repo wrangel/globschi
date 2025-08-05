@@ -1,4 +1,4 @@
-// src/frontend/components/Fab.js
+// src/frontend/components/Fab.jsx
 
 import { useLocation } from "react-router-dom";
 import styles from "../styles/Fab.module.css";

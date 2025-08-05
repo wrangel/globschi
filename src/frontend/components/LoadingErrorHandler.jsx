@@ -1,4 +1,4 @@
-// src/frontend/components/LoadingErrorHandler.js
+// src/frontend/components/LoadingErrorHandler.jsx
 
 import PropTypes from "prop-types";
 import styles from "../styles/LoadingErrorHandler.module.css";

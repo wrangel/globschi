@@ -1,4 +1,4 @@
-// src/components/ErrorBoundary.js
+// src/components/ErrorBoundary.jsx
 
 import React from "react";
 import styles from "../styles/ErrorBoundary.module.css";

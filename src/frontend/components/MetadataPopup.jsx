@@ -1,6 +1,6 @@
-// src/frontend/components/MetadataPopup.js
+// src/frontend/components/MetadataPopup.jsx
 
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import styles from "../styles/MetadataPopup.module.css";
 

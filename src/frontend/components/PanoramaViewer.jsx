@@ -1,6 +1,6 @@
 // src/components/PanoramaViewer.js
 
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { ReactPhotoSphereViewer } from "react-photo-sphere-viewer";
 import { AutorotatePlugin } from "@photo-sphere-viewer/autorotate-plugin";
 import styles from "../styles/PanoramaViewer.module.css";

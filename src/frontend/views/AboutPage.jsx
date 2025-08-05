@@ -1,6 +1,5 @@
 // src/frontend/views/AboutPage.js
 
-import React from "react";
 import { Helmet } from "react-helmet-async";
 import { DOMAIN } from "../constants";
 import styles from "../styles/About.module.css";

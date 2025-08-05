@@ -1,6 +1,5 @@
 // src/frontend/components/PortfolioGrid.js
 
-import React from "react";
 import Masonry from "react-masonry-css";
 import LoadingErrorHandler from "./LoadingErrorHandler";
 import PortfolioItem from "./PortfolioItem";

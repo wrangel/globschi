@@ -8,7 +8,6 @@ import {
 } from "@aws-sdk/client-s3";
 
 import fs from "fs/promises";
-import path from "path";
 import logger from "../helpers/logger.mjs";
 import { getId } from "./helpers.mjs";
 import { loadEnv } from "../loadEnv.mjs";

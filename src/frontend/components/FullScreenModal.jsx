@@ -1,6 +1,6 @@
 // src/frontend/components/FullScreenModal.js
 
-import React, { useEffect, useRef, memo } from "react";
+import { useEffect, useRef, memo } from "react";
 import PropTypes from "prop-types";
 import styles from "../styles/FullScreenModal.module.css";
 

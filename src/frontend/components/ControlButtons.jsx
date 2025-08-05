@@ -1,6 +1,6 @@
 // src/frontend/components/ControlButtons.js
 
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useSwipeable } from "react-swipeable";
 import styles from "../styles/Fab.module.css";
 
@@ -11,7 +11,6 @@ const ControlButtons = ({
   onToggleMetadata,
   isNavigationMode,
   toggleMode,
-  isPano,
   onToggleFullScreen,
 }) => {
   const [isOpen, setIsOpen] = useState(false);

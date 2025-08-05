@@ -1,6 +1,5 @@
 // src/frontend/components/LoadingErrorHandler.js
 
-import React from "react";
 import PropTypes from "prop-types";
 import styles from "../styles/LoadingErrorHandler.module.css";
 

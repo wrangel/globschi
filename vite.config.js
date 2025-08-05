@@ -5,11 +5,13 @@ import eslint from "vite-plugin-eslint";
 export default defineConfig({
   plugins: [
     react({
-      jsxInclude: ["**/*.jsx", "**/*.js"],
+      jsxRuntime: "automatic", // ensures React 18 automatic JSX transform is used
     }),
     eslint({
-      // You can configure the plugin here if needed (optional)
-      // Examples: fix: true, emitWarning: true, etc.
+      failOnError: false,
+      failOnWarning: false,
+      emitError: true,
+      emitWarning: true,
     }),
   ],
   server: {

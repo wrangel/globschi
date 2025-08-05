@@ -1,6 +1,6 @@
 // src/frontend/views/HomePage.js
 
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import styles from "../styles/Home.module.css";

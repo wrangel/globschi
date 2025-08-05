@@ -1,6 +1,6 @@
 // src/frontend/components/ImagePopup.js
 
-import React, { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import LoadingOverlay from "./LoadingOverlay";
 import panzoom from "panzoom";
 import styles from "../styles/ImagePopup.module.css";

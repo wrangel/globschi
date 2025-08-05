@@ -25,7 +25,6 @@ const MAX_WEBP_DIMENSION = 16383;
  */
 async function processMediaFile(fileInfo) {
   const {
-    key,
     originalMedium,
     newMediumOriginal,
     newMediumSite,

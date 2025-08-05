@@ -1,6 +1,6 @@
-// src/components/Viewer.js
+// src/components/Viewer.jsx
 
-import React, { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import ControlButtons from "./ControlButtons";
 import ImagePopup from "./ImagePopup";
 import MetadataPopup from "./MetadataPopup";

@@ -15,5 +15,5 @@ open --background -a Docker
 (
   # No dotenv-vault keys export here, just run docker compose with local env file
   docker compose down --rmi all && docker system prune -af
-  docker compose --env-file .env.production up --build
+  docker compose --env-file .env.production up  --build -d
 )

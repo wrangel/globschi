@@ -6,8 +6,8 @@ services:
       dockerfile: Dockerfile.backend
     environment:
       - NODE_ENV=production
-      - DOTENV_KEY=${DOTENV_KEY}
       - PORT=8081
+      # Remove DOTENV_KEY since it's not used without vault service
     image: wrangel/globschi-backend:1.4
     ports:
       - "8081:8081"
@@ -18,14 +18,9 @@ services:
       context: .
       dockerfile: Dockerfile.frontend
       args:
-        REACT_APP_API_URL: ${REACT_APP_API_URL}
-        REACT_APP_GOOGLE_MAPS_API_KEY: ${REACT_APP_GOOGLE_MAPS_API_KEY}
-        REACT_APP_MAPBOX_ACCESS_TOKEN: ${REACT_APP_MAPBOX_ACCESS_TOKEN}
+        VITE_API_URL: ${VITE_API_URL}
+        VITE_GOOGLE_MAPS_API_KEY: ${VITE_GOOGLE_MAPS_API_KEY}
+        VITE_MAPBOX_ACCESS_TOKEN: ${VITE_MAPBOX_ACCESS_TOKEN}
     image: wrangel/globschi-frontend:1.4
     ports:
       - "3000:80"
-    # Do NOT include environment block for frontend to avoid secrets in ENV
-
-networks:
-  default:
-    driver: bridge

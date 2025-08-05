@@ -1,17 +1,20 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
+import eslint from "vite-plugin-eslint";
 
 export default defineConfig({
   plugins: [
     react({
-      // Tell the plugin to parse JSX also in .js files
       jsxInclude: ["**/*.jsx", "**/*.js"],
+    }),
+    eslint({
+      // You can configure the plugin here if needed (optional)
+      // Examples: fix: true, emitWarning: true, etc.
     }),
   ],
   server: {
-    port: 3000, // fallback: match CRA port
+    port: 3000,
     proxy: {
-      // Forward frontend requests for /api to the backend on 8081
       "/api": {
         target: "http://localhost:8081",
         changeOrigin: true,
@@ -20,14 +23,12 @@ export default defineConfig({
     },
   },
   build: {
-    outDir: "build", // optional: preserve CRA's default output folder
+    outDir: "build",
   },
   resolve: {
-    alias: {
-      // Optional: add shims or path aliases if needed later
-    },
+    alias: {},
   },
   define: {
-    global: "globalThis", // helpful if any library expects 'global'
+    global: "globalThis",
   },
 });

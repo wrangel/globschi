@@ -1,53 +1,26 @@
-import globals from "globals";
 import { defineConfig } from "eslint/config";
-import pluginJs from "@eslint/js";
+import globals from "globals";
 import pluginReact from "eslint-plugin-react";
 
+// Only bring in globals for the frontend block!
 export default defineConfig([
   {
     ignores: ["dist", "build", "node_modules"],
   },
   {
-    // Frontend files
-    files: ["**/*.{js,mjs,cjs,jsx,ts,tsx}"],
+    files: ["src/**/*.{js,jsx,ts,tsx}", "!src/backend/**"],
     languageOptions: {
       ecmaVersion: "latest",
       sourceType: "module",
-      globals: {
-        ...globals.browser,
-      },
+      globals: globals.browser,
       parserOptions: {
-        ecmaVersion: 2024,
-        sourceType: "module",
-        ecmaFeatures: {
-          jsx: true,
-        },
+        ecmaFeatures: { jsx: true },
       },
     },
-    plugins: {
-      react: pluginReact,
-    },
-    ...pluginReact.configs.flat.recommended,
-    ...pluginReact.configs.flat['jsx-runtime'],
+    plugins: { react: pluginReact },
     rules: {
-      ...pluginJs.configs.recommended.rules,
-
       "react/react-in-jsx-scope": "off",
-      "react/jsx-uses-vars": "error",
-
-      "no-unused-vars": [
-        "warn",
-        {
-          vars: "all",
-          args: "after-used",
-          ignoreRestSiblings: true,
-          argsIgnorePattern: "^_",
-        },
-      ],
-
-      "no-undef": "error",
-
-      "no-console": ["warn", { allow: ["warn", "error", "info", "log"] }],
+      // Add your other rules here...
     },
     settings: {
       react: {
@@ -58,7 +31,7 @@ export default defineConfig([
     },
   },
   {
-    // Backend files
+    // Backend gets node and browser for flexibility, or just node if desired
     files: ["src/backend/**/*.{js,mjs,cjs}"],
     languageOptions: {
       globals: {

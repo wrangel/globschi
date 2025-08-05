@@ -1,4 +1,4 @@
-// src/frontend/components/ControlButtons.js
+// src/frontend/components/ControlButtons.jsx
 
 import { useState, useEffect } from "react";
 import { useSwipeable } from "react-swipeable";

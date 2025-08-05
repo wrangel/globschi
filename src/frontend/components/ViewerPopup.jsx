@@ -1,4 +1,4 @@
-// src/frontend/components/ViewerPopup.js
+// src/frontend/components/ViewerPopup.jsx
 
 import React, { useState } from "react";
 import { useSwipeable } from "react-swipeable";

@@ -1,3 +1,5 @@
+// src/frontend/hooks/useItems.jsx
+
 import { useState, useEffect, useCallback } from "react";
 
 let cachedItems = null;

@@ -1,4 +1,4 @@
-// src/frontend/components/FullScreenModal.js
+// src/frontend/components/FullScreenModal.jsx
 
 import { useEffect, useRef, memo } from "react";
 import PropTypes from "prop-types";

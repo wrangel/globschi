@@ -11,16 +11,13 @@ const __dirname = dirname(__filename);
 export function loadEnv(forceReload = false, printVars = false) {
   const env = process.env.NODE_ENV || "development";
 
-  let envPath;
   if (env === "production") {
-    logger.info("Loading production environment from .env.production file");
-    envPath = resolve(__dirname, "..", "..", ".env.production");
-  } else {
-    logger.info("Loading development environment from .env file");
-    envPath = resolve(__dirname, "..", "..", ".env");
+    logger.info("Production mode: skipping loading environment file from disk");
+    return;
   }
 
-  logger.info(`Attempting to load environment file from: ${envPath}`);
+  const envPath = resolve(__dirname, "..", "..", ".env");
+  logger.info(`Loading development environment from ${envPath}`);
 
   const result = dotenv.config({ path: envPath, override: forceReload });
 
@@ -28,12 +25,10 @@ export function loadEnv(forceReload = false, printVars = false) {
     logger.error("Failed to load environment file:", {
       message: result.error.message,
     });
-    throw new Error(
-      "Could not load environment file. Please check the file path and format."
-    );
+    throw new Error("Could not load .env file.");
   }
 
-  logger.info(`${env} environment file loaded successfully.`);
+  logger.info("Development .env file loaded successfully.");
 
   if (printVars) {
     logger.info("Loaded environment variables:");

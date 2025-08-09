@@ -71,10 +71,10 @@ To get started with this project, follow these steps:
 6. Start the application:
 
    ```bash
-   pnpm run dev -u # Run locally after updating the project
-   pnpm run dev # Run locally
-   pnpm run test # Run containerized app locally
-   pnpm run prod # Deploy images to Docker Hub
+   pnpm dev -u # Run locally after updating the project
+   pnpm dev # Run locally
+   pnpm test # Run containerized app locally
+   pnpm prod # Deploy images to Docker Hub
    ```
 
 7. Open your browser and navigate to `http://localhost:3000` to view the application.

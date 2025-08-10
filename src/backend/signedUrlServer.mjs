@@ -16,7 +16,9 @@ loadEnv();
  */
 export async function getUrls() {
   try {
-    const bucketContents = await listS3BucketContents(process.env.SITE_BUCKET);
+    const bucketContents = await listS3BucketContents(
+      process.env.AWS_BUCKET_SITE
+    );
     const signedUrls = await generateSignedUrls(bucketContents);
     const groupedUrls = groupUrlsById(signedUrls);
     const sortedUrls = sortUrlsByType(groupedUrls);
@@ -41,7 +43,10 @@ async function generateSignedUrls(contents) {
         type,
         sigUrl: await getSignedUrl(
           s3Client,
-          new GetObjectCommand({ Bucket: process.env.SITE_BUCKET, Key: key }),
+          new GetObjectCommand({
+            Bucket: process.env.AWS_BUCKET_SITE,
+            Key: key,
+          }),
           { expiresIn: EXPIRATION_TIME }
         ),
       };

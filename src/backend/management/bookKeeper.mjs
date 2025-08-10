@@ -18,12 +18,14 @@ async function synchronizeMedia() {
   try {
     // Fetch media from different sources
     const originalMedia = await listS3BucketContents(
-      process.env.ORIGINALS_BUCKET,
+      process.env.AWS_BUCKET_ORIGINALS,
       true
     );
-    const actualSiteMedia = await fetchAndFilterMedia(process.env.SITE_BUCKET);
+    const actualSiteMedia = await fetchAndFilterMedia(
+      process.env.AWS_BUCKET_SITE
+    );
     const thumbnailSiteMedia = await fetchAndFilterMedia(
-      process.env.SITE_BUCKET,
+      process.env.AWS_BUCKET_SITE,
       true
     );
     const mongoDocuments = await fetchMongoDocuments();
@@ -122,7 +124,7 @@ async function deleteNonOriginalContent(comparisons) {
     ...comparisons.thumbnails.onlyInB,
   ];
 
-  await deleteS3Objects(process.env.SITE_BUCKET, nonOriginalMedia);
+  await deleteS3Objects(process.env.AWS_BUCKET_SITE, nonOriginalMedia);
 
   const nonOriginalDocs = comparisons.mongoDocs.onlyInB.map((item) => item.key);
   await deleteNonOriginalDocuments(nonOriginalDocs);
@@ -161,7 +163,7 @@ async function handleUniqueOriginals(comparisons) {
  * @param {Array} nonOriginalMedia - Media to be deleted
  */
 async function deleteNonOriginalMedia(nonOriginalMedia) {
-  await deleteS3Objects(process.env.SITE_BUCKET, nonOriginalMedia);
+  await deleteS3Objects(process.env.AWS_BUCKET_SITE, nonOriginalMedia);
 }
 
 /**

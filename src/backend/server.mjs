@@ -17,7 +17,12 @@ try {
 }
 
 // Check for critical environment variables
-const requiredEnvVars = ["DB_USER", "DB_PASSWORD", "SERVER", "DB"];
+const requiredEnvVars = [
+  "MONGODB_DB_USER",
+  "MONGODB_DB_PASSWORD",
+  "MONGODB_SERVER",
+  "MONGODB_DB",
+];
 requiredEnvVars.forEach((varName) => {
   if (!process.env[varName]) {
     logger.error(`Missing required environment variable: ${varName}`);
@@ -53,7 +58,7 @@ mongoose.set("strictQuery", false);
 const connectDB = () =>
   mongoose
     .connect(
-      `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@${process.env.SERVER}/${process.env.DB}?retryWrites=true&w=majority`
+      `mongodb+srv://${process.env.MONGODB_DB_USER}:${process.env.MONGODB_DB_PASSWORD}@${process.env.MONGODB_SERVER}/${process.env.MONGODB_DB}?retryWrites=true&w=majority`
     )
     .catch((err) => {
       logger.error("MongoDB connection error:", err);

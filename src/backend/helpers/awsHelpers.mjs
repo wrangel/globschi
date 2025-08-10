@@ -15,7 +15,11 @@ import { loadEnv } from "../loadEnv.mjs";
 loadEnv();
 
 // Validate required environment variables
-const requiredEnvVars = ["ACCESS_KEY", "SECRET_ACCESS_KEY", "BUCKET_REGION"];
+const requiredEnvVars = [
+  "AWS_ACCESS_KEY_ID",
+  "AWS_SECRET_ACCESS_KEY",
+  "AWS_DEFAULT_REGION",
+];
 const missingEnvVars = requiredEnvVars.filter(
   (varName) => !process.env[varName]
 );
@@ -33,10 +37,10 @@ if (missingEnvVars.length > 0) {
 function createS3Client() {
   return new S3Client({
     credentials: {
-      accessKeyId: process.env.ACCESS_KEY,
-      secretAccessKey: process.env.SECRET_ACCESS_KEY,
+      accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+      secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
     },
-    region: process.env.BUCKET_REGION,
+    region: process.env.AWS_DEFAULT_REGION,
     maxAttempts: 3,
   });
 }
@@ -131,7 +135,7 @@ export async function downloadS3Object(bucketName, key, localPath) {
  */
 export async function deleteS3Objects(objects) {
   // Check if the bucket name is defined
-  const bucketName = process.env.ORIGINALS_BUCKET;
+  const bucketName = process.env.AWS_BUCKET_ORIGINALS;
   if (!bucketName) {
     throw new Error("Bucket name is not defined in environment variables.");
   }

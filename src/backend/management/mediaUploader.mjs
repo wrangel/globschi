@@ -41,7 +41,7 @@ async function processMediaFile(fileInfo) {
     logger.info("Step 1: Uploading original TIF to S3");
     const tifStream = fs.createReadStream(inputPath);
     await uploadStreamToS3(
-      process.env.ORIGINALS_BUCKET,
+      process.env.AWS_BUCKET_ORIGINALS,
       `${mediaType}/${newMediumOriginal}`,
       tifStream
     );
@@ -77,7 +77,7 @@ async function processMediaFile(fileInfo) {
       .toBuffer();
 
     await uploadStreamToS3(
-      process.env.SITE_BUCKET,
+      process.env.AWS_BUCKET_SITE,
       `${mediaType}/${newMediumSite}`,
       losslessWebpBuffer
     );
@@ -99,7 +99,7 @@ async function processMediaFile(fileInfo) {
     const lossyWebpBuffer = await lossyTransformer.toBuffer();
 
     await uploadStreamToS3(
-      process.env.SITE_BUCKET,
+      process.env.AWS_BUCKET_SITE,
       `${THUMBNAIL_ID}/${newMediumSite}`,
       lossyWebpBuffer
     );

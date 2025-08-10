@@ -12,10 +12,10 @@ loadEnv();
  * @returns {Promise<void>}
  */
 async function testAwsLogin() {
-  const bucketName = process.env.SITE_BUCKET;
+  const bucketName = process.env.AWS_BUCKET_SITE;
 
   if (!bucketName) {
-    logger.error("SITE_BUCKET environment variable is not set.");
+    logger.error("AWS_BUCKET_SITE environment variable is not set.");
     process.exit(1);
   }
 

@@ -109,7 +109,7 @@ async function downloadImages(objectsToDelete) {
     const exists = await fileExists(localPath);
     if (!exists) {
       logger.info(`Downloading ${fileName}...`);
-      await downloadS3Object(process.env.ORIGINALS_BUCKET, Key, localPath);
+      await downloadS3Object(process.env.AWS_BUCKET_ORIGINALS, Key, localPath);
     } else {
       logger.info(`${fileName} already downloaded.`);
     }

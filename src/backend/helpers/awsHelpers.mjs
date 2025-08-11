@@ -10,9 +10,6 @@ import {
 import fs from "fs/promises";
 import logger from "../helpers/logger.mjs";
 import { getId } from "./helpers.mjs";
-import { loadEnv } from "../loadEnv.mjs";
-
-loadEnv();
 
 // Validate required environment variables
 const requiredEnvVars = [

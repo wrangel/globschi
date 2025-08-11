@@ -7,9 +7,6 @@ import logger from "../helpers/logger.mjs";
 import { Island } from "../models/islandModel.mjs";
 import { listS3BucketContents } from "../helpers/awsHelpers.mjs";
 import { executeMongoQuery } from "../helpers/mongoHelpers.mjs";
-import { loadEnv } from "../loadEnv.mjs";
-
-loadEnv();
 
 /**
  * Main function to synchronize media across S3 buckets and MongoDB

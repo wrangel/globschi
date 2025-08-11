@@ -11,9 +11,6 @@ import { s3Client } from "../helpers/awsHelpers.mjs";
 import { Island } from "../models/islandModel.mjs";
 import { executeMongoQuery } from "../helpers/mongoHelpers.mjs";
 import { Upload } from "@aws-sdk/lib-storage";
-import { loadEnv } from "../loadEnv.mjs";
-
-loadEnv();
 
 // Maximum dimensions for WebP images
 const MAX_WEBP_DIMENSION = 16383;

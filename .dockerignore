@@ -8,12 +8,6 @@ Dockerfile*
 combined.log
 error.log
 
-# Media management
-src/backend/management/
-
-# Tests
-src/backend/tests/
-
 .DS_Store
 
 Material/

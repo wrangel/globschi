@@ -13,9 +13,6 @@ import {
   REVERSE_GEO_ADDRESS_COMPONENTS,
   REVERSE_GEO_URL_ELEMENTS,
 } from "../constants.mjs";
-import { loadEnv } from "../loadEnv.mjs";
-
-loadEnv();
 
 // Utility Functions
 

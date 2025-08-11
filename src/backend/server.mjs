@@ -5,16 +5,8 @@ import mongoose from "mongoose";
 import cors from "cors";
 import logger from "./helpers/logger.mjs";
 import combinedDataRoute from "./routes/combinedDataRoute.mjs";
-import { loadEnv } from "./loadEnv.mjs";
 import path from "path";
 import { fileURLToPath } from "url";
-
-try {
-  loadEnv();
-} catch (error) {
-  logger.error("Failed to load environment variables:", error);
-  process.exit(1);
-}
 
 // Check for critical environment variables
 const requiredEnvVars = [

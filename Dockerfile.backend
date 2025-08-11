@@ -6,17 +6,16 @@ WORKDIR /app
 
 RUN npm install -g pnpm
 
-# Copy only package files for cached install
+# Copy only necessary files first for caching
 COPY package*.json pnpm-lock.yaml ./
 
-# Use BuildKit cache mount to speed up pnpm install
+# Cache pnpm store between builds for speed
 RUN --mount=type=cache,target=/root/.pnpm-store \
     pnpm install --frozen-lockfile
 
-# Copy source code last
 COPY . .
 
-# (Optional) Build or transpile steps can go here if needed
+# (Optional) Add build/transpile step if you have one
 # RUN pnpm run build
 
 FROM node:alpine AS runtime
@@ -29,7 +28,6 @@ RUN npm install -g pnpm
 
 USER appuser
 
-# Copy only production dependencies and source
 COPY --from=build /app/node_modules ./node_modules
 COPY --from=build /app/src ./src
 COPY --from=build /app/package*.json ./

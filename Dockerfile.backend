@@ -1,39 +1,35 @@
-# Stage 1: Build stage using node:slim
+# syntax=docker/dockerfile:1.4
+
 FROM node:slim AS build
 
 WORKDIR /app
 
-# Install pnpm globally as root (default user in node images is root)
 RUN npm install -g pnpm
 
-# Copy package files first
-COPY package*.json ./
-COPY pnpm-lock.yaml ./
+# Copy only package files for cached install
+COPY package*.json pnpm-lock.yaml ./
 
-# Install dependencies
-RUN pnpm install
+# Use BuildKit cache mount to speed up pnpm install
+RUN --mount=type=cache,target=/root/.pnpm-store \
+    pnpm install --frozen-lockfile
 
-# Copy rest of source
+# Copy source code last
 COPY . .
 
-# (Optional) Build step here if any
+# (Optional) Build or transpile steps can go here if needed
 # RUN pnpm run build
 
-# Stage 2: Production runtime stage using node:alpine
-FROM node:alpine
+FROM node:alpine AS runtime
 
-# Create non-root user for security (optional)
 RUN addgroup -S appgroup && adduser -S appuser -G appgroup
 
 WORKDIR /app
 
-# Install pnpm globally as root (before switching user)
 RUN npm install -g pnpm
 
-# Switch to non-root user
 USER appuser
 
-# Copy dependencies and source from build stage
+# Copy only production dependencies and source
 COPY --from=build /app/node_modules ./node_modules
 COPY --from=build /app/src ./src
 COPY --from=build /app/package*.json ./

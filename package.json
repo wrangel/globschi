@@ -19,8 +19,6 @@
     "@photo-sphere-viewer/core": "^5.13.4",
     "chardet": "^2.1.0",
     "cors": "^2.8.5",
-    "dotenv": "^16.6.1",
-    "dotenv-vault": "^1.27.0",
     "exifreader": "^4.31.1",
     "express": "^5.1.0",
     "iconv-lite": "^0.6.3",

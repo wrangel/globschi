@@ -29,7 +29,6 @@ This project is built using the following technologies:
 - **Cloud Storage**: AWS S3
 - **Image Processing**: Sharp
 - **Reverse Geocoding**: Mapbox
-- **Environment Management**: dotenv for managing environment variables
 
 ## Installation
 

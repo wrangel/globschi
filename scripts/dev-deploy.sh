@@ -26,7 +26,7 @@ fi
 
 # Start the backend server
 echo "🚀 Starting backend server..."
-node ./src/backend/server.mjs &
+node --env-file=.env ./src/backend/server.mjs &
 
 # Start the frontend Vite dev server
 echo "🚀 Starting Vite frontend on port 3000..."

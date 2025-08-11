@@ -1,10 +1,6 @@
 node_modules/
 npm-debug.log
 dist/
-.env
-.env.me
-.env.previous
-.env.vault
 docker-compose.yml
 Dockerfile*
 .dockerignore
@@ -12,18 +8,45 @@ combined.log
 error.log
 .DS_Store
 
-.env
-.env.development
-.env.me
-.env.previous
-.env.vault
 .flaskenv*
-!.env.project
 .env*
-.env.vault
-!.env.vault
 
 Material/
 logs/
+
+
+
+# Dependency directories
+node_modules/
+
+# Logs
+*.log
+npm-debug.log
+combined.log
+error.log
+
+# Build output
+dist/
+
+# OS files
+.DS_Store
+
+# Environment files / secrets
+.env*
+.flaskenv*
+
+# Docker ignore - but consider removing if you want these in VCS
+# docker-compose.yml
+# Dockerfile*
+
+# Other local folders and files
+Material/
+logs/
+
+# Ignore local Docker ignore file to avoid adding locally ignored files in the image
+.dockerignore
+
+# Scripts & backend files - normally tracked, so comment out ignore unless needed
 scripts/prod-deploy.sh
-backend/management/manipulateMongo.mjs
+src/backend/management/manipulateMongo.mjs
+

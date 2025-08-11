@@ -1,17 +1,18 @@
 node_modules
 npm-debug.log
 Dockerfile*
-.dockerignore
-.git
-.gitignore
 *.md
 combined.log
 error.log
-
-.DS_Store
 
 Material/
 logs/
 src/backend/management/
 src/backend/tests/
-.env*
+
+.env
+.env.*
+.git
+.gitignore
+.dockerignore
+.DS_Store

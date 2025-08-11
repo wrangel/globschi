@@ -15,16 +15,16 @@ export const MAP_INITIAL_CENTER = [0, 0];
 export const MAP_INITIAL_ZOOM = 2;
 
 // API endpoints
-export const API_ENDPOINTS = {
+const API_ENDPOINTS = {
   ITEMS: "/api/combined-data",
 };
 
 // Viewer settings
-export const PANORAMA_MAX_FOV = 110;
-export const PANORAMA_MIN_FOV = 10;
+const PANORAMA_MAX_FOV = 110;
+const PANORAMA_MIN_FOV = 10;
 
 // Animation durations
-export const INTRO_ANIMATION_DURATION = 6000; // in milliseconds
+const INTRO_ANIMATION_DURATION = 6000; // in milliseconds
 
 // Icon URLs
 export const ICON_URLS = {
@@ -43,7 +43,7 @@ export const ICON_SIZES = {
 };
 
 // Define redPinIcon
-export const redPinIcon = new L.Icon({
+const redPinIcon = new L.Icon({
   iconUrl: ICON_URLS.RED_MARKER,
   shadowUrl: ICON_URLS.MARKER_SHADOW,
   iconSize: ICON_SIZES.MARKER,

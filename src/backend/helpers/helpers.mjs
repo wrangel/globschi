@@ -1,9 +1,5 @@
 // src/backend/helpers/helpers.mjs
 
-import { loadEnv } from "../loadEnv.mjs";
-
-loadEnv();
-
 /**
  * Extracts ID from file path.
  * @param {string} path - File path.

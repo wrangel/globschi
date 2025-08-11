@@ -6,9 +6,9 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.backend
-      # Enable BuildKit cache mounts via args (see Dockerfile)
-      cache_from:
-        - type=local,src=/tmp/.buildx-cache/backend # optional local cache directory
+      # Optional: Use build cache if BuildKit enabled (adjust host path or remove)
+      # cache_from:
+      #   - type=local,src=/tmp/.buildx-cache/backend
     env_file:
       - .env.production
     environment:
@@ -36,20 +36,12 @@ services:
         VITE_API_URL: ${VITE_API_URL}
         VITE_GOOGLE_MAPS_API_KEY: ${VITE_GOOGLE_MAPS_API_KEY}
         VITE_MAPBOX_ACCESS_TOKEN: ${VITE_MAPBOX_ACCESS_TOKEN}
-      # Cache mount example (optional):
-      cache_from:
-        - type=local,src=/tmp/.buildx-cache/frontend
+      # Optional: Use build cache if BuildKit enabled
+      # cache_from:
+      #   - type=local,src=/tmp/.buildx-cache/frontend
     image: wrangel/globschi-frontend:1.4
     ports:
       - "3000:80"
     restart: unless-stopped
     depends_on:
       - backend
-    deploy:
-      resources:
-        limits:
-          cpus: "1.0"
-          memory: 1024M
-        reservations:
-          cpus: "0.5"
-          memory: 512M

@@ -16,9 +16,9 @@ if [[ "$1" == "-u" ]]; then
 
     pnpm update
     pnpm install && node ./scripts/fix-photo-sphere-viewer.mjs
-    pnpm audit --fix
+    pnpm audit fix
     pnpm prune
-    pnpm self-update
+    pnpm knip --fix
     pnpm depcheck
 else
     echo "✅ Skipping dependency updates..."

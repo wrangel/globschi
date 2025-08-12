@@ -5,32 +5,32 @@
 # Function to keep books
 keep_books() {
     echo "Keeping books..."
-    node ./src/backend/management/bookKeeper.mjs
+    node --env-file=.env ./src/backend/management/bookKeeper.mjs
 }
 
 # Function to upload media
 upload_media() {
     echo "Uploading media..."
-    node ./src/backend/management/mediaUploader.mjs
+    node --env-file=.env ./src/backend/management/mediaUploader.mjs
 }
 
 # Function to run batch delete
 batch_delete() {
     echo "Running batch delete..."
-    node ./src/backend/management/batchDeleter.mjs
-    node ./src/backend/management/bookKeeper.mjs
+    node --env-file=.env ./src/backend/management/batchDeleter.mjs
+    node --env-file=.env ./src/backend/management/bookKeeper.mjs
 }
 
 # Function to debug MongoDB
 debug_mongo() {
     echo "Debugging MongoDB..."
-    node ./src/backend/tests/mongoDebugger.mjs
+    node --env-file=.env ./src/backend/tests/mongoDebugger.mjs
 }
 
 # Function to test AWS login
 test_aws() {
     echo "Testing AWS login..."
-    node ./src/backend/tests/awsLoginTester.mjs
+    node --env-file=.env ./src/backend/tests/awsLoginTester.mjs
 }
 
 # Check the command-line argument and execute the corresponding function

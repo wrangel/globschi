@@ -57,29 +57,10 @@ const apiLimiter = rateLimit({
   legacyHeaders: false, // Disable `X-RateLimit-*` headers
 });
 
-// Connect to MongoDB
-mongoose.set("strictQuery", false);
-const connectDB = () =>
-  mongoose
-    .connect(
-      `mongodb+srv://${process.env.MONGODB_DB_USER}:${process.env.MONGODB_DB_PASSWORD}@${process.env.MONGODB_SERVER}/${process.env.MONGODB_DB}?retryWrites=true&w=majority`
-    )
-    .catch((err) => {
-      logger.error("MongoDB connection error:", err);
-      throw err;
-    });
+// Apply rate limiting middleware to all /api routes BEFORE declaring those routes
+app.use("/api", apiLimiter);
 
-// Serve static files from the React app
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-app.use(express.static(path.join(__dirname, "../../build")));
-
-// Basic route
-app.get("/", (req, res) => {
-  res.send("Server is running");
-});
-
-// API route to test MongoDB connection
+// Now define /api routes (these routes will use the rate limiter)
 app.get("/api/test-mongo", async (req, res) => {
   try {
     await mongoose.connection.db.admin().ping();
@@ -90,8 +71,18 @@ app.get("/api/test-mongo", async (req, res) => {
   }
 });
 
-// Use the combined data route with rate limiting applied
-app.use("/api", apiLimiter, combinedDataRoute);
+// Combined data routes (all prefixed with /api)
+app.use("/api", combinedDataRoute);
+
+// Serve static files from the React app
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+app.use(express.static(path.join(__dirname, "../../build")));
+
+// Basic route
+app.get("/", (req, res) => {
+  res.send("Server is running");
+});
 
 // Catch-all handler for any request that doesn't match above routes
 app.get("/*rest", (req, res) => {
@@ -109,6 +100,18 @@ app.use((err, req, res, next) => {
         : err.message,
   });
 });
+
+// Connect to MongoDB
+mongoose.set("strictQuery", false);
+const connectDB = () =>
+  mongoose
+    .connect(
+      `mongodb+srv://${process.env.MONGODB_DB_USER}:${process.env.MONGODB_DB_PASSWORD}@${process.env.MONGODB_SERVER}/${process.env.MONGODB_DB}?retryWrites=true&w=majority`
+    )
+    .catch((err) => {
+      logger.error("MongoDB connection error:", err);
+      throw err;
+    });
 
 // Check if this module is the main module
 const isMainModule = import.meta.url === `file://${process.argv[1]}`;

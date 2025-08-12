@@ -41,26 +41,26 @@ app.use(
 
 // Middleware to log request origin
 app.use((req, res, next) => {
-  const origin = req.headers.origin; // Get the origin from the request headers
-  logger.info(`Request received from origin: ${origin}`); // Log the origin
-  next(); // Proceed to the next middleware or route handler
+  const origin = req.headers.origin;
+  logger.info(`Request received from origin: ${origin}`);
+  next();
 });
 
 // Rate limiting middleware for API routes
 const apiLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // limit each IP to 100 requests per 15 minutes
+  max: 100, // limit each IP to 100 requests per window
   message: {
     error: "Too many requests from this IP, please try again after 15 minutes",
   },
-  standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
-  legacyHeaders: false, // Disable `X-RateLimit-*` headers
+  standardHeaders: true,
+  legacyHeaders: false,
 });
 
-// Apply rate limiting middleware to all /api routes BEFORE declaring those routes
+// Apply rate limiting middleware to all /api routes BEFORE defining any routes
 app.use("/api", apiLimiter);
 
-// Now define /api routes (these routes will use the rate limiter)
+// Now define your /api routes (all rate-limited)
 app.get("/api/test-mongo", async (req, res) => {
   try {
     await mongoose.connection.db.admin().ping();
@@ -71,7 +71,6 @@ app.get("/api/test-mongo", async (req, res) => {
   }
 });
 
-// Combined data routes (all prefixed with /api)
 app.use("/api", combinedDataRoute);
 
 // Serve static files from the React app
@@ -79,13 +78,24 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 app.use(express.static(path.join(__dirname, "../../build")));
 
-// Basic route
+// Rate limiting middleware for non-API (general) routes like catch-all
+const generalLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 100,
+  message: {
+    error: "Too many requests from this IP, please try again after 15 minutes",
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+// Basic route (non-API)
 app.get("/", (req, res) => {
   res.send("Server is running");
 });
 
-// Catch-all handler for any request that doesn't match above routes
-app.get("/*rest", (req, res) => {
+// Catch-all handler for frontend routes serving React app with rate limiting
+app.get("/*", generalLimiter, (req, res) => {
   res.sendFile(path.join(__dirname, "../../build", "index.html"));
 });
 
@@ -113,10 +123,9 @@ const connectDB = () =>
       throw err;
     });
 
-// Check if this module is the main module
+// Check if this module is the main module and start the server
 const isMainModule = import.meta.url === `file://${process.argv[1]}`;
 
-// Start server if this is the main module
 if (isMainModule) {
   connectDB()
     .then(() => {

@@ -7,6 +7,7 @@ import logger from "./helpers/logger.mjs";
 import combinedDataRoute from "./routes/combinedDataRoute.mjs";
 import path from "path";
 import { fileURLToPath } from "url";
+import rateLimit from "express-rate-limit";
 
 // Check for critical environment variables
 const requiredEnvVars = [
@@ -45,6 +46,17 @@ app.use((req, res, next) => {
   next(); // Proceed to the next middleware or route handler
 });
 
+// Rate limiting middleware for API routes
+const apiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // limit each IP to 100 requests per 15 minutes
+  message: {
+    error: "Too many requests from this IP, please try again after 15 minutes",
+  },
+  standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+  legacyHeaders: false, // Disable `X-RateLimit-*` headers
+});
+
 // Connect to MongoDB
 mongoose.set("strictQuery", false);
 const connectDB = () =>
@@ -78,8 +90,8 @@ app.get("/api/test-mongo", async (req, res) => {
   }
 });
 
-// Use the combined data route
-app.use("/api", combinedDataRoute);
+// Use the combined data route with rate limiting applied
+app.use("/api", apiLimiter, combinedDataRoute);
 
 // Catch-all handler for any request that doesn't match above routes
 app.get("/*rest", (req, res) => {
@@ -87,7 +99,7 @@ app.get("/*rest", (req, res) => {
 });
 
 // Error handling middleware
-app.use((err, res) => {
+app.use((err, req, res, next) => {
   logger.error("Unhandled error:", err);
   res.status(500).json({
     error: "Internal Server Error",

@@ -2,7 +2,7 @@
 set -e
 
 echo "Stopping existing backend server..."
-if pkill -f "node ./src/backend/server.mjs"; then
+if pkill -f "node --env-file=.env ./src/backend/server.mjs"; then
   echo "Backend server stopped."
 else
   echo "No running backend server process found."

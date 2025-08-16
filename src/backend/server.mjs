@@ -1,5 +1,3 @@
-// src/backend/server.mjs
-
 import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
@@ -60,7 +58,7 @@ const apiLimiter = rateLimit({
 // Apply rate limiting middleware to all /api routes BEFORE defining any routes
 app.use("/api", apiLimiter);
 
-// Now define your /api routes (all rate-limited)
+// Define your /api routes (all rate-limited)
 app.get("/api/test-mongo", async (req, res) => {
   try {
     await mongoose.connection.db.admin().ping();
@@ -73,7 +71,7 @@ app.get("/api/test-mongo", async (req, res) => {
 
 app.use("/api", combinedDataRoute);
 
-// Serve static files from the React app
+// Serve static files from the React app build folder
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 app.use(express.static(path.join(__dirname, "../../build")));
@@ -94,8 +92,8 @@ app.get("/", (req, res) => {
   res.send("Server is running");
 });
 
-// Catch-all handler for frontend routes serving React app with rate limiting
-app.get("/*", generalLimiter, (req, res) => {
+// ** Fixed catch-all route: wildcard must be named to avoid path-to-regexp error **
+app.get("/*splat", generalLimiter, (req, res) => {
   res.sendFile(path.join(__dirname, "../../build", "index.html"));
 });
 
@@ -123,7 +121,7 @@ const connectDB = () =>
       throw err;
     });
 
-// Check if this module is the main module and start the server
+// Start the server if this is the main module
 const isMainModule = import.meta.url === `file://${process.argv[1]}`;
 
 if (isMainModule) {

@@ -1,4 +1,4 @@
-// src/components/Viewer.jsx
+// src/frontend/components/Viewer.jsx
 
 import { useState, useEffect, useRef } from "react";
 import ControlButtons from "./ControlButtons";
@@ -61,12 +61,13 @@ const Viewer = ({
   };
 
   const renderContent = () => {
+    // Renamed callback for Pannellum to onLoad
     if (item.viewer === "pano") {
       return (
         <PanoramaViewer
           imageUrl={item.actualUrl}
           thumbnailUrl={item.thumbnailUrl}
-          onReady={handleContentLoaded}
+          onLoad={handleContentLoaded}
           isNavigationMode={isNavigationMode}
         />
       );
@@ -77,7 +78,7 @@ const Viewer = ({
           thumbnailUrl={item.thumbnailUrl}
           name={item.name}
           onLoad={handleContentLoaded}
-          isNavigationMode={isNavigationMode} // Pass the prop for consistent functionality
+          isNavigationMode={isNavigationMode}
         />
       );
     }
@@ -94,7 +95,7 @@ const Viewer = ({
         onToggleMetadata={toggleMetadata}
         isNavigationMode={isNavigationMode}
         toggleMode={toggleMode}
-        isPano={item.viewer === "pano"} // Optional: keep for conditional styling
+        isPano={item.viewer === "pano"}
         onToggleFullScreen={toggleFullScreen}
       />
       {showMetadata && (

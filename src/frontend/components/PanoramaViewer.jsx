@@ -1,39 +1,32 @@
 // src/components/PanoramaViewer.jsx
 
-import { useState, useEffect } from "react";
-import { ReactPhotoSphereViewer } from "react-photo-sphere-viewer";
-import { AutorotatePlugin } from "@photo-sphere-viewer/autorotate-plugin";
+import { useState } from "react";
+import Pannellum from "react-pannellum";
 import styles from "../styles/PanoramaViewer.module.css";
 
-const PanoramaViewer = ({ imageUrl, thumbnailUrl, isNavigationMode }) => {
+const PanoramaViewer = ({
+  imageUrl,
+  thumbnailUrl,
+  isNavigationMode,
+  onLoad,
+}) => {
   const [isLoading, setIsLoading] = useState(true);
-  const [viewer, setViewer] = useState(null);
 
   const isSafari = () => {
     const ua = navigator.userAgent.toLowerCase();
     return ua.indexOf("safari") > -1 && ua.indexOf("chrome") === -1;
   };
 
-  const handleReady = (instance) => {
+  const handleLoad = () => {
     setIsLoading(false);
-    setViewer(instance);
-    if (!isNavigationMode) {
-      // Start autorotation after ready
-      const autorotate = instance.getPlugin(AutorotatePlugin);
-      autorotate?.start();
-    }
+    if (onLoad) onLoad();
   };
 
-  useEffect(() => {
-    if (viewer) {
-      const autorotate = viewer.getPlugin(AutorotatePlugin);
-      if (isNavigationMode) {
-        autorotate?.stop();
-      } else {
-        autorotate?.start();
-      }
-    }
-  }, [isNavigationMode, viewer]);
+  const handleError = () => {
+    console.error("Panorama failed to load.");
+    setIsLoading(false);
+    if (onLoad) onLoad();
+  };
 
   if (isSafari()) {
     return (
@@ -46,24 +39,30 @@ const PanoramaViewer = ({ imageUrl, thumbnailUrl, isNavigationMode }) => {
     );
   }
 
-  // Pass the plugin constructor and options as array
-  const plugins = [
-    [AutorotatePlugin, { autorotateSpeed: "2rpm", autostartDelay: 2000 }],
-  ];
-
   return (
     <div className={styles.panoramaViewer}>
-      <ReactPhotoSphereViewer
-        src={imageUrl}
+      {/* Remove manual thumbnail rendering - let pannellum handle preview */}
+      <Pannellum
+        id="panoramaViewer"
+        sceneId="scene1"
+        width="100vw"
         height="100vh"
-        width="100%"
-        onReady={handleReady}
-        plugins={plugins}
-        navbar={false}
+        image={imageUrl}
+        previewImage={thumbnailUrl} // Pass your thumbnail here
+        pitch={0}
+        yaw={0}
+        hfov={110}
+        autoLoad={true} // <-- load immediately without click
+        autoRotate={!isNavigationMode}
+        onLoad={handleLoad}
+        onLoadError={handleError}
+        showControls={!isNavigationMode}
+        compass={false}
+        keyboardZoom={false}
+        mouseZoom={false}
+        draggable={!isNavigationMode}
+        hotspotDebug={false}
       />
-      {isLoading && thumbnailUrl && (
-        <img src={thumbnailUrl} alt="Thumbnail" className={styles.thumbnail} />
-      )}
     </div>
   );
 };

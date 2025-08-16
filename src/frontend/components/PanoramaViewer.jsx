@@ -1,70 +1,64 @@
-// src/components/PanoramaViewer.jsx
+import React, { useEffect, useRef } from "react";
+import Marzipano from "marzipano";
 
-import { useState, useEffect } from "react";
-import { ReactPhotoSphereViewer } from "react-photo-sphere-viewer";
-import { AutorotatePlugin } from "@photo-sphere-viewer/autorotate-plugin";
-import styles from "../styles/PanoramaViewer.module.css";
-
-const PanoramaViewer = ({ imageUrl, thumbnailUrl, isNavigationMode }) => {
-  const [isLoading, setIsLoading] = useState(true);
-  const [viewer, setViewer] = useState(null);
-
-  const isSafari = () => {
-    const ua = navigator.userAgent.toLowerCase();
-    return ua.indexOf("safari") > -1 && ua.indexOf("chrome") === -1;
-  };
-
-  const handleReady = (instance) => {
-    setIsLoading(false);
-    setViewer(instance);
-    if (!isNavigationMode) {
-      // Start autorotation after ready
-      const autorotate = instance.getPlugin(AutorotatePlugin);
-      autorotate?.start();
-    }
-  };
+const PanoramaViewer = () => {
+  const viewerRef = useRef(null);
+  const panoRef = useRef(null);
 
   useEffect(() => {
-    if (viewer) {
-      const autorotate = viewer.getPlugin(AutorotatePlugin);
-      if (isNavigationMode) {
-        autorotate?.stop();
-      } else {
-        autorotate?.start();
-      }
-    }
-  }, [isNavigationMode, viewer]);
+    if (!panoRef.current) return;
 
-  if (isSafari()) {
-    return (
-      <div className={styles.errorOverlay}>
-        <div className={styles.errorMessage}>
-          <h1>Safari Does Not Support This Feature.</h1>
-          <p>Please try using a different browser like Chrome or Firefox.</p>
-        </div>
-      </div>
+    // Initialize Marzipano viewer
+    const viewer = new Marzipano.Viewer(panoRef.current);
+
+    // Define the levels of resolution matching the exported tiles
+    const levels = [
+      { tileSize: 512, size: 512, fallbackOnly: true },
+      { tileSize: 512, size: 1024 },
+      { tileSize: 512, size: 2048 },
+      { tileSize: 512, size: 4096 },
+    ];
+
+    // Cube geometry for tiles
+    const geometry = new Marzipano.CubeGeometry(levels);
+
+    // Image tile URL pattern including nested folder structure
+    const source = Marzipano.ImageUrlSource.fromString(
+      "https://melville-island.s3.amazonaws.com/pan/20250813_001_0006/tiles/0-20250813_001_0006/{z}/{f}/{y}/{x}.jpg"
     );
-  }
 
-  // Pass the plugin constructor and options as array
-  const plugins = [
-    [AutorotatePlugin, { autorotateSpeed: "2rpm", autostartDelay: 2000 }],
-  ];
+    // View settings: initial yaw, pitch and field of view
+    const view = new Marzipano.RectilinearView({
+      yaw: 0,
+      pitch: 0,
+      fov: Math.PI / 3,
+    });
+
+    // Create the scene
+    const scene = viewer.createScene({
+      source,
+      geometry,
+      view,
+      pinFirstLevel: true,
+    });
+
+    // Display the scene
+    scene.switchTo();
+
+    // Save viewer instance for cleanup
+    viewerRef.current = viewer;
+
+    // Cleanup on unmount
+    return () => {
+      if (viewerRef.current) viewerRef.current.destroy();
+    };
+  }, []);
 
   return (
-    <div className={styles.panoramaViewer}>
-      <ReactPhotoSphereViewer
-        src={imageUrl}
-        height="100vh"
-        width="100%"
-        onReady={handleReady}
-        plugins={plugins}
-        navbar={false}
-      />
-      {isLoading && thumbnailUrl && (
-        <img src={thumbnailUrl} alt="Thumbnail" className={styles.thumbnail} />
-      )}
-    </div>
+    <div
+      ref={panoRef}
+      style={{ width: "100vw", height: "100vh", backgroundColor: "black" }}
+    />
   );
 };
 

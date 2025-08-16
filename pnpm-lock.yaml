@@ -25,9 +25,6 @@ importers:
       '@aws-sdk/s3-request-presigner':
         specifier: ^3.864.0
         version: 3.864.0
-      '@photo-sphere-viewer/autorotate-plugin':
-        specifier: ^5.13.4
-        version: 5.13.4(@photo-sphere-viewer/core@5.13.4)
       '@photo-sphere-viewer/core':
         specifier: ^5.13.4
         version: 5.13.4
@@ -55,6 +52,9 @@ importers:
       leaflet:
         specifier: ^1.9.4
         version: 1.9.4
+      marzipano:
+        specifier: ^0.10.2
+        version: 0.10.2
       mongoose:
         specifier: ^8.17.1
         version: 8.17.1
@@ -79,12 +79,12 @@ importers:
       react-leaflet:
         specifier: ^4.2.1
         version: 4.2.1(leaflet@1.9.4)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      react-marzipano-component:
+        specifier: ^0.1.3
+        version: 0.1.3(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(rollup@4.46.2)(tslib@2.8.1)(typescript@5.9.2)
       react-masonry-css:
         specifier: ^1.0.16
         version: 1.0.16(react@18.3.1)
-      react-photo-sphere-viewer:
-        specifier: ^6.2.3
-        version: 6.2.3(@photo-sphere-viewer/core@5.13.4)(prop-types@15.8.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       react-router-dom:
         specifier: ^7.8.1
         version: 7.8.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -739,11 +739,6 @@ packages:
   '@mongodb-js/saslprep@1.3.0':
     resolution: {integrity: sha512-zlayKCsIjYb7/IdfqxorK5+xUMyi4vOKcFy10wKJYc63NSdKI8mNME+uJqfatkPmOSMMUiojrL58IePKBm3gvQ==}
 
-  '@photo-sphere-viewer/autorotate-plugin@5.13.4':
-    resolution: {integrity: sha512-g0kwfYy1/QYF+WZ3xr4DhE6bP+Lza/zp+TRxex3+pH+wwVIzNUbolhPgbS5ZrDQX1tJ/2S6nt8wW9dOb4s5kbw==}
-    peerDependencies:
-      '@photo-sphere-viewer/core': 5.13.4
-
   '@photo-sphere-viewer/core@5.13.4':
     resolution: {integrity: sha512-leVQL6gG9wTF+uvCFarHUcr8mzafCZ/GLzauksYQJfiqDVRFSAJNXnTOy7RH9otToluEdjN1hsN1f9HQy+rLYg==}
 
@@ -756,6 +751,23 @@ packages:
 
   '@rolldown/pluginutils@1.0.0-beta.27':
     resolution: {integrity: sha512-+d0F4MKMCbeVUJwG96uQ4SgAznZNSq93I3V+9NHA4OpvqG8mRCpGdKmK8l/dl02h2CCDHwW2FqilnTyDcAnqjA==}
+
+  '@rollup/plugin-typescript@8.5.0':
+    resolution: {integrity: sha512-wMv1/scv0m/rXx21wD2IsBbJFba8wGF3ErJIr6IKRfRj49S85Lszbxb4DCo8iILpluTjk2GAAu9CoZt4G3ppgQ==}
+    engines: {node: '>=8.0.0'}
+    peerDependencies:
+      rollup: ^2.14.0
+      tslib: '*'
+      typescript: '>=3.7.0'
+    peerDependenciesMeta:
+      tslib:
+        optional: true
+
+  '@rollup/pluginutils@3.1.0':
+    resolution: {integrity: sha512-GksZ6pr6TpIjHm8h9lSQ8pi8BE9VeubNT0OMJ3B5uZJ8pz73NPiqOtCog/x2/QzM1ENChPKxMDhiQuRHsqc+lg==}
+    engines: {node: '>= 8.0.0'}
+    peerDependencies:
+      rollup: ^1.20.0||^2.0.0
 
   '@rollup/pluginutils@4.2.1':
     resolution: {integrity: sha512-iKnFXr7NkdZAIHiIWE+BX5ULi/ucVFYWD6TbAV+rZctiRTY2PL6tsIKhoIOaoskiWAkgu+VsbXgUVDNLHf+InQ==}
@@ -1088,6 +1100,9 @@ packages:
   '@types/eslint@8.56.12':
     resolution: {integrity: sha512-03ruubjWyOHlmljCVoxSuNDdmfZDzsrrz0P2LeJsOXr+ZwFQ+0yQIwNCwt/GYhV7Z31fgtXJTAEs+FYlEL851g==}
 
+  '@types/estree@0.0.39':
+    resolution: {integrity: sha512-EYNwp3bU+98cpU4lAWYYL7Zz+2gryWH1qbdDTidVd6hkiR6weksdbMadyXKXNPEkQFhXM+hVO9ZygomHXp+AIw==}
+
   '@types/estree@1.0.8':
     resolution: {integrity: sha512-dWHzHa2WqEXI/O1E9OjrocMTKJl2mSrEolh1Iomrv6U+JuNwaHXsXx9bLu5gG7BUWFIN0skIQJQ/L1rIex4X6w==}
 
@@ -1200,6 +1215,9 @@ packages:
   body-parser@2.2.0:
     resolution: {integrity: sha512-02qvAaxv8tp7fBa/mw1ga98OGm+eCbqzJOKoRt70sLmfEEi+jyBYVTDGfCL/k06/4EMk/z01gCe7HoCH/f2LTg==}
     engines: {node: '>=18'}
+
+  bowser@1.9.4:
+    resolution: {integrity: sha512-9IdMmj2KjigRq6oWhmwv1W36pDuA4STQZ8q6YO9um+x07xgYNCD3Oou+WP/3L1HNz7iqythGet3/p4wvc8AAwQ==}
 
   bowser@2.12.0:
     resolution: {integrity: sha512-HcOcTudTeEWgbHh0Y1Tyb6fdeR71m4b/QACf0D4KswGTsNeIJQmg38mRENZPAYPZvGFN3fk3604XbQEPdxXdKg==}
@@ -1474,6 +1492,9 @@ packages:
     resolution: {integrity: sha512-MMdARuVEQziNTeJD8DgMqmhwR11BRQ/cBP+pLtYdSTnf3MIO8fFeiINEbX36ZdNlfU/7A9f3gUw49B3oQsvwBA==}
     engines: {node: '>=4.0'}
 
+  estree-walker@1.0.1:
+    resolution: {integrity: sha512-1fMXF3YP4pZZVozF8j/ZLfvnR8NSIljt56UhbZ5PeeDmmGHpgpdwQt7ITlGvYaQukCvuBRMLEiKiYC+oeIg4cg==}
+
   estree-walker@2.0.2:
     resolution: {integrity: sha512-Rfkk/Mp/DL7JVje3u18FxFujQlTNR2q6QfMSMB7AvCBx91NGj/ba3kCfza0f6dVDbw7YlRf/nDrn7pQrCCyQ/w==}
 
@@ -1484,9 +1505,6 @@ packages:
   etag@1.8.1:
     resolution: {integrity: sha512-aIL5Fx7mawVa300al2BnEE4iNvo1qETxLrPI/o05L7z6go7fCw1J6EQmbK4FmJ2AS7kgVF/KEZWufBfdClMcPg==}
     engines: {node: '>= 0.6'}
-
-  eventemitter3@5.0.1:
-    resolution: {integrity: sha512-GWkBvjiSZK87ELrYOSESUYeVIc9mvLLf/nXalMOS5dYrgZq9o5OVkbZAVM06CVxYsCwH9BDZFPlQTlPA1j4ahA==}
 
   events@3.3.0:
     resolution: {integrity: sha512-mQw+2fkQbALzQ7V0MY0IqdnXNOeTtP4r0lN9z7AAawCXgqea7bDii20AYrIBrFd/Hx0M2Ocz6S111CaFkUcb0Q==}
@@ -1611,6 +1629,9 @@ packages:
     resolution: {integrity: sha512-w9UMqWwJxHNOvoNzSJ2oPF5wvYcvP7jUvYzhp67yEhTi17ZDBBC1z9pTdGuzjD+EFIqLSYRweZjqfiPzQ06Ebg==}
     engines: {node: '>= 0.4'}
 
+  gl-matrix@3.3.0:
+    resolution: {integrity: sha512-COb7LDz+SXaHtl/h4LeaFcNdJdAQSDeVqjiIihSXNrkWObZLhDI4hIkZC11Aeqp7bcE72clzB0BnDXr2SmslRA==}
+
   glob-parent@6.0.2:
     resolution: {integrity: sha512-XxwI8EOhVQgWp6iDL+3b0r86f4d6AX6zSU55HfB4ydCEuXLXc5FcYeOu+nnGftS4TEju/11rt4KJPTMgbfmv4A==}
     engines: {node: '>=10.13.0'}
@@ -1630,6 +1651,10 @@ packages:
   gopd@1.2.0:
     resolution: {integrity: sha512-ZUKRh6/kUFoAiTAtTYPZJ3hw9wNxx+BIBOijnlG9PnrJsCcSjs1wyyD6vJpaYtgnzDrKYRSqf3OO6Rfa93xsRg==}
     engines: {node: '>= 0.4'}
+
+  hammerjs@2.0.4:
+    resolution: {integrity: sha512-7eWteNDFD5a792W0bsxLUfowijwXFIwN8JDuZ3e8+0+mQQ9Hgp0ROxr36DdhbjACwi5c0ep86loTI2NcT41ang==}
+    engines: {node: '>=0.8.0'}
 
   has-bigints@1.1.0:
     resolution: {integrity: sha512-R3pbpkcIqv2Pm3dUwgjclDRVmWpTJW2DcMzcIhEXEx1oh/CEMObMm3KLmRJOdvhM7o4uQBnwr8pzRK2sJWIqfg==}
@@ -1880,6 +1905,9 @@ packages:
   lru-cache@5.1.1:
     resolution: {integrity: sha512-KpNARQA3Iwv+jTA0utUVVbrh+Jlrr1Fv0e56GGzAFOXN7dk/FviaDW8LHmK52DlcH4WP2n6gI8vN1aesBFgo9w==}
 
+  marzipano@0.10.2:
+    resolution: {integrity: sha512-YWgxpnZa8rlZWT4tkV9LF3abqwMeS3sphkbssWlM1EqZZ/XdlFJVL18iR4wI+uUnvVWjMmjAKDn/lPlOo19Tsg==}
+
   math-intrinsics@1.1.0:
     resolution: {integrity: sha512-/IXtbwEk5HTPyEwyKX6hGkYXxM9nbj64B+ilVJnC/R6B0pH5G4V3b0pVbL7DBj4tkhBAppbQUlf6F6Xl9LHu1g==}
     engines: {node: '>= 0.4'}
@@ -1910,6 +1938,9 @@ packages:
   mime-types@3.0.1:
     resolution: {integrity: sha512-xRc4oEhT6eaBpU1XF7AjpOFD+xQmXNB5OVKwp4tqCuBpHLS/ZbBDrc07mYTDqVMg6PfxUjjNp85O6Cd2Z/5HWA==}
     engines: {node: '>= 0.6'}
+
+  minimal-event-emitter@1.0.0:
+    resolution: {integrity: sha512-jZFCw+HUAgVWGSnCpff4NaB1PRwNcnIYRN1hgaA1QfOxG5lBhNmqpmcVW/o2+28Pc8CxPImsipDNrfUQhHCukw==}
 
   minimatch@3.1.2:
     resolution: {integrity: sha512-J7p63hRiAjw1NDEww1W7i37+ByIrOWO5XQQAzZ3VOcL0PNybwpfmV/N05zFAzwQ9USyEcX6t3UO+K5aqBQOIHw==}
@@ -2140,19 +2171,23 @@ packages:
       react: ^18.0.0
       react-dom: ^18.0.0
 
+  react-marzipano-component@0.0.1:
+    resolution: {integrity: sha512-rOyltllaGdtQNcl2W5K8w1UweZEQN/a49hM+aJnLxM3q1P80qCVlvBrybEfsdNsQViJnmlEXSEOCIyaWalCojg==}
+    peerDependencies:
+      react: ^18.2.0
+      react-dom: ^18.2.0
+
+  react-marzipano-component@0.1.3:
+    resolution: {integrity: sha512-QBayyo3/0b5EgPL/HtzWiRbxNX6CvLyQoDmJNYYFpA8REvQsLR6QFyxPF3FcjwA8B/nq+owlHXgJoAbcFokvlQ==}
+    engines: {node: '>=16.0.0'}
+    peerDependencies:
+      react: ^18.2.0
+      react-dom: ^18.2.0
+
   react-masonry-css@1.0.16:
     resolution: {integrity: sha512-KSW0hR2VQmltt/qAa3eXOctQDyOu7+ZBevtKgpNDSzT7k5LA/0XntNa9z9HKCdz3QlxmJHglTZ18e4sX4V8zZQ==}
     peerDependencies:
       react: '>=16.0.0'
-
-  react-photo-sphere-viewer@6.2.3:
-    resolution: {integrity: sha512-VzG0aY9CI8OIQjdIoJCjYF1QlnLFpN2pM+zKm1JrpAKQrBZ6B+Uxy94vpVQkGDERgn8FWE0+LIntTgAr60pLyQ==}
-    engines: {node: '>=16', npm: '>=8'}
-    peerDependencies:
-      '@photo-sphere-viewer/core': '>=5.13.1'
-      prop-types: ^15.5.4
-      react: '>=16.0.0'
-      react-dom: '>=16.0.0'
 
   react-refresh@0.17.0:
     resolution: {integrity: sha512-z6F7K9bV85EfseRCp2bzrpyQ0Gkw1uLoCel9XBVWPg/TjRj94SkJzUTGfOa4bs7iJvBWtQG0Wq7wnI0syw3EBQ==}
@@ -2199,6 +2234,11 @@ packages:
   resolve-from@4.0.0:
     resolution: {integrity: sha512-pb/MYmXstAkysRFx8piNI1tGFNQIFA3vkE3Gq4EuA1dF6gHp/+vgZqsCGJapvy8N3Q+4o7FwvquPJcnZ7RYy4g==}
     engines: {node: '>=4'}
+
+  resolve@1.22.10:
+    resolution: {integrity: sha512-NPRy+/ncIMeDlTAsuqwKIiferiawhefFJtkNSW0qZJEqMEb+qBt/77B/jGeeek+F0uOeN05CDa6HXbbIgtVX4w==}
+    engines: {node: '>= 0.4'}
+    hasBin: true
 
   resolve@2.0.0-next.5:
     resolution: {integrity: sha512-U7WjGVG9sH8tvjW5SmGbQuui75FiyjAX72HX15DwBBwF9dNiQZRQAg9nnPhYy+TUnE0+VcrttuvNI8oSxZcocA==}
@@ -2425,6 +2465,11 @@ packages:
   typed-array-length@1.0.7:
     resolution: {integrity: sha512-3KS2b+kL7fsuk/eJZ7EQdnEmQoaho/r6KUef7hxvltNA5DR8NAUM+8wJMbJyZ4G9/7i3v5zPBIMN5aybAh2/Jg==}
     engines: {node: '>= 0.4'}
+
+  typescript@5.9.2:
+    resolution: {integrity: sha512-CWBzXQrc/qOkhidw1OzBTQuYRbfyxDXJMVJ1XNwUHGROVmuaeiEm3OslpZ1RV96d7SKKjZKrSJu3+t/xlw3R9A==}
+    engines: {node: '>=14.17'}
+    hasBin: true
 
   unbox-primitive@1.1.0:
     resolution: {integrity: sha512-nWJ91DjeOkej/TA8pXQ3myruKpKEYgqvpw9lz4OPHj/NWFNluYrjbz9j01CJ8yKQd2g4jFoOkINCTW2I5LEEyw==}
@@ -3429,10 +3474,6 @@ snapshots:
     dependencies:
       sparse-bitfield: 3.0.3
 
-  '@photo-sphere-viewer/autorotate-plugin@5.13.4(@photo-sphere-viewer/core@5.13.4)':
-    dependencies:
-      '@photo-sphere-viewer/core': 5.13.4
-
   '@photo-sphere-viewer/core@5.13.4':
     dependencies:
       three: 0.175.0
@@ -3444,6 +3485,22 @@ snapshots:
       react-dom: 18.3.1(react@18.3.1)
 
   '@rolldown/pluginutils@1.0.0-beta.27': {}
+
+  '@rollup/plugin-typescript@8.5.0(rollup@4.46.2)(tslib@2.8.1)(typescript@5.9.2)':
+    dependencies:
+      '@rollup/pluginutils': 3.1.0(rollup@4.46.2)
+      resolve: 1.22.10
+      rollup: 4.46.2
+      typescript: 5.9.2
+    optionalDependencies:
+      tslib: 2.8.1
+
+  '@rollup/pluginutils@3.1.0(rollup@4.46.2)':
+    dependencies:
+      '@types/estree': 0.0.39
+      estree-walker: 1.0.1
+      picomatch: 2.3.1
+      rollup: 4.46.2
 
   '@rollup/pluginutils@4.2.1':
     dependencies:
@@ -3872,6 +3929,8 @@ snapshots:
       '@types/estree': 1.0.8
       '@types/json-schema': 7.0.15
 
+  '@types/estree@0.0.39': {}
+
   '@types/estree@1.0.8': {}
 
   '@types/json-schema@7.0.15': {}
@@ -4023,6 +4082,8 @@ snapshots:
       type-is: 2.0.1
     transitivePeerDependencies:
       - supports-color
+
+  bowser@1.9.4: {}
 
   bowser@2.12.0: {}
 
@@ -4423,13 +4484,13 @@ snapshots:
 
   estraverse@5.3.0: {}
 
+  estree-walker@1.0.1: {}
+
   estree-walker@2.0.2: {}
 
   esutils@2.0.3: {}
 
   etag@1.8.1: {}
-
-  eventemitter3@5.0.1: {}
 
   events@3.3.0: {}
 
@@ -4583,6 +4644,8 @@ snapshots:
       es-errors: 1.3.0
       get-intrinsic: 1.3.0
 
+  gl-matrix@3.3.0: {}
+
   glob-parent@6.0.2:
     dependencies:
       is-glob: 4.0.3
@@ -4597,6 +4660,8 @@ snapshots:
       gopd: 1.2.0
 
   gopd@1.2.0: {}
+
+  hammerjs@2.0.4: {}
 
   has-bigints@1.1.0: {}
 
@@ -4844,6 +4909,13 @@ snapshots:
     dependencies:
       yallist: 3.1.1
 
+  marzipano@0.10.2:
+    dependencies:
+      bowser: 1.9.4
+      gl-matrix: 3.3.0
+      hammerjs: 2.0.4
+      minimal-event-emitter: 1.0.0
+
   math-intrinsics@1.1.0: {}
 
   media-typer@1.1.0: {}
@@ -4863,6 +4935,8 @@ snapshots:
   mime-types@3.0.1:
     dependencies:
       mime-db: 1.54.0
+
+  minimal-event-emitter@1.0.0: {}
 
   minimatch@3.1.2:
     dependencies:
@@ -5085,17 +5159,32 @@ snapshots:
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
 
+  react-marzipano-component@0.0.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(rollup@4.46.2)(tslib@2.8.1)(typescript@5.9.2):
+    dependencies:
+      '@rollup/plugin-typescript': 8.5.0(rollup@4.46.2)(tslib@2.8.1)(typescript@5.9.2)
+      marzipano: 0.10.2
+      react: 18.3.1
+      react-dom: 18.3.1(react@18.3.1)
+    transitivePeerDependencies:
+      - rollup
+      - tslib
+      - typescript
+
+  react-marzipano-component@0.1.3(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(rollup@4.46.2)(tslib@2.8.1)(typescript@5.9.2):
+    dependencies:
+      '@rollup/plugin-typescript': 8.5.0(rollup@4.46.2)(tslib@2.8.1)(typescript@5.9.2)
+      marzipano: 0.10.2
+      react: 18.3.1
+      react-dom: 18.3.1(react@18.3.1)
+      react-marzipano-component: 0.0.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(rollup@4.46.2)(tslib@2.8.1)(typescript@5.9.2)
+    transitivePeerDependencies:
+      - rollup
+      - tslib
+      - typescript
+
   react-masonry-css@1.0.16(react@18.3.1):
     dependencies:
       react: 18.3.1
-
-  react-photo-sphere-viewer@6.2.3(@photo-sphere-viewer/core@5.13.4)(prop-types@15.8.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
-    dependencies:
-      '@photo-sphere-viewer/core': 5.13.4
-      eventemitter3: 5.0.1
-      prop-types: 15.8.1
-      react: 18.3.1
-      react-dom: 18.3.1(react@18.3.1)
 
   react-refresh@0.17.0: {}
 
@@ -5148,6 +5237,12 @@ snapshots:
       set-function-name: 2.0.2
 
   resolve-from@4.0.0: {}
+
+  resolve@1.22.10:
+    dependencies:
+      is-core-module: 2.16.1
+      path-parse: 1.0.7
+      supports-preserve-symlinks-flag: 1.0.0
 
   resolve@2.0.0-next.5:
     dependencies:
@@ -5491,6 +5586,8 @@ snapshots:
       is-typed-array: 1.1.15
       possible-typed-array-names: 1.1.0
       reflect.getprototypeof: 1.0.10
+
+  typescript@5.9.2: {}
 
   unbox-primitive@1.1.0:
     dependencies:

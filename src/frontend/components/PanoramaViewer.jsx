@@ -18,17 +18,19 @@ const PanoramaViewer = ({ imageUrl, thumbnailUrl, isNavigationMode }) => {
     setIsLoading(false);
     setViewer(instance);
     if (!isNavigationMode) {
-      instance.getPlugin(AutorotatePlugin).start();
+      // Start autorotation after ready
+      const autorotate = instance.getPlugin(AutorotatePlugin);
+      autorotate?.start();
     }
   };
 
   useEffect(() => {
     if (viewer) {
-      const autorotatePlugin = viewer.getPlugin(AutorotatePlugin);
+      const autorotate = viewer.getPlugin(AutorotatePlugin);
       if (isNavigationMode) {
-        autorotatePlugin.stop();
+        autorotate?.stop();
       } else {
-        autorotatePlugin.start();
+        autorotate?.start();
       }
     }
   }, [isNavigationMode, viewer]);
@@ -44,6 +46,11 @@ const PanoramaViewer = ({ imageUrl, thumbnailUrl, isNavigationMode }) => {
     );
   }
 
+  // Pass the plugin constructor and options as array
+  const plugins = [
+    [AutorotatePlugin, { autorotateSpeed: "2rpm", autostartDelay: 2000 }],
+  ];
+
   return (
     <div className={styles.panoramaViewer}>
       <ReactPhotoSphereViewer
@@ -51,10 +58,8 @@ const PanoramaViewer = ({ imageUrl, thumbnailUrl, isNavigationMode }) => {
         height="100vh"
         width="100%"
         onReady={handleReady}
-        plugins={[AutorotatePlugin]}
+        plugins={plugins}
         navbar={false}
-        wrapHorizontal={true} // enable horizontal wraparound
-        longitudeRange={[0, 2 * Math.PI]} // set longitude limits explicitly
       />
       {isLoading && thumbnailUrl && (
         <img src={thumbnailUrl} alt="Thumbnail" className={styles.thumbnail} />

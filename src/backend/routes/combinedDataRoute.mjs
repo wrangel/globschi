@@ -16,15 +16,18 @@ router.get("/combined-data", async (req, res) => {
   // Check if the data is cached
   const cachedData = getCachedData(cacheKey);
   if (cachedData) {
+    console.log("[CACHE HIT] Returning cached combined-data");
     return res.status(200).json(cachedData); // Return cached data
   }
+
+  console.log("[CACHE MISS] Fetching fresh combined-data");
 
   try {
     const combinedData = await getCombinedData();
     setCachedData(cacheKey, combinedData); // Cache the fetched data
     res.status(200).json(combinedData);
   } catch (error) {
-    console.error("Error fetching combined data:", error);
+    console.error("Error fetching combined ", error);
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
@@ -39,7 +42,7 @@ router.post("/update-data", async (req, res) => {
 
     res.status(200).json({ message: "Data updated successfully" });
   } catch (error) {
-    console.error("Error updating data:", error);
+    console.error("Error updating ", error);
     res.status(500).json({ error: "Internal Server Error" });
   }
 });

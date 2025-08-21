@@ -25,61 +25,73 @@ const PanoramaViewer = ({
 
   useEffect(() => {
     if (
-      cubeFaces &&
-      ["front", "back", "left", "right", "top", "bottom"].every(
+      !marzipanoContainerRef.current ||
+      !cubeFaces ||
+      !["front", "back", "left", "right", "top", "bottom"].every(
         (face) => cubeFaces[face]
       )
     ) {
-      // Initialize Marzipano for cubemap
-      setViewerType("marzipano");
-
-      // Cleanup existing viewer if any
-      if (marzipanoViewerRef.current) {
-        marzipanoViewerRef.current.destroy();
-        marzipanoViewerRef.current = null;
-      }
-
-      const element = marzipanoContainerRef.current;
-      if (!element) return;
-
-      const viewer = new Marzipano.Viewer(element);
-
-      const source = Marzipano.ImageUrlSource.fromCubemapFaces({
-        front: cubeFaces.front,
-        back: cubeFaces.back,
-        left: cubeFaces.left,
-        right: cubeFaces.right,
-        up: cubeFaces.top, // Note the naming differences in Marzipano API
-        down: cubeFaces.bottom,
-      });
-
-      const geometry = new Marzipano.CubeGeometry([
-        { tileSize: 512, size: 512 },
-      ]);
-      const limiter = Marzipano.RectilinearView.limit.traditional(
-        1024,
-        (100 * Math.PI) / 180
-      );
-
-      const view = new Marzipano.RectilinearView({ yaw: Math.PI }, limiter);
-      const scene = viewer.createScene({ source, geometry, view });
-
-      scene.switchTo();
-
-      marzipanoViewerRef.current = viewer;
-
-      setIsLoading(false);
-
-      if (typeof onReady === "function") {
-        onReady();
-      }
-    } else {
-      // Legacy viewer
       setViewerType("psv");
       setIsLoading(true);
+      return;
     }
 
-    // Cleanup on unmount
+    const { width, height } =
+      marzipanoContainerRef.current.getBoundingClientRect();
+
+    if (width === 0 || height === 0) {
+      // Container not yet sized, defer initialization briefly
+      const timeout = setTimeout(() => {
+        // Trigger effect re-run
+        setIsLoading(true);
+        setViewerType("marzipano");
+      }, 50);
+
+      return () => clearTimeout(timeout);
+    }
+
+    // Initialize Marzipano viewer
+    if (marzipanoViewerRef.current) {
+      marzipanoViewerRef.current.destroy();
+      marzipanoViewerRef.current = null;
+    }
+
+    const viewer = new Marzipano.Viewer(marzipanoContainerRef.current);
+
+    const source = Marzipano.ImageUrlSource.fromCubemapFaces({
+      front: cubeFaces.front,
+      back: cubeFaces.back,
+      left: cubeFaces.left,
+      right: cubeFaces.right,
+      up: cubeFaces.top, // map top to up
+      down: cubeFaces.bottom, // map bottom to down
+    });
+
+    const geometry = new Marzipano.CubeGeometry([
+      { tileSize: 256, size: 256, fallbackOnly: true },
+      { tileSize: 512, size: 512 },
+      { tileSize: 512, size: 1024 },
+    ]);
+
+    const limiter = Marzipano.RectilinearView.limit.traditional(
+      1024,
+      (100 * Math.PI) / 180
+    );
+
+    const view = new Marzipano.RectilinearView({ yaw: Math.PI }, limiter);
+
+    const scene = viewer.createScene({ source, geometry, view });
+
+    scene.switchTo();
+
+    marzipanoViewerRef.current = viewer;
+
+    setIsLoading(false);
+
+    if (typeof onReady === "function") {
+      onReady();
+    }
+
     return () => {
       if (marzipanoViewerRef.current) {
         marzipanoViewerRef.current.destroy();
@@ -87,11 +99,6 @@ const PanoramaViewer = ({
       }
     };
   }, [cubeFaces, onReady]);
-
-  useEffect(() => {
-    // In PS Viewer, autorotate handling is inside that component's onReady
-    // For Marzipano, consider adding autorotate plugin if needed (advanced)
-  }, [viewerType, isNavigationMode]);
 
   if (isSafari()) {
     return (
@@ -137,7 +144,6 @@ const PanoramaViewer = ({
     );
   }
 
-  // Marzipano viewer container
   return (
     <div
       ref={marzipanoContainerRef}

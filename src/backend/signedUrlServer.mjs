@@ -1,5 +1,7 @@
 // src/backend/signedUrlServer.mjs
 
+// src/backend/signedUrlServer.mjs
+
 import { GetObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { listS3BucketContents } from "./helpers/awsHelpers.mjs";
@@ -18,6 +20,8 @@ const CUBEMAP_FACES = [
 
 /**
  * Generates signed URLs for S3 objects, with cubemap pano face grouping.
+ * Legacy single-file panoramas are kept only when the six-face folder
+ * (same panorama id) does NOT exist.
  * @returns {Promise<Array>} Array of objects with name and URLs.
  */
 export async function getUrls() {
@@ -26,40 +30,76 @@ export async function getUrls() {
       process.env.AWS_BUCKET_SITE
     );
 
-    // Separate cubemap face files and others
-    const cubemapItems = [];
-    const otherItems = [];
-
+    /* ----------------------------------------------------------
+       1.  Determine which panorama ids have a complete cubemap set
+    ---------------------------------------------------------- */
+    const cubemapIds = new Set();
     for (const content of bucketContents) {
       const key = content.Key;
-      if (CUBEMAP_FACES.some((face) => key.endsWith(`/${face}`))) {
-        cubemapItems.push(content);
-      } else {
-        otherItems.push(content);
+      const parts = key.split("/");
+      if (
+        parts.length >= 3 &&
+        CUBEMAP_FACES.some((face) => key.endsWith(`/${face}`))
+      ) {
+        cubemapIds.add(parts[parts.length - 2]); // panorama id (folder name)
       }
     }
 
-    // Generate signed URLs for cubemap faces grouped by pano id (folder)
-    const cubemapUrls = await generateCubemapSignedUrls(cubemapItems);
+    /* ----------------------------------------------------------
+       2.  Split files into cubemap vs. legacy/other
+    ---------------------------------------------------------- */
+    const cubemapItems = [];
+    const legacyItems = [];
 
-    // Generate signed URLs for other files (legacy + thumbnails) as before
-    const otherSignedUrls = await generateSignedUrls(otherItems);
-    const groupedUrls = groupUrlsById(otherSignedUrls);
+    for (const content of bucketContents) {
+      const key = content.Key;
+
+      // --- Cubemap face file ---
+      if (CUBEMAP_FACES.some((face) => key.endsWith(`/${face}`))) {
+        cubemapItems.push(content);
+        continue;
+      }
+
+      // --- Legacy single-file panorama (root level) ---
+      if (key.endsWith(".webp") && key.split("/").length === 2) {
+        const id = getId(key);
+        // keep it only if the six-face folder does NOT exist
+        if (!cubemapIds.has(id)) {
+          legacyItems.push(content);
+        }
+        continue;
+      }
+
+      // --- Anything else (thumbnails, etc.) ---
+      legacyItems.push(content);
+    }
+
+    /* ----------------------------------------------------------
+       3.  Generate signed URLs
+    ---------------------------------------------------------- */
+    const cubemapUrls = await generateCubemapSignedUrls(cubemapItems);
+    const legacySignedUrls = await generateSignedUrls(legacyItems);
+
+    /* ----------------------------------------------------------
+       4.  Format legacy items
+    ---------------------------------------------------------- */
+    const groupedUrls = groupUrlsById(legacySignedUrls);
     const sortedUrls = sortUrlsByType(groupedUrls);
     const formattedUrls = formatUrls(sortedUrls);
 
-    // Combine cubemap pano URLs with legacy URLs
+    /* ----------------------------------------------------------
+       5.  Combine & return
+    ---------------------------------------------------------- */
     return [...formattedUrls, ...cubemapUrls];
   } catch (error) {
     throw new Error("Failed to generate signed URLs");
   }
 }
 
-/**
- * Generates signed URLs for legacy and other files.
- * @param {Array} contents
- * @returns {Promise<Array>}
- */
+/* ==================================================================
+   Helper functions (unchanged except for comments)
+================================================================== */
+
 async function generateSignedUrls(contents) {
   return Promise.all(
     contents.map(async (content) => {
@@ -81,19 +121,14 @@ async function generateSignedUrls(contents) {
   );
 }
 
-/**
- * Generates signed URLs grouped by pano id for cubemap faces.
- * @param {Array} contents
- * @returns {Promise<Array>} - Cubemap pano objects with 6 face URLs.
- */
 async function generateCubemapSignedUrls(contents) {
   const panoMap = new Map();
 
   for (const content of contents) {
     const key = content.Key;
     const parts = key.split("/");
-    const face = parts[parts.length - 1]; // e.g., front.webp
-    const panoId = parts[parts.length - 2]; // e.g., pano1
+    const face = parts[parts.length - 1];
+    const panoId = parts[parts.length - 2];
 
     const signedUrl = await getSignedUrl(
       s3Client,
@@ -114,11 +149,6 @@ async function generateCubemapSignedUrls(contents) {
   }));
 }
 
-/**
- * Groups URLs by their ID.
- * @param {Array} urls - Array of URL objects.
- * @returns {Array} Grouped URL objects.
- */
 function groupUrlsById(urls) {
   return urls.reduce((acc, url) => {
     const found = acc.find((a) => a.id === url.id);
@@ -131,11 +161,6 @@ function groupUrlsById(urls) {
   }, []);
 }
 
-/**
- * Sorts URLs based on type (actual first, thumbnail second).
- * @param {Array} groupedUrls - Grouped URL objects.
- * @returns {Array} Sorted URL objects.
- */
 function sortUrlsByType(groupedUrls) {
   return groupedUrls.map((item) => ({
     ...item,
@@ -143,11 +168,6 @@ function sortUrlsByType(groupedUrls) {
   }));
 }
 
-/**
- * Formats the URLs into the final structure.
- * @param {Array} sortedUrls - Sorted URL objects.
- * @returns {Array} Formatted URL objects.
- */
 function formatUrls(sortedUrls) {
   return sortedUrls.map((elem) => ({
     name: elem.id,

@@ -68,7 +68,8 @@ function intersectData(mongoData, presignedUrls) {
 }
 
 /**
- * Processes a single document, combining it with presigned URL data.
+ * Processes a single document, combining it with presigned URL data,
+ * including cubemap face URLs if available.
  * @param {Object} doc - MongoDB document.
  * @param {Array} presignedUrls - Presigned URLs from AWS S3.
  * @returns {Object} Processed document.
@@ -77,15 +78,37 @@ function processDocument(doc, presignedUrls) {
   const urls =
     presignedUrls.find((element) => element.name === doc.name)?.urls || {};
 
+  const hasCubemap =
+    urls.front &&
+    urls.back &&
+    urls.left &&
+    urls.right &&
+    urls.top &&
+    urls.bottom;
+
   return {
     id: doc._id.toString(),
-    viewer: doc.type === MEDIA_PAGES[1] ? "pano" : "img",
+    viewer: hasCubemap
+      ? "cubemap"
+      : doc.type === MEDIA_PAGES[1]
+      ? "pano"
+      : "img",
     drone: doc.drone,
     metadata: formatMetadata(doc),
     latitude: doc.latitude,
     longitude: doc.longitude,
     thumbnailUrl: urls.thumbnail || "",
     actualUrl: urls.actual || "",
+    ...(hasCubemap && {
+      cubeFaces: {
+        front: urls.front,
+        back: urls.back,
+        left: urls.left,
+        right: urls.right,
+        top: urls.top,
+        bottom: urls.bottom,
+      },
+    }),
   };
 }
 

@@ -2,55 +2,56 @@
 
 import { useRef, useEffect } from "react";
 import Marzipano from "marzipano";
-import * as THREE from "three";
 
-const PanoramaViewer = ({ thumbnailUrl, onReady }) => {
+const PanoramaViewer = ({ panoPath, onReady }) => {
   const panoramaElement = useRef(null);
 
   useEffect(() => {
-    if (!thumbnailUrl || !panoramaElement.current) return;
+    if (!panoPath || !panoramaElement.current) return;
 
-    try {
-      const viewer = Marzipano.Viewer(panoramaElement.current);
+    const viewer = new Marzipano.Viewer(panoramaElement.current);
 
-      const pano = {
-        source: Marzipano.imageTilesSource.create({
-          prefixUrl: thumbnailUrl,
-          tileWidth: 512,
-          tileHeight: 512,
-          cols: 8,
-          rows: 8,
-          faces: ["b", "d", "f", "l", "r", "u"],
-        }),
-      };
+    const levels = [
+      { tileSize: 256, size: 256, fallbackOnly: true },
+      { tileSize: 512, size: 512 },
+      { tileSize: 512, size: 1024 },
+      // Add higher resolutions if you have them
+    ];
 
-      const scene = viewer.createScene({
-        source: pano.source,
-        yaw: -Math.PI / 2,
-        pitch: 0,
-        fov: Math.PI / 2,
-      });
+    const geometry = new Marzipano.CubeGeometry(levels);
 
-      scene.defaultView.lookAt(new THREE.Vector3(0, 0, 0));
-
-      if (onReady) {
-        onReady();
+    const source = Marzipano.ImageUrlSource.fromString(
+      `${panoPath}/{z}/{f}/{y}/{x}.jpg`,
+      {
+        cubeMapPreviewUrl: `${panoPath}/../preview.jpg`,
       }
+    );
 
-      return () => {
-        viewer.destroy();
-      };
-    } catch (error) {
-      console.error("Error initializing Marzipano viewer:", error);
-    }
-  }, [thumbnailUrl, onReady]);
+    const limiter = Marzipano.RectilinearView.limit.traditional(
+      1024,
+      (120 * Math.PI) / 180
+    );
+
+    const view = new Marzipano.RectilinearView(null, limiter);
+
+    const scene = viewer.createScene({
+      source,
+      geometry,
+      view,
+      pinFirstLevel: true,
+    });
+
+    scene.switchTo({ transitionDuration: 1000 });
+
+    if (onReady) onReady();
+
+    return () => {
+      viewer.destroy();
+    };
+  }, [panoPath, onReady]);
 
   return (
-    <div
-      ref={panoramaElement}
-      className="panoramaViewer"
-      aria-label="Marzipano Panorama Viewer"
-    />
+    <div ref={panoramaElement} style={{ width: "100%", height: "100vh" }} />
   );
 };
 

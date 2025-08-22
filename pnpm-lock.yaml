@@ -91,9 +91,6 @@ importers:
       sharp:
         specifier: ^0.34.3
         version: 0.34.3
-      three:
-        specifier: ^0.179.1
-        version: 0.179.1
       web-vitals:
         specifier: ^2.1.4
         version: 2.1.4
@@ -2381,9 +2378,6 @@ packages:
 
   three@0.175.0:
     resolution: {integrity: sha512-nNE3pnTHxXN/Phw768u0Grr7W4+rumGg/H6PgeseNJojkJtmeHJfZWi41Gp2mpXl1pg1pf1zjwR4McM1jTqkpg==}
-
-  three@0.179.1:
-    resolution: {integrity: sha512-5y/elSIQbrvKOISxpwXCR4sQqHtGiOI+MKLc3SsBdDXA2hz3Mdp3X59aUp8DyybMa34aeBwbFTpdoLJaUDEWSw==}
 
   tinyglobby@0.2.14:
     resolution: {integrity: sha512-tX5e7OM1HnYr2+a2C/4V0htOcSQcoSTH9KgJnVvNm5zm/cyEWKJ7j7YutsH9CxMdtOkkLFy2AHrMci9IM8IPZQ==}
@@ -5436,8 +5430,6 @@ snapshots:
   text-hex@1.0.0: {}
 
   three@0.175.0: {}
-
-  three@0.179.1: {}
 
   tinyglobby@0.2.14:
     dependencies:

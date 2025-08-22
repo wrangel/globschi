@@ -64,7 +64,7 @@ const Viewer = ({
     if (item.viewer === "pano") {
       return (
         <PanoramaViewer
-          thumbnailUrl={item.actualUrl}
+          panoPath={item.panoPath}
           onReady={handleContentLoaded}
         />
       );

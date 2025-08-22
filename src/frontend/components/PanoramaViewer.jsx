@@ -15,7 +15,6 @@ const PanoramaViewer = ({ panoPath, onReady }) => {
       { tileSize: 256, size: 256, fallbackOnly: true },
       { tileSize: 512, size: 512 },
       { tileSize: 512, size: 1024 },
-      // Add higher resolutions if you have them
     ];
 
     const geometry = new Marzipano.CubeGeometry(levels);
@@ -42,6 +41,15 @@ const PanoramaViewer = ({ panoPath, onReady }) => {
     });
 
     scene.switchTo({ transitionDuration: 1000 });
+
+    // Setup autorotation after 3 seconds idle
+    const autorotate = Marzipano.autorotate({
+      yawSpeed: 0.05, // Adjust speed as desired
+      targetPitch: 0, // Pitch to level out at
+      targetFov: Math.PI / 2,
+    });
+
+    viewer.startMovement(autorotate);
 
     if (onReady) onReady();
 

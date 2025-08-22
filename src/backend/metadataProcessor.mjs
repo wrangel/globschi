@@ -1,15 +1,7 @@
 // src/backend/metadataProcessor.mjs
 
-import { MEDIA_PAGES } from "./constants.mjs";
 import logger from "./helpers/logger.mjs";
 
-/**
- * Beautifies and combines MongoDB data with presigned URLs.
- * @param {Array} mongoData - Data from MongoDB.
- * @param {Array} presignedUrls - Presigned URLs from AWS S3.
- * @returns {Array} Combined and beautified data.
- * @throws {Error} If there's an issue processing the data.
- */
 export const beautify = async (mongoData, presignedUrls) => {
   validateInput(mongoData, presignedUrls);
 
@@ -34,12 +26,6 @@ export const beautify = async (mongoData, presignedUrls) => {
   }
 };
 
-/**
- * Validates input arrays for the beautify function.
- * @param {Array} mongoData - Data from MongoDB.
- * @param {Array} presignedUrls - Presigned URLs from AWS S3.
- * @throws {Error} If inputs are not arrays.
- */
 function validateInput(mongoData, presignedUrls) {
   if (!Array.isArray(mongoData) || !Array.isArray(presignedUrls)) {
     throw new Error(
@@ -48,12 +34,6 @@ function validateInput(mongoData, presignedUrls) {
   }
 }
 
-/**
- * Intersects MongoDB data with presigned URLs data.
- * @param {Array} mongoData - Data from MongoDB.
- * @param {Array} presignedUrls - Presigned URLs from AWS S3.
- * @returns {Object} Intersected data and items unique to each source.
- */
 function intersectData(mongoData, presignedUrls) {
   const mongoNames = new Set(mongoData.map((item) => item.name));
   const awsNames = new Set(presignedUrls.map((item) => item.name));
@@ -67,52 +47,28 @@ function intersectData(mongoData, presignedUrls) {
   return { intersectedData, onlyInMongo, onlyInAWS };
 }
 
-/**
- * Processes a single document, combining it with presigned URL data,
- * including cubemap face URLs if available.
- * @param {Object} doc - MongoDB document.
- * @param {Array} presignedUrls - Presigned URLs from AWS S3.
- * @returns {Object} Processed document.
- */
 function processDocument(doc, presignedUrls) {
-  const urls =
-    presignedUrls.find((element) => element.name === doc.name)?.urls || {};
+  const entry = presignedUrls.find((e) => e.name === doc.name);
+  const urls = entry?.urls || {};
 
-  const hasCubemap =
-    urls.front &&
-    urls.back &&
-    urls.left &&
-    urls.right &&
-    urls.top &&
-    urls.bottom;
+  const isPano = !!urls.panoPath;
 
   return {
     id: doc._id.toString(),
-    viewer: hasCubemap ? "pano" : "img",
+    viewer: isPano ? "pano" : "img",
     drone: doc.drone,
     metadata: formatMetadata(doc),
     latitude: doc.latitude,
     longitude: doc.longitude,
-    thumbnailUrl: urls.thumbnail || "",
-    ...(urls.actual && { actualUrl: urls.actual }),
-    ...(hasCubemap && {
-      cubeFaces: {
-        front: urls.front,
-        back: urls.back,
-        left: urls.left,
-        right: urls.right,
-        top: urls.top,
-        bottom: urls.bottom,
-      },
-    }),
+    ...(isPano
+      ? { panoPath: urls.panoPath }
+      : {
+          thumbnailUrl: urls.thumbnail || "",
+          ...(urls.actual && { actualUrl: urls.actual }),
+        }),
   };
 }
 
-/**
- * Formats metadata into a single string.
- * @param {Object} doc - MongoDB document.
- * @returns {string} Formatted metadata string.
- */
 function formatMetadata(doc) {
   const dateTime = new Date(doc.dateTime);
   const formattedDate = dateTime.toLocaleDateString("en-US", {
@@ -144,17 +100,10 @@ function formatMetadata(doc) {
     `Author: ${doc.author || ""}`,
     `Drone: ${doc.drone || ""}`,
   ]
-    .map((item) => (item === undefined || item === "undefined" ? "" : item))
     .filter(Boolean)
     .join("\n");
 }
 
-/**
- * Formats road name with line breaks if it exceeds the maximum length.
- * @param {string} road - The road name to format.
- * @param {number} maxLength - The maximum length of each line.
- * @returns {string} Formatted road name with line breaks if necessary.
- */
 function formatRoadWithLineBreaks(road, maxLength) {
   if (road.length <= maxLength) {
     return road;
@@ -171,7 +120,6 @@ function formatRoadWithLineBreaks(road, maxLength) {
         currentLine = "";
       }
       if (word.length > maxLength) {
-        // If a single word is longer than maxLength, split it
         for (let i = 0; i < word.length; i += maxLength) {
           lines.push(word.substr(i, maxLength));
         }
@@ -190,14 +138,6 @@ function formatRoadWithLineBreaks(road, maxLength) {
   return lines.join("\n");
 }
 
-/**
- * Logs bookkeeping information about the data processing.
- * @param {Array} mongoData - Original MongoDB data.
- * @param {Array} presignedUrls - Original presigned URLs data.
- * @param {Array} intersectedData - Data after intersection.
- * @param {Array} onlyInMongo - Items only in MongoDB.
- * @param {Array} onlyInAWS - Items only in AWS.
- */
 function logBookkeepingInfo(
   mongoData,
   presignedUrls,
@@ -213,32 +153,10 @@ function logBookkeepingInfo(
   logger.info(`  Elements only in AWS S3: ${onlyInAWS.length}`);
 
   if (onlyInMongo.length > 0) {
-    logger.info("Elements missing from AWS S3:", onlyInMongo);
+    // logger.info("Elements missing from AWS S3:", onlyInMongo); TODO
   }
 
   if (onlyInAWS.length > 0) {
-    logger.info("Elements missing from MongoDB:", onlyInAWS);
+    //logger.info("Elements missing from MongoDB:", onlyInAWS); TODO
   }
 }
-
-/**
- * Formats date for display.
- * @param {Date} date - Date object.
- * @returns {string} - Formatted date string.
- */
-export const prepareDate = (date) => {
-  const options = {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-    weekday: "long",
-    hour: "numeric",
-    minute: "numeric",
-    second: "numeric",
-    hour12: false,
-    timeZone: "CET",
-    timeZoneName: "short",
-  };
-
-  return new Intl.DateTimeFormat("en-US", options).format(date);
-};

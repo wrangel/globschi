@@ -6,45 +6,52 @@ import { listS3BucketContents } from "./helpers/awsHelpers.mjs";
 import { s3Client } from "./helpers/awsHelpers.mjs";
 import { EXPIRATION_TIME } from "./constants.mjs";
 
-const CUBEMAP_FACES = ["front", "back", "left", "right", "top", "bottom"];
-
 export async function getUrls() {
   try {
     const objects = await listS3BucketContents(process.env.AWS_BUCKET_SITE);
 
-    // 1. group by folder name (top-level folder only)
-    const folders = new Map(); // folderName -> { files:Set, type }
+    // Group objects by top-level folder name
+    const folders = new Map();
+
     for (const { Key } of objects) {
       const parts = Key.split("/");
-      if (parts.length < 2) continue; // skip root files
+      if (parts.length < 2) continue;
+
       const folder = parts[0];
       const file = parts[parts.length - 1];
 
-      if (!folders.has(folder)) folders.set(folder, new Set());
-      folders.get(folder).add(file);
+      if (!folders.has(folder))
+        folders.set(folder, { files: new Set(), hasTiles: false });
+
+      const folderData = folders.get(folder);
+      folderData.files.add(file);
+
+      // Detect panorama
+      if (Key.includes("/tiles/")) {
+        folderData.hasTiles = true;
+      }
     }
 
-    // 2. build response
     const results = [];
-    for (const [folder, files] of folders) {
-      const isPano = CUBEMAP_FACES.some((f) => files.has(`${f}.webp`));
+
+    for (const [folder, data] of folders) {
+      const { files, hasTiles } = data;
       const urls = {};
 
-      // thumbnail (always present)
+      // Always generate signed URL for thumbnail.webp
       urls.thumbnail = await signedUrl(`${folder}/thumbnail.webp`);
 
-      if (isPano) {
-        // panorama → 6 faces
-        for (const face of CUBEMAP_FACES) {
-          urls[face] = await signedUrl(`${folder}/${face}.webp`);
-        }
+      if (hasTiles) {
+        // For panorama tiles, provide public path, no signed URLs for tiles
+        urls.panoPath = `https://${process.env.AWS_BUCKET_SITE}.s3.${process.env.AWS_DEFAULT_REGION}.amazonaws.com/${folder}/tiles`;
       } else {
-        // single image → folderName.webp
+        // For regular images, generate signed URL for main file
         urls.actual = await signedUrl(`${folder}/${folder}.webp`);
       }
 
       results.push({ name: folder, type: guessType(folder), urls });
     }
+
     return results;
   } catch (err) {
     console.error(err);
@@ -52,7 +59,6 @@ export async function getUrls() {
   }
 }
 
-/* ---------- helpers ---------- */
 async function signedUrl(key) {
   return getSignedUrl(
     s3Client,

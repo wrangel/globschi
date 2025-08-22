@@ -6,6 +6,7 @@ import { HelmetProvider } from "react-helmet-async"; // Add this import
 import ErrorBoundary from "./components/ErrorBoundary";
 import Fab from "./components/Fab";
 import LoadingOverlay from "./components/LoadingOverlay";
+import ItemsTest from "./tests/ItemsTest"; ////
 
 // Lazy load the components
 const HomePage = lazy(() => import("./views/HomePage"));
@@ -26,6 +27,7 @@ function App() {
               <Route path="/grid" element={<GridPage />} />
               <Route path="/map" element={<MapPage />} />
               <Route path="/about" element={<AboutPage />} />
+              <Route path="/items-test" element={<ItemsTest />} />
             </Routes>
           </Suspense>
         </ErrorBoundary>

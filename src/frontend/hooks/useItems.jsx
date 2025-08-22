@@ -1,6 +1,6 @@
 // src/frontend/hooks/useItems.jsx
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 
 let cachedItems = null;
 
@@ -8,6 +8,7 @@ export const useItems = () => {
   const [items, setItems] = useState(cachedItems || []);
   const [isLoading, setIsLoading] = useState(!cachedItems);
   const [error, setError] = useState(null);
+  const mountedRef = useRef(true);
 
   const fetchData = useCallback(async () => {
     if (cachedItems) {
@@ -31,9 +32,11 @@ export const useItems = () => {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       const data = await response.json();
+      if (!mountedRef.current) return;
       setItems(data);
       cachedItems = data;
     } catch (e) {
+      if (!mountedRef.current) return;
       console.error("Error fetching data:", e);
       setError(
         e.name === "AbortError"
@@ -41,12 +44,16 @@ export const useItems = () => {
           : "Failed to load items. Please try again later."
       );
     } finally {
+      if (!mountedRef.current) return;
       setIsLoading(false);
     }
   }, []);
 
   useEffect(() => {
     fetchData();
+    return () => {
+      mountedRef.current = false;
+    };
   }, [fetchData]);
 
   const clearCache = useCallback(() => {

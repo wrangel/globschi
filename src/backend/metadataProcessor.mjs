@@ -88,11 +88,7 @@ function processDocument(doc, presignedUrls) {
 
   return {
     id: doc._id.toString(),
-    viewer: hasCubemap
-      ? "cubemap"
-      : doc.type === MEDIA_PAGES[1]
-      ? "pano"
-      : "img",
+    viewer: hasCubemap ? "pano" : "img",
     drone: doc.drone,
     metadata: formatMetadata(doc),
     latitude: doc.latitude,

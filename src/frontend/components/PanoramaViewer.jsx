@@ -1,9 +1,8 @@
 // src/components/PanoramaViewer.jsx
 
-// src/components/PanoramaViewer.jsx
-
-import React, { useRef, useEffect } from "react";
+import { useRef, useEffect } from "react";
 import * as THREE from "three";
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 
 const PanoramaViewer = ({ cubeFaces }) => {
   const containerRef = useRef();
@@ -11,9 +10,10 @@ const PanoramaViewer = ({ cubeFaces }) => {
   useEffect(() => {
     if (!containerRef.current || !cubeFaces) return;
 
-    // THREE.js scene setup
+    // Scene setup
     const scene = new THREE.Scene();
 
+    // Camera setup
     const camera = new THREE.PerspectiveCamera(
       75,
       containerRef.current.clientWidth / containerRef.current.clientHeight,
@@ -22,6 +22,7 @@ const PanoramaViewer = ({ cubeFaces }) => {
     );
     camera.position.set(0, 0, 0.1);
 
+    // Renderer setup
     const renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setSize(
       containerRef.current.clientWidth,
@@ -29,7 +30,7 @@ const PanoramaViewer = ({ cubeFaces }) => {
     );
     containerRef.current.appendChild(renderer.domElement);
 
-    // CubeTextureLoader expects array in order: right, left, top, bottom, front, back
+    // Load cubemap
     const urls = [
       cubeFaces.right,
       cubeFaces.left,
@@ -41,10 +42,56 @@ const PanoramaViewer = ({ cubeFaces }) => {
 
     const loader = new THREE.CubeTextureLoader();
 
+    let animationFrameId;
+
     const texture = loader.load(
       urls,
       () => {
         console.log("Cubemap fully loaded");
+        texture.anisotropy = renderer.capabilities.getMaxAnisotropy();
+        texture.encoding = THREE.sRGBEncoding;
+        scene.background = texture;
+
+        // Orbit controls for interaction
+        const controls = new OrbitControls(camera, renderer.domElement);
+        controls.enableZoom = false;
+        controls.enablePan = false;
+        controls.rotateSpeed = 0.5;
+        controls.enableDamping = true;
+        controls.dampingFactor = 0.05;
+
+        // Animation loop
+        const animate = () => {
+          animationFrameId = requestAnimationFrame(animate);
+          controls.update();
+          renderer.render(scene, camera);
+        };
+        animate();
+
+        // Resize handler
+        const onResize = () => {
+          if (!containerRef.current) return;
+          camera.aspect =
+            containerRef.current.clientWidth /
+            containerRef.current.clientHeight;
+          camera.updateProjectionMatrix();
+          renderer.setSize(
+            containerRef.current.clientWidth,
+            containerRef.current.clientHeight
+          );
+        };
+        window.addEventListener("resize", onResize);
+
+        // Cleanup
+        return () => {
+          window.removeEventListener("resize", onResize);
+          cancelAnimationFrame(animationFrameId);
+          controls.dispose();
+          renderer.dispose();
+          if (containerRef.current) {
+            containerRef.current.removeChild(renderer.domElement);
+          }
+        };
       },
       (xhr) => {
         console.log(`Cubemap loading: ${(xhr.loaded / xhr.total) * 100}%`);
@@ -54,38 +101,16 @@ const PanoramaViewer = ({ cubeFaces }) => {
       }
     );
 
-    // Use cubemap as background
-    scene.background = texture;
+    // If you want to start the loop before loaded, comment out above animate and uncomment below (not recommended):
+    // function animate() {
+    //   animationFrameId = requestAnimationFrame(animate);
+    //   renderer.render(scene, camera);
+    // }
+    // animate();
 
-    // Optional: Add OrbitControls for interaction if you want
-
-    // Animation loop
-    let frameId;
-    const animate = () => {
-      frameId = requestAnimationFrame(animate);
-      renderer.render(scene, camera);
-    };
-
-    animate();
-
-    // Handle resize
-    const onResize = () => {
-      if (!containerRef.current) return;
-      camera.aspect =
-        containerRef.current.clientWidth / containerRef.current.clientHeight;
-      camera.updateProjectionMatrix();
-      renderer.setSize(
-        containerRef.current.clientWidth,
-        containerRef.current.clientHeight
-      );
-    };
-
-    window.addEventListener("resize", onResize);
-
-    // Cleanup on unmount
+    // Clean up if cubeFaces changes or component unmounts
     return () => {
-      window.removeEventListener("resize", onResize);
-      cancelAnimationFrame(frameId);
+      cancelAnimationFrame(animationFrameId);
       renderer.dispose();
       if (containerRef.current) {
         containerRef.current.removeChild(renderer.domElement);

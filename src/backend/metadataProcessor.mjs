@@ -153,10 +153,10 @@ function logBookkeepingInfo(
   logger.info(`  Elements only in AWS S3: ${onlyInAWS.length}`);
 
   if (onlyInMongo.length > 0) {
-    // logger.info("Elements missing from AWS S3:", onlyInMongo); TODO
+    logger.info("Elements missing from AWS S3:", onlyInMongo);
   }
 
   if (onlyInAWS.length > 0) {
-    //logger.info("Elements missing from MongoDB:", onlyInAWS); TODO
+    logger.info("Elements missing from MongoDB:", onlyInAWS);
   }
 }

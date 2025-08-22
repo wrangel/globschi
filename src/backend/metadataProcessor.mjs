@@ -98,7 +98,7 @@ function processDocument(doc, presignedUrls) {
     latitude: doc.latitude,
     longitude: doc.longitude,
     thumbnailUrl: urls.thumbnail || "",
-    actualUrl: urls.actual || "",
+    ...(urls.actual && { actualUrl: urls.actual }),
     ...(hasCubemap && {
       cubeFaces: {
         front: urls.front,

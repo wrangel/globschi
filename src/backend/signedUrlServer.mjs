@@ -1,179 +1,69 @@
 // src/backend/signedUrlServer.mjs
 
-// src/backend/signedUrlServer.mjs
-
 import { GetObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { listS3BucketContents } from "./helpers/awsHelpers.mjs";
 import { s3Client } from "./helpers/awsHelpers.mjs";
-import { ACTUAL_ID, THUMBNAIL_ID, EXPIRATION_TIME } from "./constants.mjs";
-import { getId } from "./helpers/helpers.mjs";
+import { EXPIRATION_TIME } from "./constants.mjs";
 
-const CUBEMAP_FACES = [
-  "front.webp",
-  "back.webp",
-  "left.webp",
-  "right.webp",
-  "top.webp",
-  "bottom.webp",
-];
+const CUBEMAP_FACES = ["front", "back", "left", "right", "top", "bottom"];
 
-/**
- * Generates signed URLs for S3 objects, with cubemap pano face grouping.
- * Legacy single-file panoramas are kept only when the six-face folder
- * (same panorama id) does NOT exist.
- * @returns {Promise<Array>} Array of objects with name and URLs.
- */
 export async function getUrls() {
   try {
-    const bucketContents = await listS3BucketContents(
-      process.env.AWS_BUCKET_SITE
-    );
+    const objects = await listS3BucketContents(process.env.AWS_BUCKET_SITE);
 
-    /* ----------------------------------------------------------
-       1.  Determine which panorama ids have a complete cubemap set
-    ---------------------------------------------------------- */
-    const cubemapIds = new Set();
-    for (const content of bucketContents) {
-      const key = content.Key;
-      const parts = key.split("/");
-      if (
-        parts.length >= 3 &&
-        CUBEMAP_FACES.some((face) => key.endsWith(`/${face}`))
-      ) {
-        cubemapIds.add(parts[parts.length - 2]); // panorama id (folder name)
-      }
+    // 1. group by folder name (top-level folder only)
+    const folders = new Map(); // folderName -> { files:Set, type }
+    for (const { Key } of objects) {
+      const parts = Key.split("/");
+      if (parts.length < 2) continue; // skip root files
+      const folder = parts[0];
+      const file = parts[parts.length - 1];
+
+      if (!folders.has(folder)) folders.set(folder, new Set());
+      folders.get(folder).add(file);
     }
 
-    /* ----------------------------------------------------------
-       2.  Split files into cubemap vs. legacy/other
-    ---------------------------------------------------------- */
-    const cubemapItems = [];
-    const legacyItems = [];
+    // 2. build response
+    const results = [];
+    for (const [folder, files] of folders) {
+      const isPano = CUBEMAP_FACES.some((f) => files.has(`${f}.webp`));
+      const urls = {};
 
-    for (const content of bucketContents) {
-      const key = content.Key;
+      // thumbnail (always present)
+      urls.thumbnail = await signedUrl(`${folder}/thumbnail.webp`);
 
-      // --- Cubemap face file ---
-      if (CUBEMAP_FACES.some((face) => key.endsWith(`/${face}`))) {
-        cubemapItems.push(content);
-        continue;
-      }
-
-      // --- Legacy single-file panorama (root level) ---
-      if (key.endsWith(".webp") && key.split("/").length === 2) {
-        const id = getId(key);
-        // keep it only if the six-face folder does NOT exist
-        if (!cubemapIds.has(id)) {
-          legacyItems.push(content);
+      if (isPano) {
+        // panorama → 6 faces
+        for (const face of CUBEMAP_FACES) {
+          urls[face] = await signedUrl(`${folder}/${face}.webp`);
         }
-        continue;
+      } else {
+        // single image → folderName.webp
+        urls.actual = await signedUrl(`${folder}/${folder}.webp`);
       }
 
-      // --- Anything else (thumbnails, etc.) ---
-      legacyItems.push(content);
+      results.push({ name: folder, type: guessType(folder), urls });
     }
-
-    /* ----------------------------------------------------------
-       3.  Generate signed URLs
-    ---------------------------------------------------------- */
-    const cubemapUrls = await generateCubemapSignedUrls(cubemapItems);
-    const legacySignedUrls = await generateSignedUrls(legacyItems);
-
-    /* ----------------------------------------------------------
-       4.  Format legacy items
-    ---------------------------------------------------------- */
-    const groupedUrls = groupUrlsById(legacySignedUrls);
-    const sortedUrls = sortUrlsByType(groupedUrls);
-    const formattedUrls = formatUrls(sortedUrls);
-
-    /* ----------------------------------------------------------
-       5.  Combine & return
-    ---------------------------------------------------------- */
-    return [...formattedUrls, ...cubemapUrls];
-  } catch (error) {
+    return results;
+  } catch (err) {
+    console.error(err);
     throw new Error("Failed to generate signed URLs");
   }
 }
 
-/* ==================================================================
-   Helper functions (unchanged except for comments)
-================================================================== */
-
-async function generateSignedUrls(contents) {
-  return Promise.all(
-    contents.map(async (content) => {
-      const key = content.Key;
-      const type = key.startsWith(THUMBNAIL_ID) ? THUMBNAIL_ID : ACTUAL_ID;
-      return {
-        id: getId(key),
-        type,
-        sigUrl: await getSignedUrl(
-          s3Client,
-          new GetObjectCommand({
-            Bucket: process.env.AWS_BUCKET_SITE,
-            Key: key,
-          }),
-          { expiresIn: EXPIRATION_TIME }
-        ),
-      };
-    })
+/* ---------- helpers ---------- */
+async function signedUrl(key) {
+  return getSignedUrl(
+    s3Client,
+    new GetObjectCommand({ Bucket: process.env.AWS_BUCKET_SITE, Key: key }),
+    { expiresIn: EXPIRATION_TIME }
   );
 }
 
-async function generateCubemapSignedUrls(contents) {
-  const panoMap = new Map();
-
-  for (const content of contents) {
-    const key = content.Key;
-    const parts = key.split("/");
-    const face = parts[parts.length - 1];
-    const panoId = parts[parts.length - 2];
-
-    const signedUrl = await getSignedUrl(
-      s3Client,
-      new GetObjectCommand({
-        Bucket: process.env.AWS_BUCKET_SITE,
-        Key: key,
-      }),
-      { expiresIn: EXPIRATION_TIME }
-    );
-
-    if (!panoMap.has(panoId)) panoMap.set(panoId, {});
-    panoMap.get(panoId)[face.replace(".webp", "")] = signedUrl;
-  }
-
-  return Array.from(panoMap.entries()).map(([name, urls]) => ({
-    name,
-    urls,
-  }));
-}
-
-function groupUrlsById(urls) {
-  return urls.reduce((acc, url) => {
-    const found = acc.find((a) => a.id === url.id);
-    if (!found) {
-      acc.push({ id: url.id, data: [{ type: url.type, sigUrl: url.sigUrl }] });
-    } else {
-      found.data.push({ type: url.type, sigUrl: url.sigUrl });
-    }
-    return acc;
-  }, []);
-}
-
-function sortUrlsByType(groupedUrls) {
-  return groupedUrls.map((item) => ({
-    ...item,
-    data: item.data.sort((a, b) => a.type.localeCompare(b.type)),
-  }));
-}
-
-function formatUrls(sortedUrls) {
-  return sortedUrls.map((elem) => ({
-    name: elem.id,
-    urls: {
-      actual: elem.data.find((d) => d.type === ACTUAL_ID)?.sigUrl,
-      thumbnail: elem.data.find((d) => d.type === THUMBNAIL_ID)?.sigUrl,
-    },
-  }));
+function guessType(name) {
+  if (name.startsWith("pano")) return "panorama";
+  if (name.startsWith("hdr")) return "hdr";
+  if (name.startsWith("wide-angle")) return "wide-angle";
+  return "photo";
 }

@@ -26,6 +26,7 @@ export default defineConfig({
   },
   build: {
     outDir: "build",
+    sourcemap: true, // enable source maps for build and dev
   },
   resolve: {
     alias: {},

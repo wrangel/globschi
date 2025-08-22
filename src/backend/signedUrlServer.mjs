@@ -10,7 +10,7 @@ export async function getUrls() {
   try {
     const objects = await listS3BucketContents(process.env.AWS_BUCKET_SITE);
 
-    // Group objects by top-level folder name
+    // Group objects by top-level folder
     const folders = new Map();
 
     for (const { Key } of objects) {
@@ -20,13 +20,14 @@ export async function getUrls() {
       const folder = parts[0];
       const file = parts[parts.length - 1];
 
-      if (!folders.has(folder))
+      if (!folders.has(folder)) {
         folders.set(folder, { files: new Set(), hasTiles: false });
+      }
 
       const folderData = folders.get(folder);
       folderData.files.add(file);
 
-      // Detect panorama
+      // Detect panorama tiles folder presence
       if (Key.includes("/tiles/")) {
         folderData.hasTiles = true;
       }
@@ -35,17 +36,17 @@ export async function getUrls() {
     const results = [];
 
     for (const [folder, data] of folders) {
-      const { files, hasTiles } = data;
+      const { hasTiles } = data;
       const urls = {};
 
       // Always generate signed URL for thumbnail.webp
       urls.thumbnailUrl = await signedUrl(`${folder}/thumbnail.webp`);
 
       if (hasTiles) {
-        // For panorama tiles, provide public path, no signed URLs for tiles
+        // Panorama tiles are public; return base URL without signed URLs for tiles
         urls.actualUrl = `https://${process.env.AWS_BUCKET_SITE}.s3.${process.env.AWS_DEFAULT_REGION}.amazonaws.com/${folder}/tiles`;
       } else {
-        // For regular images, generate signed URL for main file
+        // For normal images generate signed URLs
         urls.actualUrl = await signedUrl(`${folder}/${folder}.webp`);
       }
 

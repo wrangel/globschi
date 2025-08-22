@@ -1,5 +1,3 @@
-// src/backend/metadataProcessor.mjs
-
 import logger from "./helpers/logger.mjs";
 
 export const beautify = async (mongoData, presignedUrls) => {
@@ -51,6 +49,7 @@ function processDocument(doc, presignedUrls) {
   const entry = presignedUrls.find((e) => e.name === doc.name);
   const urls = entry?.urls || {};
 
+  // Detect if this is a pano based on URL format
   const isPano = !!urls.actualUrl && urls.actualUrl.includes("/tiles");
 
   return {
@@ -61,7 +60,7 @@ function processDocument(doc, presignedUrls) {
     latitude: doc.latitude,
     longitude: doc.longitude,
     thumbnailUrl: urls.thumbnailUrl,
-    actualUrl: urls.actualUrl,
+    ...(isPano ? { panoPath: urls.actualUrl } : { actualUrl: urls.actualUrl }),
   };
 }
 
@@ -149,10 +148,10 @@ function logBookkeepingInfo(
   logger.info(`  Elements only in AWS S3: ${onlyInAWS.length}`);
 
   if (onlyInMongo.length > 0) {
-    // logger.info("Elements missing from AWS S3:", onlyInMongo); TODO
+    // Optional: logger.info("Elements missing from AWS S3:", onlyInMongo);
   }
 
   if (onlyInAWS.length > 0) {
-    // logger.info("Elements missing from MongoDB:", onlyInAWS); TODO
+    // Optional: logger.info("Elements missing from MongoDB:", onlyInAWS);
   }
 }

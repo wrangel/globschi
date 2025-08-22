@@ -39,14 +39,14 @@ export async function getUrls() {
       const urls = {};
 
       // Always generate signed URL for thumbnail.webp
-      urls.thumbnail = await signedUrl(`${folder}/thumbnail.webp`);
+      urls.thumbnailUrl = await signedUrl(`${folder}/thumbnail.webp`);
 
       if (hasTiles) {
         // For panorama tiles, provide public path, no signed URLs for tiles
-        urls.panoPath = `https://${process.env.AWS_BUCKET_SITE}.s3.${process.env.AWS_DEFAULT_REGION}.amazonaws.com/${folder}/tiles`;
+        urls.actualUrl = `https://${process.env.AWS_BUCKET_SITE}.s3.${process.env.AWS_DEFAULT_REGION}.amazonaws.com/${folder}/tiles`;
       } else {
         // For regular images, generate signed URL for main file
-        urls.actual = await signedUrl(`${folder}/${folder}.webp`);
+        urls.actualUrl = await signedUrl(`${folder}/${folder}.webp`);
       }
 
       results.push({ name: folder, type: guessType(folder), urls });

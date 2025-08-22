@@ -51,7 +51,7 @@ function processDocument(doc, presignedUrls) {
   const entry = presignedUrls.find((e) => e.name === doc.name);
   const urls = entry?.urls || {};
 
-  const isPano = !!urls.panoPath;
+  const isPano = !!urls.actualUrl && urls.actualUrl.includes("/tiles");
 
   return {
     id: doc._id.toString(),
@@ -60,12 +60,8 @@ function processDocument(doc, presignedUrls) {
     metadata: formatMetadata(doc),
     latitude: doc.latitude,
     longitude: doc.longitude,
-    ...(isPano
-      ? { panoPath: urls.panoPath }
-      : {
-          thumbnailUrl: urls.thumbnail || "",
-          ...(urls.actual && { actualUrl: urls.actual }),
-        }),
+    thumbnailUrl: urls.thumbnailUrl,
+    actualUrl: urls.actualUrl,
   };
 }
 
@@ -153,10 +149,10 @@ function logBookkeepingInfo(
   logger.info(`  Elements only in AWS S3: ${onlyInAWS.length}`);
 
   if (onlyInMongo.length > 0) {
-    logger.info("Elements missing from AWS S3:", onlyInMongo);
+    // logger.info("Elements missing from AWS S3:", onlyInMongo); TODO
   }
 
   if (onlyInAWS.length > 0) {
-    logger.info("Elements missing from MongoDB:", onlyInAWS);
+    // logger.info("Elements missing from MongoDB:", onlyInAWS); TODO
   }
 }

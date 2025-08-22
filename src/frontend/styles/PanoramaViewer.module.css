@@ -31,43 +31,6 @@
   pointer-events: none; /* Make clicks pass through */
 }
 
-/* Override loading spinner for Photo Sphere Viewer */
-:global(.psv-loader) {
-  background-color: var(--panorama-bg-color, black) !important;
-}
-
-:global(.psv-loader-container) {
-  background-color: var(--panorama-bg-color, black) !important;
-}
-
-:global(.psv-loader::before) {
-  content: "" !important;
-  display: block !important;
-  width: var(--spinner-size, 50px) !important;
-  height: var(--spinner-size, 50px) !important;
-  border: var(--spinner-border, 3px) solid
-    var(--spinner-color, rgba(255, 255, 255, 0.3)) !important;
-  border-top: var(--spinner-border, 3px) solid var(--spinner-border-top, #fff) !important;
-  border-radius: 50% !important;
-  animation: spin 1s linear infinite !important;
-}
-
-/* Hide default Photo Sphere Viewer loading text */
-.psv-loader-message,
-:global(.psv-loader-text) {
-  display: none !important;
-}
-
-/* Keyframes for spinner animation */
-@keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-}
-
 /* Error overlay used for Safari warning or other errors */
 .errorOverlay {
   position: fixed;

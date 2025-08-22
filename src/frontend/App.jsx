@@ -1,4 +1,4 @@
-// src/frontend/App.js
+// src/frontend/App.jsx
 
 import React, { Suspense, lazy } from "react";
 import { Routes, Route, useNavigate } from "react-router-dom";
@@ -6,7 +6,7 @@ import { HelmetProvider } from "react-helmet-async"; // Add this import
 import ErrorBoundary from "./components/ErrorBoundary";
 import Fab from "./components/Fab";
 import LoadingOverlay from "./components/LoadingOverlay";
-import ItemsTest from "./tests/ItemsTest"; ////
+import TestComponent from "./components/TestComponent"; // Import TestComponent
 
 // Lazy load the components
 const HomePage = lazy(() => import("./views/HomePage"));
@@ -27,7 +27,8 @@ function App() {
               <Route path="/grid" element={<GridPage />} />
               <Route path="/map" element={<MapPage />} />
               <Route path="/about" element={<AboutPage />} />
-              <Route path="/items-test" element={<ItemsTest />} />
+              <Route path="/test" element={<TestComponent />} />{" "}
+              {/* Add this route */}
             </Routes>
           </Suspense>
         </ErrorBoundary>

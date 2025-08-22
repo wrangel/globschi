@@ -64,10 +64,8 @@ const Viewer = ({
     if (item.viewer === "pano") {
       return (
         <PanoramaViewer
-          thumbnailUrl={item.thumbnailUrl}
-          cubeFaces={item.cubeFaces}
+          thumbnailUrl={item.actualUrl}
           onReady={handleContentLoaded}
-          isNavigationMode={isNavigationMode}
         />
       );
     } else {

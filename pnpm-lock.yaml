@@ -25,9 +25,6 @@ importers:
       '@aws-sdk/s3-request-presigner':
         specifier: ^3.873.0
         version: 3.873.0
-      '@photo-sphere-viewer/autorotate-plugin':
-        specifier: ^5.13.4
-        version: 5.13.4(@photo-sphere-viewer/core@5.13.4)
       '@photo-sphere-viewer/core':
         specifier: ^5.13.4
         version: 5.13.4
@@ -85,9 +82,6 @@ importers:
       react-masonry-css:
         specifier: ^1.0.16
         version: 1.0.16(react@18.3.1)
-      react-photo-sphere-viewer:
-        specifier: ^6.2.3
-        version: 6.2.3(@photo-sphere-viewer/core@5.13.4)(prop-types@15.8.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       react-router-dom:
         specifier: ^7.8.1
         version: 7.8.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -741,11 +735,6 @@ packages:
 
   '@mongodb-js/saslprep@1.3.0':
     resolution: {integrity: sha512-zlayKCsIjYb7/IdfqxorK5+xUMyi4vOKcFy10wKJYc63NSdKI8mNME+uJqfatkPmOSMMUiojrL58IePKBm3gvQ==}
-
-  '@photo-sphere-viewer/autorotate-plugin@5.13.4':
-    resolution: {integrity: sha512-g0kwfYy1/QYF+WZ3xr4DhE6bP+Lza/zp+TRxex3+pH+wwVIzNUbolhPgbS5ZrDQX1tJ/2S6nt8wW9dOb4s5kbw==}
-    peerDependencies:
-      '@photo-sphere-viewer/core': 5.13.4
 
   '@photo-sphere-viewer/core@5.13.4':
     resolution: {integrity: sha512-leVQL6gG9wTF+uvCFarHUcr8mzafCZ/GLzauksYQJfiqDVRFSAJNXnTOy7RH9otToluEdjN1hsN1f9HQy+rLYg==}
@@ -1491,9 +1480,6 @@ packages:
     resolution: {integrity: sha512-aIL5Fx7mawVa300al2BnEE4iNvo1qETxLrPI/o05L7z6go7fCw1J6EQmbK4FmJ2AS7kgVF/KEZWufBfdClMcPg==}
     engines: {node: '>= 0.6'}
 
-  eventemitter3@5.0.1:
-    resolution: {integrity: sha512-GWkBvjiSZK87ELrYOSESUYeVIc9mvLLf/nXalMOS5dYrgZq9o5OVkbZAVM06CVxYsCwH9BDZFPlQTlPA1j4ahA==}
-
   events@3.3.0:
     resolution: {integrity: sha512-mQw+2fkQbALzQ7V0MY0IqdnXNOeTtP4r0lN9z7AAawCXgqea7bDii20AYrIBrFd/Hx0M2Ocz6S111CaFkUcb0Q==}
     engines: {node: '>=0.8.x'}
@@ -2163,15 +2149,6 @@ packages:
     resolution: {integrity: sha512-KSW0hR2VQmltt/qAa3eXOctQDyOu7+ZBevtKgpNDSzT7k5LA/0XntNa9z9HKCdz3QlxmJHglTZ18e4sX4V8zZQ==}
     peerDependencies:
       react: '>=16.0.0'
-
-  react-photo-sphere-viewer@6.2.3:
-    resolution: {integrity: sha512-VzG0aY9CI8OIQjdIoJCjYF1QlnLFpN2pM+zKm1JrpAKQrBZ6B+Uxy94vpVQkGDERgn8FWE0+LIntTgAr60pLyQ==}
-    engines: {node: '>=16', npm: '>=8'}
-    peerDependencies:
-      '@photo-sphere-viewer/core': '>=5.13.1'
-      prop-types: ^15.5.4
-      react: '>=16.0.0'
-      react-dom: '>=16.0.0'
 
   react-refresh@0.17.0:
     resolution: {integrity: sha512-z6F7K9bV85EfseRCp2bzrpyQ0Gkw1uLoCel9XBVWPg/TjRj94SkJzUTGfOa4bs7iJvBWtQG0Wq7wnI0syw3EBQ==}
@@ -3448,10 +3425,6 @@ snapshots:
     dependencies:
       sparse-bitfield: 3.0.3
 
-  '@photo-sphere-viewer/autorotate-plugin@5.13.4(@photo-sphere-viewer/core@5.13.4)':
-    dependencies:
-      '@photo-sphere-viewer/core': 5.13.4
-
   '@photo-sphere-viewer/core@5.13.4':
     dependencies:
       three: 0.175.0
@@ -4450,8 +4423,6 @@ snapshots:
 
   etag@1.8.1: {}
 
-  eventemitter3@5.0.1: {}
-
   events@3.3.0: {}
 
   exifreader@4.31.1:
@@ -5122,14 +5093,6 @@ snapshots:
   react-masonry-css@1.0.16(react@18.3.1):
     dependencies:
       react: 18.3.1
-
-  react-photo-sphere-viewer@6.2.3(@photo-sphere-viewer/core@5.13.4)(prop-types@15.8.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
-    dependencies:
-      '@photo-sphere-viewer/core': 5.13.4
-      eventemitter3: 5.0.1
-      prop-types: 15.8.1
-      react: 18.3.1
-      react-dom: 18.3.1(react@18.3.1)
 
   react-refresh@0.17.0: {}
 

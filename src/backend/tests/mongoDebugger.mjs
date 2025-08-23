@@ -2,7 +2,7 @@
 
 import logger from "../utils/logger.mjs";
 import { Island } from "../models/islandModel.mjs";
-import { executeMongoQuery } from "../utils/mongoHelpers.mjs";
+import { executeMongoQuery } from "../utils/mongoUtils.mjs";
 
 /**
  * Fetches and logs Island documents from MongoDB.

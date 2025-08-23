@@ -1,4 +1,4 @@
-// src/backend/utils/helpers.mjs
+// src/backend/utils/utils.mjs
 
 /**
  * Extracts ID from file path.

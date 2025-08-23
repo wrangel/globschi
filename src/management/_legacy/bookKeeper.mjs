@@ -6,7 +6,7 @@ import { MEDIA_FORMATS, THUMBNAIL_ID } from "../constants.mjs";
 import logger from "../utils/logger.mjs";
 import { Island } from "../models/islandModel.mjs";
 import { listS3BucketContents } from "../utils/awsUtils.mjs";
-import { executeMongoQuery } from "../utils/mongoHelpers.mjs";
+import { executeMongoQuery } from "../utils/mongoUtils.mjs";
 
 /**
  * Main function to synchronize media across S3 buckets and MongoDB

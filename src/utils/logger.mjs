@@ -3,43 +3,51 @@
 import { createLogger, format, transports } from "winston";
 import DailyRotateFile from "winston-daily-rotate-file";
 
-// Create a logger instance
+/**
+ * Creates a Winston logger instance with:
+ * - Dynamic log level based on environment variable LOG_LEVEL (default "info")
+ * - JSON formatted structured logs with timestamps
+ * - Console transport with colored and simple output (for development)
+ * - Daily rotating file transports:
+ *   - One for general info logs (rotates daily, compressed, keeps 14 days)
+ *   - One for error logs only (rotates daily, compressed, keeps 14 days)
+ */
 const logger = createLogger({
-  level: process.env.LOG_LEVEL || "info", // Allow dynamic log level based on environment variable
+  level: process.env.LOG_LEVEL || "info",
   format: format.combine(
-    format.timestamp(), // Add timestamp to logs
-    format.json() // Use JSON format for structured logging
+    format.timestamp(), // Adds ISO timestamp to each log
+    format.json() // Outputs logs in JSON for structured logging
   ),
   transports: [
     new transports.Console({
       format: format.combine(
-        format.colorize(), // Add color to log messages in console
-        format.simple() // Simple format for console output
+        format.colorize(), // Adds colors to console logs for better readability
+        format.simple() // Simplified message format for console
       ),
     }),
     new DailyRotateFile({
-      filename: "logs/application-%DATE%.log", // Log file path with date pattern
+      filename: "logs/application-%DATE%.log",
       datePattern: "YYYY-MM-DD",
-      zippedArchive: true, // Compress old log files
-      maxSize: "20m", // Max size of each log file
-      maxFiles: "14d", // Keep logs for 14 days
-      level: "info", // Log level for this transport
+      zippedArchive: true, // Compress old logs
+      maxSize: "20m", // Rotate on 20MB file size
+      maxFiles: "14d", // Retain logs for 14 days
+      level: "info", // Log info and above here
     }),
     new DailyRotateFile({
-      filename: "logs/error-%DATE%.log", // Separate error log file
+      filename: "logs/error-%DATE%.log",
       datePattern: "YYYY-MM-DD",
       zippedArchive: true,
       maxSize: "20m",
       maxFiles: "14d",
-      level: "error", // Only log error messages to this file
+      level: "error", // Only error logs here
     }),
   ],
 });
 
-// Error handling for logger itself (optional)
+// Optional: Listen for errors inside the logger itself and log to console
 logger.on("error", (err) => {
   console.error("Logging error:", err);
 });
 
-// Export the logger for use in other modules
+// Export configured logger instance for use in other modules
 export default logger;

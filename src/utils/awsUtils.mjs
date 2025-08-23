@@ -11,7 +11,7 @@ import fs from "fs/promises";
 import logger from "../utils/logger.mjs";
 import { getId } from "./utils.mjs";
 
-// Validate required environment variables
+// Validate required AWS environment variables are set
 const requiredEnvVars = [
   "AWS_ACCESS_KEY_ID",
   "AWS_SECRET_ACCESS_KEY",
@@ -28,8 +28,8 @@ if (missingEnvVars.length > 0) {
 }
 
 /**
- * Creates and configures an S3 client.
- * @returns {S3Client} Configured S3 client
+ * Creates and configures an AWS S3 client instance.
+ * @returns {S3Client} Configured AWS S3 client
  */
 function createS3Client() {
   return new S3Client({
@@ -42,16 +42,19 @@ function createS3Client() {
   });
 }
 
-// Create the S3 client
+// Initialize S3 client once and export for reuse
 const s3Client = createS3Client();
 export { s3Client };
 
 /**
- * Lists the contents of an S3 bucket.
- * @param {string} bucketName - The name of the S3 bucket.
- * @param {boolean} [adapt=false] - Whether to adapt the response.
- * @returns {Promise<Array>} - The bucket contents or an empty array if none found.
- * @throws {Error} If there's an issue listing the bucket contents.
+ * Lists contents of an S3 bucket, optionally adapting response fields.
+ * Handles pagination to retrieve more than maxKeys per request.
+ *
+ * @param {string} bucketName - Name of the S3 bucket to list.
+ * @param {boolean} [adapt=false] - Whether to map response to custom key/path format.
+ * @param {number} [maxKeys=1000] - Maximum number of keys per request.
+ * @returns {Promise<Array>} Array of objects representing bucket contents.
+ * @throws {Error} On AWS API or network errors.
  */
 export async function listS3BucketContents(
   bucketName,
@@ -103,11 +106,13 @@ export async function listS3BucketContents(
 }
 
 /**
- * Downloads an object from S3 bucket.
+ * Downloads an object from an S3 bucket and writes it to a local file.
+ *
  * @param {string} bucketName - The name of the S3 bucket.
- * @param {string} key - The key of the object in S3.
- * @param {string} localPath - The local path to save the downloaded file.
+ * @param {string} key - The key of the object in the bucket to download.
+ * @param {string} localPath - The local file path to save the downloaded contents.
  * @returns {Promise<void>}
+ * @throws Will throw an error if download or writing file fails.
  */
 export async function downloadS3Object(bucketName, key, localPath) {
   try {
@@ -127,17 +132,19 @@ export async function downloadS3Object(bucketName, key, localPath) {
 
 /**
  * Deletes multiple objects from S3 bucket.
- * @param {Array<{Key: string}>} objects - Array of objects to delete.
- * @returns {Promise<Object>} - Deletion result.
+ *
+ * @param {Array<{Key: string}>} objects - Array of objects to delete, each item must have a Key property.
+ * @returns {Promise<Object>} AWS deletion result object.
+ * @throws Will throw an error if deletion fails or input is invalid.
  */
 export async function deleteS3Objects(objects) {
-  // Check if the bucket name is defined
+  // Check if original bucket name is defined
   const bucketName = process.env.AWS_BUCKET_ORIGINALS;
   if (!bucketName) {
     throw new Error("Bucket name is not defined in environment variables.");
   }
 
-  // Input validation
+  // Validate input array
   if (!Array.isArray(objects) || objects.length === 0) {
     throw new Error("Invalid input: objects must be a non-empty array.");
   }
@@ -152,7 +159,7 @@ export async function deleteS3Objects(objects) {
 
     logger.info(`Deleted ${result.Deleted.length} objects from ${bucketName}`);
 
-    // Log any errors for objects that were not found
+    // Log errors for objects that weren't deleted successfully
     if (result.Errors && result.Errors.length > 0) {
       result.Errors.forEach((error) => {
         logger.warn(`Failed to delete object ${error.Key}: ${error.Message}`);

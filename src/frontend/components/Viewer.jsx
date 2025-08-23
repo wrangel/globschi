@@ -9,6 +9,23 @@ import LoadingOverlay from "./LoadingOverlay";
 import useKeyboardNavigation from "../hooks/useKeyboardNavigation";
 import styles from "../styles/Viewer.module.css";
 
+/**
+ * Viewer component displays either an image popup or a panorama viewer,
+ * along with control buttons and optional metadata popup.
+ *
+ * Handles fullscreen toggling, metadata display, and loading states.
+ * Keyboard navigation for closing and switching images is managed by a custom hook.
+ *
+ * @param {Object} props - Component props.
+ * @param {Object} props.item - The item to display (image or panorama).
+ * @param {Function} props.onClose - Callback to close the viewer.
+ * @param {Function} props.onNext - Callback to show the next item.
+ * @param {Function} props.onPrevious - Callback to show the previous item.
+ * @param {boolean} props.isNavigationMode - Whether navigation mode is enabled.
+ * @param {Function} props.toggleMode - Callback to toggle navigation/exploration mode.
+ *
+ * @returns {JSX.Element} The viewer UI.
+ */
 const Viewer = ({
   item,
   onClose,
@@ -21,16 +38,20 @@ const Viewer = ({
   const [isLoading, setIsLoading] = useState(true);
   const viewerRef = useRef(null);
 
+  // Setup keyboard shortcuts for navigation and closing
   useKeyboardNavigation(onClose, onPrevious, onNext);
 
+  // Toggle metadata popup visibility
   const toggleMetadata = () => {
     setShowMetadata((prev) => !prev);
   };
 
+  // Called when content finishes loading
   const handleContentLoaded = () => {
     setIsLoading(false);
   };
 
+  // Handle Escape key for closing or hiding metadata
   useEffect(() => {
     const handleEscKey = (event) => {
       if (event.key === "Escape") {
@@ -48,6 +69,7 @@ const Viewer = ({
     };
   }, [showMetadata, onClose]);
 
+  // Toggle fullscreen mode on viewer container
   const toggleFullScreen = () => {
     if (!document.fullscreenElement) {
       viewerRef.current.requestFullscreen().catch((err) => {
@@ -60,6 +82,7 @@ const Viewer = ({
     }
   };
 
+  // Conditionally render either a panorama or an image viewer based on item type
   const renderContent = () => {
     if (item.viewer === "pano") {
       return (

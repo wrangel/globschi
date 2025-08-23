@@ -19,7 +19,6 @@ if [[ "$1" == "-u" ]]; then
     echo "📦 Updating dependencies..."
 
     pnpm update
-    pnpm install && node --env-file=.env ./scripts/fix-photo-sphere-viewer.mjs
     pnpm audit fix
     pnpm prune
     pnpm depcheck

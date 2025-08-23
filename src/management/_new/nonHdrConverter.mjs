@@ -3,11 +3,11 @@ import path from "path";
 import sharp from "sharp";
 
 const SOURCE_DIR = "/Users/matthiaswettstein/Downloads/DRONE/TIF"; // TODO
-const S3_DIR = path.join(SOURCE_DIR, "S3");
+const BASE_DIR = path.join(SOURCE_DIR, "S3");
 const MAX_WEBP_DIMENSION = 16383;
 
 // Create S3 destination folder if it doesn't exist
-fs.mkdirSync(S3_DIR, { recursive: true });
+fs.mkdirSync(BASE_DIR, { recursive: true });
 
 const tiffFiles = fs.readdirSync(SOURCE_DIR).filter((f) => /\.tiff?$/i.test(f));
 
@@ -17,7 +17,7 @@ async function convertTiffBatch() {
 
     // Folder name based on filename without extension
     const baseName = path.parse(tiffFile).name;
-    const fileDir = path.join(S3_DIR, baseName);
+    const fileDir = path.join(BASE_DIR, baseName);
     fs.mkdirSync(fileDir, { recursive: true });
 
     let image = sharp(inputPath);

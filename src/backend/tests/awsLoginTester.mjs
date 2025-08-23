@@ -9,10 +9,10 @@ import { s3Client } from "../helpers/awsHelpers.mjs";
  * @returns {Promise<void>}
  */
 async function testAwsLogin() {
-  const bucketName = process.env.AWS_BUCKET_SITE;
+  const bucketName = process.env.AWS_BUCKET;
 
   if (!bucketName) {
-    logger.error("AWS_BUCKET_SITE environment variable is not set.");
+    logger.error("AWS_BUCKET environment variable is not set.");
     process.exit(1);
   }
 

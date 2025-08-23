@@ -133,7 +133,7 @@ async function processMediaFile(fileInfo) {
     const losslessWebpBuffer = await image.webp({ lossless: true }).toBuffer();
 
     await uploadStreamToS3(
-      process.env.AWS_BUCKET_SITE,
+      process.env.AWS_BUCKET,
       `${mediaType}/${newMediumSite}`,
       losslessWebpBuffer
     );
@@ -154,7 +154,7 @@ async function processMediaFile(fileInfo) {
     const lossyWebpBuffer = await lossyTransformer.toBuffer();
 
     await uploadStreamToS3(
-      process.env.AWS_BUCKET_SITE,
+      process.env.AWS_BUCKET,
       `${THUMBNAIL_ID}/${newMediumSite}`,
       lossyWebpBuffer
     );

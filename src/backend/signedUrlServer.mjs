@@ -8,7 +8,7 @@ import { EXPIRATION_TIME } from "./constants.mjs";
 
 export async function getUrls() {
   try {
-    const objects = await listS3BucketContents(process.env.AWS_BUCKET_SITE);
+    const objects = await listS3BucketContents(process.env.AWS_BUCKET);
 
     // Group objects by top-level folder
     const folders = new Map();
@@ -44,7 +44,7 @@ export async function getUrls() {
 
       if (hasTiles) {
         // Panorama tiles are public; return base URL without signed URLs for tiles
-        urls.actualUrl = `https://${process.env.AWS_BUCKET_SITE}.s3.${process.env.AWS_DEFAULT_REGION}.amazonaws.com/${folder}/tiles`;
+        urls.actualUrl = `https://${process.env.AWS_BUCKET}.s3.${process.env.AWS_DEFAULT_REGION}.amazonaws.com/${folder}/tiles`;
       } else {
         // For normal images generate signed URLs
         urls.actualUrl = await signedUrl(`${folder}/${folder}.webp`);
@@ -63,7 +63,7 @@ export async function getUrls() {
 async function signedUrl(key) {
   return getSignedUrl(
     s3Client,
-    new GetObjectCommand({ Bucket: process.env.AWS_BUCKET_SITE, Key: key }),
+    new GetObjectCommand({ Bucket: process.env.AWS_BUCKET, Key: key }),
     { expiresIn: EXPIRATION_TIME }
   );
 }

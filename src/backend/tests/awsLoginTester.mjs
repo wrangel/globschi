@@ -1,12 +1,20 @@
 // src/backend/tests/awsLoginTester.mjs
-// Run with: node --env-file=.env src/backend/tests/awsLoginTester.mjs
+
+/**
+ * awsLoginTester.mjs
+ *
+ * Simple script to verify AWS credentials and ability to list S3 bucket contents.
+ * Run this script with:
+ *   node --env-file=.env src/backend/tests/awsLoginTester.mjs
+ */
 
 import { ListObjectsV2Command } from "@aws-sdk/client-s3";
 import logger from "../utils/logger.mjs";
 import { s3Client } from "../utils/awsUtils.mjs";
 
 /**
- * Tests AWS login and S3 bucket access.
+ * Tests AWS login and access to the configured S3 bucket.
+ * Logs successful connection and bucket contents or errors.
  * @returns {Promise<void>}
  */
 async function testAwsLogin() {
@@ -31,8 +39,8 @@ async function testAwsLogin() {
     if (response.Contents && response.Contents.length > 0) {
       logger.info("Found at least one object in the bucket:");
       logger.info(`Key: ${response.Contents[0].Key}`);
-      logger.info(`Last Modified: ${response.Contents[0].LastModified}`);
-      logger.info(`Size: ${response.Contents[0].Size} bytes`);
+      logger.info(`Last Modified: ${response.Contents.LastModified}`);
+      logger.info(`Size: ${response.Contents.Size} bytes`);
     } else {
       logger.info(
         "The bucket is empty or you don't have permission to list its contents."
@@ -58,7 +66,7 @@ async function testAwsLogin() {
   }
 }
 
-// Self-invoking async function to allow top-level await
+// Execute immediately when run as script
 (async () => {
   try {
     await testAwsLogin();

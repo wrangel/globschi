@@ -1,4 +1,4 @@
-// src/backend/utils/awsUtils.mjs
+// src/utils/awsUtils.mjs
 
 import {
   S3Client,

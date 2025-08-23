@@ -3,7 +3,7 @@ import path from "path";
 import sharp from "sharp";
 import { execFile } from "child_process";
 import { promisify } from "util";
-import logger from "../utils/logger.mjs";
+import logger from "../../utils/logger.mjs";
 
 const execFileAsync = promisify(execFile);
 

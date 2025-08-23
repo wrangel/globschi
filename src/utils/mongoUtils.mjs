@@ -1,4 +1,4 @@
-// src/backend/utils/mongoUtils.mjs
+// src/utils/mongoUtils.mjs
 
 import mongoose from "mongoose";
 import logger from "../utils/logger.mjs";

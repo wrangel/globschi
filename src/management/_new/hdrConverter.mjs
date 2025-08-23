@@ -6,7 +6,7 @@ import { promisify } from "util";
 
 const execFileAsync = promisify(execFile);
 
-const SOURCE_DIR = "/Users/matthiaswettstein/Downloads/DRONE/raw"; // TODO
+const SOURCE_DIR = "/Users/matthiaswettstein/Downloads/DRONE/raw"; // example HDR source folder
 const BASE_DIR = path.join(SOURCE_DIR, "S3");
 const MAX_WEBP_DIMENSION = 16383;
 
@@ -25,7 +25,7 @@ async function preprocessTiffToPng(inputPath, tempPngPath) {
   ]);
 }
 
-async function convertTiffBatch() {
+async function convertTiffBatchHdr() {
   for (const tiffFile of tiffFiles) {
     const inputPath = path.join(SOURCE_DIR, tiffFile);
     const baseName = path.parse(tiffFile).name;
@@ -39,11 +39,9 @@ async function convertTiffBatch() {
     let image = sharp(tempPngPath);
     const metadata = await image.metadata();
 
-    // Paths
     const losslessWebpPath = path.join(fileDir, `${baseName}.webp`);
     const thumbnailWebpPath = path.join(fileDir, "thumbnail.webp");
 
-    // High-res lossless WebP
     let hrImage = image;
     if (
       metadata.width > MAX_WEBP_DIMENSION ||
@@ -60,7 +58,6 @@ async function convertTiffBatch() {
     }
     await hrImage.webp({ lossless: true }).toFile(losslessWebpPath);
 
-    // Thumbnail lossy WebP
     let tnImage = image.webp({ lossless: false, quality: 80 }).resize({
       width: 2000,
       height: 1300,
@@ -69,11 +66,10 @@ async function convertTiffBatch() {
     });
     await tnImage.toFile(thumbnailWebpPath);
 
-    // Clean up temp PNG
     await fs.promises.unlink(tempPngPath);
   }
 }
 
-convertTiffBatch()
-  .then(() => console.log("Batch conversion completed"))
-  .catch((err) => console.error("Error in batch conversion:", err));
+convertTiffBatchHdr()
+  .then(() => console.log("HDR batch conversion completed"))
+  .catch((err) => console.error("Error in HDR batch conversion:", err));

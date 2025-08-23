@@ -5,7 +5,7 @@ import { s3Client } from "../../backend/utils/awsUtils.mjs"; // your existing S3
 import logger from "../../backend/utils/logger.mjs";
 
 const BUCKET_NAME = process.env.AWS_BUCKET; // your target bucket name
-const SOURCE_DIR = "/Users/matthiaswettstein/Downloads/DRONE/TIF"; // TODO
+const SOURCE_DIR = "/Users/matthiaswettstein/Downloads/DRONE/raw"; // TODO
 const BASE_DIR = path.join(SOURCE_DIR, "S3");
 
 /**

@@ -25,9 +25,6 @@ importers:
       '@aws-sdk/s3-request-presigner':
         specifier: ^3.873.0
         version: 3.873.0
-      '@photo-sphere-viewer/core':
-        specifier: ^5.13.4
-        version: 5.13.4
       axios:
         specifier: ^1.11.0
         version: 1.11.0
@@ -735,9 +732,6 @@ packages:
 
   '@mongodb-js/saslprep@1.3.0':
     resolution: {integrity: sha512-zlayKCsIjYb7/IdfqxorK5+xUMyi4vOKcFy10wKJYc63NSdKI8mNME+uJqfatkPmOSMMUiojrL58IePKBm3gvQ==}
-
-  '@photo-sphere-viewer/core@5.13.4':
-    resolution: {integrity: sha512-leVQL6gG9wTF+uvCFarHUcr8mzafCZ/GLzauksYQJfiqDVRFSAJNXnTOy7RH9otToluEdjN1hsN1f9HQy+rLYg==}
 
   '@react-leaflet/core@2.1.0':
     resolution: {integrity: sha512-Qk7Pfu8BSarKGqILj4x7bCSZ1pjuAPZ+qmRwH5S7mDS91VSbVVsJSrW4qA+GPrro8t69gFYVMWb1Zc4yFmPiVg==}
@@ -2376,9 +2370,6 @@ packages:
   text-hex@1.0.0:
     resolution: {integrity: sha512-uuVGNWzgJ4yhRaNSiubPY7OjISw4sw4E5Uv0wbjp+OzcbmVU/rsT8ujgcXJhn9ypzsgr5vlzpPqP+MBBKcGvbg==}
 
-  three@0.175.0:
-    resolution: {integrity: sha512-nNE3pnTHxXN/Phw768u0Grr7W4+rumGg/H6PgeseNJojkJtmeHJfZWi41Gp2mpXl1pg1pf1zjwR4McM1jTqkpg==}
-
   tinyglobby@0.2.14:
     resolution: {integrity: sha512-tX5e7OM1HnYr2+a2C/4V0htOcSQcoSTH9KgJnVvNm5zm/cyEWKJ7j7YutsH9CxMdtOkkLFy2AHrMci9IM8IPZQ==}
     engines: {node: '>=12.0.0'}
@@ -3424,10 +3415,6 @@ snapshots:
   '@mongodb-js/saslprep@1.3.0':
     dependencies:
       sparse-bitfield: 3.0.3
-
-  '@photo-sphere-viewer/core@5.13.4':
-    dependencies:
-      three: 0.175.0
 
   '@react-leaflet/core@2.1.0(leaflet@1.9.4)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
@@ -5428,8 +5415,6 @@ snapshots:
   supports-preserve-symlinks-flag@1.0.0: {}
 
   text-hex@1.0.0: {}
-
-  three@0.175.0: {}
 
   tinyglobby@0.2.14:
     dependencies:

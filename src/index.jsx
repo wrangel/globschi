@@ -6,7 +6,6 @@ import { BrowserRouter as Router } from "react-router-dom"; // React Router for 
 import App from "./frontend/App";
 import reportWebVitals from "./frontend/reportWebVitals";
 import "./frontend/styles/Global.css"; // Global styles
-import "@photo-sphere-viewer/core/index.css"; // Third-party photo sphere viewer styles
 
 // Create root React 18 container for the app
 const root = ReactDOM.createRoot(document.getElementById("root"));

@@ -88,9 +88,9 @@ const About = () => {
           <a
             target="_blank"
             rel="noopener noreferrer"
-            href="https://photo-sphere-viewer.js.org/"
+            href="https://www.marzipano.net/"
           >
-            Photo Sphere Viewer
+            Marzipano
           </a>
           <br />
           <a

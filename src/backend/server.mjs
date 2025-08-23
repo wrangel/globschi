@@ -9,13 +9,17 @@ import path from "path";
 import { fileURLToPath } from "url";
 import rateLimit from "express-rate-limit";
 
-// Check for critical environment variables
+/**
+ * List of environment variables required for MongoDB connection.
+ */
 const requiredEnvVars = [
   "MONGODB_DB_USER",
   "MONGODB_DB_PASSWORD",
   "MONGODB_SERVER",
   "MONGODB_DB",
 ];
+
+// Verify required environment variables exist; exit if missing
 requiredEnvVars.forEach((varName) => {
   if (!process.env[varName]) {
     logger.error(`Missing required environment variable: ${varName}`);
@@ -28,10 +32,10 @@ logger.info("Starting server...");
 const app = express();
 const PORT = process.env.PORT || 8081;
 
-// CORS configuration
+// CORS configuration: allow specific origins
 const corsOrigin = ["http://localhost:3000", "drone.ellesmere.synology.me"];
 
-// Enable CORS with dynamic origin
+// Enable CORS middleware with credentials support
 app.use(
   cors({
     origin: corsOrigin,
@@ -39,28 +43,30 @@ app.use(
   })
 );
 
-// Middleware to log request origin
+// Middleware to log the origin of each incoming request
 app.use((req, res, next) => {
   const origin = req.headers.origin;
   logger.info(`Request received from origin: ${origin}`);
   next();
 });
 
-// Rate limiting middleware for API routes
+/**
+ * Rate limiter middleware to limit excessive API requests.
+ */
 const apiLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 100, // limit each IP to 100 requests per window
   message: {
     error: "Too many requests from this IP, please try again after 15 minutes",
   },
-  standardHeaders: true,
+  standardHeaders: true, // Return rate limit info in headers
   legacyHeaders: false,
 });
 
-// Apply rate limiting middleware to all /api routes BEFORE defining any routes
+// Apply rate limiting to all /api routes before defining them
 app.use("/api", apiLimiter);
 
-// Define your /api routes (all rate-limited)
+// Simple test route to verify MongoDB connection
 app.get("/api/test-mongo", async (req, res) => {
   try {
     await mongoose.connection.db.admin().ping();
@@ -71,14 +77,17 @@ app.get("/api/test-mongo", async (req, res) => {
   }
 });
 
+// Mount combinedDataRoute under /api
 app.use("/api", combinedDataRoute);
 
-// Serve static files from the React app build folder
+// Serve static files (React build) from relative path
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 app.use(express.static(path.join(__dirname, "../../build")));
 
-// Rate limiting middleware for non-API (general) routes like catch-all
+/**
+ * Rate limiter for general non-API routes (including catch-all).
+ */
 const generalLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 100,
@@ -89,17 +98,17 @@ const generalLimiter = rateLimit({
   legacyHeaders: false,
 });
 
-// Basic route (non-API)
+// Basic home route response
 app.get("/", (req, res) => {
   res.send("Server is running");
 });
 
-// ** Fixed catch-all route: wildcard must be named to avoid path-to-regexp error **
+// Catch-all for all other routes - serves React app's index.html
 app.get("/*splat", generalLimiter, (req, res) => {
   res.sendFile(path.join(__dirname, "../../build", "index.html"));
 });
 
-// Error handling middleware
+// Centralized error handling middleware
 app.use((err, req, res, next) => {
   logger.error("Unhandled error:", err);
   res.status(500).json({
@@ -111,7 +120,7 @@ app.use((err, req, res, next) => {
   });
 });
 
-// Connect to MongoDB
+// MongoDB connection configuration and handler function
 mongoose.set("strictQuery", false);
 const connectDB = () =>
   mongoose
@@ -123,7 +132,10 @@ const connectDB = () =>
       throw err;
     });
 
-// Start the server if this is the main module
+/**
+ * Start server only when this module is the main entry point.
+ * Connect to MongoDB first, then listen on configured port.
+ */
 const isMainModule = import.meta.url === `file://${process.argv[1]}`;
 
 if (isMainModule) {
@@ -140,4 +152,5 @@ if (isMainModule) {
     });
 }
 
+// Export connectDB for external use/testing
 export { connectDB };

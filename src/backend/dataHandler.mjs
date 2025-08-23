@@ -6,18 +6,22 @@ import { beautify } from "./metadataProcessor.mjs";
 
 /**
  * Fetches and combines data from MongoDB and AWS S3.
- * @returns {Promise<Array>} Combined and processed data.
+ *
+ * Retrieves Island documents from MongoDB and presigned URLs from S3,
+ * then processes them to produce combined and beautified data.
+ *
+ * @returns {Promise<Array>} Combined and processed data array.
  * @throws {Error} If there's an issue fetching or processing the data.
  */
 export async function getCombinedData() {
   try {
-    // Fetch data from MongoDB and S3 concurrently
+    // Fetch data from MongoDB and S3 in parallel
     const [mongoData, presignedUrls] = await Promise.all([
       fetchMongoData(),
       getUrls(),
     ]);
 
-    // Combine and process the data
+    // Combine and process the fetched data
     const combinedData = await beautify(mongoData, presignedUrls);
     return combinedData;
   } catch (error) {
@@ -27,14 +31,18 @@ export async function getCombinedData() {
 }
 
 /**
- * Fetches data from MongoDB with default sorting by dateTime descending.
- * @returns {Promise<Array>} Data from MongoDB.
- * @throws {Error} If there's an issue fetching data from MongoDB.
+ * Fetches Island data from MongoDB, sorted by dateTime descending.
+ *
+ * Uses Mongoose's lean() for plain JS objects and sorting for newest first.
+ *
+ * @returns {Promise<Array>} Array of Island documents.
+ * @throws {Error} When failing to fetch from MongoDB.
  */
 async function fetchMongoData() {
   try {
-    // Fetch data sorted by dateTime in descending order
-    const data = await Island.find().lean().sort({ dateTime: -1 }).exec(); // -1 for descending order
+    // Query MongoDB for Island documents sorted by dateTime descending
+    const data = await Island.find().lean().sort({ dateTime: -1 }).exec();
+
     if (!data || data.length === 0) {
       console.warn("No data found in MongoDB");
     }

@@ -4,7 +4,7 @@
 
 open -a Docker
 
-# Clean up 
+# Clean up
 docker compose down --rmi all && docker system prune -af
 
 # Build images using docker-compose

@@ -1,7 +1,7 @@
-// src/backend/helpers/mongoHelpers.mjs
+// src/backend/utils/mongoHelpers.mjs
 
 import mongoose from "mongoose";
-import logger from "../helpers/logger.mjs";
+import logger from "../utils/logger.mjs";
 import { connectDB } from "../server.mjs";
 
 /**

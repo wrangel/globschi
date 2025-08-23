@@ -1,4 +1,4 @@
-// src/backend/helpers/awsHelpers.mjs
+// src/backend/utils/awsUtils.mjs
 
 import {
   S3Client,
@@ -8,8 +8,8 @@ import {
 } from "@aws-sdk/client-s3";
 
 import fs from "fs/promises";
-import logger from "../helpers/logger.mjs";
-import { getId } from "./helpers.mjs";
+import logger from "../utils/logger.mjs";
+import { getId } from "./utils.mjs";
 
 // Validate required environment variables
 const requiredEnvVars = [

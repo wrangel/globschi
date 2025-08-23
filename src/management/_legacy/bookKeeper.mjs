@@ -1,12 +1,12 @@
 // src/backend/management/bookKeeper.mjs
 
 import { DeleteObjectsCommand } from "@aws-sdk/client-s3";
-import { s3Client } from "../helpers/awsHelpers.mjs";
+import { s3Client } from "../utils/awsUtils.mjs";
 import { MEDIA_FORMATS, THUMBNAIL_ID } from "../constants.mjs";
-import logger from "../helpers/logger.mjs";
+import logger from "../utils/logger.mjs";
 import { Island } from "../models/islandModel.mjs";
-import { listS3BucketContents } from "../helpers/awsHelpers.mjs";
-import { executeMongoQuery } from "../helpers/mongoHelpers.mjs";
+import { listS3BucketContents } from "../utils/awsUtils.mjs";
+import { executeMongoQuery } from "../utils/mongoHelpers.mjs";
 
 /**
  * Main function to synchronize media across S3 buckets and MongoDB

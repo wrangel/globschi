@@ -1,8 +1,8 @@
 // src/backend/tests/awsLoginTester.mjs
 
 import { ListObjectsV2Command } from "@aws-sdk/client-s3";
-import logger from "../helpers/logger.mjs";
-import { s3Client } from "../helpers/awsHelpers.mjs";
+import logger from "../utils/logger.mjs";
+import { s3Client } from "../utils/awsUtils.mjs";
 
 /**
  * Tests AWS login and S3 bucket access.

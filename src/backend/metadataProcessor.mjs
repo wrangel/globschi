@@ -1,4 +1,4 @@
-import logger from "./helpers/logger.mjs";
+import logger from "./utils/logger.mjs";
 
 export const beautify = async (mongoData, presignedUrls) => {
   validateInput(mongoData, presignedUrls);

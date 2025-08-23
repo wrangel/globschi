@@ -2,8 +2,8 @@
 
 import { GetObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
-import { listS3BucketContents } from "./helpers/awsHelpers.mjs";
-import { s3Client } from "./helpers/awsHelpers.mjs";
+import { listS3BucketContents } from "./utils/awsUtils.mjs";
+import { s3Client } from "./utils/awsUtils.mjs";
 import { EXPIRATION_TIME } from "./constants.mjs";
 
 export async function getUrls() {

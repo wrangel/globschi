@@ -1,8 +1,8 @@
 import fs from "fs";
 import path from "path";
 import { Upload } from "@aws-sdk/lib-storage";
-import { s3Client } from "../../backend/helpers/awsHelpers.mjs"; // your existing S3 client import
-import logger from "../../backend/helpers/logger.mjs";
+import { s3Client } from "../../backend/utils/awsUtils.mjs"; // your existing S3 client import
+import logger from "../../backend/utils/logger.mjs";
 
 const BUCKET_NAME = process.env.AWS_BUCKET; // your target bucket name
 const SOURCE_DIR = "/Users/matthiaswettstein/Downloads/DRONE/TIF"; // TODO

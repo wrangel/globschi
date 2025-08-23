@@ -6,12 +6,12 @@ import sharp from "sharp";
 import { PassThrough } from "stream";
 import { execFile } from "child_process";
 import { promisify } from "util";
-import logger from "../helpers/logger.mjs";
+import logger from "../utils/logger.mjs";
 import { THUMBNAIL_ID } from "../constants.mjs";
 import { processedMediaData } from "./metadataCollector.mjs";
-import { s3Client } from "../helpers/awsHelpers.mjs";
+import { s3Client } from "../utils/awsUtils.mjs";
 import { Island } from "../models/islandModel.mjs";
-import { executeMongoQuery } from "../helpers/mongoHelpers.mjs";
+import { executeMongoQuery } from "../utils/mongoUtils.mjs";
 import { Upload } from "@aws-sdk/lib-storage";
 
 const execFileAsync = promisify(execFile);

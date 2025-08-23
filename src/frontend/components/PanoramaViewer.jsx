@@ -1,70 +1,83 @@
 // src/components/PanoramaViewer.jsx
 
-import { useState, useEffect } from "react";
-import { ReactPhotoSphereViewer } from "react-photo-sphere-viewer";
-import { AutorotatePlugin } from "@photo-sphere-viewer/autorotate-plugin";
-import styles from "../styles/PanoramaViewer.module.css";
+import { useRef, useEffect } from "react";
+import Marzipano from "marzipano";
 
-const PanoramaViewer = ({ imageUrl, thumbnailUrl, isNavigationMode }) => {
-  const [isLoading, setIsLoading] = useState(true);
-  const [viewer, setViewer] = useState(null);
-
-  const isSafari = () => {
-    const ua = navigator.userAgent.toLowerCase();
-    return ua.indexOf("safari") > -1 && ua.indexOf("chrome") === -1;
-  };
-
-  const handleReady = (instance) => {
-    setIsLoading(false);
-    setViewer(instance);
-    if (!isNavigationMode) {
-      // Start autorotation after ready
-      const autorotate = instance.getPlugin(AutorotatePlugin);
-      autorotate?.start();
-    }
-  };
+/**
+ * PanoramaViewer component for displaying a 360° panorama using Marzipano.
+ *
+ * Initializes a Marzipano viewer on a container element and sets up the panorama scene
+ * with cube geometry and multiresolution tiles. Includes autorotation when idle.
+ *
+ * @param {Object} props - Component props.
+ * @param {string} props.panoPath - Base URL path to panorama tile images.
+ * @param {Function} [props.onReady] - Optional callback invoked when viewer is ready.
+ *
+ * @returns {JSX.Element} The container element where the panorama renders.
+ */
+const PanoramaViewer = ({ panoPath, onReady }) => {
+  const panoramaElement = useRef(null);
 
   useEffect(() => {
-    if (viewer) {
-      const autorotate = viewer.getPlugin(AutorotatePlugin);
-      if (isNavigationMode) {
-        autorotate?.stop();
-      } else {
-        autorotate?.start();
+    if (!panoPath || !panoramaElement.current) return;
+
+    // Initialize Marzipano viewer on the container
+    const viewer = new Marzipano.Viewer(panoramaElement.current);
+
+    // Configure image levels for multiresolution cube tiles
+    const levels = [
+      { tileSize: 256, size: 256, fallbackOnly: true },
+      { tileSize: 512, size: 512 },
+      { tileSize: 512, size: 1024 },
+    ];
+
+    // Define cube geometry based on levels
+    const geometry = new Marzipano.CubeGeometry(levels);
+
+    // Configure source URL pattern for tiles with preview image
+    const source = Marzipano.ImageUrlSource.fromString(
+      `${panoPath}/{z}/{f}/{y}/{x}.jpg`,
+      {
+        cubeMapPreviewUrl: `${panoPath}/../preview.jpg`,
       }
-    }
-  }, [isNavigationMode, viewer]);
-
-  if (isSafari()) {
-    return (
-      <div className={styles.errorOverlay}>
-        <div className={styles.errorMessage}>
-          <h1>Safari Does Not Support This Feature.</h1>
-          <p>Please try using a different browser like Chrome or Firefox.</p>
-        </div>
-      </div>
     );
-  }
 
-  // Pass the plugin constructor and options as array
-  const plugins = [
-    [AutorotatePlugin, { autorotateSpeed: "2rpm", autostartDelay: 2000 }],
-  ];
+    // Create view with yaw and pitch limits
+    const limiter = Marzipano.RectilinearView.limit.traditional(
+      1024,
+      (120 * Math.PI) / 180
+    );
+    const view = new Marzipano.RectilinearView(null, limiter);
+
+    // Create and activate scene with above source, geometry, and view
+    const scene = viewer.createScene({
+      source,
+      geometry,
+      view,
+      pinFirstLevel: true,
+    });
+
+    scene.switchTo({ transitionDuration: 1000 });
+
+    // Setup autorotation motion after 3 seconds idle
+    const autorotate = Marzipano.autorotate({
+      yawSpeed: 0.05, // Adjust rotation speed
+      targetPitch: 0, // Level pitch forward
+      targetFov: Math.PI / 2,
+    });
+
+    viewer.startMovement(autorotate);
+
+    if (onReady) onReady();
+
+    // Cleanup function to destroy viewer on unmount or panoPath change
+    return () => {
+      viewer.destroy();
+    };
+  }, [panoPath, onReady]);
 
   return (
-    <div className={styles.panoramaViewer}>
-      <ReactPhotoSphereViewer
-        src={imageUrl}
-        height="100vh"
-        width="100%"
-        onReady={handleReady}
-        plugins={plugins}
-        navbar={false}
-      />
-      {isLoading && thumbnailUrl && (
-        <img src={thumbnailUrl} alt="Thumbnail" className={styles.thumbnail} />
-      )}
-    </div>
+    <div ref={panoramaElement} style={{ width: "100%", height: "100vh" }} />
   );
 };
 

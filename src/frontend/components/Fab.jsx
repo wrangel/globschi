@@ -3,10 +3,20 @@
 import { useLocation } from "react-router-dom";
 import styles from "../styles/Fab.module.css";
 
+/**
+ * Floating Action Button (Fab) component providing navigation links.
+ *
+ * Displays a set of navigation buttons based on the current URL path.
+ * Buttons highlight the active path and call onNavigate callback when clicked.
+ *
+ * @param {Object} props - Component props.
+ * @param {Function} props.onNavigate - Callback invoked with the new path on button click.
+ */
 const Fab = ({ onNavigate }) => {
   const location = useLocation();
 
-  // Define the button configurations based on the current location
+  // Define button configurations for different routes.
+  // Here the same list is used for all specified paths.
   const buttonConfig = {
     "/": [
       { label: "About", path: "/about" },
@@ -34,6 +44,10 @@ const Fab = ({ onNavigate }) => {
     ],
   };
 
+  /**
+   * Render navigation buttons corresponding to the current route.
+   * Highlights the active route button.
+   */
   const renderButtons = () => {
     const buttons = buttonConfig[location.pathname] || [];
 

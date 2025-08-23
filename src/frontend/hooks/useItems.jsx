@@ -4,25 +4,45 @@ import { useState, useEffect, useCallback } from "react";
 
 let cachedItems = null;
 
+/**
+ * Custom hook to fetch and cache portfolio or data items from an API endpoint.
+ *
+ * Implements caching to avoid redundant network requests,
+ * with support for loading, error states, refetching, and cache clearing.
+ *
+ * @returns {Object} An object containing:
+ *   - items: Array of fetched items,
+ *   - isLoading: Boolean loading flag,
+ *   - error: Error message string or null,
+ *   - refetch: Function to manually refetch items,
+ *   - clearCache: Function to clear cache and reload items.
+ */
 export const useItems = () => {
-  const [items, setItems] = useState(cachedItems || []);
+  const [items, setItems] = useState(cachedItems ? [...cachedItems] : []);
   const [isLoading, setIsLoading] = useState(!cachedItems);
   const [error, setError] = useState(null);
 
+  // Function to fetch data from API with timeout and abort controller
   const fetchData = useCallback(async () => {
     if (cachedItems) {
-      setItems(cachedItems);
+      // Use cached data if available
+      setItems([...cachedItems]);
+      setIsLoading(false);
       return;
     }
+
     try {
       setIsLoading(true);
-      setError(null); // Reset error state before fetching
+      setError(null);
 
-      const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:8081"; // Fallback URL
+      const apiUrl =
+        import.meta.env.VITE_API_URL || "http://localhost:8081/api/";
+      // Construct URL ensuring a trailing slash before endpoint path
       const url = `${apiUrl}${apiUrl.endsWith("/") ? "" : "/"}combined-data`;
 
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+      // Set a 10-second timeout to abort fetch if it takes too long
+      const timeoutId = setTimeout(() => controller.abort(), 10000);
 
       const response = await fetch(url, { signal: controller.signal });
       clearTimeout(timeoutId);
@@ -30,11 +50,13 @@ export const useItems = () => {
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
+
       const data = await response.json();
-      setItems(data);
-      cachedItems = data;
+
+      setItems([...data]);
+      cachedItems = [...data]; // Cache the fetched data
     } catch (e) {
-      console.error("Error fetching data:", e);
+      // Handle abort and other fetch errors with user-friendly messages
       setError(
         e.name === "AbortError"
           ? "Request timed out. Please try again."
@@ -45,10 +67,12 @@ export const useItems = () => {
     }
   }, []);
 
+  // Fetch data on initial hook mount
   useEffect(() => {
     fetchData();
   }, [fetchData]);
 
+  // Clears cached data and refreshes from network
   const clearCache = useCallback(() => {
     cachedItems = null;
     setItems([]);

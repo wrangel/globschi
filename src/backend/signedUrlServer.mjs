@@ -2,95 +2,96 @@
 
 import { GetObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
-import { listS3BucketContents } from "./helpers/awsHelpers.mjs";
-import { s3Client } from "./helpers/awsHelpers.mjs";
-import { ACTUAL_ID, THUMBNAIL_ID, EXPIRATION_TIME } from "./constants.mjs";
-import { getId } from "./helpers/helpers.mjs";
+import { listS3BucketContents, s3Client } from "../utils/awsUtils.mjs";
+import { EXPIRATION_TIME } from "./constants.mjs";
 
 /**
- * Generates signed URLs for S3 objects.
- * @returns {Promise<Array>} Array of objects with name and URLs.
+ * Retrieves signed URLs and metadata for all top-level folders in the S3 bucket.
+ *
+ * Groups objects by their top-level folder, detects panorama tiles presence,
+ * generates signed URLs for thumbnails and actual images or panoramas.
+ *
+ * @returns {Promise<Array<{name: string, type: string, urls: object}>>} Array of objects with folder names, types, and signed URLs.
+ * @throws Will throw an error if fetching bucket contents or signing URLs fails.
  */
 export async function getUrls() {
   try {
-    const bucketContents = await listS3BucketContents(
-      process.env.AWS_BUCKET_SITE
-    );
-    const signedUrls = await generateSignedUrls(bucketContents);
-    const groupedUrls = groupUrlsById(signedUrls);
-    const sortedUrls = sortUrlsByType(groupedUrls);
-    return formatUrls(sortedUrls);
-  } catch (error) {
+    // List all objects in the configured S3 bucket
+    const objects = await listS3BucketContents(process.env.AWS_BUCKET);
+
+    // Group objects by their top-level folder name
+    const folders = new Map();
+
+    for (const { Key } of objects) {
+      const parts = Key.split("/");
+      if (parts.length < 2) continue; // Ignore root-level or malformed keys
+
+      const folder = parts[0];
+      const file = parts[parts.length - 1];
+
+      if (!folders.has(folder)) {
+        folders.set(folder, { files: new Set(), hasTiles: false });
+      }
+
+      const folderData = folders.get(folder);
+      folderData.files.add(file);
+
+      // Detect if this folder contains panorama tiles
+      if (Key.includes("/tiles/")) {
+        folderData.hasTiles = true;
+      }
+    }
+
+    const results = [];
+
+    for (const [folder, data] of folders) {
+      const { hasTiles } = data;
+      const urls = {};
+
+      // Always generate a signed URL for the thumbnail.webp
+      urls.thumbnailUrl = await signedUrl(`${folder}/thumbnail.webp`);
+
+      if (hasTiles) {
+        // Panorama tiles are public; provide direct base URL instead of signed URLs
+        urls.actualUrl = `https://${process.env.AWS_BUCKET}.s3.${process.env.AWS_DEFAULT_REGION}.amazonaws.com/${folder}/tiles`;
+      } else {
+        // For regular images, generate signed URL
+        urls.actualUrl = await signedUrl(`${folder}/${folder}.webp`);
+      }
+
+      results.push({ name: folder, type: guessType(folder), urls });
+    }
+
+    return results;
+  } catch (err) {
+    console.error(err);
     throw new Error("Failed to generate signed URLs");
   }
 }
 
 /**
- * Generates signed URLs for each object in the bucket.
- * @param {Array} contents - Bucket contents.
- * @returns {Promise<Array>} Array of objects with id, type, and signed URL.
+ * Generates a presigned GET URL for a given S3 object key.
+ *
+ * @param {string} key - The S3 object key.
+ * @returns {Promise<string>} The presigned URL.
  */
-async function generateSignedUrls(contents) {
-  return Promise.all(
-    contents.map(async (content) => {
-      const key = content.Key;
-      const type = key.startsWith(THUMBNAIL_ID) ? THUMBNAIL_ID : ACTUAL_ID;
-      return {
-        id: getId(key),
-        type,
-        sigUrl: await getSignedUrl(
-          s3Client,
-          new GetObjectCommand({
-            Bucket: process.env.AWS_BUCKET_SITE,
-            Key: key,
-          }),
-          { expiresIn: EXPIRATION_TIME }
-        ),
-      };
-    })
+async function signedUrl(key) {
+  return getSignedUrl(
+    s3Client,
+    new GetObjectCommand({ Bucket: process.env.AWS_BUCKET, Key: key }),
+    { expiresIn: EXPIRATION_TIME }
   );
 }
 
 /**
- * Groups URLs by their ID.
- * @param {Array} urls - Array of URL objects.
- * @returns {Array} Grouped URL objects.
+ * Guesses the media type based on folder name prefix.
+ *
+ * @param {string} name - Folder name to guess type from.
+ * @returns {string} The guessed media type.
  */
-function groupUrlsById(urls) {
-  return urls.reduce((acc, url) => {
-    const found = acc.find((a) => a.id === url.id);
-    if (!found) {
-      acc.push({ id: url.id, data: [{ type: url.type, sigUrl: url.sigUrl }] });
-    } else {
-      found.data.push({ type: url.type, sigUrl: url.sigUrl });
-    }
-    return acc;
-  }, []);
-}
-
-/**
- * Sorts URLs based on type (actual first, thumbnail second).
- * @param {Array} groupedUrls - Grouped URL objects.
- * @returns {Array} Sorted URL objects.
- */
-function sortUrlsByType(groupedUrls) {
-  return groupedUrls.map((item) => ({
-    ...item,
-    data: item.data.sort((a, b) => a.type.localeCompare(b.type)),
-  }));
-}
-
-/**
- * Formats the URLs into the final structure.
- * @param {Array} sortedUrls - Sorted URL objects.
- * @returns {Array} Formatted URL objects.
- */
-function formatUrls(sortedUrls) {
-  return sortedUrls.map((elem) => ({
-    name: elem.id,
-    urls: {
-      actual: elem.data.find((d) => d.type === ACTUAL_ID)?.sigUrl,
-      thumbnail: elem.data.find((d) => d.type === THUMBNAIL_ID)?.sigUrl,
-    },
-  }));
+function guessType(name) {
+  if (name.startsWith("pano")) return "panorama";
+  if (name.startsWith("hdr")) return "hdr";
+  if (name.startsWith("wide-angle")) return "wide-angle";
+  return "photo";
 }

@@ -3,8 +3,8 @@ import path from "path";
 import readline from "readline";
 import chardet from "chardet";
 import iconv from "iconv-lite";
-import { deleteS3Objects, downloadS3Object } from "../helpers/awsHelpers.mjs";
-import logger from "../helpers/logger.mjs";
+import { deleteS3Objects, downloadS3Object } from "../utils/awsUtils.mjs";
+import logger from "../utils/logger.mjs";
 
 const DELETE_LIST_FILE = path.join(
   process.cwd(),

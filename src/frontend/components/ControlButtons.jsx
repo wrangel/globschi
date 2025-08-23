@@ -4,6 +4,27 @@ import { useState, useEffect } from "react";
 import { useSwipeable } from "react-swipeable";
 import styles from "../styles/Fab.module.css";
 
+/**
+ * ControlButtons Component
+ *
+ * Displays floating action buttons (FAB) for navigation controls including:
+ * - Close button
+ * - Previous and Next navigation buttons (keyboard and swipe enabled)
+ * - Toggle between navigation/exploration modes
+ * - Toggle metadata display
+ * - Toggle fullscreen mode
+ *
+ * Supports keyboard arrow navigation and swipe gestures for interaction.
+ *
+ * @param {Object} props - Component props.
+ * @param {Function} props.onClose - Handler to close the viewer.
+ * @param {Function} props.onPrevious - Handler for previous navigation.
+ * @param {Function} props.onNext - Handler for next navigation.
+ * @param {Function} props.onToggleMetadata - Handler to toggle metadata display.
+ * @param {boolean} props.isNavigationMode - Flag indicating if navigation mode is active.
+ * @param {Function} props.toggleMode - Handler to toggle navigation/exploration mode.
+ * @param {Function} props.onToggleFullScreen - Handler to toggle fullscreen mode.
+ */
 const ControlButtons = ({
   onClose,
   onPrevious,
@@ -13,9 +34,13 @@ const ControlButtons = ({
   toggleMode,
   onToggleFullScreen,
 }) => {
+  // State for whether the control menu is expanded/open
   const [isOpen, setIsOpen] = useState(false);
+
+  // State to track whether the document is in fullscreen mode
   const [isFullscreen, setIsFullscreen] = useState(false);
 
+  // Effect to listen for fullscreen change events and update state accordingly
   useEffect(() => {
     const handleFullscreenChange = () => {
       setIsFullscreen(!!document.fullscreenElement);
@@ -27,6 +52,7 @@ const ControlButtons = ({
     };
   }, []);
 
+  // Effect to handle keyboard arrow navigation when navigation mode is active
   useEffect(() => {
     const handleKeyDown = (event) => {
       if (event.key === "ArrowLeft" && isNavigationMode) {
@@ -41,6 +67,7 @@ const ControlButtons = ({
     };
   }, [onPrevious, onNext, isNavigationMode]);
 
+  // Swipeable handlers to detect swipe gestures for previous/next navigation
   const handlers = useSwipeable({
     onSwipedLeft: () => isNavigationMode && onNext(),
     onSwipedRight: () => isNavigationMode && onPrevious(),
@@ -48,6 +75,7 @@ const ControlButtons = ({
     trackMouse: true,
   });
 
+  // Toggle the action button menu open/closed
   const toggleMenu = () => {
     setIsOpen((prev) => !prev);
   };
@@ -58,7 +86,7 @@ const ControlButtons = ({
         isFullscreen ? styles.fullscreen : ""
       }`}
       style={{ zIndex: 1100 }}
-      {...handlers}
+      {...handlers} // Attach swipe handlers
     >
       {!isFullscreen ? (
         <>

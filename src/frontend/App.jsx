@@ -1,4 +1,4 @@
-// src/frontend/App.js
+// src/frontend/App.jsx
 
 import React, { Suspense, lazy } from "react";
 import { Routes, Route, useNavigate } from "react-router-dom";
@@ -25,7 +25,8 @@ function App() {
               <Route path="/" element={<HomePage />} />
               <Route path="/grid" element={<GridPage />} />
               <Route path="/map" element={<MapPage />} />
-              <Route path="/about" element={<AboutPage />} />
+              <Route path="/about" element={<AboutPage />} />{" "}
+              {/* Add this route */}
             </Routes>
           </Suspense>
         </ErrorBoundary>

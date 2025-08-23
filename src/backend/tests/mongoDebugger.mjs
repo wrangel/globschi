@@ -1,25 +1,36 @@
 // src/backend/tests/mongoDebugger.mjs
 
-import logger from "../helpers/logger.mjs";
+/**
+ * mongoDebugger.mjs
+ *
+ * Script to fetch and log Island documents from MongoDB for debugging.
+ * Allows configuring limit, sorting field, and sort order.
+ * Run this script with:
+ *   node --env-file=.env src/backend/tests/mongoDebugger.mjs
+ */
+
+import logger from "../utils/logger.mjs";
 import { Island } from "../models/islandModel.mjs";
-import { executeMongoQuery } from "../helpers/mongoHelpers.mjs";
+import { executeMongoQuery } from "../utils/mongoUtils.mjs";
 
 /**
  * Fetches and logs Island documents from MongoDB.
  * @param {Object} options - Query options
- * @param {number} options.limit - Maximum number of documents to retrieve
- * @param {string} options.sortField - Field to sort by
- * @param {number} options.sortOrder - Sort order (1 for ascending, -1 for descending)
+ * @param {number} options.limit - Maximum number of documents to retrieve (default: 10)
+ * @param {string} options.sortField - Field to sort by (default: "dateTime")
+ * @param {number} options.sortOrder - Sort order, 1 for ascending, -1 for descending (default: -1)
+ * @returns {Promise<void>}
  */
 async function debugIslands(options = {}) {
   const { limit = 10, sortField = "dateTime", sortOrder = -1 } = options;
 
   try {
+    // Use utility to execute query within monitored context/logging
     const docs = await executeMongoQuery(async () => {
       return await Island.find()
         .sort({ [sortField]: sortOrder })
         .limit(limit)
-        .lean();
+        .lean(); // Return plain JS objects instead of Mongoose docs
     }, "Island");
 
     logger.info(`Retrieved ${docs.length} Island documents:`);
@@ -34,7 +45,9 @@ async function debugIslands(options = {}) {
   }
 }
 
-// Self-invoking async function to allow top-level await
+/**
+ * Self-invoking async wrapper to run debugIslands with example options
+ */
 (async () => {
   try {
     await debugIslands({

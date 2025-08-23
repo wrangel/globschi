@@ -11,9 +11,6 @@ COPY package*.json pnpm-lock.yaml ./
 RUN --mount=type=cache,target=/root/.pnpm-store \
     pnpm install --frozen-lockfile
 
-COPY scripts/fix-photo-sphere-viewer.mjs ./scripts/
-RUN node ./scripts/fix-photo-sphere-viewer.mjs
-
 COPY . .
 
 ARG VITE_API_URL

@@ -1,4 +1,4 @@
-// src/backend/helpers/awsHelpers.mjs
+// src/utils/awsUtils.mjs
 
 import {
   S3Client,
@@ -8,10 +8,10 @@ import {
 } from "@aws-sdk/client-s3";
 
 import fs from "fs/promises";
-import logger from "../helpers/logger.mjs";
-import { getId } from "./helpers.mjs";
+import logger from "../utils/logger.mjs";
+import { getId } from "./utils.mjs";
 
-// Validate required environment variables
+// Validate all required AWS environment variables on module load
 const requiredEnvVars = [
   "AWS_ACCESS_KEY_ID",
   "AWS_SECRET_ACCESS_KEY",
@@ -28,8 +28,9 @@ if (missingEnvVars.length > 0) {
 }
 
 /**
- * Creates and configures an S3 client.
- * @returns {S3Client} Configured S3 client
+ * Creates and configures a reusable AWS S3 client using credentials and region from environment.
+ *
+ * @returns {S3Client} An instance of AWS S3 client preconfigured with retry options.
  */
 function createS3Client() {
   return new S3Client({
@@ -38,20 +39,23 @@ function createS3Client() {
       secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
     },
     region: process.env.AWS_DEFAULT_REGION,
-    maxAttempts: 3,
+    maxAttempts: 3, // Retry attempts on failures
   });
 }
 
-// Create the S3 client
+// Single instance S3 client to be reused across requests
 const s3Client = createS3Client();
 export { s3Client };
 
 /**
- * Lists the contents of an S3 bucket.
- * @param {string} bucketName - The name of the S3 bucket.
- * @param {boolean} [adapt=false] - Whether to adapt the response.
- * @returns {Promise<Array>} - The bucket contents or an empty array if none found.
- * @throws {Error} If there's an issue listing the bucket contents.
+ * Lists all contents in the specified S3 bucket, handling pagination.
+ * Optionally adapts response to a simplified format with key and path.
+ *
+ * @param {string} bucketName - The S3 bucket name to list contents from.
+ * @param {boolean} [adapt=false] - If true, maps results to objects with keys 'key' and 'path'.
+ * @param {number} [maxKeys=1000] - Maximum number of keys to fetch per request (up to AWS limit).
+ * @returns {Promise<Array<Object>>} Array of bucket contents, each as full AWS S3 list object or adapted keys.
+ * @throws {Error} If AWS API call fails or input parameters are invalid.
  */
 export async function listS3BucketContents(
   bucketName,
@@ -65,6 +69,7 @@ export async function listS3BucketContents(
   let allContents = [];
   let continuationToken = undefined;
 
+  // Loop over paginated results until complete listing
   do {
     try {
       const command = new ListObjectsV2Command({
@@ -103,18 +108,22 @@ export async function listS3BucketContents(
 }
 
 /**
- * Downloads an object from S3 bucket.
+ * Downloads an object from the specified S3 bucket and writes it directly to the local file system.
+ *
  * @param {string} bucketName - The name of the S3 bucket.
- * @param {string} key - The key of the object in S3.
- * @param {string} localPath - The local path to save the downloaded file.
+ * @param {string} key - The key (path) of the object in the bucket.
+ * @param {string} localPath - The local filesystem path to write the downloaded object.
  * @returns {Promise<void>}
+ * @throws Will throw if the download or file write fails.
  */
 export async function downloadS3Object(bucketName, key, localPath) {
   try {
     const command = new GetObjectCommand({ Bucket: bucketName, Key: key });
     const response = await s3Client.send(command);
 
+    // Write the entire object body to the local file path
     await fs.writeFile(localPath, response.Body);
+
     logger.info(`Downloaded ${key} to ${localPath}`);
   } catch (error) {
     logger.error(
@@ -126,18 +135,20 @@ export async function downloadS3Object(bucketName, key, localPath) {
 }
 
 /**
- * Deletes multiple objects from S3 bucket.
- * @param {Array<{Key: string}>} objects - Array of objects to delete.
- * @returns {Promise<Object>} - Deletion result.
+ * Deletes multiple objects from a configured S3 bucket in a single batch operation.
+ *
+ * @param {Array<{Key: string}>} objects - Array of objects to delete; each must contain a 'Key' property.
+ * @returns {Promise<Object>} Result object from AWS DeleteObjects operation detailing deleted and failed objects.
+ * @throws Will throw if deletion fails or input objects array is invalid.
  */
 export async function deleteS3Objects(objects) {
-  // Check if the bucket name is defined
+  // Bucket name obtained from environment for object deletion
   const bucketName = process.env.AWS_BUCKET_ORIGINALS;
   if (!bucketName) {
     throw new Error("Bucket name is not defined in environment variables.");
   }
 
-  // Input validation
+  // Validate input
   if (!Array.isArray(objects) || objects.length === 0) {
     throw new Error("Invalid input: objects must be a non-empty array.");
   }
@@ -152,7 +163,7 @@ export async function deleteS3Objects(objects) {
 
     logger.info(`Deleted ${result.Deleted.length} objects from ${bucketName}`);
 
-    // Log any errors for objects that were not found
+    // Log failures for individual objects if any
     if (result.Errors && result.Errors.length > 0) {
       result.Errors.forEach((error) => {
         logger.warn(`Failed to delete object ${error.Key}: ${error.Message}`);

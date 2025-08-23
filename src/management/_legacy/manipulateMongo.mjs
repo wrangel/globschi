@@ -1,8 +1,8 @@
 // src/backend/management/manipulateMongo.mjs
 
-import logger from "../helpers/logger.mjs";
+import logger from "../utils/logger.mjs";
 import { Island } from "../models/islandModel.mjs";
-import { executeMongoQuery } from "../helpers/mongoHelpers.mjs";
+import { executeMongoQuery } from "../utils/mongoUtils.mjs";
 
 // This can be any function you need
 async function updateIslandsWithAuthorField() {

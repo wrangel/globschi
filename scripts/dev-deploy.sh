@@ -3,6 +3,9 @@ set -e
 
 # Run locally!
 
+echo "🧹 Cleaning Vite cache..."
+rm -rf node_modules/.vite dist
+
 # Remove Docker containers if Docker is running
 if docker info >/dev/null 2>&1; then
     echo "Stopping Docker containers and cleaning up..."
@@ -16,7 +19,6 @@ if [[ "$1" == "-u" ]]; then
     echo "📦 Updating dependencies..."
 
     pnpm update
-    pnpm install && node --env-file=.env ./scripts/fix-photo-sphere-viewer.mjs
     pnpm audit fix
     pnpm prune
     pnpm depcheck

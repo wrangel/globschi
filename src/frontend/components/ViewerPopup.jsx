@@ -5,13 +5,30 @@ import { useSwipeable } from "react-swipeable";
 import FullScreenModal from "./FullScreenModal";
 import Viewer from "./Viewer";
 
+/**
+ * ViewerPopup component wraps the Viewer inside a fullscreen modal,
+ * adding swipe gesture support for navigation.
+ *
+ * Handles toggling navigation mode and forwarding swipe gestures to change items.
+ *
+ * @param {Object} props - Component props.
+ * @param {Object} props.item - The item to display in the viewer.
+ * @param {boolean} props.isOpen - Whether the modal is open.
+ * @param {Function} props.onClose - Callback to close the modal.
+ * @param {Function} props.onNext - Callback to go to the next item.
+ * @param {Function} props.onPrevious - Callback to go to the previous item.
+ *
+ * @returns {JSX.Element|null} The fullscreen modal wrapping the viewer or null if no item.
+ */
 const ViewerPopup = ({ item, isOpen, onClose, onNext, onPrevious }) => {
   const [isNavigationMode, setIsNavigationMode] = useState(true);
 
+  // Function to toggle navigation mode between navigation and exploration
   const toggleMode = () => {
     setIsNavigationMode((prevMode) => !prevMode);
   };
 
+  // Swipe handlers for navigating items; only active in navigation mode
   const handlers = useSwipeable({
     onSwipedLeft: () => {
       if (isNavigationMode) {
@@ -38,8 +55,8 @@ const ViewerPopup = ({ item, isOpen, onClose, onNext, onPrevious }) => {
           onClose={onClose}
           onNext={onNext}
           onPrevious={onPrevious}
-          isNavigationMode={isNavigationMode} // Pass down the navigation mode state
-          toggleMode={toggleMode} // Pass down the toggle function
+          isNavigationMode={isNavigationMode} // pass current navigation mode
+          toggleMode={toggleMode} // pass toggle function to viewer
         />
       </div>
     </FullScreenModal>

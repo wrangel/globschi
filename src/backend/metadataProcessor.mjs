@@ -1,44 +1,12 @@
 // src/backend/metadataProcessor.mjs
 
-import { MEDIA_PAGES } from "./constants.mjs";
-import logger from "./helpers/logger.mjs";
-
-/**
- * Beautifies and combines MongoDB data with presigned URLs.
- * @param {Array} mongoData - Data from MongoDB.
- * @param {Array} presignedUrls - Presigned URLs from AWS S3.
- * @returns {Array} Combined and beautified data.
- * @throws {Error} If there's an issue processing the data.
- */
-export const beautify = async (mongoData, presignedUrls) => {
-  validateInput(mongoData, presignedUrls);
-
-  const { intersectedData, onlyInMongo, onlyInAWS } = intersectData(
-    mongoData,
-    presignedUrls
-  );
-
-  logBookkeepingInfo(
-    mongoData,
-    presignedUrls,
-    intersectedData,
-    onlyInMongo,
-    onlyInAWS
-  );
-
-  try {
-    return intersectedData.map((doc) => processDocument(doc, presignedUrls));
-  } catch (error) {
-    logger.error("Error in beautify function:", { error });
-    throw new Error("Failed to process and beautify data");
-  }
-};
+import logger from "../utils/logger.mjs";
 
 /**
  * Validates input arrays for the beautify function.
- * @param {Array} mongoData - Data from MongoDB.
- * @param {Array} presignedUrls - Presigned URLs from AWS S3.
- * @throws {Error} If inputs are not arrays.
+ * @param {Array} mongoData - Data retrieved from MongoDB.
+ * @param {Array} presignedUrls - URL data from AWS S3.
+ * @throws Will throw an error if inputs are not arrays.
  */
 function validateInput(mongoData, presignedUrls) {
   if (!Array.isArray(mongoData) || !Array.isArray(presignedUrls)) {
@@ -49,10 +17,10 @@ function validateInput(mongoData, presignedUrls) {
 }
 
 /**
- * Intersects MongoDB data with presigned URLs data.
- * @param {Array} mongoData - Data from MongoDB.
- * @param {Array} presignedUrls - Presigned URLs from AWS S3.
- * @returns {Object} Intersected data and items unique to each source.
+ * Computes intersection and differences between Mongo and AWS data sets.
+ * @param {Array} mongoData - Array of MongoDB data objects.
+ * @param {Array} presignedUrls - Array of AWS S3 URL objects.
+ * @returns {Object} Object with intersected data and data only in one source.
  */
 function intersectData(mongoData, presignedUrls) {
   const mongoNames = new Set(mongoData.map((item) => item.name));
@@ -68,31 +36,36 @@ function intersectData(mongoData, presignedUrls) {
 }
 
 /**
- * Processes a single document, combining it with presigned URL data.
+ * Processes a single document by augmenting it with URL info.
+ * Determines if the media is panorama based on URL pattern.
  * @param {Object} doc - MongoDB document.
- * @param {Array} presignedUrls - Presigned URLs from AWS S3.
- * @returns {Object} Processed document.
+ * @param {Array} presignedUrls - AWS S3 presigned URLs array.
+ * @returns {Object} Processed document ready for frontend consumption.
  */
 function processDocument(doc, presignedUrls) {
-  const urls =
-    presignedUrls.find((element) => element.name === doc.name)?.urls || {};
+  const entry = presignedUrls.find((e) => e.name === doc.name);
+  const urls = entry?.urls || {};
+
+  // Detect if this is a pano based on URL containing "/tiles"
+  const isPano = !!urls.actualUrl && urls.actualUrl.includes("/tiles");
 
   return {
     id: doc._id.toString(),
-    viewer: doc.type === MEDIA_PAGES[1] ? "pano" : "img",
+    viewer: isPano ? "pano" : "img",
     drone: doc.drone,
     metadata: formatMetadata(doc),
     latitude: doc.latitude,
     longitude: doc.longitude,
-    thumbnailUrl: urls.thumbnail || "",
-    actualUrl: urls.actual || "",
+    thumbnailUrl: urls.thumbnailUrl,
+    ...(isPano ? { panoPath: urls.actualUrl } : { actualUrl: urls.actualUrl }),
   };
 }
 
 /**
- * Formats metadata into a single string.
- * @param {Object} doc - MongoDB document.
- * @returns {string} Formatted metadata string.
+ * Formats document metadata fields into a readable multiline string.
+ * Formats date, time, altitude, location, author, and drone info.
+ * @param {Object} doc - Document with metadata fields.
+ * @returns {string} Formatted metadata string with line breaks.
  */
 function formatMetadata(doc) {
   const dateTime = new Date(doc.dateTime);
@@ -125,16 +98,16 @@ function formatMetadata(doc) {
     `Author: ${doc.author || ""}`,
     `Drone: ${doc.drone || ""}`,
   ]
-    .map((item) => (item === undefined || item === "undefined" ? "" : item))
     .filter(Boolean)
     .join("\n");
 }
 
 /**
- * Formats road name with line breaks if it exceeds the maximum length.
- * @param {string} road - The road name to format.
- * @param {number} maxLength - The maximum length of each line.
- * @returns {string} Formatted road name with line breaks if necessary.
+ * Helper function to format road strings with line breaks
+ * if they exceed a specified max length.
+ * @param {string} road - The road string to format.
+ * @param {number} maxLength - Maximum line length.
+ * @returns {string} Road string with inserted line breaks.
  */
 function formatRoadWithLineBreaks(road, maxLength) {
   if (road.length <= maxLength) {
@@ -151,8 +124,8 @@ function formatRoadWithLineBreaks(road, maxLength) {
         lines.push(currentLine.trim());
         currentLine = "";
       }
+      // Split very long words if needed
       if (word.length > maxLength) {
-        // If a single word is longer than maxLength, split it
         for (let i = 0; i < word.length; i += maxLength) {
           lines.push(word.substr(i, maxLength));
         }
@@ -172,12 +145,12 @@ function formatRoadWithLineBreaks(road, maxLength) {
 }
 
 /**
- * Logs bookkeeping information about the data processing.
- * @param {Array} mongoData - Original MongoDB data.
- * @param {Array} presignedUrls - Original presigned URLs data.
- * @param {Array} intersectedData - Data after intersection.
- * @param {Array} onlyInMongo - Items only in MongoDB.
- * @param {Array} onlyInAWS - Items only in AWS.
+ * Logs summary of data processing steps including intersected and missing data.
+ * @param {Array} mongoData - MongoDB data array.
+ * @param {Array} presignedUrls - AWS S3 presigned URLs array.
+ * @param {Array} intersectedData - Data found in both Mongo and S3.
+ * @param {Array} onlyInMongo - Names present only in MongoDB.
+ * @param {Array} onlyInAWS - Names present only in AWS S3.
  */
 function logBookkeepingInfo(
   mongoData,
@@ -203,23 +176,33 @@ function logBookkeepingInfo(
 }
 
 /**
- * Formats date for display.
- * @param {Date} date - Date object.
- * @returns {string} - Formatted date string.
+ * Main exported function.
+ * Processes MongoDB and AWS S3 data to produce combined, beautified dataset.
+ * @param {Array} mongoData - Raw data from MongoDB.
+ * @param {Array} presignedUrls - Raw presigned URL data from AWS S3.
+ * @returns {Promise<Array>} Processed and beautified data.
+ * @throws {Error} If input validation fails or processing errors occur.
  */
-export const prepareDate = (date) => {
-  const options = {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-    weekday: "long",
-    hour: "numeric",
-    minute: "numeric",
-    second: "numeric",
-    hour12: false,
-    timeZone: "CET",
-    timeZoneName: "short",
-  };
+export const beautify = async (mongoData, presignedUrls) => {
+  validateInput(mongoData, presignedUrls);
 
-  return new Intl.DateTimeFormat("en-US", options).format(date);
+  const { intersectedData, onlyInMongo, onlyInAWS } = intersectData(
+    mongoData,
+    presignedUrls
+  );
+
+  logBookkeepingInfo(
+    mongoData,
+    presignedUrls,
+    intersectedData,
+    onlyInMongo,
+    onlyInAWS
+  );
+
+  try {
+    return intersectedData.map((doc) => processDocument(doc, presignedUrls));
+  } catch (error) {
+    logger.error("Error in beautify function:", { error });
+    throw new Error("Failed to process and beautify data");
+  }
 };

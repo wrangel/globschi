@@ -1,4 +1,5 @@
 // src/backend/tests/awsLoginTester.mjs
+// Run with: node --env-file=.env src/backend/tests/awsLoginTester.mjs
 
 import { ListObjectsV2Command } from "@aws-sdk/client-s3";
 import logger from "../utils/logger.mjs";

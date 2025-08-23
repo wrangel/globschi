@@ -1,4 +1,5 @@
 // src/backend/tests/mongoDebugger.mjs
+// Run with: node --env-file=.env src/backend/tests/mongoDebugger.mjs
 
 import logger from "../utils/logger.mjs";
 import { Island } from "../models/islandModel.mjs";

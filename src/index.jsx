@@ -2,16 +2,16 @@
 
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { BrowserRouter as Router } from "react-router-dom"; // Import BrowserRouter
+import { BrowserRouter as Router } from "react-router-dom"; // React Router for client-side routing
 import App from "./frontend/App";
 import reportWebVitals from "./frontend/reportWebVitals";
-import "./frontend/styles/Global.css";
-import "@photo-sphere-viewer/core/index.css";
+import "./frontend/styles/Global.css"; // Global styles
+import "@photo-sphere-viewer/core/index.css"; // Third-party photo sphere viewer styles
 
-// Initialize the root element with React 18's createRoot
+// Create root React 18 container for the app
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
-// Render the App component wrapped in Router
+// Render the app component wrapped in BrowserRouter for routing support
 root.render(
   <React.StrictMode>
     <Router>
@@ -20,8 +20,7 @@ root.render(
   </React.StrictMode>
 );
 
-// Performance measurement setup
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: console.log) or send to an analytics endpoint.
-// Learn more: https://bit.ly/CRA-vitals
+// Optional: Measure and log web vitals for performance monitoring
+// Pass a function to log or send these results to analytics
+// See https://bit.ly/CRA-vitals for more info
 reportWebVitals(console.log);

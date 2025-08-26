@@ -20,8 +20,8 @@ error.log
 # Local development folders and build artifacts
 Material/
 logs/
-src/backend/management/
 src/backend/tests/
+scripts/management/
 
 # Frontend build output folders (if used locally during development)
 dist/

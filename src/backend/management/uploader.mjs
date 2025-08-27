@@ -30,17 +30,40 @@ async function readExifFromFirstJPEGInBearbeitet(parentDir) {
       return;
     }
 
-    // Read image file as Buffer
     const filePath = path.join(bearbeitetPath, jpgFile);
     const imgBuffer = await readFile(filePath);
 
-    // Parse EXIF data
     const parser = ExifParser.create(imgBuffer);
     const exifData = parser.parse();
 
     console.log(`EXIF data for ${filePath}:`, exifData.tags);
   } catch (err) {
     console.error("Error reading EXIF ", err);
+  }
+}
+
+async function determineMediaType(parentDir) {
+  try {
+    const originalPath = path.join(parentDir, "original");
+    const files = await readdir(originalPath);
+
+    // Count only image files (consider jpg, jpeg, png based on your context, here we consider .jpg and .jpeg)
+    const imageCount = files.filter(
+      (file) =>
+        file.toLowerCase().endsWith(".jpg") ||
+        file.toLowerCase().endsWith(".jpeg")
+    ).length;
+
+    if (imageCount <= 5) {
+      return "hdr";
+    } else if (imageCount >= 26 && imageCount <= 35) {
+      return "pano";
+    } else {
+      return "wide_angle";
+    }
+  } catch (err) {
+    console.error(`Error determining media type for ${parentDir}:`, err);
+    return "unknown";
   }
 }
 
@@ -52,13 +75,18 @@ if (!inputDir) {
 }
 
 (async () => {
-  // List folders:
   const entries = await readdir(inputDir, { withFileTypes: true });
   for (const entry of entries) {
     if (entry.isDirectory()) {
       const folderPath = path.join(inputDir, entry.name);
       console.log("Folder:", entry.name);
+
+      // Read EXIF from bearbeitet
       await readExifFromFirstJPEGInBearbeitet(folderPath);
+
+      // Determine and log media type from original
+      const mediaType = await determineMediaType(folderPath);
+      console.log(`Media type for folder ${entry.name}: ${mediaType}`);
     }
   }
 })();

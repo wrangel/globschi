@@ -36,7 +36,19 @@ async function readExifFromFirstJPEGInOriginal(parentDir) {
     const parser = ExifParser.create(imgBuffer);
     const exifData = parser.parse();
 
-    console.log(`EXIF data for ${filePath}:`, exifData.tags);
+    // Determine drone property
+    let drone = "Unknown";
+    if (exifData.tags.Model === "FC7303") {
+      drone = "DJI Mini 2";
+    } else if (exifData.tags.Model === "FC8482") {
+      drone = "DJI Mini 4 Pro";
+    }
+
+    console.log(
+      `EXIF data for ${filePath}:`,
+      exifData.tags,
+      `Detected drone: ${drone}`
+    );
   } catch (err) {
     console.error("Error reading EXIF ", err);
   }
@@ -81,7 +93,7 @@ if (!inputDir) {
       const folderPath = path.join(inputDir, entry.name);
       console.log("Folder:", entry.name);
 
-      // Read EXIF from first JPEG in original folder
+      // Read EXIF from first JPEG in original folder and detect drone
       await readExifFromFirstJPEGInOriginal(folderPath);
 
       // Determine and log media type from original

@@ -15,10 +15,10 @@ async function listFolders(directory) {
   }
 }
 
-async function readExifFromFirstJPEGInBearbeitet(parentDir) {
+async function readExifFromFirstJPEGInOriginal(parentDir) {
   try {
-    const bearbeitetPath = path.join(parentDir, "bearbeitet");
-    const files = await readdir(bearbeitetPath);
+    const originalPath = path.join(parentDir, "original");
+    const files = await readdir(originalPath);
 
     const jpgFile = files.find(
       (file) =>
@@ -26,11 +26,11 @@ async function readExifFromFirstJPEGInBearbeitet(parentDir) {
         file.toLowerCase().endsWith(".jpeg")
     );
     if (!jpgFile) {
-      console.log(`No JPEG file found in ${bearbeitetPath}`);
+      console.log(`No JPEG file found in ${originalPath}`);
       return;
     }
 
-    const filePath = path.join(bearbeitetPath, jpgFile);
+    const filePath = path.join(originalPath, jpgFile);
     const imgBuffer = await readFile(filePath);
 
     const parser = ExifParser.create(imgBuffer);
@@ -47,7 +47,7 @@ async function determineMediaType(parentDir) {
     const originalPath = path.join(parentDir, "original");
     const files = await readdir(originalPath);
 
-    // Count only image files (consider jpg, jpeg, png based on your context, here we consider .jpg and .jpeg)
+    // Count only image files (jpg and jpeg)
     const imageCount = files.filter(
       (file) =>
         file.toLowerCase().endsWith(".jpg") ||
@@ -81,8 +81,8 @@ if (!inputDir) {
       const folderPath = path.join(inputDir, entry.name);
       console.log("Folder:", entry.name);
 
-      // Read EXIF from bearbeitet
-      await readExifFromFirstJPEGInBearbeitet(folderPath);
+      // Read EXIF from first JPEG in original folder
+      await readExifFromFirstJPEGInOriginal(folderPath);
 
       // Determine and log media type from original
       const mediaType = await determineMediaType(folderPath);

@@ -3,7 +3,7 @@
 import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
-import logger from "../utils/logger.mjs";
+import logger from "./utils/logger.mjs";
 import combinedDataRoute from "./routes/combinedDataRoute.mjs";
 import path from "path";
 import { fileURLToPath } from "url";

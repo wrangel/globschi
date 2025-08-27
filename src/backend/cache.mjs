@@ -9,7 +9,7 @@
  */
 
 import NodeCache from "node-cache";
-import logger from "../utils/logger.mjs";
+import logger from "./utils/logger.mjs";
 
 const cache = new NodeCache({ stdTTL: 60 }); // Cache TTL of 60 seconds
 

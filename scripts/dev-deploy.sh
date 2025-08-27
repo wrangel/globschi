@@ -21,7 +21,7 @@ if [[ "$1" == "-u" ]]; then
     pnpm update
     pnpm audit fix
     pnpm prune
-    pnpm depcheck
+    # pnpm depcheck // TODO
 else
     echo "✅ Skipping dependency updates..."
 fi

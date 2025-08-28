@@ -1,6 +1,12 @@
 import { readdir, readFile } from "fs/promises";
 import path from "path";
+import fetch from "node-fetch"; // for reverse geocoding API calls
 import ExifParser from "exif-parser";
+import logger from "../utils/logger.mjs";
+import {
+  REVERSE_GEO_ADDRESS_COMPONENTS,
+  REVERSE_GEO_URL_ELEMENTS,
+} from "../constants.mjs";
 
 /**
  * Converts altitude string or number to meters.
@@ -24,15 +30,12 @@ function getAltitude(altitudeValue) {
  * @param {string} orientation "N", "S", "E", "W"
  * @returns {number}
  */
-function getCoordinates(coordValue, orientation) {
-  let coord;
+function getCoordinates(coordValue) {
   if (typeof coordValue === "string" && coordValue.includes("/")) {
     const [num, denom] = coordValue.split("/").map(Number);
-    coord = num / denom;
-  } else {
-    coord = Number(coordValue);
+    return num / denom;
   }
-  return ["S", "W"].includes(orientation) ? -coord : coord;
+  return Number(coordValue);
 }
 
 /**
@@ -73,7 +76,43 @@ async function determineMediaType(parentDir) {
 }
 
 /**
- * Reads EXIF of the first JPEG in the original folder, adds drone/type/name/dateTime/dateTimeString/longitude/latitude/altitude.
+ * Reverse geocode coordinates to address components using legacy logic.
+ * @param {number} longitude
+ * @param {number} latitude
+ * @returns {Promise<Object>} geoData with country, region, place, postcode, address
+ */
+async function reverseGeocode(longitude, latitude) {
+  const createReverseGeoUrl = (lon, lat) =>
+    `${REVERSE_GEO_URL_ELEMENTS[0]}${lon},${lat}${REVERSE_GEO_URL_ELEMENTS[1]}${process.env.ACCESS_TOKEN}`;
+
+  const url = createReverseGeoUrl(longitude, latitude);
+
+  try {
+    const response = await fetch(url);
+    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+    const json = await response.json();
+
+    const geoData = REVERSE_GEO_ADDRESS_COMPONENTS.reduce((data, component) => {
+      data[component] =
+        json.features.find((doc) => doc.id.startsWith(component))?.text ?? null;
+      return data;
+    }, {});
+
+    return geoData;
+  } catch (error) {
+    logger.error("Reverse geocoding error:", { error });
+    return {
+      country: null,
+      region: null,
+      place: null,
+      postcode: null,
+      address: null,
+    };
+  }
+}
+
+/**
+ * Reads EXIF of the first JPEG in the original folder and prints all requested properties including geo data.
  * @param {string} parentDir
  * @param {string} mediaType
  */
@@ -98,19 +137,15 @@ async function readExifFromFirstJPEGInOriginal(parentDir, mediaType) {
     const parser = ExifParser.create(imgBuffer);
     const exifData = parser.parse();
 
-    // drone property based on Model tag
     let drone = "Unknown";
     if (exifData.tags.Model === "FC7303") drone = "DJI Mini 2";
     else if (exifData.tags.Model === "FC8482") drone = "DJI Mini 4 Pro";
 
-    // type alias for mediaType
     const type = mediaType;
 
-    // Name prefix depends on type
-    const prefixes = { pano: "pa_", hdr: "hdr_", wide_angle: "wa_" };
+    const prefixes = { pano: "pa_", hdr: "hd_", wide_angle: "wa_" };
     const prefix = prefixes[type] || "";
 
-    // dateTimeString formatted as "YYYY:MM:DD HH:MM:SS"
     let dateTimeString = "unknown";
     if (exifData.tags.DateTimeOriginal) {
       const d = new Date(exifData.tags.DateTimeOriginal * 1000);
@@ -120,11 +155,9 @@ async function readExifFromFirstJPEGInOriginal(parentDir, mediaType) {
         `${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
     }
 
-    // dateTime as JS Date object
     const dateTime =
       dateTimeString === "unknown" ? null : getDate(dateTimeString);
 
-    // name: prefix + YYYYMMdd_hhmmss
     let name = "";
     if (dateTime) {
       const pad = (n) => n.toString().padStart(2, "0");
@@ -137,7 +170,6 @@ async function readExifFromFirstJPEGInOriginal(parentDir, mediaType) {
       name = prefix + "unknown";
     }
 
-    // longitude, latitude, altitude
     const longitude = getCoordinates(
       exifData.tags.GPSLongitude,
       exifData.tags.GPSLongitudeRef
@@ -148,7 +180,10 @@ async function readExifFromFirstJPEGInOriginal(parentDir, mediaType) {
     );
     const altitude = getAltitude(exifData.tags.GPSAltitude);
 
-    // Output to console
+    // Reverse geocode to get geo info
+    const geoData = await reverseGeocode(longitude, latitude);
+
+    // Output to console all props including geo data
     console.log(`File: ${filePath}`);
     console.log("EXIF Tags:", exifData.tags);
     console.log(`drone: ${drone}`);
@@ -159,6 +194,7 @@ async function readExifFromFirstJPEGInOriginal(parentDir, mediaType) {
     console.log(`longitude: ${longitude}`);
     console.log(`latitude: ${latitude}`);
     console.log(`altitude: ${altitude}`);
+    console.log("geoData:", geoData);
   } catch (err) {
     console.error("Error reading EXIF ", err);
   }

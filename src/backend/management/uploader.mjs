@@ -93,8 +93,12 @@ async function reverseGeocode(longitude, latitude) {
     const json = await response.json();
 
     const geoData = REVERSE_GEO_ADDRESS_COMPONENTS.reduce((data, component) => {
-      data[component] =
+      const value =
         json.features.find((doc) => doc.id.startsWith(component))?.text ?? null;
+      if (component === "address") data.road = value;
+      else if (component === "place") data.location = value;
+      else if (component === "postcode") data.postalCode = value;
+      else data[component] = value;
       return data;
     }, {});
 

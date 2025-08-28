@@ -24,7 +24,6 @@ const question = async (q) => {
   });
 };
 
-// Validate input against allowed values
 async function validateInput(input, validOptions, inputType) {
   while (!validOptions.includes(input)) {
     input = await question(
@@ -83,7 +82,6 @@ async function determineMediaType(parentDir) {
 async function reverseGeocode(longitude, latitude) {
   const createReverseGeoUrl = (lon, lat) =>
     `${REVERSE_GEO_URL_ELEMENTS[0]}${lon},${lat}${REVERSE_GEO_URL_ELEMENTS[1]}${process.env.ACCESS_TOKEN}`;
-
   const url = createReverseGeoUrl(longitude, latitude);
 
   try {
@@ -174,7 +172,7 @@ async function readExifFromFirstJPEGInOriginal(parentDir, mediaType, author) {
 
     const geoData = await reverseGeocode(longitude, latitude);
 
-    // Log all props including author
+    // Return all data for this element
     return {
       originalName: path.basename(parentDir),
       drone,
@@ -187,6 +185,7 @@ async function readExifFromFirstJPEGInOriginal(parentDir, mediaType, author) {
       altitude,
       geoData,
       filePath,
+      author,
     };
   } catch (err) {
     console.error("Error reading EXIF ", err);
@@ -194,88 +193,47 @@ async function readExifFromFirstJPEGInOriginal(parentDir, mediaType, author) {
   }
 }
 
-async function collectMedia() {
-  const entries = await readdir(process.env.INPUT_DIRECTORY, {
-    withFileTypes: true,
-  });
-  return entries
-    .filter((file) => file.isDirectory())
-    .map((dir) => ({
-      originalName: dir.name,
-      path: path.join(process.env.INPUT_DIRECTORY, dir.name),
-    }));
+async function promptAuthorForMedia(mediaName) {
+  const authorInput = await question(`Author of --> ${mediaName} <--: `);
+  return await validateInput(authorInput.trim(), CONTRIBUTORS, "author");
 }
 
-async function enhanceMediaWithUserInput(media) {
-  for (const medium of media) {
-    const authorInput = await question(
-      `Author of --> ${medium.originalName} <--: `
-    );
-    medium.author = await validateInput(
-      authorInput.trim(),
-      CONTRIBUTORS,
-      "author"
-    );
-  }
-  return media;
-}
+// Single media processing function for one folder
+export async function processSingleMedia(mediaDirPath) {
+  const mediaType = await determineMediaType(mediaDirPath);
+  const originalName = path.basename(mediaDirPath);
+  const author = await promptAuthorForMedia(originalName);
+  const exifData = await readExifFromFirstJPEGInOriginal(
+    mediaDirPath,
+    mediaType,
+    author
+  );
+  if (!exifData) return null;
 
-function createProcessedMediaData(media) {
-  const mongooseCompatibleMetadata = media.map((medium) => ({
-    name: medium.name,
-    type: medium.type,
-    author: medium.author,
-    drone: medium.drone,
-    dateTimeString: medium.dateTimeString,
-    dateTime: medium.dateTime,
-    latitude: medium.latitude,
-    longitude: medium.longitude,
-    altitude: medium.altitude,
-    country: medium.geoData.country,
-    region: medium.geoData.region,
-    location: medium.geoData.location,
-    postalCode: medium.geoData.postalCode,
-    road: medium.geoData.road,
+  // Prepare mongoose compatible
+  const metadata = {
+    name: exifData.name,
+    type: exifData.type,
+    author: exifData.author,
+    drone: exifData.drone,
+    dateTimeString: exifData.dateTimeString,
+    dateTime: exifData.dateTime,
+    latitude: exifData.latitude,
+    longitude: exifData.longitude,
+    altitude: exifData.altitude,
+    country: exifData.geoData.country,
+    region: exifData.geoData.region,
+    location: exifData.geoData.location,
+    postalCode: exifData.geoData.postalCode,
+    road: exifData.geoData.road,
     noViews: 0,
-  }));
+  };
 
-  const mediaFileInfo = media.map((medium) => ({
-    key: medium.originalName,
-    originalMedium: medium.originalMedium,
-    newMediumOriginal: medium.newMediumOriginal,
-    newMediumSite: medium.newMediumSite,
-    newMediumSmall: medium.newMediumSmall,
-    mediaType: medium.mediaType,
-  }));
+  // Optional media file info if needed
+  const fileInfo = {
+    key: originalName,
+    // Add whatever file info needed here
+  };
 
-  return { mongooseCompatibleMetadata, mediaFileInfo };
+  return { metadata, fileInfo };
 }
-
-async function processMedia() {
-  const mediaFolders = await collectMedia();
-  if (mediaFolders.length === 0) {
-    logger.info("No media to manage");
-    return { mongooseCompatibleMeta: [], mediaFileInfo: [] };
-  }
-
-  logger.info(`${mediaFolders.length} media to manage`);
-
-  const mediaWithUserInput = await enhanceMediaWithUserInput(mediaFolders);
-
-  // Read and append EXIF and geo data, including passing author
-  const mediaWithExif = [];
-  for (const medium of mediaWithUserInput) {
-    const exifData = await readExifFromFirstJPEGInOriginal(
-      medium.path,
-      medium.mediaType,
-      medium.author
-    );
-    if (!exifData) continue;
-    mediaWithExif.push({ ...medium, ...exifData });
-  }
-
-  // Prepare final arrays
-  return createProcessedMediaData(mediaWithExif);
-}
-
-export const processedMediaData = await processMedia();

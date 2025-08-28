@@ -47,34 +47,68 @@ async function readExifFromFirstJPEGInOriginal(parentDir, mediaType) {
     // name: prefix + YYYYMMdd_hhmmss
     let prefix = "";
     if (type === "pano") prefix = "pa_";
-    else if (type === "hdr") prefix = "hd_";
+    else if (type === "hdr") prefix = "hdr_";
     else if (type === "wide_angle") prefix = "wa_";
     else prefix = "";
 
-    let timestampStr = "unknown";
+    // The string for dateTimeString
+    let dateTimeString = "unknown";
     if (exifData.tags.DateTimeOriginal) {
       const d = new Date(exifData.tags.DateTimeOriginal * 1000);
+      // Output as "YYYY:MM:DD HH:MM:SS"
       const pad = (n) => n.toString().padStart(2, "0");
-      timestampStr =
+      dateTimeString =
         d.getFullYear() +
+        ":" +
         pad(d.getMonth() + 1) +
+        ":" +
         pad(d.getDate()) +
-        "_" +
+        " " +
         pad(d.getHours()) +
+        ":" +
         pad(d.getMinutes()) +
+        ":" +
         pad(d.getSeconds());
     }
 
+    // The Date object for dateTime
+    const dateTime =
+      dateTimeString !== "unknown" ? getDate(dateTimeString) : null;
+
+    // Build timestamp for name prop
+    let timestampStr = "unknown";
+    if (dateTime) {
+      const pad = (n) => n.toString().padStart(2, "0");
+      timestampStr =
+        dateTime.getFullYear() +
+        pad(dateTime.getMonth() + 1) +
+        pad(dateTime.getDate()) +
+        "_" +
+        pad(dateTime.getHours()) +
+        pad(dateTime.getMinutes()) +
+        pad(dateTime.getSeconds());
+    }
     const name = `${prefix}${timestampStr}`;
 
-    // Log all
+    // Output to console
     console.log(`EXIF data for ${filePath}:`, exifData.tags);
     console.log(`type: ${type}`);
     console.log(`drone: ${drone}`);
     console.log(`name: ${name}`);
+    console.log(`dateTimeString: ${dateTimeString}`);
+    console.log(`dateTime:`, dateTime);
   } catch (err) {
     console.error("Error reading EXIF ", err);
   }
+}
+
+function getDate(str) {
+  // str format is "YYYY:MM:DD HH:MM:SS"
+  const [date, time] = str.split(" ");
+  if (!date || !time) return null;
+  const [year, month, day] = date.split(":").map(Number);
+  const [hour, min, sec] = time.split(":").map(Number);
+  return new Date(year, month - 1, day, hour, min, sec);
 }
 
 async function determineMediaType(parentDir) {

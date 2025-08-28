@@ -175,27 +175,6 @@ async function readExifFromFirstJPEGInOriginal(parentDir, mediaType, author) {
     const geoData = await reverseGeocode(longitude, latitude);
 
     // Log all props including author
-    console.log(`File: ${filePath}`);
-    console.log("EXIF Tags:", exifData.tags);
-    console.log(
-      JSON.stringify(
-        {
-          author,
-          drone,
-          type,
-          name,
-          dateTimeString,
-          dateTime,
-          longitude,
-          latitude,
-          altitude,
-          geoData,
-        },
-        null,
-        2
-      )
-    );
-
     return {
       originalName: path.basename(parentDir),
       drone,

@@ -4,15 +4,36 @@ import fetch from "node-fetch"; // for reverse geocoding API calls
 import ExifParser from "exif-parser";
 import logger from "../utils/logger.mjs";
 import {
+  CONTRIBUTORS,
   REVERSE_GEO_ADDRESS_COMPONENTS,
   REVERSE_GEO_URL_ELEMENTS,
 } from "../constants.mjs";
 
-/**
- * Converts altitude string or number to meters.
- * @param {string|number} altitudeValue
- * @returns {number|null}
- */
+// Utility: prompt user for input
+import readline from "readline";
+const question = async (q) => {
+  const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout,
+  });
+  return new Promise((resolve) => {
+    rl.question(q, (answer) => {
+      rl.close();
+      resolve(answer);
+    });
+  });
+};
+
+// Validate input against allowed values
+async function validateInput(input, validOptions, inputType) {
+  while (!validOptions.includes(input)) {
+    input = await question(
+      `Please choose one of (${validOptions.join(", ")}) as ${inputType}: `
+    );
+  }
+  return input;
+}
+
 function getAltitude(altitudeValue) {
   if (typeof altitudeValue === "string") {
     if (altitudeValue.endsWith("m")) return parseFloat(altitudeValue);
@@ -24,12 +45,6 @@ function getAltitude(altitudeValue) {
   return null;
 }
 
-/**
- * Converts GPS coordinate value and orientation to decimal.
- * @param {string|number} coordValue
- * @param {string} orientation "N", "S", "E", "W"
- * @returns {number}
- */
 function getCoordinates(coordValue) {
   if (typeof coordValue === "string" && coordValue.includes("/")) {
     const [num, denom] = coordValue.split("/").map(Number);
@@ -38,11 +53,6 @@ function getCoordinates(coordValue) {
   return Number(coordValue);
 }
 
-/**
- * Converts a string of format "YYYY:MM:DD HH:MM:SS" to Date object
- * @param {string} str
- * @returns {Date|null}
- */
 function getDate(str) {
   const [datePart, timePart] = str.split(" ");
   if (!datePart || !timePart) return null;
@@ -51,11 +61,6 @@ function getDate(str) {
   return new Date(year, month - 1, day, hour, min, sec);
 }
 
-/**
- * Determines media type based on the number of JPG/JPEG images in the original folder.
- * @param {string} parentDir
- * @returns {Promise<string>}
- */
 async function determineMediaType(parentDir) {
   try {
     const originalPath = path.join(parentDir, "original");
@@ -75,12 +80,6 @@ async function determineMediaType(parentDir) {
   }
 }
 
-/**
- * Reverse geocode coordinates to address components using legacy logic.
- * @param {number} longitude
- * @param {number} latitude
- * @returns {Promise<Object>} geoData with country, region, place, postcode, address
- */
 async function reverseGeocode(longitude, latitude) {
   const createReverseGeoUrl = (lon, lat) =>
     `${REVERSE_GEO_URL_ELEMENTS[0]}${lon},${lat}${REVERSE_GEO_URL_ELEMENTS[1]}${process.env.ACCESS_TOKEN}`;
@@ -108,19 +107,14 @@ async function reverseGeocode(longitude, latitude) {
     return {
       country: null,
       region: null,
-      place: null,
-      postcode: null,
-      address: null,
+      location: null,
+      postalCode: null,
+      road: null,
     };
   }
 }
 
-/**
- * Reads EXIF of the first JPEG in the original folder and prints all requested properties including geo data.
- * @param {string} parentDir
- * @param {string} mediaType
- */
-async function readExifFromFirstJPEGInOriginal(parentDir, mediaType) {
+async function readExifFromFirstJPEGInOriginal(parentDir, mediaType, author) {
   try {
     const originalPath = path.join(parentDir, "original");
     const files = await readdir(originalPath);
@@ -132,7 +126,7 @@ async function readExifFromFirstJPEGInOriginal(parentDir, mediaType) {
     );
     if (!jpgFile) {
       console.log(`No JPEG file found in ${originalPath}`);
-      return;
+      return null;
     }
 
     const filePath = path.join(originalPath, jpgFile);
@@ -174,51 +168,135 @@ async function readExifFromFirstJPEGInOriginal(parentDir, mediaType) {
       name = prefix + "unknown";
     }
 
-    const longitude = getCoordinates(
-      exifData.tags.GPSLongitude,
-      exifData.tags.GPSLongitudeRef
-    );
-    const latitude = getCoordinates(
-      exifData.tags.GPSLatitude,
-      exifData.tags.GPSLatitudeRef
-    );
+    const longitude = getCoordinates(exifData.tags.GPSLongitude);
+    const latitude = getCoordinates(exifData.tags.GPSLatitude);
     const altitude = getAltitude(exifData.tags.GPSAltitude);
 
-    // Reverse geocode to get geo info
     const geoData = await reverseGeocode(longitude, latitude);
 
-    // Output to console all props including geo data
+    // Log all props including author
     console.log(`File: ${filePath}`);
     console.log("EXIF Tags:", exifData.tags);
-    console.log(`drone: ${drone}`);
-    console.log(`type: ${type}`);
-    console.log(`name: ${name}`);
-    console.log(`dateTimeString: ${dateTimeString}`);
-    console.log(`dateTime:`, dateTime);
-    console.log(`longitude: ${longitude}`);
-    console.log(`latitude: ${latitude}`);
-    console.log(`altitude: ${altitude}`);
-    console.log("geoData:", geoData);
+    console.log(
+      JSON.stringify(
+        {
+          author,
+          drone,
+          type,
+          name,
+          dateTimeString,
+          dateTime,
+          longitude,
+          latitude,
+          altitude,
+          geoData,
+        },
+        null,
+        2
+      )
+    );
+
+    return {
+      originalName: path.basename(parentDir),
+      drone,
+      type,
+      name,
+      dateTimeString,
+      dateTime,
+      longitude,
+      latitude,
+      altitude,
+      geoData,
+      filePath,
+    };
   } catch (err) {
     console.error("Error reading EXIF ", err);
+    return null;
   }
 }
 
-const inputDir = process.env.INPUT_DIRECTORY;
-if (!inputDir) {
-  console.error("Please set the INPUT_DIRECTORY environment variable");
-  process.exit(1);
+async function collectMedia() {
+  const entries = await readdir(process.env.INPUT_DIRECTORY, {
+    withFileTypes: true,
+  });
+  return entries
+    .filter((file) => file.isDirectory())
+    .map((dir) => ({
+      originalName: dir.name,
+      path: path.join(process.env.INPUT_DIRECTORY, dir.name),
+    }));
 }
 
-(async () => {
-  const entries = await readdir(inputDir, { withFileTypes: true });
-  for (const entry of entries) {
-    if (entry.isDirectory()) {
-      const folderPath = path.join(inputDir, entry.name);
-      console.log("Folder:", entry.name);
-
-      const mediaType = await determineMediaType(folderPath);
-      await readExifFromFirstJPEGInOriginal(folderPath, mediaType);
-    }
+async function enhanceMediaWithUserInput(media) {
+  for (const medium of media) {
+    const authorInput = await question(
+      `Author of --> ${medium.originalName} <--: `
+    );
+    medium.author = await validateInput(
+      authorInput.trim(),
+      CONTRIBUTORS,
+      "author"
+    );
   }
-})();
+  return media;
+}
+
+function createProcessedMediaData(media) {
+  const mongooseCompatibleMetadata = media.map((medium) => ({
+    name: medium.name,
+    type: medium.type,
+    author: medium.author,
+    drone: medium.drone,
+    dateTimeString: medium.dateTimeString,
+    dateTime: medium.dateTime,
+    latitude: medium.latitude,
+    longitude: medium.longitude,
+    altitude: medium.altitude,
+    country: medium.geoData.country,
+    region: medium.geoData.region,
+    location: medium.geoData.location,
+    postalCode: medium.geoData.postalCode,
+    road: medium.geoData.road,
+    noViews: 0,
+  }));
+
+  const mediaFileInfo = media.map((medium) => ({
+    key: medium.originalName,
+    originalMedium: medium.originalMedium,
+    newMediumOriginal: medium.newMediumOriginal,
+    newMediumSite: medium.newMediumSite,
+    newMediumSmall: medium.newMediumSmall,
+    mediaType: medium.mediaType,
+  }));
+
+  return { mongooseCompatibleMetadata, mediaFileInfo };
+}
+
+async function processMedia() {
+  const mediaFolders = await collectMedia();
+  if (mediaFolders.length === 0) {
+    logger.info("No media to manage");
+    return { mongooseCompatibleMeta: [], mediaFileInfo: [] };
+  }
+
+  logger.info(`${mediaFolders.length} media to manage`);
+
+  const mediaWithUserInput = await enhanceMediaWithUserInput(mediaFolders);
+
+  // Read and append EXIF and geo data, including passing author
+  const mediaWithExif = [];
+  for (const medium of mediaWithUserInput) {
+    const exifData = await readExifFromFirstJPEGInOriginal(
+      medium.path,
+      medium.mediaType,
+      medium.author
+    );
+    if (!exifData) continue;
+    mediaWithExif.push({ ...medium, ...exifData });
+  }
+
+  // Prepare final arrays
+  return createProcessedMediaData(mediaWithExif);
+}
+
+export const processedMediaData = await processMedia();

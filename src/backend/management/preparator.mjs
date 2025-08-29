@@ -13,6 +13,10 @@ async function processSingleBearbeitetFolder(
   outputBaseName
 ) {
   try {
+    const parentDir = path.dirname(bearbeitetFolderPath);
+    const s3Folder = path.join(parentDir, "s3");
+    await fs.mkdir(s3Folder, { recursive: true });
+
     const files = await fs.readdir(bearbeitetFolderPath);
     const tiffFiles = files.filter((f) => /\.tiff?$/i.test(f));
     if (tiffFiles.length === 0) {
@@ -27,10 +31,7 @@ async function processSingleBearbeitetFolder(
     const tiffFile = tiffFiles[0];
     const tiffFilePath = path.join(bearbeitetFolderPath, tiffFile);
 
-    const tempPngPath = path.join(
-      bearbeitetFolderPath,
-      `${outputBaseName}_temp.png`
-    );
+    const tempPngPath = path.join(s3Folder, `${outputBaseName}_temp.png`);
 
     await execFileAsync("magick", [
       tiffFilePath,
@@ -43,10 +44,7 @@ async function processSingleBearbeitetFolder(
     let image = sharp(tempPngPath);
     const metadata = await image.metadata();
 
-    const losslessWebpPath = path.join(
-      bearbeitetFolderPath,
-      `${outputBaseName}.webp`
-    );
+    const losslessWebpPath = path.join(s3Folder, `${outputBaseName}.webp`);
 
     let hrImage = image;
     if (
@@ -65,7 +63,7 @@ async function processSingleBearbeitetFolder(
 
     await hrImage.webp({ lossless: true }).toFile(losslessWebpPath);
 
-    const thumbnailWebpPath = path.join(bearbeitetFolderPath, "thumbnail.webp");
+    const thumbnailWebpPath = path.join(s3Folder, "thumbnail.webp");
 
     const tnImage = image.webp({ lossless: false, quality: 80 }).resize({
       width: 2000,
@@ -78,9 +76,7 @@ async function processSingleBearbeitetFolder(
 
     await fs.unlink(tempPngPath);
 
-    logger.info(
-      `Processed TIFF to WebP and thumbnail in "${bearbeitetFolderPath}"`
-    );
+    logger.info(`Processed TIFF to WebP and thumbnail in "${s3Folder}"`);
 
     return { losslessWebpPath, thumbnailWebpPath };
   } catch (err) {
@@ -94,10 +90,7 @@ async function processSingleBearbeitetFolder(
 
 /**
  * Rename a media folder to the new name, then process "bearbeitet" TIFFs if exists and type is not "pano".
- * @param {string} originalFolderPath - Full path to original media folder.
- * @param {string} newName - New folder name.
- * @param {string} mediaType - Media type string to check for "pano".
- * @returns {Promise<{newFolderPath: string, webpFiles: Object|null}>}
+ * The .webp and thumbnail.webp are created in a sibling 's3' folder to 'bearbeitet'.
  */
 export async function renameMediaFolder(
   originalFolderPath,

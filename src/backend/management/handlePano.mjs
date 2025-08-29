@@ -5,6 +5,12 @@ import path from "path";
 import AdmZip from "adm-zip";
 import sharp from "sharp";
 import logger from "../utils/logger.mjs";
+import {
+  THUMBNAIL_WIDTH,
+  THUMBNAIL_HEIGHT,
+  THUMBNAIL_QUALITY,
+  THUMBNAIL_FILENAME,
+} from "../constants.mjs";
 
 export async function handlePano(mediaFolderPath, folderName) {
   const bearbeitenPath = path.join(mediaFolderPath, "bearbeitet");
@@ -120,17 +126,17 @@ export async function handlePano(mediaFolderPath, folderName) {
     }
 
     const inputPath = path.join(bearbeitenPath, jpgFile);
-    const thumbnailPath = path.join(s3Folder, "thumbnail.webp");
+    const thumbnailPath = path.join(s3Folder, THUMBNAIL_FILENAME);
     logger.info(`[${folderName}]: Creating thumbnail.webp at ${thumbnailPath}`);
 
     await sharp(inputPath)
       .resize({
-        width: 2000,
-        height: 1300,
+        width: THUMBNAIL_WIDTH,
+        height: THUMBNAIL_HEIGHT,
         fit: "inside",
         position: sharp.strategy.attention,
       })
-      .webp({ quality: 80 })
+      .webp({ quality: THUMBNAIL_QUALITY })
       .toFile(thumbnailPath);
     logger.info(`[${folderName}]: Created thumbnail.webp successfully`);
 

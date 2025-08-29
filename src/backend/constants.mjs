@@ -53,6 +53,12 @@ export const EXIF_TAGS = Object.freeze({
 export const EXPIRATION_TIME = 95040; // 1.1 days in seconds
 
 /**
+ * Maximum dimension (width or height) for WebP images.
+ * @constant {number}
+ */
+export const MAX_WEBP_DIMENSION = 16383;
+
+/**
  * Types of media pages.
  * Must be sorted alphabetically.
  * @constant {ReadonlyArray<string>}
@@ -64,10 +70,40 @@ export const MEDIA_PAGES = Object.freeze(["hdr", "pan", "wide_angle"]);
  * @constant {Object<string, string>}
  */
 export const MEDIA_PREFIXES = Object.freeze({
-  pano: "pa_",
   hdr: "hd_",
+  pano: "pa_",
   wide_angle: "wa_",
 });
+
+/**
+ * Quality setting for thumbnails (WebP).
+ * @constant {number}
+ */
+export const THUMBNAIL_QUALITY = 80;
+
+/**
+ * Thumbnail image height in pixels.
+ * @constant {number}
+ */
+export const THUMBNAIL_HEIGHT = 1300;
+
+/**
+ * Thumbnail image width in pixels.
+ * @constant {number}
+ */
+export const THUMBNAIL_WIDTH = 2000;
+
+/**
+ * Temporary PNG filename suffix used during image processing.
+ * @constant {string}
+ */
+export const TEMP_PNG_SUFFIX = "_temp.png";
+
+/**
+ * Filename used for thumbnail WebP image.
+ * @constant {string}
+ */
+export const THUMBNAIL_FILENAME = "thumbnail.webp";
 
 /**
  * Components used in reverse geocoding addresses.

@@ -32,7 +32,8 @@ dist/
 .DS_Store
 
 # Environment files / secrets
-.env*
+env
+env.production
 .flaskenv*
 
 # Docker ignore - but consider removing if you want these in VCS

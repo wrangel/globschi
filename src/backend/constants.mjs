@@ -6,16 +6,25 @@
  */
 
 /**
- * ID used for actual content.
+ * Unit suffix used for altitude measurements from EXIF data.
  * @constant {string}
  */
-export const ACTUAL_ID = "actual";
+export const ALTITUDE_UNIT = "m";
 
 /**
  * List of contributors.
  * @constant {ReadonlyArray<string>}
  */
 export const CONTRIBUTORS = Object.freeze(["wrangel", "beat_maker", "Anna"]);
+
+/**
+ * Map of known drone model codes to their display names.
+ * @constant {Object<string, string>}
+ */
+export const DRONE_MODELS = Object.freeze({
+  FC8482: "DJI Mini 4 Pro",
+  FC7303: "DJI Mini 2",
+});
 
 /**
  * List of drones.
@@ -25,21 +34,23 @@ export const CONTRIBUTORS = Object.freeze(["wrangel", "beat_maker", "Anna"]);
 export const DRONES = Object.freeze(["DJI Mini 4 Pro", "DJI Mini 2"]);
 
 /**
+ * EXIF tag names used in image metadata extraction.
+ * @constant {Object<string, string>}
+ */
+export const EXIF_TAGS = Object.freeze({
+  DATE_TIME_ORIGINAL: "DateTimeOriginal",
+  MODEL: "Model",
+  GPS_LONGITUDE: "GPSLongitude",
+  GPS_LATITUDE: "GPSLatitude",
+  GPS_ALTITUDE: "GPSAltitude",
+});
+
+/**
  * Expiration time in seconds.
  * Represents 1.1 days.
  * @constant {number}
  */
 export const EXPIRATION_TIME = 95040; // 1.1 days in seconds
-
-/**
- * Media format extensions used in the application.
- * @constant {{site: string, large: string, small: string}}
- */
-export const MEDIA_FORMATS = Object.freeze({
-  site: ".webp",
-  large: ".tif",
-  small: ".jpg",
-});
 
 /**
  * Types of media pages.
@@ -49,10 +60,14 @@ export const MEDIA_FORMATS = Object.freeze({
 export const MEDIA_PAGES = Object.freeze(["hdr", "pan", "wide_angle"]);
 
 /**
- * IDs used in the renaming process.
- * @constant {ReadonlyArray<string>}
+ * Prefixes for different media types used in naming conventions.
+ * @constant {Object<string, string>}
  */
-export const RENAME_IDS = Object.freeze(["DJI", "-HDR"]);
+export const MEDIA_PREFIXES = Object.freeze({
+  pano: "pa_",
+  hdr: "hd_",
+  wide_angle: "wa_",
+});
 
 /**
  * Components used in reverse geocoding addresses.
@@ -75,13 +90,13 @@ export const REVERSE_GEO_URL_ELEMENTS = Object.freeze([
   ".json?access_token=",
 ]);
 
-/**
- * ID used for thumbnails.
- * @constant {string}
- */
-export const THUMBNAIL_ID = "thumbnails";
-
 // Ensure MEDIA_PAGES is sorted alphabetically
 if (!MEDIA_PAGES.every((v, i, a) => !i || a[i - 1] <= v)) {
   throw new Error("MEDIA_PAGES must be sorted alphabetically");
 }
+
+/**
+ * String used when certain metadata values are unknown or missing.
+ * @constant {string}
+ */
+export const UNKNOWN_VALUE = "unknown";

@@ -9,10 +9,20 @@ import {
   CONTRIBUTORS,
   REVERSE_GEO_ADDRESS_COMPONENTS,
   REVERSE_GEO_URL_ELEMENTS,
+  DRONE_MODELS,
+  MEDIA_PREFIXES,
+  EXIF_TAGS,
+  ALTITUDE_UNIT,
+  UNKNOWN_VALUE,
 } from "../constants.mjs";
 
 // Utility: prompt user for input
 import readline from "readline";
+/**
+ * Async function prompting a question and returning the answer.
+ * @param {string} q
+ * @returns {Promise<string>}
+ */
 const question = async (q) => {
   const rl = readline.createInterface({
     input: process.stdin,
@@ -26,6 +36,13 @@ const question = async (q) => {
   });
 };
 
+/**
+ * Validate user input to be one of validOptions, keep prompting otherwise.
+ * @param {string} input
+ * @param {string[]} validOptions
+ * @param {string} inputType
+ * @returns {Promise<string>}
+ */
 async function validateInput(input, validOptions, inputType) {
   while (!validOptions.includes(input)) {
     input = await question(
@@ -35,9 +52,14 @@ async function validateInput(input, validOptions, inputType) {
   return input;
 }
 
+/**
+ * Parse altitude string/number to number with support for fractions and 'm' suffix.
+ * @param {string|number} altitudeValue
+ * @returns {number|null}
+ */
 function getAltitude(altitudeValue) {
   if (typeof altitudeValue === "string") {
-    if (altitudeValue.endsWith("m")) return parseFloat(altitudeValue);
+    if (altitudeValue.endsWith(ALTITUDE_UNIT)) return parseFloat(altitudeValue);
     const [num, denom] = altitudeValue.split("/").map(Number);
     if (!isNaN(num) && !isNaN(denom)) return num / denom;
     return null;
@@ -46,6 +68,11 @@ function getAltitude(altitudeValue) {
   return null;
 }
 
+/**
+ * Parse coordinate string/number to numeric value.
+ * @param {string|number} coordValue
+ * @returns {number}
+ */
 function getCoordinates(coordValue) {
   if (typeof coordValue === "string" && coordValue.includes("/")) {
     const [num, denom] = coordValue.split("/").map(Number);
@@ -54,6 +81,11 @@ function getCoordinates(coordValue) {
   return Number(coordValue);
 }
 
+/**
+ * Convert EXIF date-time string in format "YYYY:MM:DD HH:MM:SS" to Date object.
+ * @param {string} str
+ * @returns {Date|null}
+ */
 function getDate(str) {
   const [datePart, timePart] = str.split(" ");
   if (!datePart || !timePart) return null;
@@ -62,6 +94,11 @@ function getDate(str) {
   return new Date(year, month - 1, day, hour, min, sec);
 }
 
+/**
+ * Determine media type based on number of JPEG files in "original" directory.
+ * @param {string} parentDir
+ * @returns {Promise<string>}
+ */
 async function determineMediaType(parentDir) {
   try {
     const originalPath = path.join(parentDir, "original");
@@ -81,6 +118,12 @@ async function determineMediaType(parentDir) {
   }
 }
 
+/**
+ * Reverse geocode given longitude and latitude using configured API.
+ * @param {number} longitude
+ * @param {number} latitude
+ * @returns {Promise<Object>} Address components object
+ */
 async function reverseGeocode(longitude, latitude) {
   const createReverseGeoUrl = (lon, lat) =>
     `${REVERSE_GEO_URL_ELEMENTS[0]}${lon},${lat}${REVERSE_GEO_URL_ELEMENTS[1]}${process.env.ACCESS_TOKEN}`;
@@ -114,6 +157,14 @@ async function reverseGeocode(longitude, latitude) {
   }
 }
 
+/**
+ * Read EXIF data from first JPEG in "original" folder.
+ * Extract metadata including drone model, media type, datetime, location.
+ * @param {string} parentDir
+ * @param {string} mediaType
+ * @param {string} author
+ * @returns {Promise<Object|null>}
+ */
 async function readExifFromFirstJPEGInOriginal(parentDir, mediaType, author) {
   try {
     const originalPath = path.join(parentDir, "original");
@@ -135,18 +186,18 @@ async function readExifFromFirstJPEGInOriginal(parentDir, mediaType, author) {
     const parser = ExifParser.create(imgBuffer);
     const exifData = parser.parse();
 
-    let drone = "Unknown";
-    if (exifData.tags.Model === "FC7303") drone = "DJI Mini 2";
-    else if (exifData.tags.Model === "FC8482") drone = "DJI Mini 4 Pro";
+    // Detect drone model from EXIF tag
+    let drone = DRONE_MODELS[exifData.tags[EXIF_TAGS.MODEL]] || "Unknown";
 
     const type = mediaType;
 
-    const prefixes = { pano: "pa_", hdr: "hd_", wide_angle: "wa_" };
-    const prefix = prefixes[type] || "";
+    // Get prefix for naming by media type
+    const prefix = MEDIA_PREFIXES[type] || "";
 
-    let dateTimeString = "unknown";
-    if (exifData.tags.DateTimeOriginal) {
-      const d = new Date(exifData.tags.DateTimeOriginal * 1000);
+    // Format date time string from EXIF or use unknown
+    let dateTimeString = UNKNOWN_VALUE;
+    if (exifData.tags[EXIF_TAGS.DATE_TIME_ORIGINAL]) {
+      const d = new Date(exifData.tags[EXIF_TAGS.DATE_TIME_ORIGINAL] * 1000);
       const pad = (n) => n.toString().padStart(2, "0");
       dateTimeString =
         `${d.getFullYear()}:${pad(d.getMonth() + 1)}:${pad(d.getDate())} ` +
@@ -154,8 +205,9 @@ async function readExifFromFirstJPEGInOriginal(parentDir, mediaType, author) {
     }
 
     const dateTime =
-      dateTimeString === "unknown" ? null : getDate(dateTimeString);
+      dateTimeString === UNKNOWN_VALUE ? null : getDate(dateTimeString);
 
+    // Compose name with prefix and datetime or fallback
     let name = "";
     if (dateTime) {
       const pad = (n) => n.toString().padStart(2, "0");
@@ -165,16 +217,15 @@ async function readExifFromFirstJPEGInOriginal(parentDir, mediaType, author) {
         dateTime.getMinutes()
       )}${pad(dateTime.getSeconds())}`;
     } else {
-      name = prefix + "unknown";
+      name = prefix + UNKNOWN_VALUE;
     }
 
-    const longitude = getCoordinates(exifData.tags.GPSLongitude);
-    const latitude = getCoordinates(exifData.tags.GPSLatitude);
-    const altitude = getAltitude(exifData.tags.GPSAltitude);
+    const longitude = getCoordinates(exifData.tags[EXIF_TAGS.GPS_LONGITUDE]);
+    const latitude = getCoordinates(exifData.tags[EXIF_TAGS.GPS_LATITUDE]);
+    const altitude = getAltitude(exifData.tags[EXIF_TAGS.GPS_ALTITUDE]);
 
     const geoData = await reverseGeocode(longitude, latitude);
 
-    // Return all data for this element
     return {
       originalName: path.basename(parentDir),
       drone,
@@ -195,12 +246,21 @@ async function readExifFromFirstJPEGInOriginal(parentDir, mediaType, author) {
   }
 }
 
+/**
+ * Prompt user for the author of the media, validating input.
+ * @param {string} mediaName
+ * @returns {Promise<string>}
+ */
 async function promptAuthorForMedia(mediaName) {
   const authorInput = await question(`Author of --> ${mediaName} <--: `);
   return await validateInput(authorInput.trim(), CONTRIBUTORS, "author");
 }
 
-// Single media processing function for one folder
+/**
+ * Main function to collect metadata for one media directory.
+ * @param {string} mediaDirPath
+ * @returns {Promise<{meta Object, fileInfo: Object}|null>}
+ */
 export async function collectMetadata(mediaDirPath) {
   const mediaType = await determineMediaType(mediaDirPath);
   const originalName = path.basename(mediaDirPath);
@@ -212,7 +272,7 @@ export async function collectMetadata(mediaDirPath) {
   );
   if (!exifData) return null;
 
-  // Prepare mongoose compatible
+  // Prepare metadata for database insertion
   const metadata = {
     name: exifData.name,
     type: exifData.type,
@@ -231,10 +291,9 @@ export async function collectMetadata(mediaDirPath) {
     noViews: 0,
   };
 
-  // Optional media file info if needed
   const fileInfo = {
     key: originalName,
-    // Add whatever file info needed here
+    // Add other file info properties if needed
   };
 
   return { metadata, fileInfo };

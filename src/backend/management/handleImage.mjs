@@ -6,14 +6,22 @@ import logger from "../utils/logger.mjs";
 import sharp from "sharp";
 import { execFile } from "child_process";
 import { promisify } from "util";
+import {
+  MAX_WEBP_DIMENSION,
+  THUMBNAIL_WIDTH,
+  THUMBNAIL_HEIGHT,
+  THUMBNAIL_QUALITY,
+  TEMP_PNG_SUFFIX,
+  THUMBNAIL_FILENAME,
+} from "../constants.mjs";
 
 const execFileAsync = promisify(execFile);
-const MAX_WEBP_DIMENSION = 16383;
 
 /**
  * Process TIFF in "bearbeitet" and output webps in a sibling "s3" directory.
  * @param {string} mediaParentFolder - e.g. ".../pa_20230429_121442"
  * @param {string} outputBaseName - e.g. name property from metadata (used for .webp file name)
+ * @returns {Promise<{losslessWebpPath: string, thumbnailWebpPath: string} | null>}
  */
 export async function handleImage(mediaParentFolder, outputBaseName) {
   const bearbeitetFolder = path.join(mediaParentFolder, "bearbeitet");
@@ -34,7 +42,10 @@ export async function handleImage(mediaParentFolder, outputBaseName) {
   const tiffFile = tiffFiles[0];
   const tiffFilePath = path.join(bearbeitetFolder, tiffFile);
 
-  const tempPngPath = path.join(s3Folder, `${outputBaseName}_temp.png`);
+  const tempPngPath = path.join(
+    s3Folder,
+    `${outputBaseName}${TEMP_PNG_SUFFIX}`
+  );
 
   await execFileAsync("magick", [
     tiffFilePath,
@@ -65,13 +76,15 @@ export async function handleImage(mediaParentFolder, outputBaseName) {
   }
   await hrImage.webp({ lossless: true }).toFile(losslessWebpPath);
 
-  const thumbnailWebpPath = path.join(s3Folder, "thumbnail.webp");
-  const tnImage = image.webp({ lossless: false, quality: 80 }).resize({
-    width: 2000,
-    height: 1300,
-    fit: "inside",
-    position: sharp.strategy.attention,
-  });
+  const thumbnailWebpPath = path.join(s3Folder, THUMBNAIL_FILENAME);
+  const tnImage = image
+    .webp({ lossless: false, quality: THUMBNAIL_QUALITY })
+    .resize({
+      width: THUMBNAIL_WIDTH,
+      height: THUMBNAIL_HEIGHT,
+      fit: "inside",
+      position: sharp.strategy.attention,
+    });
   await tnImage.toFile(thumbnailWebpPath);
 
   await fs.unlink(tempPngPath);

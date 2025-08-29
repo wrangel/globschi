@@ -11,6 +11,12 @@ import { handlePano } from "./handlePano.mjs";
 import { uploadMetadata } from "./uploadMetadata.mjs";
 import { uploadMedia } from "./uploadMedia.mjs";
 
+/**
+ * Orchestrate processing of multiple media folders.
+ * Reads folders from input directory, collects metadata, renames folders,
+ * handles media processing (image/pano), uploads metadata and media.
+ * Logs processing steps and errors.
+ */
 async function orchestrate() {
   const baseDir = process.env.INPUT_DIRECTORY;
 
@@ -42,22 +48,22 @@ async function orchestrate() {
       // 2. Rename folder first
       const newFolderPath = await handleFolder(mediaDirPath, newName);
 
-      // 3. Medium logic
-      if (mediaType === "hdr" || mediaType === "wide angle") {
+      // 3. Handle media based on type
+      if (mediaType === "hdr" || mediaType === "wide_angle") {
         await handleImage(newFolderPath, newName);
       } else if (mediaType === "pano") {
         await handlePano(newFolderPath, newName);
       } else {
-        // fallback or unknown mediaType // video
-        console.warn(`Unknown media type: ${mediaType}`);
+        // fallback or unknown mediaType (e.g., video)
+        logger.warn(`Unknown media type: ${mediaType}`);
       }
 
-      // Step 4: Upload metadata to MongoDB
+      // 4. Upload metadata to MongoDB
       await uploadMetadata(processed.metadata);
 
       logger.info(`Completed processing for folder: ${mediaDirPath}`);
 
-      // Step 5: Upload media to S3
+      // 5. Upload media to S3
       await uploadMedia(newFolderPath, newName);
     } catch (error) {
       logger.error(`Error processing folder ${mediaDirPath}`, { error });
@@ -67,6 +73,7 @@ async function orchestrate() {
   logger.info("All processing completed.");
 }
 
+// Launch orchestration with error handling for uncaught async errors
 orchestrate().catch((err) => {
   logger.error("Uncaught error in orchestrator:", { error: err });
 });

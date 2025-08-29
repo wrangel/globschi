@@ -1,29 +1,6 @@
-node_modules/
-npm-debug.log
-dist/
-docker-compose.yml
-Dockerfile*
-.dockerignore
-combined.log
-error.log
-.DS_Store
-
-.flaskenv*
-.env*
-
-Material/
-logs/
-
-
-
 # Dependency directories
 node_modules/
-
-# Logs
 *.log
-npm-debug.log
-combined.log
-error.log
 
 # Build output
 dist/
@@ -34,10 +11,6 @@ dist/
 # Environment files / secrets
 .env
 env.production
-
-# Docker ignore - but consider removing if you want these in VCS
-# docker-compose.yml
-# Dockerfile*
 
 # Other local folders and files
 Material/

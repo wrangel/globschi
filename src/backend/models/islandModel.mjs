@@ -126,15 +126,6 @@ const islandSchema = new mongoose.Schema({
    * Road or street name (optional).
    */
   road: String,
-
-  /**
-   * Number of views or visits of this media's page.
-   */
-  noViews: {
-    required: true,
-    type: Number,
-    min: 0,
-  },
 });
 
 export const Island = mongoose.model("Island", islandSchema);

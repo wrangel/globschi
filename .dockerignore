@@ -1,9 +1,6 @@
-# Node modules and logs
-node_modules
-npm-debug.log
+# Dependency directories
+node_modules/
 *.log
-combined.log
-error.log
 
 # Environment files (secrets)
 .env
@@ -29,6 +26,3 @@ build/
 
 # Editor/IDE folders
 .vscode/
-.idea/
-
-# Optional: If you want to exclude any other OS or editor temp files, add here

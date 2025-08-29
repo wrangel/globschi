@@ -21,7 +21,7 @@ if [[ "$1" == "-u" ]]; then
     pnpm update
     pnpm audit fix
     pnpm prune
-    # pnpm depcheck // TODO
+    pnpm depcheck --ignores="exif,exifreader,node-exif,vite-plugin-eslint"
 else
     echo "✅ Skipping dependency updates..."
 fi

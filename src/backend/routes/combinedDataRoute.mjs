@@ -35,23 +35,4 @@ router.get("/combined-data", async (req, res) => {
   }
 });
 
-/**
- * POST /update-data
- * Dummy route to simulate data update which invalidates the combined-data cache.
- * Responds with success message.
- */
-router.post("/update-data", async (req, res) => {
-  try {
-    // TODO: Replace with actual update logic
-
-    // Invalidate cache to force refresh on next data request
-    invalidateCache("combined-data");
-
-    res.status(200).json({ message: "Data updated successfully" });
-  } catch (error) {
-    logger.error("Error updating data", { error });
-    res.status(500).json({ error: "Internal Server Error" });
-  }
-});
-
 export default router;

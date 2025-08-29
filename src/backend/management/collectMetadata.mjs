@@ -199,7 +199,7 @@ async function promptAuthorForMedia(mediaName) {
 }
 
 // Single media processing function for one folder
-export async function processSingleMedia(mediaDirPath) {
+export async function collectMetadata(mediaDirPath) {
   const mediaType = await determineMediaType(mediaDirPath);
   const originalName = path.basename(mediaDirPath);
   const author = await promptAuthorForMedia(originalName);

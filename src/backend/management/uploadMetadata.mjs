@@ -2,7 +2,7 @@ import { Island } from "../models/islandModel.mjs";
 import { executeMongoQuery } from "../utils/mongoUtils.mjs";
 import logger from "../utils/logger.mjs";
 
-export async function uploadSingleMetadata(doc) {
+export async function uploadMetadata(doc) {
   try {
     await executeMongoQuery(async () => {
       await Island.updateOne(

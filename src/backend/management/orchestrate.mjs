@@ -2,11 +2,12 @@ import { readdir } from "fs/promises";
 import path from "path";
 import logger from "../utils/logger.mjs";
 
-import { processSingleMedia } from "./metadataCollector.mjs";
-import { renameMediaFolder } from "./preparator.mjs";
-import { uploadSingleMetadata } from "./metadataUploader.mjs";
+import { collectMetadata } from "./collectMetadata.mjs";
+import { handleFolder } from "./handleFolder.mjs";
+import { handleImage } from "./handleImage.mjs";
+import { uploadMetadata } from "./uploadMetadata.mjs";
 
-async function orchestrateAll() {
+async function orchestrate() {
   const baseDir = process.env.INPUT_DIRECTORY;
 
   const entries = await readdir(baseDir, { withFileTypes: true });
@@ -23,11 +24,9 @@ async function orchestrateAll() {
 
   for (const mediaDirPath of mediaFolders) {
     logger.info(`Processing folder: ${mediaDirPath}`);
-
     try {
-      // Step 1: Collect metadata (includes media type)
-      const processed = await processSingleMedia(mediaDirPath);
-
+      // 1. Collect metadata
+      const processed = await collectMetadata(mediaDirPath);
       if (!processed || !processed.metadata) {
         logger.warn(`No metadata returned for ${mediaDirPath}, skipping.`);
         continue;
@@ -36,21 +35,22 @@ async function orchestrateAll() {
       const mediaType = processed.metadata.type;
       const newName = processed.metadata.name;
 
-      // Step 2: Rename folder and conditionally process "bearbeitet" folder based on type
-      const { newFolderPath, webpFiles } = await renameMediaFolder(
-        mediaDirPath,
-        newName,
-        mediaType // pass media type for conditional TIFF processing
-      );
+      // 2. Rename folder first
+      const newFolderPath = await handleFolder(mediaDirPath, newName);
 
-      // Optionally log WebP output paths
-      if (webpFiles) {
-        logger.info(`WebP files created: ${JSON.stringify(webpFiles)}`);
+      // 3. Medium logic
+      if (mediaType === "hdr" || mediaType === "wide angle") {
+        await handleImage(newFolderPath, newName);
+      } else if (mediaType === "pano") {
+        await handlePano(newFolderPath, newName);
+      } else {
+        // fallback or unknown mediaType // video
+        console.warn(`Unknown media type: ${mediaType}`);
       }
 
       /*
-      // Step 3: Upload metadata to MongoDB
-      await uploadSingleMetadata(processed.metadata);
+      // Step 4: Upload metadata to MongoDB 
+      await uploadMetadata(processed.metadata);
 
       logger.info(`Completed processing for folder: ${mediaDirPath}`);
       */
@@ -62,6 +62,6 @@ async function orchestrateAll() {
   logger.info("All processing completed.");
 }
 
-orchestrateAll().catch((err) => {
+orchestrate().catch((err) => {
   logger.error("Uncaught error in orchestrator:", { error: err });
 });

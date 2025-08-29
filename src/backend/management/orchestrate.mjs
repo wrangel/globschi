@@ -5,6 +5,7 @@ import logger from "../utils/logger.mjs";
 import { collectMetadata } from "./collectMetadata.mjs";
 import { handleFolder } from "./handleFolder.mjs";
 import { handleImage } from "./handleImage.mjs";
+import { handlePano } from "./handlePano.mjs";
 import { uploadMetadata } from "./uploadMetadata.mjs";
 
 async function orchestrate() {

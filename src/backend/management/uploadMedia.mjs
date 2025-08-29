@@ -2,8 +2,8 @@ import fs from "fs/promises";
 import path from "path";
 import { Upload } from "@aws-sdk/lib-storage";
 import { ListObjectsV2Command } from "@aws-sdk/client-s3";
-import { s3Client } from "../../utils/awsUtils.mjs"; // your existing configured S3 client
-import logger from "../../utils/logger.mjs";
+import { s3Client } from "../utils/awsUtils.mjs"; // your existing configured S3 client
+import logger from "../utils/logger.mjs";
 
 const BUCKET_NAME = process.env.AWS_BUCKET;
 

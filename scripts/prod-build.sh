@@ -1,29 +1,42 @@
 #!/bin/bash
+set -e
 
-# Run locally!
+echo "Starting Docker Desktop (MacOS)..."
+open -a Docker || echo "Docker Desktop may already be running."
 
-open -a Docker
+echo "Waiting for Docker to be ready..."
+while ! docker info >/dev/null 2>&1; do
+  echo "Waiting for Docker to start..."
+  sleep 2
+done
+echo "Docker is running."
 
-# Clean up
+echo "Stopping existing containers and cleaning up..."
 docker compose down --rmi all && docker system prune -af
 
-# Build images using docker-compose
+echo "Building images using docker compose..."
 docker compose --env-file .env.production build --no-cache
 
-# Log in to Docker registry (if needed)
+echo "Logging into Docker registry (if needed)..."
 docker login
 
-# Get a list of all images on the system
-IMAGES=$(docker images --format "{{.Repository}}:{{.Tag}}")
+# Define your images explicitly instead of all images
+IMAGES=(
+  "wrangel/globschi-frontend:1.4"
+  "wrangel/globschi-backend:1.4"
+)
 
-# Loop through each image and push it
-for IMAGE in $IMAGES; do
+echo "Pushing built images to Docker registry..."
+for IMAGE in "${IMAGES[@]}"; do
     echo "Pushing $IMAGE..."
     docker push "$IMAGE"
 done
 echo "All images pushed successfully."
 
-# Clean up 
+echo "Cleaning up containers and images after push..."
 docker compose down --rmi all && docker system prune -af
 
-killall docker
+# Remove killall docker unless you need it for your environment
+# killall docker
+
+echo "Production build and push finished successfully."

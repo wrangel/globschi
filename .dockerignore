@@ -21,7 +21,6 @@ error.log
 Material/
 logs/
 src/backend/tests/
-scripts/management/
 src/backend/management/
 
 # Frontend build output folders (if used locally during development)

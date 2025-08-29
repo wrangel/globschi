@@ -74,6 +74,18 @@ export async function handlePano(mediaFolderPath, folderName) {
       `[${folderName}]: Moved and renamed subfolder ${subfolders[0].name} to s3/tiles`
     );
 
+    // Delete preview.jpg if it exists inside s3/tiles
+    const previewPath = path.join(s3TilesDest, "preview.jpg");
+    logger.info(
+      `[${folderName}]: Deleting preview.jpg at ${previewPath} if present`
+    );
+    try {
+      await fs.rm(previewPath);
+      logger.info(`[${folderName}]: Deleted preview.jpg successfully`);
+    } catch {
+      logger.info(`[${folderName}]: preview.jpg not found or already deleted`);
+    }
+
     // Delete original tiles folder and project-title extraction folder
     try {
       await fs.rm(originalTilesPath, { recursive: true, force: true });

@@ -26,6 +26,7 @@ export async function handlePano(mediaFolderPath, folderName) {
       return null;
     }
 
+    // Extract project-title.zip
     logger.info(`[${folderName}]: Extracting ZIP to ${extractPath}`);
     try {
       const zip = new AdmZip(zipPath);
@@ -39,86 +40,62 @@ export async function handlePano(mediaFolderPath, folderName) {
     }
     logger.info(`[${folderName}]: ZIP extraction completed`);
 
-    const tilesPath = path.join(extractPath, "app-files", "tiles");
-    const renamedTilesPath = path.join(s3Folder, folderName);
+    // Original tiles folder path
+    const originalTilesPath = path.join(extractPath, "app-files", "tiles");
+    // Destination tiles folder under s3
+    const s3TilesDest = path.join(s3Folder, "tiles");
 
-    logger.info(
-      `[${folderName}]: Removing existing '${renamedTilesPath}' folder if exists`
-    );
+    // Delete any existing tiles folder in s3
     try {
-      await fs.rm(renamedTilesPath, { recursive: true, force: true });
-      logger.info(
-        `[${folderName}]: Deleted existing folder ${renamedTilesPath}`
-      );
-    } catch (rmErr) {
-      logger.error(
-        `[${folderName}]: Failed to delete existing folder: ${rmErr.message}`,
-        rmErr
+      await fs.rm(s3TilesDest, { recursive: true, force: true });
+      logger.info(`[${folderName}]: Deleted existing s3/tiles folder`);
+    } catch (err) {
+      logger.warn(
+        `[${folderName}]: Could not delete existing s3/tiles folder: ${err.message}`
       );
     }
 
-    logger.info(
-      `[${folderName}]: Renaming tiles folder from '${tilesPath}' to '${renamedTilesPath}'`
-    );
-    await fs.rename(tilesPath, renamedTilesPath);
-    logger.info(`[${folderName}]: Renamed tiles folder to ${folderName}`);
-
+    // Read subfolders inside original tiles folder
     const subfolders = (
-      await fs.readdir(renamedTilesPath, { withFileTypes: true })
+      await fs.readdir(originalTilesPath, { withFileTypes: true })
     ).filter((d) => d.isDirectory());
+
     if (subfolders.length !== 1) {
       logger.warn(
-        `[${folderName}]: Expected one subfolder inside tiles folder, found ${subfolders.length}. Skipping further renaming.`
+        `[${folderName}]: Expected exactly one subfolder inside original tiles folder, found ${subfolders.length}. Skipping.`
       );
-    } else {
-      const oldSubfolderPath = path.join(renamedTilesPath, subfolders[0].name);
-      const newSubfolderPath = path.join(renamedTilesPath, "tiles");
-
-      logger.info(`[${folderName}]: Deleting existing 'tiles' folder if any`);
-      try {
-        await fs.rm(newSubfolderPath, { recursive: true, force: true });
-        logger.info(`[${folderName}]: Removed existing 'tiles' folder`);
-      } catch (rmTilesErr) {
-        logger.warn(
-          `[${folderName}]: Error removing existing 'tiles' folder: ${rmTilesErr.message}`,
-          rmTilesErr
-        );
-      }
-
-      logger.info(
-        `[${folderName}]: Renaming subfolder ${subfolders[0].name} to 'tiles'`
-      );
-      await fs.rename(oldSubfolderPath, newSubfolderPath);
-      logger.info(`[${folderName}]: Renamed subfolder to 'tiles'`);
+      return null;
     }
 
-    const previewPath = path.join(renamedTilesPath, "tiles", "preview.jpg");
+    // Rename the single subfolder inside original tiles to 'tiles' directly under s3
+    const oldSubfolderPath = path.join(originalTilesPath, subfolders[0].name);
+    await fs.rename(oldSubfolderPath, s3TilesDest);
     logger.info(
-      `[${folderName}]: Deleting preview.jpg at ${previewPath} if present`
+      `[${folderName}]: Moved and renamed subfolder ${subfolders[0].name} to s3/tiles`
     );
+
+    // Delete original tiles folder and project-title extraction folder
     try {
-      await fs.rm(previewPath);
-      logger.info(`[${folderName}]: Deleted preview.jpg successfully`);
-    } catch {
-      logger.info(`[${folderName}]: preview.jpg not found or already deleted`);
+      await fs.rm(originalTilesPath, { recursive: true, force: true });
+      logger.info(
+        `[${folderName}]: Deleted original tiles folder inside app-files`
+      );
+    } catch (err) {
+      logger.warn(
+        `[${folderName}]: Could not delete original tiles folder: ${err.message}`
+      );
     }
 
-    logger.info(
-      `[${folderName}]: Deleting project-title folder at ${extractPath}`
-    );
     try {
       await fs.rm(extractPath, { recursive: true, force: true });
-      logger.info(`[${folderName}]: Deleted project-title folder`);
-    } catch (delErr) {
+      logger.info(`[${folderName}]: Deleted project-title extraction folder`);
+    } catch (err) {
       logger.warn(
-        `[${folderName}]: Could not delete project-title folder: ${delErr.message}`,
-        delErr
+        `[${folderName}]: Could not delete project-title extraction folder: ${err.message}`
       );
     }
 
-    logger.info(
-      `[${folderName}]: Searching JPG file in bearbeiten folder for thumbnail`
-    );
+    // Create thumbnail.webp inside s3 folder from jpg in bearbeiten folder
     const bearbeitenFiles = await fs.readdir(bearbeitenPath);
     const jpgFile = bearbeitenFiles.find((f) => /\.jpe?g$/i.test(f));
     if (!jpgFile) {
@@ -130,8 +107,8 @@ export async function handlePano(mediaFolderPath, folderName) {
 
     const inputPath = path.join(bearbeitenPath, jpgFile);
     const thumbnailPath = path.join(s3Folder, "thumbnail.webp");
-
     logger.info(`[${folderName}]: Creating thumbnail.webp at ${thumbnailPath}`);
+
     await sharp(inputPath)
       .resize({
         width: 2000,

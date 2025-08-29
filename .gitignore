@@ -32,9 +32,8 @@ dist/
 .DS_Store
 
 # Environment files / secrets
-env
+.env
 env.production
-.flaskenv*
 
 # Docker ignore - but consider removing if you want these in VCS
 # docker-compose.yml
@@ -50,4 +49,3 @@ logs/
 # Scripts & backend files - normally tracked, so comment out ignore unless needed
 scripts/prod-deploy.sh
 scripts/management/
-src/backend/management/old

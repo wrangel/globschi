@@ -1,3 +1,5 @@
+// src/backend/management/collectMetadata.mjs
+
 import { readdir, readFile } from "fs/promises";
 import path from "path";
 import fetch from "node-fetch"; // for reverse geocoding API calls

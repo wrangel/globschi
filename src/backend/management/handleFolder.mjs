@@ -1,3 +1,5 @@
+// src/backend/management/handleFolder.mjs
+
 import fs from "fs/promises";
 import path from "path";
 import logger from "../utils/logger.mjs";

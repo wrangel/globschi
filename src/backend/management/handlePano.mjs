@@ -1,3 +1,5 @@
+// src/backend/management/handlePano.mjs
+
 import fs from "fs/promises";
 import path from "path";
 import AdmZip from "adm-zip";

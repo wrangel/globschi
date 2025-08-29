@@ -7,6 +7,7 @@ import { handleFolder } from "./handleFolder.mjs";
 import { handleImage } from "./handleImage.mjs";
 import { handlePano } from "./handlePano.mjs";
 import { uploadMetadata } from "./uploadMetadata.mjs";
+import { uploadMedia } from "./uploadMedia.mjs";
 
 async function orchestrate() {
   const baseDir = process.env.INPUT_DIRECTORY;
@@ -49,12 +50,13 @@ async function orchestrate() {
         console.warn(`Unknown media type: ${mediaType}`);
       }
 
-      /*
-      // Step 4: Upload metadata to MongoDB 
+      // Step 4: Upload metadata to MongoDB
       await uploadMetadata(processed.metadata);
 
       logger.info(`Completed processing for folder: ${mediaDirPath}`);
-      */
+
+      // Step 5: Upload media to S3
+      await uploadMedia(newFolderPath, newName);
     } catch (error) {
       logger.error(`Error processing folder ${mediaDirPath}`, { error });
     }

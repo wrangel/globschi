@@ -3,7 +3,7 @@
 import express from "express";
 import { getCombinedData } from "../dataHandler.mjs";
 import { getCachedData, setCachedData, invalidateCache } from "../cache.mjs";
-import logger from "../../utils/logger.mjs";
+import logger from "../utils/logger.mjs";
 
 const router = express.Router();
 

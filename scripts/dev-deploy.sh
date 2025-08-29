@@ -21,14 +21,14 @@ if [[ "$1" == "-u" ]]; then
     pnpm update
     pnpm audit fix
     pnpm prune
-    pnpm depcheck
+    # pnpm depcheck // TODO
 else
     echo "✅ Skipping dependency updates..."
 fi
 
 # Start the backend server
 echo "🚀 Starting backend server..."
-node --env-file=.env ./src/backend/server.mjs &
+node --env-file=env ./src/backend/server.mjs &
 
 # Start the frontend Vite dev server
 echo "🚀 Starting Vite frontend on port 3000..."

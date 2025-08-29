@@ -30,6 +30,6 @@ docker compose down --rmi all
 docker system prune -af
 
 echo "Building and starting containers with production environment using Compose Bake..."
-COMPOSE_BAKE=true docker compose --env-file .env.production up --build -d
+COMPOSE_BAKE=true docker compose --env-file env.production up --build -d
 
 echo "Deployment finished successfully."

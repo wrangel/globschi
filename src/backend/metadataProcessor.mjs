@@ -1,6 +1,6 @@
 // src/backend/metadataProcessor.mjs
 
-import logger from "../utils/logger.mjs";
+import logger from "./utils/logger.mjs";
 
 /**
  * Validates input arrays for the beautify function.

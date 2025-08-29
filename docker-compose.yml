@@ -8,21 +8,19 @@ services:
       # cache_from:
       #   - type=local,src=/tmp/.buildx-cache/backend
     env_file:
-      - .env.production
+      - env.production
     environment:
       - NODE_ENV=production
       - PORT=8081
-    image: wrangel/globschi-backend:1.4
+    image: wrangel/globschi-backend:2.1 # Adjust the tags also in prod-build.sh
     ports:
       - "8081:8081"
     restart: unless-stopped
     deploy:
       resources:
-        limits:
-          cpus: "1.0"
+        limits: # CPU limits are not accepted by Synology
           memory: 1024M
         reservations:
-          cpus: "0.5"
           memory: 512M
 
   frontend:
@@ -37,7 +35,7 @@ services:
       # Optional: Use build cache if BuildKit enabled
       # cache_from:
       #   - type=local,src=/tmp/.buildx-cache/frontend
-    image: wrangel/globschi-frontend:1.4
+    image: wrangel/globschi-frontend:2.1
     ports:
       - "3000:80"
     restart: unless-stopped

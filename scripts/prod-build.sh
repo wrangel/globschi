@@ -15,7 +15,7 @@
   docker compose down --rmi all && docker system prune -af
 
   echo "Building images using docker compose..."
-  docker compose --env-file .env.production build --no-cache
+  docker compose --env-file env.production build --no-cache
 
   echo "Logging into Docker registry (if needed)..."
   docker login

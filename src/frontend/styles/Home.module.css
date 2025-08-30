@@ -90,14 +90,11 @@ footer.credits a:focus {
 /* Maintain existing media queries and add these if needed */
 
 @media (orientation: landscape) and (min-width: 48em) {
-  .homePage {
-    /* already flex-direction: column; so space-between works */
-  }
   .mainContentWrapper {
     flex-direction: row;
     justify-content: center;
+    gap: 2rem; /* <- add this line (or any value you prefer) */
   }
-  /* no special footer change needed because of space-between */
 }
 
 @media (orientation: portrait) {

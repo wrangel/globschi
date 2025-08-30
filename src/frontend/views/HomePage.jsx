@@ -128,6 +128,10 @@ const HomePage = () => {
             Microsoft Copilot
           </a>
           ,{" "}
+          <a href="https://kimi.com" target="_blank" rel="noopener noreferrer">
+            Kimi
+          </a>
+          ,{" "}
           <a
             href="https://mariushosting.com/"
             target="_blank"

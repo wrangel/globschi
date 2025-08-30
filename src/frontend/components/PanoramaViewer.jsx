@@ -61,21 +61,22 @@ const PanoramaViewer = ({ panoPath, onReady }) => {
 
     // Setup autorotation motion after 3 seconds idle
     const autorotate = Marzipano.autorotate({
-      yawSpeed: 0.05, // Adjust rotation speed
-      targetPitch: 0, // Level pitch forward
+      yawSpeed: 0.05,
+      targetPitch: 0,
       targetFov: Math.PI / 2,
     });
 
-    // Start autorotate only after user is idle
-    viewer.setIdleMovement(autorotate);
-    viewer.setIdleDelay(3000); // in ms → 3s of idle before rotating
-
+    // Use either startMovement or setIdleMovement depending on API support
+    if (typeof viewer.setIdleMovement === "function") {
+      viewer.setIdleMovement(3000, autorotate);
+    } else {
+      viewer.startMovement(autorotate);
+    }
     if (onReady) onReady();
 
     // Cleanup function to destroy viewer on unmount or panoPath change
     return () => {
-      scene.destroy(); // explicitly destroy scene instance
-      viewer.destroy(); // then destroy viewer context
+      viewer.destroy();
     };
   }, [panoPath, onReady]);
 

@@ -61,7 +61,7 @@ const PanoramaViewer = ({ panoPath, onReady }) => {
 
     // Setup autorotation motion after 3 seconds idle
     const autorotate = Marzipano.autorotate({
-      yawSpeed: 0.05,
+      yawSpeed: 0.07, // rotation speed
       targetPitch: 0,
       targetFov: Math.PI / 2,
     });

@@ -133,6 +133,14 @@ const HomePage = () => {
           </a>
           ,{" "}
           <a
+            href="https://synology.com"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Synology
+          </a>
+          ,{" "}
+          <a
             href="https://mariushosting.com/"
             target="_blank"
             rel="noopener noreferrer"

@@ -26,7 +26,9 @@ const PanoramaViewer = ({ panoPath, onReady, onError }) => {
     const geometry = new Marzipano.CubeGeometry(levels);
     const source = Marzipano.ImageUrlSource.fromString(
       `${panoPath}/{z}/{f}/{y}/{x}.jpg`,
-      { cubeMapPreviewUrl: `${panoPath}/../preview.jpg` }
+      {
+        cubeMapPreviewUrl: `${panoPath}/preview.jpg`,
+      }
     );
 
     if (onError) {

@@ -18,7 +18,13 @@ import styles from "../styles/ImagePopup.module.css";
  * @param {string} props.name - Alt text / name of the image.
  * @param {boolean} props.isNavigationMode - Whether pan/zoom navigation is enabled.
  */
-const ImagePopup = ({ actualUrl, thumbnailUrl, name, isNavigationMode }) => {
+const ImagePopup = ({
+  actualUrl,
+  thumbnailUrl,
+  name,
+  isNavigationMode,
+  onLoad,
+}) => {
   const [isLoading, setIsLoading] = useState(true); // Loading state for high-res image
   const imgRef = useRef(null); // Ref to image container DOM element
   const panZoomInstanceRef = useRef(null); // Stores panzoom instance for control
@@ -27,8 +33,11 @@ const ImagePopup = ({ actualUrl, thumbnailUrl, name, isNavigationMode }) => {
   useEffect(() => {
     const img = new Image();
     img.src = actualUrl;
-    img.onload = () => setIsLoading(false);
-  }, [actualUrl]);
+    img.onload = () => {
+      setIsLoading(false);
+      if (onLoad) onLoad();
+    };
+  }, [actualUrl, onLoad]);
 
   // Manage page scrollbar visibility while image is loading
   useEffect(() => {

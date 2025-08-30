@@ -66,13 +66,16 @@ const PanoramaViewer = ({ panoPath, onReady }) => {
       targetFov: Math.PI / 2,
     });
 
-    viewer.startMovement(autorotate);
+    // Start autorotate only after user is idle
+    viewer.setIdleMovement(autorotate);
+    viewer.setIdleDelay(3000); // in ms → 3s of idle before rotating
 
     if (onReady) onReady();
 
     // Cleanup function to destroy viewer on unmount or panoPath change
     return () => {
-      viewer.destroy();
+      scene.destroy(); // explicitly destroy scene instance
+      viewer.destroy(); // then destroy viewer context
     };
   }, [panoPath, onReady]);
 

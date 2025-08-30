@@ -11,7 +11,6 @@ import LoadingOverlay from "./components/LoadingOverlay";
 const HomePage = lazy(() => import("./views/HomePage"));
 const GridPage = lazy(() => import("./views/GridPage"));
 const MapPage = lazy(() => import("./views/MapPage"));
-const AboutPage = lazy(() => import("./views/AboutPage"));
 
 function App() {
   const navigate = useNavigate();
@@ -24,9 +23,7 @@ function App() {
             <Routes>
               <Route path="/" element={<HomePage />} />
               <Route path="/grid" element={<GridPage />} />
-              <Route path="/map" element={<MapPage />} />
-              <Route path="/about" element={<AboutPage />} />{" "}
-              {/* Add this route */}
+              <Route path="/map" element={<MapPage />} /> {}
             </Routes>
           </Suspense>
         </ErrorBoundary>

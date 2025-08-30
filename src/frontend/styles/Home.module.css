@@ -2,12 +2,11 @@
 
 .homePage {
   display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  width: 100%;
   flex-direction: column;
-  gap: var(--spacing-large);
+  justify-content: center; /* vertical centering */
+  align-items: center; /* horizontal centering */
+  height: 100vh; /* fill viewport height */
+  width: 100%;
   padding: var(--spacing-medium);
   box-sizing: border-box;
   position: relative;
@@ -15,25 +14,27 @@
 
 .portraitLayout {
   justify-content: flex-start;
-  padding-top: 15vh; /* Adjust this value to move it down */
+  padding-top: 15vh;
+}
+
+.mainContentWrapper {
+  /* Stack header and image vertically */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .textWrapper {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
   max-width: 100%;
   text-align: center;
-  margin-bottom: var(
-    --spacing-small
-  ); /* Decrease this value to bring text closer to image */
+  margin-bottom: var(--spacing-small);
 }
 
 .imageWrapper {
   display: flex;
   justify-content: center;
   align-items: center;
+  margin-bottom: var(--spacing-large);
 }
 
 .image {
@@ -60,45 +61,48 @@
 }
 
 .break {
-  display: block; /* This will force a line break in h1 if used */
+  display: block; /* force line break */
 }
+
+footer.credits {
+  font-family: var(--font-family);
+  font-size: 0.95rem;
+  color: var(--text-color);
+  text-align: center;
+  max-width: 600px;
+  margin: 2rem auto 1rem;
+  line-height: 1.3;
+}
+
+footer.credits a {
+  color: var(--primary-color);
+  text-decoration: none;
+  font-weight: 500;
+  transition: color var(--transition-duration);
+}
+
+footer.credits a:hover,
+footer.credits a:focus {
+  color: var(--primary-color-dark);
+  text-decoration: underline;
+}
+
+/* Maintain existing media queries and add these if needed */
 
 @media (orientation: landscape) and (min-width: 48em) {
   .homePage {
+    /* already flex-direction: column; so space-between works */
+  }
+  .mainContentWrapper {
     flex-direction: row;
+    justify-content: center;
   }
-
-  .textWrapper {
-    margin-right: var(--spacing-large);
-    margin-bottom: var(
-      --spacing-small
-    ); /* Ensure consistent spacing in landscape */
-  }
-
-  .image {
-    max-width: 30vw;
-    max-height: 80vh;
-  }
-
-  .break {
-    display: inline; /* Keep in-line for landscape */
-  }
+  /* no special footer change needed because of space-between */
 }
 
 @media (orientation: portrait) {
   .homePage {
-    justify-content: flex-start; /* Keep content at the top */
-  }
-
-  .textWrapper {
-    margin-bottom: var(
-      --spacing-small
-    ); /* Decrease this value to bring text closer to image */
-  }
-
-  .image {
-    max-width: 90vw;
-    max-height: 40vh; /* Adjust height as needed */
+    justify-content: space-between;
   }
 }
 
@@ -112,38 +116,4 @@
   .homePage h1 {
     font-size: var(--font-size-small);
   }
-}
-
-.helpContainer {
-  position: fixed;
-  bottom: 76px;
-  left: 42px;
-  text-align: center;
-  font-family: var(--font-family);
-  color: variables(--text-color);
-  font-size: 14px;
-  max-width: 200px;
-}
-
-.helpText {
-  margin-bottom: 10px;
-}
-
-.arrow {
-  position: absolute;
-  bottom: -50px;
-  left: 35%;
-  transform: translateX(-50%) rotate(-0deg);
-  width: 50px;
-  height: 50px;
-  fill: var(--text-color);
-}
-
-.globeButtonContainer {
-  position: fixed;
-  bottom: 20px;
-  left: 20px; /* Position it in the lower-left corner */
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
 }

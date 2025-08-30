@@ -19,25 +19,16 @@ const Fab = ({ onNavigate }) => {
   // Here the same list is used for all specified paths.
   const buttonConfig = {
     "/": [
-      { label: "About", path: "/about" },
       { label: "Map", path: "/map" },
       { label: "Grid", path: "/grid" },
       { label: "Home", path: "/" },
     ],
     "/grid": [
-      { label: "About", path: "/about" },
       { label: "Map", path: "/map" },
       { label: "Grid", path: "/grid" },
       { label: "Home", path: "/" },
     ],
     "/map": [
-      { label: "About", path: "/about" },
-      { label: "Map", path: "/map" },
-      { label: "Grid", path: "/grid" },
-      { label: "Home", path: "/" },
-    ],
-    "/about": [
-      { label: "About", path: "/about" },
       { label: "Map", path: "/map" },
       { label: "Grid", path: "/grid" },
       { label: "Home", path: "/" },

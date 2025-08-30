@@ -13,10 +13,8 @@ const HomePage = () => {
   );
 
   useEffect(() => {
-    const handleResize = () => {
+    const handleResize = () =>
       setIsPortrait(window.innerHeight > window.innerWidth);
-    };
-
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
@@ -35,47 +33,109 @@ const HomePage = () => {
           name="description"
           content="Explore drone-captured aerial imagery. From lofty heights, we muse on marvels."
         />
-        <meta
-          property="og:title"
-          content="Abstract Altitudes - Aerial Imagery"
-        />
-        <meta
-          property="og:description"
-          content="Explore drone-captured aerial imagery. From lofty heights, we muse on marvels."
-        />
-        <meta property="og:image" content={`${DOMAIN}/globschi.jpg`} />
-        <meta property="og:url" content={DOMAIN} />
-        <meta property="og:type" content="website" />
-        <meta name="x:card" content="summary_large_image" />
-        <meta name="x:title" content="Abstract Altitudes - Aerial Imagery" />
-        <meta
-          name="x:description"
-          content="Explore drone-captured aerial imagery. From lofty heights, we muse on marvels."
-        />
-        <meta name="x:image" content={`${DOMAIN}/globschi.jpg`} />
       </Helmet>
+
       <div
         className={`${styles.homePage} ${
           isPortrait ? styles.portraitLayout : ""
         }`}
       >
-        <div className={styles.textWrapper}>
-          <h1>
-            From lofty heights,
-            <br />
-            <span className={styles.break}>we muse on marvels</span>
-          </h1>
-          <h2>Aerial imagery</h2>
+        <div className={styles.mainContentWrapper}>
+          <div className={styles.textWrapper}>
+            <h1>
+              From lofty heights,
+              <br />
+              <span className={styles.break}>we muse on marvels</span>
+            </h1>
+            <h2>Aerial imagery</h2>
+          </div>
+          <div className={styles.imageWrapper}>
+            <img
+              src="/globschi.jpg"
+              alt="Globschi"
+              className={styles.image}
+              onClick={handleImageClick}
+              style={{ cursor: "pointer" }}
+            />
+          </div>
         </div>
-        <div className={styles.imageWrapper}>
-          <img
-            src="/globschi.jpg"
-            alt="Globschi"
-            className={styles.image}
-            onClick={handleImageClick}
-            style={{ cursor: "pointer" }}
-          />
-        </div>
+        <footer className={styles.credits}>
+          <a
+            href="https://github.com/wrangel"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            wrangel
+          </a>
+          ,{" "}
+          <a
+            href="https://www.youtube.com/@beatmaker3462"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            beat maker
+          </a>
+          , Anna,{" "}
+          <a
+            href="https://www.dji.com/mini-4-pro"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            DJI Mini 4 Pro
+          </a>
+          ,{" "}
+          <a
+            href="https://www.dji.com/mini-2"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            DJI Mini 2
+          </a>
+          ,{" "}
+          <a href="https://ptgui.com" target="_blank" rel="noopener noreferrer">
+            PTGui Pro
+          </a>
+          ,{" "}
+          <a
+            href="https://www.marzipano.net/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Marzipano
+          </a>
+          ,{" "}
+          <a
+            href="https://www.adobe.com/products/photoshop-lightroom.html"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Adobe Lightroom
+          </a>
+          ,{" "}
+          <a
+            href="https://www.perplexity.ai/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Perplexity AI
+          </a>
+          ,{" "}
+          <a
+            href="https://www.microsoft.com"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Microsoft Copilot
+          </a>
+          ,{" "}
+          <a
+            href="https://mariushosting.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Marius Hosting
+          </a>
+        </footer>
       </div>
     </>
   );

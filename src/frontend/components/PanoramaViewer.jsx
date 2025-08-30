@@ -1,20 +1,6 @@
-// src/components/PanoramaViewer.jsx
 import { useRef, useEffect } from "react";
 import Marzipano from "marzipano";
 
-/**
- * PanoramaViewer component for displaying a 360° panorama using Marzipano.
- *
- * Initializes a Marzipano viewer on a container element and sets up the panorama scene
- * with cube geometry and multiresolution tiles. Includes autorotation when idle.
- *
- * @param {Object} props - Component props.
- * @param {string} props.panoPath - Base URL path to panorama tile images.
- * @param {Function} [props.onReady] - Optional callback invoked when viewer is ready.
- * @param {Function} [props.onError] - Optional callback invoked on tile-load errors.
- *
- * @returns {JSX.Element} The container element where the panorama renders.
- */
 const PanoramaViewer = ({ panoPath, onReady, onError }) => {
   const panoramaElement = useRef(null);
   const viewerRef = useRef(null);
@@ -22,42 +8,39 @@ const PanoramaViewer = ({ panoPath, onReady, onError }) => {
   useEffect(() => {
     if (!panoPath || !panoramaElement.current) return;
 
-    // Destroy any previous viewer to prevent leaks & race conditions
+    // Destroy previous viewer instance, if any
     viewerRef.current?.destroy();
 
-    // Initialize new viewer with retina support
+    // Initialize Marzipano viewer
     const viewer = new Marzipano.Viewer(panoramaElement.current, {
       stage: { pixelRatio: window.devicePixelRatio || 1 },
     });
     viewerRef.current = viewer;
 
-    // Configure image levels for multiresolution cube tiles
+    // Configure levels, geometry, source
     const levels = [
       { tileSize: 256, size: 256, fallbackOnly: true },
       { tileSize: 512, size: 512 },
       { tileSize: 512, size: 1024 },
     ];
     const geometry = new Marzipano.CubeGeometry(levels);
-
-    // Configure source URL pattern for tiles with preview image
     const source = Marzipano.ImageUrlSource.fromString(
       `${panoPath}/{z}/{f}/{y}/{x}.jpg`,
       { cubeMapPreviewUrl: `${panoPath}/../preview.jpg` }
     );
 
-    // Optional error handling
     if (onError) {
       source.addEventListener("error", onError);
     }
 
-    // Create view with yaw and pitch limits
+    // Create view with limits
     const limiter = Marzipano.RectilinearView.limit.traditional(
       1024,
       (120 * Math.PI) / 180
     );
     const view = new Marzipano.RectilinearView(null, limiter);
 
-    // Create and activate scene
+    // Create scene and switch to it
     const scene = viewer.createScene({
       source,
       geometry,
@@ -66,7 +49,7 @@ const PanoramaViewer = ({ panoPath, onReady, onError }) => {
     });
     scene.switchTo({ transitionDuration: 1000 });
 
-    // Setup autorotation after 3 seconds idle
+    // Setup autorotation
     const autorotate = Marzipano.autorotate({
       yawSpeed: 0.07,
       targetPitch: 0,
@@ -80,12 +63,21 @@ const PanoramaViewer = ({ panoPath, onReady, onError }) => {
 
     if (onReady) onReady();
 
-    // Cleanup: stop autorotation, destroy viewer, clear ref
+    ////////////////
+    // Log yaw every second
+    const yawLogger = setInterval(() => {
+      const currentYaw = view.yaw();
+      console.log("Yaw in radians:", currentYaw);
+    }, 1000);
+
+    // Cleanup function to clear interval and destroy viewer
     return () => {
+      clearInterval(yawLogger);
       viewerRef.current?.destroy();
       viewerRef.current = null;
     };
   }, [panoPath, onReady, onError]);
+  ////////////////
 
   return (
     <div

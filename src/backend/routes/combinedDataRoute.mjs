@@ -27,6 +27,7 @@ router.get("/combined-data", async (req, res) => {
   try {
     // Fetch fresh combined data and cache it
     const combinedData = await getCombinedData();
+
     setCachedData(cacheKey, combinedData);
     res.status(200).json(combinedData);
   } catch (error) {

@@ -49,6 +49,13 @@ function processDocument(doc, presignedUrls) {
   // Detect if this is a pano based on URL containing "/tiles"
   const isPano = !!urls.actualUrl && urls.actualUrl.includes("/tiles");
 
+  // Correctly access nested initialViewParameters
+  const initialViewParameters = doc.initialViewParameters || {
+    yaw: 0,
+    pitch: 0,
+    fov: Math.PI / 4,
+  };
+
   return {
     id: doc._id.toString(),
     viewer: isPano ? "pano" : "img",
@@ -59,9 +66,9 @@ function processDocument(doc, presignedUrls) {
     thumbnailUrl: urls.thumbnailUrl,
     ...(isPano ? { panoPath: urls.actualUrl } : { actualUrl: urls.actualUrl }),
     initialViewParameters: {
-      yaw: doc.yaw ?? 0,
-      pitch: doc.pitch ?? 0,
-      fov: doc.fov ?? Math.PI / 4,
+      yaw: initialViewParameters.yaw,
+      pitch: initialViewParameters.pitch,
+      fov: initialViewParameters.fov,
     },
   };
 }

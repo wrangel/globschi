@@ -16,11 +16,9 @@ const PanoramaViewer = ({
   useEffect(() => {
     if (!panoPath || !panoramaElement.current) return;
 
-    // Destroy any existing viewer instance to avoid memory leaks
     viewerRef.current?.destroy();
     viewerRef.current = null;
 
-    // Initialize a new Marzipano viewer
     const viewer = new Marzipano.Viewer(panoramaElement.current, {
       stage: { pixelRatio: window.devicePixelRatio || 1 },
     });
@@ -39,7 +37,6 @@ const PanoramaViewer = ({
 
     if (onError) source.addEventListener("error", onError);
 
-    // Safe extraction + fallback
     let viewParams = DEFAULT_VIEW;
     if (
       initialViewParameters &&
@@ -82,7 +79,6 @@ const PanoramaViewer = ({
 
     if (onReady) onReady();
 
-    // Cleanup function to destroy the viewer on unmount or when panoPath changes
     return () => {
       viewerRef.current?.destroy();
       viewerRef.current = null;

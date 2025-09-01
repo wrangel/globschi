@@ -71,7 +71,7 @@ const PanoramaViewer = ({
     scene.switchTo({ transitionDuration: 1000 });
 
     const autorotate = Marzipano.autorotate({
-      yawSpeed: 0.07,
+      yawSpeed: 0.075,
       targetPitch: 0,
       targetFov: Math.PI / 2,
     });

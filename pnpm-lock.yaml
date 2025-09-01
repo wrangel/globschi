@@ -85,7 +85,7 @@ importers:
         version: 3.879.0(@aws-sdk/client-s3@3.879.0)
       '@vitejs/plugin-react':
         specifier: ^4.7.0
-        version: 4.7.0(vite@7.1.3)
+        version: 4.7.0(vite@7.1.4)
       adm-zip:
         specifier: ^0.5.16
         version: 0.5.16
@@ -117,11 +117,11 @@ importers:
         specifier: ^0.34.3
         version: 0.34.3
       vite:
-        specifier: ^7.1.3
-        version: 7.1.3
+        specifier: ^7.1.4
+        version: 7.1.4
       vite-plugin-eslint:
         specifier: ^1.8.1
-        version: 1.8.1(eslint@9.34.0)(vite@7.1.3)
+        version: 1.8.1(eslint@9.34.0)(vite@7.1.4)
 
 packages:
 
@@ -2462,8 +2462,8 @@ packages:
       eslint: '>=7'
       vite: '>=2'
 
-  vite@7.1.3:
-    resolution: {integrity: sha512-OOUi5zjkDxYrKhTV3V7iKsoS37VUM7v40+HuwEmcrsf11Cdx9y3DIr2Px6liIcZFwt3XSRpQvFpL3WVy7ApkGw==}
+  vite@7.1.4:
+    resolution: {integrity: sha512-X5QFK4SGynAeeIt+A7ZWnApdUyHYm+pzv/8/A57LqSGcI88U6R6ipOs3uCesdc6yl7nl+zNO0t8LmqAdXcQihw==}
     engines: {node: ^20.19.0 || >=22.12.0}
     hasBin: true
     peerDependencies:
@@ -3887,7 +3887,7 @@ snapshots:
     dependencies:
       '@types/webidl-conversions': 7.0.3
 
-  '@vitejs/plugin-react@4.7.0(vite@7.1.3)':
+  '@vitejs/plugin-react@4.7.0(vite@7.1.4)':
     dependencies:
       '@babel/core': 7.28.3
       '@babel/plugin-transform-react-jsx-self': 7.27.1(@babel/core@7.28.3)
@@ -3895,7 +3895,7 @@ snapshots:
       '@rolldown/pluginutils': 1.0.0-beta.27
       '@types/babel__core': 7.20.5
       react-refresh: 0.17.0
-      vite: 7.1.3
+      vite: 7.1.4
     transitivePeerDependencies:
       - supports-color
 
@@ -5527,15 +5527,15 @@ snapshots:
 
   vary@1.1.2: {}
 
-  vite-plugin-eslint@1.8.1(eslint@9.34.0)(vite@7.1.3):
+  vite-plugin-eslint@1.8.1(eslint@9.34.0)(vite@7.1.4):
     dependencies:
       '@rollup/pluginutils': 4.2.1
       '@types/eslint': 8.56.12
       eslint: 9.34.0
       rollup: 2.79.2
-      vite: 7.1.3
+      vite: 7.1.4
 
-  vite@7.1.3:
+  vite@7.1.4:
     dependencies:
       esbuild: 0.25.9
       fdir: 6.5.0(picomatch@4.0.3)

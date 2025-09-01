@@ -64,22 +64,7 @@ const PanoramaViewer = ({ panoPath, onReady, onError }) => {
     }
 
     if (onReady) onReady();
-
-    ////////////////
-    // Log yaw every second
-    const yawLogger = setInterval(() => {
-      const currentYaw = view.yaw();
-      console.log("Yaw in radians:", currentYaw);
-    }, 1000);
-
-    // Cleanup function to clear interval and destroy viewer
-    return () => {
-      clearInterval(yawLogger);
-      viewerRef.current?.destroy();
-      viewerRef.current = null;
-    };
   }, [panoPath, onReady, onError]);
-  ////////////////
 
   return (
     <div

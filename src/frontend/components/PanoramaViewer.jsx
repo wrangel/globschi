@@ -35,7 +35,11 @@ const PanoramaViewer = ({
       { cubeMapPreviewUrl: `${panoPath}/preview.jpg` }
     );
 
-    if (onError) source.addEventListener("error", onError);
+    if (onError)
+      source.addEventListener("error", (err) => {
+        onError(err);
+        console.error(`Error loading panorama: ${err.message}`);
+      });
 
     let viewParams = DEFAULT_VIEW;
     if (

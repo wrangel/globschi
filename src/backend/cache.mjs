@@ -55,7 +55,7 @@ export const setCachedData = (key, value) => {
 };
 
 /**
- * Deletes a cache entry by key.
+ * Deletes a cache entry by key, for manual deletion scenarios.
  * @param {string} key - Cache key
  */
 export const invalidateCache = (key) => {

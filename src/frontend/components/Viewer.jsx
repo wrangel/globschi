@@ -1,6 +1,7 @@
 // src/components/Viewer.jsx
 
 import { useState, useEffect, useRef } from "react";
+import PropTypes from "prop-types";
 import ControlButtons from "./ControlButtons";
 import ImagePopup from "./ImagePopup";
 import MetadataPopup from "./MetadataPopup";
@@ -105,6 +106,31 @@ const Viewer = ({
       )}
     </div>
   );
+};
+
+Viewer.propTypes = {
+  item: PropTypes.shape({
+    id: PropTypes.string.isRequired,
+    viewer: PropTypes.oneOf(["pano", "img"]).isRequired,
+    drone: PropTypes.string,
+    metadata: PropTypes.string.isRequired,
+    latitude: PropTypes.number,
+    longitude: PropTypes.number,
+    name: PropTypes.string,
+    thumbnailUrl: PropTypes.string.isRequired,
+    panoPath: PropTypes.string,
+    actualUrl: PropTypes.string,
+    initialViewParameters: PropTypes.shape({
+      yaw: PropTypes.number.isRequired,
+      pitch: PropTypes.number.isRequired,
+      fov: PropTypes.number.isRequired,
+    }),
+  }).isRequired,
+  onClose: PropTypes.func.isRequired,
+  onNext: PropTypes.func.isRequired,
+  onPrevious: PropTypes.func.isRequired,
+  isNavigationMode: PropTypes.bool.isRequired,
+  toggleMode: PropTypes.func.isRequired,
 };
 
 export default Viewer;

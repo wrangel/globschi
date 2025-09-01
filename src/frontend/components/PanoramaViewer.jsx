@@ -4,23 +4,23 @@ import Marzipano from "marzipano";
 
 const DEFAULT_VIEW = { yaw: 0, pitch: 0, fov: Math.PI / 4 };
 
-const PanoramaViewer = (props) => {
-  const {
-    panoPath,
-    initialViewParameters,
-    onReady,
-    onError,
-    // …collect anything else here if you ever extend the API
-  } = props;
-
+const PanoramaViewer = ({
+  panoPath,
+  initialViewParameters,
+  onReady,
+  onError,
+}) => {
   const panoramaElement = useRef(null);
   const viewerRef = useRef(null);
 
   useEffect(() => {
     if (!panoPath || !panoramaElement.current) return;
 
+    // Destroy any existing viewer instance to avoid memory leaks
     viewerRef.current?.destroy();
+    viewerRef.current = null;
 
+    // Initialize a new Marzipano viewer
     const viewer = new Marzipano.Viewer(panoramaElement.current, {
       stage: { pixelRatio: window.devicePixelRatio || 1 },
     });
@@ -81,6 +81,12 @@ const PanoramaViewer = (props) => {
     }
 
     if (onReady) onReady();
+
+    // Cleanup function to destroy the viewer on unmount or when panoPath changes
+    return () => {
+      viewerRef.current?.destroy();
+      viewerRef.current = null;
+    };
   }, [panoPath, initialViewParameters, onReady, onError]);
 
   return (

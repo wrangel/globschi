@@ -88,6 +88,7 @@ const Viewer = ({
       return (
         <PanoramaViewer
           panoPath={item.panoPath}
+          initialViewParameters={item.initialViewParameters}
           onReady={handleContentLoaded}
         />
       );

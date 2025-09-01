@@ -1,65 +1,66 @@
+// src/components/PanoramaViewer.jsx
 import { useRef, useEffect } from "react";
 import Marzipano from "marzipano";
 
-const PanoramaViewer = ({
-  panoPath,
-  initialViewParameters,
-  onReady,
-  onError,
-}) => {
+const DEFAULT_VIEW = { yaw: 0, pitch: 0, fov: Math.PI / 4 };
+
+const PanoramaViewer = (props) => {
+  const {
+    panoPath,
+    initialViewParameters,
+    onReady,
+    onError,
+    // …collect anything else here if you ever extend the API
+  } = props;
+
   const panoramaElement = useRef(null);
   const viewerRef = useRef(null);
 
   useEffect(() => {
     if (!panoPath || !panoramaElement.current) return;
 
-    // Destroy previous viewer instance, if any
     viewerRef.current?.destroy();
 
-    // Initialize Marzipano viewer
     const viewer = new Marzipano.Viewer(panoramaElement.current, {
       stage: { pixelRatio: window.devicePixelRatio || 1 },
     });
     viewerRef.current = viewer;
 
-    // Configure levels and geometry
     const levels = [
       { tileSize: 256, size: 256, fallbackOnly: true },
       { tileSize: 512, size: 512 },
       { tileSize: 512, size: 1024 },
     ];
     const geometry = new Marzipano.CubeGeometry(levels);
-
-    // Create source using panoPath
     const source = Marzipano.ImageUrlSource.fromString(
       `${panoPath}/{z}/{f}/{y}/{x}.jpg`,
-      {
-        cubeMapPreviewUrl: `${panoPath}/preview.jpg`,
-      }
+      { cubeMapPreviewUrl: `${panoPath}/preview.jpg` }
     );
 
-    // Attach error handler
-    if (onError) {
-      source.addEventListener("error", onError);
+    if (onError) source.addEventListener("error", onError);
+
+    // Safe extraction + fallback
+    let viewParams = DEFAULT_VIEW;
+    if (
+      initialViewParameters &&
+      typeof initialViewParameters.yaw === "number" &&
+      typeof initialViewParameters.pitch === "number" &&
+      typeof initialViewParameters.fov === "number"
+    ) {
+      viewParams = initialViewParameters;
+    } else {
+      console.warn(
+        "[PanoramaViewer] initialViewParameters missing or invalid → fallback",
+        initialViewParameters
+      );
     }
 
-    // Create view limits
     const limiter = Marzipano.RectilinearView.limit.traditional(
       1024,
       (120 * Math.PI) / 180
     );
+    const view = new Marzipano.RectilinearView(viewParams, limiter);
 
-    // Use initialViewParameters or fallback defaults
-    const initialView = initialViewParameters || {
-      yaw: 0,
-      pitch: 0,
-      fov: Math.PI / 2,
-    };
-
-    // Initialize view with initial yaw, pitch, fov
-    const view = new Marzipano.RectilinearView(initialView, limiter);
-
-    // Create and switch to scene
     const scene = viewer.createScene({
       source,
       geometry,
@@ -68,13 +69,11 @@ const PanoramaViewer = ({
     });
     scene.switchTo({ transitionDuration: 1000 });
 
-    // Set up autorotate
     const autorotate = Marzipano.autorotate({
       yawSpeed: 0.07,
       targetPitch: 0,
       targetFov: Math.PI / 2,
     });
-
     if (typeof viewer.setIdleMovement === "function") {
       viewer.setIdleMovement(3000, autorotate);
     } else {
@@ -82,9 +81,6 @@ const PanoramaViewer = ({
     }
 
     if (onReady) onReady();
-
-    // Cleanup on unmount
-    return () => viewerRef.current?.destroy();
   }, [panoPath, initialViewParameters, onReady, onError]);
 
   return (

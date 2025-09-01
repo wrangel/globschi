@@ -58,6 +58,11 @@ function processDocument(doc, presignedUrls) {
     longitude: doc.longitude,
     thumbnailUrl: urls.thumbnailUrl,
     ...(isPano ? { panoPath: urls.actualUrl } : { actualUrl: urls.actualUrl }),
+    initialViewParameters: {
+      yaw: doc.yaw ?? 0,
+      pitch: doc.pitch ?? 0,
+      fov: doc.fov ?? Math.PI / 4,
+    },
   };
 }
 

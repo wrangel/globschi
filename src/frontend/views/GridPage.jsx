@@ -12,6 +12,7 @@ import { DOMAIN } from "../constants";
 
 function GridPage() {
   const { items, isLoading, error } = useItems();
+
   const {
     selectedItem,
     isModalOpen,

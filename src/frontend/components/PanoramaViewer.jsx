@@ -1,7 +1,12 @@
 import { useRef, useEffect } from "react";
 import Marzipano from "marzipano";
 
-const PanoramaViewer = ({ panoPath, onReady, onError }) => {
+const PanoramaViewer = ({
+  panoPath,
+  initialViewParameters,
+  onReady,
+  onError,
+}) => {
   const panoramaElement = useRef(null);
   const viewerRef = useRef(null);
 
@@ -17,13 +22,15 @@ const PanoramaViewer = ({ panoPath, onReady, onError }) => {
     });
     viewerRef.current = viewer;
 
-    // Configure levels, geometry, source
+    // Configure levels and geometry
     const levels = [
       { tileSize: 256, size: 256, fallbackOnly: true },
       { tileSize: 512, size: 512 },
       { tileSize: 512, size: 1024 },
     ];
     const geometry = new Marzipano.CubeGeometry(levels);
+
+    // Create source using panoPath
     const source = Marzipano.ImageUrlSource.fromString(
       `${panoPath}/{z}/{f}/{y}/{x}.jpg`,
       {
@@ -31,18 +38,28 @@ const PanoramaViewer = ({ panoPath, onReady, onError }) => {
       }
     );
 
+    // Attach error handler
     if (onError) {
       source.addEventListener("error", onError);
     }
 
-    // Create view with limits
+    // Create view limits
     const limiter = Marzipano.RectilinearView.limit.traditional(
       1024,
       (120 * Math.PI) / 180
     );
-    const view = new Marzipano.RectilinearView(null, limiter);
 
-    // Create scene and switch to it
+    // Use initialViewParameters or fallback defaults
+    const initialView = initialViewParameters || {
+      yaw: 0,
+      pitch: 0,
+      fov: Math.PI / 2,
+    };
+
+    // Initialize view with initial yaw, pitch, fov
+    const view = new Marzipano.RectilinearView(initialView, limiter);
+
+    // Create and switch to scene
     const scene = viewer.createScene({
       source,
       geometry,
@@ -51,12 +68,13 @@ const PanoramaViewer = ({ panoPath, onReady, onError }) => {
     });
     scene.switchTo({ transitionDuration: 1000 });
 
-    // Setup autorotation
+    // Set up autorotate
     const autorotate = Marzipano.autorotate({
       yawSpeed: 0.07,
       targetPitch: 0,
       targetFov: Math.PI / 2,
     });
+
     if (typeof viewer.setIdleMovement === "function") {
       viewer.setIdleMovement(3000, autorotate);
     } else {
@@ -64,7 +82,10 @@ const PanoramaViewer = ({ panoPath, onReady, onError }) => {
     }
 
     if (onReady) onReady();
-  }, [panoPath, onReady, onError]);
+
+    // Cleanup on unmount
+    return () => viewerRef.current?.destroy();
+  }, [panoPath, initialViewParameters, onReady, onError]);
 
   return (
     <div

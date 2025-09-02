@@ -66,6 +66,7 @@ const Viewer = ({
       return (
         <PanoramaViewer
           panoPath={item.panoPath}
+          levels={item.levels}
           initialViewParameters={item.initialViewParameters}
           onReady={handleContentLoaded}
         />
@@ -125,6 +126,13 @@ Viewer.propTypes = {
       pitch: PropTypes.number.isRequired,
       fov: PropTypes.number.isRequired,
     }),
+    levels: PropTypes.arrayOf(
+      PropTypes.shape({
+        tileSize: PropTypes.number.isRequired,
+        size: PropTypes.number.isRequired,
+        fallbackOnly: PropTypes.bool,
+      })
+    ),
   }).isRequired,
   onClose: PropTypes.func.isRequired,
   onNext: PropTypes.func.isRequired,

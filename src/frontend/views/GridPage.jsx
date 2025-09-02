@@ -1,4 +1,4 @@
-// src/frontend/views/GidPage.js
+// src/frontend/views/GridPage.js
 
 import React from "react";
 import { Helmet } from "react-helmet-async";
@@ -12,6 +12,7 @@ import { DOMAIN } from "../constants";
 
 function GridPage() {
   const { items, isLoading, error } = useItems();
+
   const {
     selectedItem,
     isModalOpen,

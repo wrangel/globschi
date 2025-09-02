@@ -72,8 +72,8 @@ async function main() {
       .filter((doc) => !s3Set.has(doc.name))
       .map((doc) => doc.name);
 
-    console.log("Folders only in S3:", s3Only);
-    console.log("Documents only in Mongo:", mongoOnly);
+    logger.info("Folders only in S3:", s3Only);
+    logger.info("Documents only in Mongo:", mongoOnly);
 
     if (s3Only.length === 0) {
       logger.info("No S3 folders to delete — all match MongoDB documents.");

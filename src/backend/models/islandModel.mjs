@@ -126,6 +126,16 @@ const islandSchema = new mongoose.Schema({
    * Road or street name (optional).
    */
   road: String,
+
+  /**
+   * Initial view parameters for Marzipano panorama.
+   * Contains yaw, pitch, fov.
+   */
+  initialViewParameters: {
+    yaw: { type: Number },
+    pitch: { type: Number },
+    fov: { type: Number },
+  },
 });
 
 export const Island = mongoose.model("Island", islandSchema);

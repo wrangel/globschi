@@ -176,7 +176,7 @@ async function readExifFromFirstJPEGInOriginal(parentDir, mediaType, author) {
         file.toLowerCase().endsWith(".jpeg")
     );
     if (!jpgFile) {
-      console.log(`No JPEG file found in ${originalPath}`);
+      logger.warn(`No JPEG file found in ${originalPath}`);
       return null;
     }
 

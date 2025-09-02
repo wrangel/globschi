@@ -69,27 +69,11 @@ const HomePage = () => {
           </a>
           ,{" "}
           <a
-            href="https://www.youtube.com/@beatmaker3462"
+            href="https://www.dji.com"
             target="_blank"
             rel="noopener noreferrer"
           >
-            beat maker
-          </a>
-          , Anna,{" "}
-          <a
-            href="https://www.dji.com/mini-4-pro"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            DJI Mini 4 Pro
-          </a>
-          ,{" "}
-          <a
-            href="https://www.dji.com/mini-2"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            DJI Mini 2
+            DJI
           </a>
           ,{" "}
           <a href="https://ptgui.com" target="_blank" rel="noopener noreferrer">
@@ -130,14 +114,6 @@ const HomePage = () => {
           ,{" "}
           <a href="https://kimi.com" target="_blank" rel="noopener noreferrer">
             Kimi
-          </a>
-          ,{" "}
-          <a
-            href="https://synology.com"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Synology
           </a>
           ,{" "}
           <a

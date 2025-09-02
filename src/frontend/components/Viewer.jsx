@@ -1,6 +1,7 @@
 // src/components/Viewer.jsx
 
 import { useState, useEffect, useRef } from "react";
+import PropTypes from "prop-types";
 import ControlButtons from "./ControlButtons";
 import ImagePopup from "./ImagePopup";
 import MetadataPopup from "./MetadataPopup";
@@ -9,23 +10,6 @@ import LoadingOverlay from "./LoadingOverlay";
 import useKeyboardNavigation from "../hooks/useKeyboardNavigation";
 import styles from "../styles/Viewer.module.css";
 
-/**
- * Viewer component displays either an image popup or a panorama viewer,
- * along with control buttons and optional metadata popup.
- *
- * Handles fullscreen toggling, metadata display, and loading states.
- * Keyboard navigation for closing and switching images is managed by a custom hook.
- *
- * @param {Object} props - Component props.
- * @param {Object} props.item - The item to display (image or panorama).
- * @param {Function} props.onClose - Callback to close the viewer.
- * @param {Function} props.onNext - Callback to show the next item.
- * @param {Function} props.onPrevious - Callback to show the previous item.
- * @param {boolean} props.isNavigationMode - Whether navigation mode is enabled.
- * @param {Function} props.toggleMode - Callback to toggle navigation/exploration mode.
- *
- * @returns {JSX.Element} The viewer UI.
- */
 const Viewer = ({
   item,
   onClose,
@@ -38,20 +22,16 @@ const Viewer = ({
   const [isLoading, setIsLoading] = useState(true);
   const viewerRef = useRef(null);
 
-  // Setup keyboard shortcuts for navigation and closing
   useKeyboardNavigation(onClose, onPrevious, onNext);
 
-  // Toggle metadata popup visibility
   const toggleMetadata = () => {
     setShowMetadata((prev) => !prev);
   };
 
-  // Called when content finishes loading
   const handleContentLoaded = () => {
     setIsLoading(false);
   };
 
-  // Handle Escape key for closing or hiding metadata
   useEffect(() => {
     const handleEscKey = (event) => {
       if (event.key === "Escape") {
@@ -69,7 +49,6 @@ const Viewer = ({
     };
   }, [showMetadata, onClose]);
 
-  // Toggle fullscreen mode on viewer container
   const toggleFullScreen = () => {
     if (!document.fullscreenElement) {
       viewerRef.current.requestFullscreen().catch((err) => {
@@ -82,12 +61,12 @@ const Viewer = ({
     }
   };
 
-  // Conditionally render either a panorama or an image viewer based on item type
   const renderContent = () => {
     if (item.viewer === "pano") {
       return (
         <PanoramaViewer
           panoPath={item.panoPath}
+          initialViewParameters={item.initialViewParameters}
           onReady={handleContentLoaded}
         />
       );
@@ -127,6 +106,31 @@ const Viewer = ({
       )}
     </div>
   );
+};
+
+Viewer.propTypes = {
+  item: PropTypes.shape({
+    id: PropTypes.string.isRequired,
+    viewer: PropTypes.oneOf(["pano", "img"]).isRequired,
+    drone: PropTypes.string,
+    metadata: PropTypes.string.isRequired,
+    latitude: PropTypes.number,
+    longitude: PropTypes.number,
+    name: PropTypes.string,
+    thumbnailUrl: PropTypes.string.isRequired,
+    panoPath: PropTypes.string,
+    actualUrl: PropTypes.string,
+    initialViewParameters: PropTypes.shape({
+      yaw: PropTypes.number.isRequired,
+      pitch: PropTypes.number.isRequired,
+      fov: PropTypes.number.isRequired,
+    }),
+  }).isRequired,
+  onClose: PropTypes.func.isRequired,
+  onNext: PropTypes.func.isRequired,
+  onPrevious: PropTypes.func.isRequired,
+  isNavigationMode: PropTypes.bool.isRequired,
+  toggleMode: PropTypes.func.isRequired,
 };
 
 export default Viewer;

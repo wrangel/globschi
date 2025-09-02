@@ -1,83 +1,101 @@
 // src/components/PanoramaViewer.jsx
-
 import { useRef, useEffect } from "react";
 import Marzipano from "marzipano";
 
-/**
- * PanoramaViewer component for displaying a 360° panorama using Marzipano.
- *
- * Initializes a Marzipano viewer on a container element and sets up the panorama scene
- * with cube geometry and multiresolution tiles. Includes autorotation when idle.
- *
- * @param {Object} props - Component props.
- * @param {string} props.panoPath - Base URL path to panorama tile images.
- * @param {Function} [props.onReady] - Optional callback invoked when viewer is ready.
- *
- * @returns {JSX.Element} The container element where the panorama renders.
- */
-const PanoramaViewer = ({ panoPath, onReady }) => {
+const DEFAULT_VIEW = { yaw: 0, pitch: 0, fov: Math.PI / 4 };
+
+const PanoramaViewer = ({
+  panoPath,
+  initialViewParameters,
+  onReady,
+  onError,
+}) => {
   const panoramaElement = useRef(null);
+  const viewerRef = useRef(null);
 
   useEffect(() => {
     if (!panoPath || !panoramaElement.current) return;
 
-    // Initialize Marzipano viewer on the container
-    const viewer = new Marzipano.Viewer(panoramaElement.current);
+    viewerRef.current?.destroy();
+    viewerRef.current = null;
 
-    // Configure image levels for multiresolution cube tiles
+    const viewer = new Marzipano.Viewer(panoramaElement.current, {
+      stage: { pixelRatio: window.devicePixelRatio || 1 },
+    });
+    viewerRef.current = viewer;
+
     const levels = [
       { tileSize: 256, size: 256, fallbackOnly: true },
       { tileSize: 512, size: 512 },
       { tileSize: 512, size: 1024 },
     ];
-
-    // Define cube geometry based on levels
     const geometry = new Marzipano.CubeGeometry(levels);
-
-    // Configure source URL pattern for tiles with preview image
     const source = Marzipano.ImageUrlSource.fromString(
       `${panoPath}/{z}/{f}/{y}/{x}.jpg`,
-      {
-        cubeMapPreviewUrl: `${panoPath}/../preview.jpg`,
-      }
+      { cubeMapPreviewUrl: `${panoPath}/preview.jpg` }
     );
 
-    // Create view with yaw and pitch limits
+    if (onError)
+      source.addEventListener("error", (err) => {
+        onError(err);
+        console.error(`Error loading panorama: ${err.message}`);
+      });
+
+    let viewParams = DEFAULT_VIEW;
+    if (
+      initialViewParameters &&
+      typeof initialViewParameters.yaw === "number" &&
+      typeof initialViewParameters.pitch === "number" &&
+      typeof initialViewParameters.fov === "number"
+    ) {
+      viewParams = initialViewParameters;
+    } else {
+      console.warn(
+        "[PanoramaViewer] initialViewParameters missing or invalid → fallback",
+        initialViewParameters
+      );
+    }
+
     const limiter = Marzipano.RectilinearView.limit.traditional(
       1024,
       (120 * Math.PI) / 180
     );
-    const view = new Marzipano.RectilinearView(null, limiter);
+    const view = new Marzipano.RectilinearView(viewParams, limiter);
 
-    // Create and activate scene with above source, geometry, and view
     const scene = viewer.createScene({
       source,
       geometry,
       view,
       pinFirstLevel: true,
     });
-
     scene.switchTo({ transitionDuration: 1000 });
 
-    // Setup autorotation motion after 3 seconds idle
     const autorotate = Marzipano.autorotate({
-      yawSpeed: 0.05, // Adjust rotation speed
-      targetPitch: 0, // Level pitch forward
+      yawSpeed: 0.075,
+      targetPitch: 0,
       targetFov: Math.PI / 2,
     });
-
-    viewer.startMovement(autorotate);
+    if (typeof viewer.setIdleMovement === "function") {
+      viewer.setIdleMovement(3000, autorotate);
+    } else {
+      viewer.startMovement(autorotate);
+    }
 
     if (onReady) onReady();
 
-    // Cleanup function to destroy viewer on unmount or panoPath change
     return () => {
-      viewer.destroy();
+      viewerRef.current?.destroy();
+      viewerRef.current = null;
     };
-  }, [panoPath, onReady]);
+  }, [panoPath, initialViewParameters, onReady, onError]);
 
   return (
-    <div ref={panoramaElement} style={{ width: "100%", height: "100vh" }} />
+    <div
+      ref={panoramaElement}
+      style={{ width: "100%", height: "100vh" }}
+      role="application"
+      aria-label="360 degree panorama viewer"
+    />
   );
 };
 

@@ -4,31 +4,15 @@ import React, { useState } from "react";
 import { useSwipeable } from "react-swipeable";
 import FullScreenModal from "./FullScreenModal";
 import Viewer from "./Viewer";
+import useKeyboardNavigation from "../hooks/useKeyboardNavigation";
 
-/**
- * ViewerPopup component wraps the Viewer inside a fullscreen modal,
- * adding swipe gesture support for navigation.
- *
- * Handles toggling navigation mode and forwarding swipe gestures to change items.
- *
- * @param {Object} props - Component props.
- * @param {Object} props.item - The item to display in the viewer.
- * @param {boolean} props.isOpen - Whether the modal is open.
- * @param {Function} props.onClose - Callback to close the modal.
- * @param {Function} props.onNext - Callback to go to the next item.
- * @param {Function} props.onPrevious - Callback to go to the previous item.
- *
- * @returns {JSX.Element|null} The fullscreen modal wrapping the viewer or null if no item.
- */
 const ViewerPopup = ({ item, isOpen, onClose, onNext, onPrevious }) => {
   const [isNavigationMode, setIsNavigationMode] = useState(true);
 
-  // Function to toggle navigation mode between navigation and exploration
   const toggleMode = () => {
     setIsNavigationMode((prevMode) => !prevMode);
   };
 
-  // Swipe handlers for navigating items; only active in navigation mode
   const handlers = useSwipeable({
     onSwipedLeft: () => {
       if (isNavigationMode) {
@@ -44,6 +28,8 @@ const ViewerPopup = ({ item, isOpen, onClose, onNext, onPrevious }) => {
     trackMouse: true,
   });
 
+  useKeyboardNavigation(onClose, onPrevious, onNext);
+
   if (!item) return null;
 
   return (
@@ -55,8 +41,8 @@ const ViewerPopup = ({ item, isOpen, onClose, onNext, onPrevious }) => {
           onClose={onClose}
           onNext={onNext}
           onPrevious={onPrevious}
-          isNavigationMode={isNavigationMode} // pass current navigation mode
-          toggleMode={toggleMode} // pass toggle function to viewer
+          isNavigationMode={isNavigationMode}
+          toggleMode={toggleMode}
         />
       </div>
     </FullScreenModal>

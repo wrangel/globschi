@@ -70,6 +70,7 @@ function processDocument(doc, presignedUrls) {
       pitch: initialViewParameters.pitch,
       fov: initialViewParameters.fov,
     },
+    levels: doc.levels || [],
   };
 }
 

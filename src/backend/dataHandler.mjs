@@ -1,5 +1,3 @@
-// src/backend/dataHandler.mjs
-
 import { Island } from "./models/islandModel.mjs";
 import { getUrls } from "./signedUrlServer.mjs";
 import { beautify } from "./metadataProcessor.mjs";
@@ -21,8 +19,17 @@ export async function getCombinedData() {
       getUrls(),
     ]);
 
+    // Validate fetched data
+    if (!Array.isArray(mongoData) || mongoData.length === 0) {
+      throw new Error("No data found in MongoDB");
+    }
+    if (!Array.isArray(presignedUrls) || presignedUrls.length === 0) {
+      throw new Error("No presigned URLs found in AWS S3");
+    }
+
     // Combine and process the fetched data
     const combinedData = await beautify(mongoData, presignedUrls);
+
     return combinedData;
   } catch (error) {
     console.error("Error in getCombinedData:", error);
@@ -45,6 +52,7 @@ async function fetchMongoData() {
 
     if (!data || data.length === 0) {
       console.warn("No data found in MongoDB");
+      return [];
     }
     return data;
   } catch (error) {

@@ -136,6 +136,18 @@ const islandSchema = new mongoose.Schema({
     pitch: { type: Number },
     fov: { type: Number },
   },
+
+  /**
+   * Levels configuration for Marzipano panorama.
+   * Each level has tileSize, size, and fallbackOnly properties.
+   */
+  levels: [
+    {
+      tileSize: { type: Number, required: true },
+      size: { type: Number, required: true },
+      fallbackOnly: { type: Boolean, default: false },
+    },
+  ],
 });
 
 export const Island = mongoose.model("Island", islandSchema);

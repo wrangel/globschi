@@ -1,11 +1,13 @@
 // src/components/PanoramaViewer.jsx
 import { useRef, useEffect } from "react";
+import PropTypes from "prop-types";
 import Marzipano from "marzipano";
 
 const DEFAULT_VIEW = { yaw: 0, pitch: 0, fov: Math.PI / 4 };
 
 const PanoramaViewer = ({
   panoPath,
+  levels,
   initialViewParameters,
   onReady,
   onError,
@@ -14,7 +16,7 @@ const PanoramaViewer = ({
   const viewerRef = useRef(null);
 
   useEffect(() => {
-    if (!panoPath || !panoramaElement.current) return;
+    if (!panoPath || !levels?.length || !panoramaElement.current) return;
 
     viewerRef.current?.destroy();
     viewerRef.current = null;
@@ -24,22 +26,18 @@ const PanoramaViewer = ({
     });
     viewerRef.current = viewer;
 
-    const levels = [
-      { tileSize: 256, size: 256, fallbackOnly: true },
-      { tileSize: 512, size: 512 },
-      { tileSize: 512, size: 1024 },
-    ];
     const geometry = new Marzipano.CubeGeometry(levels);
     const source = Marzipano.ImageUrlSource.fromString(
       `${panoPath}/{z}/{f}/{y}/{x}.jpg`,
       { cubeMapPreviewUrl: `${panoPath}/preview.jpg` }
     );
 
-    if (onError)
+    if (onError) {
       source.addEventListener("error", (err) => {
         onError(err);
         console.error(`Error loading panorama: ${err.message}`);
       });
+    }
 
     let viewParams = DEFAULT_VIEW;
     if (
@@ -87,7 +85,7 @@ const PanoramaViewer = ({
       viewerRef.current?.destroy();
       viewerRef.current = null;
     };
-  }, [panoPath, initialViewParameters, onReady, onError]);
+  }, [panoPath, levels, initialViewParameters, onReady, onError]);
 
   return (
     <div
@@ -97,6 +95,24 @@ const PanoramaViewer = ({
       aria-label="360 degree panorama viewer"
     />
   );
+};
+
+PanoramaViewer.propTypes = {
+  panoPath: PropTypes.string.isRequired,
+  levels: PropTypes.arrayOf(
+    PropTypes.shape({
+      tileSize: PropTypes.number.isRequired,
+      size: PropTypes.number.isRequired,
+      fallbackOnly: PropTypes.bool,
+    })
+  ).isRequired,
+  initialViewParameters: PropTypes.shape({
+    yaw: PropTypes.number,
+    pitch: PropTypes.number,
+    fov: PropTypes.number,
+  }),
+  onReady: PropTypes.func,
+  onError: PropTypes.func,
 };
 
 export default PanoramaViewer;

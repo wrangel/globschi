@@ -1,16 +1,28 @@
 // src/frontend/views/HomePage.js
 
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
+import { useItems } from "../hooks/useItems";
 import styles from "../styles/Home.module.css";
 import { DOMAIN } from "../constants";
 
 const HomePage = () => {
   const navigate = useNavigate();
+  const { items } = useItems();
+  const [randomPano, setRandomPano] = useState(null);
   const [isPortrait, setIsPortrait] = useState(
     window.innerHeight > window.innerWidth
   );
+
+  useEffect(() => {
+    if (items.length > 0) {
+      const panoItems = items.filter((item) => item.viewer === "pano");
+      if (panoItems.length > 0) {
+        setRandomPano(panoItems[Math.floor(Math.random() * panoItems.length)]);
+      }
+    }
+  }, [items]);
 
   useEffect(() => {
     const handleResize = () =>
@@ -34,6 +46,17 @@ const HomePage = () => {
           content="Explore drone-captured aerial imagery. From lofty heights, we muse on marvels."
         />
       </Helmet>
+
+      {/* Background image wrapper */}
+      {randomPano && (
+        <div className={styles.backgroundWrapper}>
+          <img
+            src={randomPano.thumbnailUrl}
+            alt="Background panorama"
+            draggable={false}
+          />
+        </div>
+      )}
 
       <div
         className={`${styles.homePage} ${

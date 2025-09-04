@@ -17,7 +17,7 @@
     "@aws-sdk/s3-request-presigner": "^3.879.0",
     "cors": "^2.8.5",
     "express": "^5.1.0",
-    "express-rate-limit": "^8.0.1",
+    "express-rate-limit": "^8.1.0",
     "leaflet": "^1.9.4",
     "marzipano": "^0.10.2",
     "mongoose": "^8.18.0",

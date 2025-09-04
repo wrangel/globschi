@@ -7,6 +7,8 @@
   width: 100%;
   padding: var(--spacing-medium);
   box-sizing: border-box;
+  position: relative; /* ensure stacking context for content */
+  z-index: 1; /* above background */
 }
 
 .portraitLayout {
@@ -28,6 +30,8 @@
   max-width: 100%;
   text-align: center;
   margin-bottom: var(--spacing-small);
+  color: var(--text-color);
+  z-index: 2;
 }
 
 .imageWrapper {
@@ -35,6 +39,7 @@
   justify-content: center;
   align-items: center;
   margin-bottom: var(--spacing-large);
+  z-index: 2;
 }
 
 .image {
@@ -44,6 +49,7 @@
   max-height: 105vh;
   object-fit: contain;
   border-radius: 8px;
+  z-index: 2;
 }
 
 .homePage h1 {
@@ -54,6 +60,7 @@
   font-weight: 300; /* lighter, more elegant */
   line-height: 1.3; /* a touch more airy */
   letter-spacing: 0.5px; /* subtle elegance */
+  z-index: 2;
 }
 
 .homePage h2 {
@@ -62,6 +69,7 @@
   font-size: var(--font-size-medium);
   font-weight: 300; /* reduce heaviness */
   opacity: 0.9; /* slight fade for elegance */
+  z-index: 2;
 }
 
 .break {
@@ -85,6 +93,8 @@ footer.credits {
   word-break: keep-all; /* Prevent breaking words in the middle (good for names) */
   word-wrap: break-word; /* Break lines at convenient points if needed */
   display: inline-block; /* maintain block layout but shrink-wrap */
+  position: relative;
+  z-index: 2;
 }
 
 footer.credits a {
@@ -128,4 +138,44 @@ footer.credits a:focus {
   .homePage h1 {
     font-size: var(--font-size-small);
   }
+}
+
+/* Background image wrapper and cropped img */
+.backgroundWrapper {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  z-index: 0; /* behind page content */
+  pointer-events: none;
+}
+
+.backgroundWrapper img {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  height: 100%; /* fills height */
+  width: auto;
+  transform: translate(-50%, -50%);
+  object-fit: cover;
+  object-position: center center;
+  user-select: none;
+  pointer-events: none;
+  filter: none; /* keep image crisp */
+  -webkit-user-drag: none;
+}
+
+.textShadow {
+  text-shadow: 0 0 5px rgba(0, 0, 0, 0.8), 0 0 10px rgba(0, 0, 0, 0.6),
+    0 0 15px rgba(0, 0, 0, 0.4);
+}
+
+.contentOverlay {
+  background-color: rgba(0, 0, 0, 0.35);
+  border-radius: 0.5rem;
+  padding: 1rem 2rem;
+  display: inline-block;
+  z-index: 2;
 }

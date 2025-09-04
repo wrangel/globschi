@@ -1,16 +1,28 @@
 // src/frontend/views/HomePage.js
 
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
+import { useItems } from "../hooks/useItems";
 import styles from "../styles/Home.module.css";
 import { DOMAIN } from "../constants";
 
 const HomePage = () => {
   const navigate = useNavigate();
+  const { items } = useItems();
+  const [randomPano, setRandomPano] = useState(null);
   const [isPortrait, setIsPortrait] = useState(
     window.innerHeight > window.innerWidth
   );
+
+  useEffect(() => {
+    if (items.length > 0) {
+      const panoItems = items.filter((item) => item.viewer === "pano");
+      if (panoItems.length > 0) {
+        setRandomPano(panoItems[Math.floor(Math.random() * panoItems.length)]);
+      }
+    }
+  }, [items]);
 
   useEffect(() => {
     const handleResize = () =>
@@ -35,13 +47,24 @@ const HomePage = () => {
         />
       </Helmet>
 
+      {/* Background image wrapper */}
+      {randomPano && (
+        <div className={styles.backgroundWrapper}>
+          <img
+            src={randomPano.thumbnailUrl}
+            alt="Background panorama"
+            draggable={false}
+          />
+        </div>
+      )}
+
       <div
         className={`${styles.homePage} ${
           isPortrait ? styles.portraitLayout : ""
         }`}
       >
-        <div className={styles.mainContentWrapper}>
-          <div className={styles.textWrapper}>
+        <div className={styles.contentOverlay}>
+          <div className={`${styles.textWrapper} ${styles.textShadow}`}>
             <h1>
               From lofty heights,
               <br />
@@ -59,7 +82,10 @@ const HomePage = () => {
             />
           </div>
         </div>
-        <footer className={styles.credits}>
+
+        <footer
+          className={`${styles.credits} ${styles.contentOverlay} ${styles.textShadow}`}
+        >
           <a
             href="https://github.com/wrangel"
             target="_blank"

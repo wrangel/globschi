@@ -2,6 +2,7 @@
 import { useRef, useEffect } from "react";
 import PropTypes from "prop-types";
 import Marzipano from "marzipano";
+import styles from "../styles/PanoramaViewer.module.css";
 
 const DEFAULT_VIEW = { yaw: 0, pitch: 0, fov: Math.PI / 4 };
 
@@ -22,8 +23,17 @@ const PanoramaViewer = ({
     viewerRef.current = null;
 
     const viewer = new Marzipano.Viewer(panoramaElement.current, {
-      stage: { pixelRatio: window.devicePixelRatio || 1 },
+      stage: {
+        pixelRatio: window.devicePixelRatio || 1,
+        preserveDrawingBuffer: false,
+      },
     });
+
+    // ✅ Force black background and opaque canvas
+    const canvas = viewer.stage().domElement();
+    canvas.style.backgroundColor = "black";
+    canvas.style.opacity = "1";
+
     viewerRef.current = viewer;
 
     const geometry = new Marzipano.CubeGeometry(levels);
@@ -90,7 +100,7 @@ const PanoramaViewer = ({
   return (
     <div
       ref={panoramaElement}
-      style={{ width: "100%", height: "100vh" }}
+      className={styles.panoramaViewer}
       role="application"
       aria-label="360 degree panorama viewer"
     />

@@ -22,11 +22,24 @@ export const useItems = () => {
   const [isLoading, setIsLoading] = useState(!cachedItems);
   const [error, setError] = useState(null);
 
+  // Shallow equality check helper to avoid unnecessary state updates
+  const isSameArray = (a, b) => {
+    if (a.length !== b.length) return false;
+    for (let i = 0; i < a.length; i++) {
+      if (a[i] !== b[i]) return false;
+    }
+    return true;
+  };
+
   // Function to fetch data from API with timeout and abort controller
   const fetchData = useCallback(async () => {
     if (cachedItems) {
-      // Use cached data if available
-      setItems([...cachedItems]);
+      setItems((prevItems) => {
+        if (isSameArray(prevItems, cachedItems)) {
+          return prevItems; // Avoid update if same array
+        }
+        return [...cachedItems];
+      });
       setIsLoading(false);
       return;
     }
@@ -37,11 +50,9 @@ export const useItems = () => {
 
       const apiUrl =
         import.meta.env.VITE_API_URL || "http://localhost:8081/api/";
-      // Construct URL ensuring a trailing slash before endpoint path
       const url = `${apiUrl}${apiUrl.endsWith("/") ? "" : "/"}combined-data`;
 
       const controller = new AbortController();
-      // Set a 10-second timeout to abort fetch if it takes too long
       const timeoutId = setTimeout(() => controller.abort(), 10000);
 
       const response = await fetch(url, { signal: controller.signal });
@@ -53,10 +64,14 @@ export const useItems = () => {
 
       const data = await response.json();
 
-      setItems([...data]);
-      cachedItems = [...data]; // Cache the fetched data
+      setItems((prevItems) => {
+        if (isSameArray(prevItems, data)) {
+          return prevItems; // Avoid update if identical contents
+        }
+        return [...data];
+      });
+      cachedItems = [...data];
     } catch (e) {
-      // Handle abort and other fetch errors with user-friendly messages
       setError(
         e.name === "AbortError"
           ? "Request timed out. Please try again."

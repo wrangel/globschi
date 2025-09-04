@@ -1,6 +1,6 @@
 // src/components/Viewer.jsx
 
-import { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback, memo } from "react";
 import PropTypes from "prop-types";
 import ControlButtons from "./ControlButtons";
 import ImagePopup from "./ImagePopup";
@@ -24,13 +24,13 @@ const Viewer = ({
 
   useKeyboardNavigation(onClose, onPrevious, onNext);
 
-  const toggleMetadata = () => {
+  const toggleMetadata = useCallback(() => {
     setShowMetadata((prev) => !prev);
-  };
+  }, []);
 
-  const handleContentLoaded = () => {
+  const handleContentLoaded = useCallback(() => {
     setIsLoading(false);
-  };
+  }, []);
 
   useEffect(() => {
     const handleEscKey = (event) => {
@@ -49,7 +49,7 @@ const Viewer = ({
     };
   }, [showMetadata, onClose]);
 
-  const toggleFullScreen = () => {
+  const toggleFullScreen = useCallback(() => {
     if (!document.fullscreenElement) {
       viewerRef.current.requestFullscreen().catch((err) => {
         console.error(
@@ -59,9 +59,9 @@ const Viewer = ({
     } else {
       document.exitFullscreen();
     }
-  };
+  }, []);
 
-  const renderContent = () => {
+  const renderContent = useCallback(() => {
     if (item.viewer === "pano") {
       return (
         <PanoramaViewer
@@ -71,18 +71,17 @@ const Viewer = ({
           onReady={handleContentLoaded}
         />
       );
-    } else {
-      return (
-        <ImagePopup
-          actualUrl={item.actualUrl}
-          thumbnailUrl={item.thumbnailUrl}
-          name={item.name}
-          onLoad={handleContentLoaded}
-          isNavigationMode={isNavigationMode}
-        />
-      );
     }
-  };
+    return (
+      <ImagePopup
+        actualUrl={item.actualUrl}
+        thumbnailUrl={item.thumbnailUrl}
+        name={item.name}
+        onLoad={handleContentLoaded}
+        isNavigationMode={isNavigationMode}
+      />
+    );
+  }, [item, isNavigationMode, handleContentLoaded]);
 
   return (
     <div className={styles.viewer} ref={viewerRef}>
@@ -141,4 +140,4 @@ Viewer.propTypes = {
   toggleMode: PropTypes.func.isRequired,
 };
 
-export default Viewer;
+export default memo(Viewer);

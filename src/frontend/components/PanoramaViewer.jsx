@@ -1,4 +1,5 @@
 // src/components/PanoramaViewer.jsx
+
 import { useRef, useEffect } from "react";
 import PropTypes from "prop-types";
 import Marzipano from "marzipano";
@@ -19,9 +20,11 @@ const PanoramaViewer = ({
   useEffect(() => {
     if (!panoPath || !levels?.length || !panoramaElement.current) return;
 
+    // Clean up previous viewer instance if it exists
     viewerRef.current?.destroy();
     viewerRef.current = null;
 
+    // Create Marzipano viewer
     const viewer = new Marzipano.Viewer(panoramaElement.current, {
       stage: {
         pixelRatio: window.devicePixelRatio || 1,
@@ -29,26 +32,30 @@ const PanoramaViewer = ({
       },
     });
 
-    // ✅ Force black background and opaque canvas
+    // Set explicit black background to prevent flicker
     const canvas = viewer.stage().domElement();
     canvas.style.backgroundColor = "black";
     canvas.style.opacity = "1";
 
     viewerRef.current = viewer;
 
+    // Create scene geometry and source
     const geometry = new Marzipano.CubeGeometry(levels);
     const source = Marzipano.ImageUrlSource.fromString(
       `${panoPath}/{z}/{f}/{y}/{x}.jpg`,
       { cubeMapPreviewUrl: `${panoPath}/preview.jpg` }
     );
 
+    // Handle errors
     if (onError) {
       source.addEventListener("error", (err) => {
         onError(err);
+        // Optionally log
         console.error(`Error loading panorama: ${err.message}`);
       });
     }
 
+    // Use the supplied initial view params or fallback
     let viewParams = DEFAULT_VIEW;
     if (
       initialViewParameters &&
@@ -78,6 +85,7 @@ const PanoramaViewer = ({
     });
     scene.switchTo({ transitionDuration: 1000 });
 
+    // Autorotate setup – persists unless panorama truly changes
     const autorotate = Marzipano.autorotate({
       yawSpeed: 0.075,
       targetPitch: 0,
@@ -91,6 +99,7 @@ const PanoramaViewer = ({
 
     if (onReady) onReady();
 
+    // Cleanup ONLY when actual pano or levels change
     return () => {
       viewerRef.current?.destroy();
       viewerRef.current = null;

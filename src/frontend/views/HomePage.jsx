@@ -70,7 +70,7 @@ const HomePage = () => {
               <br />
               <span className={styles.break}>we muse on marvels</span>
             </h1>
-            <h2>Aerial imagery</h2>
+            <h2>Abstract Altitudes</h2>
           </div>
           <div className={styles.imageWrapper}>
             <img

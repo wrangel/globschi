@@ -166,3 +166,16 @@ footer.credits a:focus {
   filter: none; /* keep image crisp */
   -webkit-user-drag: none;
 }
+
+.textShadow {
+  text-shadow: 0 0 5px rgba(0, 0, 0, 0.8), 0 0 10px rgba(0, 0, 0, 0.6),
+    0 0 15px rgba(0, 0, 0, 0.4);
+}
+
+.contentOverlay {
+  background-color: rgba(0, 0, 0, 0.35);
+  border-radius: 0.5rem;
+  padding: 1rem 2rem;
+  display: inline-block;
+  z-index: 2;
+}

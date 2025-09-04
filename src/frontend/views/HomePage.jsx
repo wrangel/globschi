@@ -63,8 +63,8 @@ const HomePage = () => {
           isPortrait ? styles.portraitLayout : ""
         }`}
       >
-        <div className={styles.mainContentWrapper}>
-          <div className={styles.textWrapper}>
+        <div className={styles.contentOverlay}>
+          <div className={`${styles.textWrapper} ${styles.textShadow}`}>
             <h1>
               From lofty heights,
               <br />
@@ -82,7 +82,10 @@ const HomePage = () => {
             />
           </div>
         </div>
-        <footer className={styles.credits}>
+
+        <footer
+          className={`${styles.credits} ${styles.contentOverlay} ${styles.textShadow}`}
+        >
           <a
             href="https://github.com/wrangel"
             target="_blank"

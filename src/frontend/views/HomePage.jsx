@@ -105,7 +105,7 @@ const HomePage = () => {
           </a>
           ,{" "}
           <a
-            href="https://www.microsoft.com"
+            href="https://copilot.microsoft.com/"
             target="_blank"
             rel="noopener noreferrer"
           >

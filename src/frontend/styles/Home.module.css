@@ -3,25 +3,25 @@
 .homePage {
   display: flex;
   flex-direction: column;
-  justify-content: center; /* vertical centering */
-  align-items: center; /* horizontal centering */
   height: 100vh; /* fill viewport height */
   width: 100%;
   padding: var(--spacing-medium);
   box-sizing: border-box;
-  position: relative;
 }
 
 .portraitLayout {
+  /* different vertical alignment for portrait */
   justify-content: flex-start;
   padding-top: 15vh;
 }
 
 .mainContentWrapper {
-  /* Stack header and image vertically */
+  /* Take all available vertical space pushing footer down */
+  flex-grow: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center; /* optional vertical centering */
 }
 
 .textWrapper {
@@ -51,13 +51,17 @@
   color: var(--text-color);
   font-size: var(--font-size-large);
   font-family: var(--font-family);
-  line-height: 1.2;
+  font-weight: 300; /* lighter, more elegant */
+  line-height: 1.3; /* a touch more airy */
+  letter-spacing: 0.5px; /* subtle elegance */
 }
 
 .homePage h2 {
   margin-top: var(--spacing-small);
   color: var(--text-color);
   font-size: var(--font-size-medium);
+  font-weight: 300; /* reduce heaviness */
+  opacity: 0.9; /* slight fade for elegance */
 }
 
 .break {
@@ -70,8 +74,17 @@ footer.credits {
   color: var(--text-color);
   text-align: center;
   max-width: 600px;
-  margin: 2rem auto 1rem;
+  margin-top: auto;
+  margin-bottom: 1rem;
+  margin-left: auto;
+  margin-right: auto;
   line-height: 1.3;
+
+  /* Allow text to wrap naturally */
+  white-space: normal;
+  word-break: keep-all; /* Prevent breaking words in the middle (good for names) */
+  word-wrap: break-word; /* Break lines at convenient points if needed */
+  display: inline-block; /* maintain block layout but shrink-wrap */
 }
 
 footer.credits a {
@@ -79,6 +92,8 @@ footer.credits a {
   text-decoration: none;
   font-weight: 500;
   transition: color var(--transition-duration);
+  display: inline-block;
+  white-space: nowrap; /* prevents word breaks inside links */
 }
 
 footer.credits a:hover,
@@ -87,13 +102,13 @@ footer.credits a:focus {
   text-decoration: underline;
 }
 
-/* Maintain existing media queries and add these if needed */
+/* Maintain existing media queries */
 
 @media (orientation: landscape) and (min-width: 48em) {
   .mainContentWrapper {
     flex-direction: row;
     justify-content: center;
-    gap: 2rem; /* <- add this line (or any value you prefer) */
+    gap: 2rem; /* <- add this line (or value you prefer) */
   }
 }
 

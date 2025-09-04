@@ -1,6 +1,6 @@
 // src/frontend/views/MapPage.js
 
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import { MapContainer, TileLayer, Marker, useMap } from "react-leaflet";
 import L from "leaflet";
@@ -71,6 +71,12 @@ const MapPage = () => {
     handlePreviousItem,
   } = useItemViewer(items);
 
+  // Memoize handlers passed to ViewerPopup and Marker events for stable refs
+  const onItemClick = useCallback(handleItemClick, [handleItemClick]);
+  const onClose = useCallback(handleClosePopup, [handleClosePopup]);
+  const onNext = useCallback(handleNextItem, [handleNextItem]);
+  const onPrevious = useCallback(handlePreviousItem, [handlePreviousItem]);
+
   useEffect(() => {
     if (!isItemsLoading) {
       stopLoading();
@@ -112,15 +118,12 @@ const MapPage = () => {
               id="mapbox/satellite-v9"
               accessToken={import.meta.env.VITE_MAPBOX_ACCESS_TOKEN}
             />
-
             {items.map((item) => (
               <Marker
                 key={item.id}
                 position={[item.latitude, item.longitude]}
                 icon={redPinIcon}
-                eventHandlers={{
-                  click: () => handleItemClick(item),
-                }}
+                eventHandlers={{ click: () => onItemClick(item) }}
               />
             ))}
 
@@ -131,9 +134,9 @@ const MapPage = () => {
             <ViewerPopup
               item={selectedItem}
               isOpen={isModalOpen}
-              onClose={handleClosePopup}
-              onNext={handleNextItem}
-              onPrevious={handlePreviousItem}
+              onClose={onClose}
+              onNext={onNext}
+              onPrevious={onPrevious}
             />
           )}
         </div>

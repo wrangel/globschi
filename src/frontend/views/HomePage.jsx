@@ -86,69 +86,89 @@ const HomePage = () => {
         <footer
           className={`${styles.credits} ${styles.contentOverlay} ${styles.textShadow}`}
         >
-          <a
-            href="https://github.com/wrangel"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            wrangel
-          </a>
-          ,{" "}
-          <a
-            href="https://www.dji.com"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            DJI
-          </a>
-          ,{" "}
-          <a href="https://ptgui.com" target="_blank" rel="noopener noreferrer">
-            PTGui Pro
-          </a>
-          ,{" "}
-          <a
-            href="https://www.marzipano.net/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Marzipano
-          </a>
-          ,{" "}
-          <a
-            href="https://www.adobe.com/products/photoshop-lightroom.html"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Adobe Lightroom
-          </a>
-          ,{" "}
-          <a
-            href="https://www.perplexity.ai/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Perplexity AI
-          </a>
-          ,{" "}
-          <a
-            href="https://copilot.microsoft.com/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Microsoft Copilot
-          </a>
-          ,{" "}
-          <a href="https://kimi.com" target="_blank" rel="noopener noreferrer">
-            Kimi
-          </a>
-          ,{" "}
-          <a
-            href="https://mariushosting.com/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Marius Hosting
-          </a>
+          <ul className={styles.creditsList}>
+            <li>
+              <a
+                href="https://github.com/wrangel"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                wrangel
+              </a>
+            </li>
+            <li>
+              <a
+                href="https://www.dji.com"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                DJI
+              </a>
+            </li>
+            <li>
+              <a
+                href="https://ptgui.com"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                PTGui Pro
+              </a>
+            </li>
+            <li>
+              <a
+                href="https://www.adobe.com/products/photoshop-lightroom.html"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Adobe Lightroom
+              </a>
+            </li>
+            <li>
+              <a
+                href="https://www.marzipano.net/"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Marzipano
+              </a>
+            </li>
+            <li>
+              <a
+                href="https://www.perplexity.ai/"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Perplexity AI
+              </a>
+            </li>
+            <li>
+              <a
+                href="https://copilot.microsoft.com/"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Microsoft Copilot
+              </a>
+            </li>
+            <li>
+              <a
+                href="https://kimi.com"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Kimi
+              </a>
+            </li>
+            <li>
+              <a
+                href="https://mariushosting.com/"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Marius Hosting
+              </a>
+            </li>
+          </ul>
         </footer>
       </div>
     </>

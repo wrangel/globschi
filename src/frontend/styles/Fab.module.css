@@ -45,6 +45,38 @@
   background-color: var(--fab-active-color);
 }
 
+/* Left and right navigation arrows for ControlButtons */
+
+.leftArrow,
+.rightArrow {
+  position: fixed;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(0, 0, 0, 0.3);
+  border: none;
+  color: white;
+  font-size: 2rem;
+  cursor: pointer;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  transition: background-color 0.3s ease;
+  z-index: 1200;
+  user-select: none;
+}
+
+.leftArrow:hover,
+.rightArrow:hover {
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.leftArrow {
+  left: 1rem;
+}
+
+.rightArrow {
+  right: 1rem;
+}
+
 @media (max-width: 600px) {
   .fabContainer {
     bottom: 10px;
@@ -55,5 +87,11 @@
     width: 48px;
     height: 48px;
     font-size: 12px;
+  }
+
+  .leftArrow,
+  .rightArrow {
+    font-size: 1.5rem;
+    padding: 0.4rem 0.8rem;
   }
 }

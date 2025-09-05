@@ -1,17 +1,17 @@
-// src/frontend/components/ControlButtons.jsx
+// src/frontend/components/Fab2.jsx
 
 import { useState, useEffect } from "react";
 import styles from "../styles/Fab.module.css";
 
 /**
- * ControlButtons Component with arrows only, no swipe navigation.
+ * Fab2 Component with arrows only, no swipe navigation.
  *
  * Displays navigation arrows and controls.
  * Navigation happens only by clicking arrows.
  *
  * Props and functions unchanged.
  */
-const ControlButtons = ({
+const Fab2 = ({
   onClose,
   onPrevious,
   onNext,
@@ -103,4 +103,4 @@ const ControlButtons = ({
   );
 };
 
-export default ControlButtons;
+export default Fab2;

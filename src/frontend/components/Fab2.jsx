@@ -69,7 +69,7 @@ const Fab2 = ({
           </button>
 
           <button
-            className={`${styles.fab} ${styles.mainFab}`}
+            className={`${styles.fab}`}
             onClick={onClose}
             aria-label="Close"
           >
@@ -80,7 +80,7 @@ const Fab2 = ({
 
       {isFullscreen && (
         <button
-          className={`${styles.fab} ${styles.fullscreenButton}`}
+          className={`${styles.fab}`}
           onClick={onClose}
           aria-label="Close"
         >

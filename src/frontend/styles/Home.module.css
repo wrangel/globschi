@@ -160,7 +160,7 @@ footer.credits .textShadow {
 }
 
 footer.credits a {
-  color: var(--primary-color);
+  color: var(--text-color);
   text-decoration: none;
   font-weight: 500;
   white-space: nowrap;
@@ -187,6 +187,46 @@ footer.credits a:focus {
 @media (orientation: portrait) {
   .homePage {
     justify-content: space-between;
+  }
+}
+
+@media (max-width: 600px) {
+  /* Make footer fixed and responsive on small screens */
+  footer.credits {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: auto;
+    padding: 0.5rem 1rem;
+    font-size: 0.8rem;
+    white-space: normal;
+    text-align: center;
+    background-color: var(--overlay-bg-medium);
+    box-shadow: var(--overlay-box-shadow);
+    z-index: 1000;
+  }
+
+  footer.credits .contentOverlay {
+    padding: 0.5rem 1rem;
+    box-shadow: none;
+  }
+
+  .creditsList {
+    flex-direction: column;
+    gap: 0.25rem;
+    justify-content: center;
+  }
+
+  .creditsList li {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  /* Optionally hide footer on very small screens */
+  footer.credits {
+    display: none;
   }
 }
 

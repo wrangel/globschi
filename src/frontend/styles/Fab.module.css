@@ -19,13 +19,11 @@
 .fab {
   font-family: var(--font-stack);
   text-shadow: var(--text-shadow-heavy);
-  background-color: var(--overlay-bg-light); /* same background as arrows */
+  background-color: var(--fab-color); /* Default grey base */
   color: #fff;
   border: none;
-  border-radius: var(
-    --overlay-border-radius
-  ); /* rounded corners but not circle */
-  padding: 0.5rem 1rem; /* padding instead of fixed width/height */
+  border-radius: var(--overlay-border-radius);
+  padding: 0.5rem 1rem;
   display: inline-flex;
   justify-content: center;
   align-items: center;
@@ -34,13 +32,12 @@
   font-size: 1rem;
   box-shadow: var(--overlay-box-shadow);
   user-select: none;
-  /* remove or adjust fixed size */
   width: auto;
   height: auto;
 }
 
 .fab:hover {
-  background-color: var(--fab-hover-color); /* Slightly darker blue on hover */
+  background-color: var(--fab-hover-color); /* Darker grey on hover */
 }
 
 .fab:focus {
@@ -48,7 +45,7 @@
 }
 
 .fab.active {
-  background-color: var(--fab-active-color); /* Active blue color */
+  background-color: var(--fab-active-color); /* Darkest grey for active */
 }
 
 @media (max-width: 600px) {
@@ -81,7 +78,6 @@
   z-index: 1200;
   user-select: none;
 
-  /* same font & shadow as FAB */
   font-family: var(--font-stack);
   text-shadow: var(--text-shadow-heavy);
   box-shadow: var(--overlay-box-shadow);

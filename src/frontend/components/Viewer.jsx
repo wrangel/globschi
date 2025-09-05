@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef, useCallback, memo } from "react";
 import PropTypes from "prop-types";
-import ControlButtons from "./ControlButtons";
+import Fab2 from "./Fab2";
 import ImagePopup from "./ImagePopup";
 import MetadataPopup from "./MetadataPopup";
 import PanoramaViewer from "./PanoramaViewer";
@@ -87,7 +87,7 @@ const Viewer = ({
     <div className={styles.viewer} ref={viewerRef}>
       {isLoading && <LoadingOverlay thumbnailUrl={item.thumbnailUrl} />}
       {renderContent()}
-      <ControlButtons
+      <Fab2
         onClose={onClose}
         onNext={onNext}
         onPrevious={onPrevious}

@@ -2,18 +2,21 @@
 
 .metadataPopup {
   position: absolute;
-  top: var(--spacing-medium); /* Margin from the top */
-  left: var(--spacing-medium); /* Margin from the left */
-  background-color: var(--popup-bg-color, #000);
-  color: var(--popup-text-color, #fff);
+  top: var(--spacing-medium);
+  left: var(--spacing-medium);
+  background-color: var(--popup-bg-color);
+  color: var(--popup-text-color);
   padding: var(--popup-padding);
   border-radius: var(--popup-border-radius);
-  z-index: 1600; /* Ensure this is higher than the ImagePopup */
+  z-index: 1600;
   max-width: var(--max-width-popup);
-  width: auto; /* Adjusted to fit content */
+  width: auto;
   box-sizing: border-box;
-  font-family: var(--font-family);
-  font-size: inherit;
+  font-size: 0.9rem;
+  font-family: var(--font-stack); /* ← new font */
+  text-shadow: var(--text-shadow-heavy); /* ← new shadow */
+  transition: transform var(--transition-duration) ease;
+  will-change: transform;
 }
 
 .content {
@@ -25,24 +28,26 @@
   margin: 0 auto;
   background: transparent;
   border: none;
-  color: var(--close-button-color, grey);
+  color: var(--close-button-color);
   font-size: var(--close-button-font-size);
   cursor: pointer;
   transition: color var(--transition-duration);
+  font-family: var(--font-stack); /* ← keep same font */
+  text-shadow: var(--text-shadow-heavy); /* ← same shadow */
 }
 
 .closeButton:hover,
 .closeButton:focus {
-  color: var(--popup-text-color, #fff);
+  color: var(--popup-text-color);
 }
 
 .maplink {
   display: block;
   margin-top: var(--spacing-small);
-  color: var(--linkColor);
+  color: var(--link-color);
   text-decoration: none;
-  font-family: var(--font-family);
-  font-size: inherit;
+  font-family: var(--font-stack); /* ← new font */
+  text-shadow: var(--text-shadow-heavy); /* ← same shadow */
   transition: color var(--transition-duration);
 }
 
@@ -60,9 +65,17 @@
 
 @media (min-width: 320px) {
   .metadataPopup {
-    top: var(--spacing-small); /* Adjusted for smaller screens */
-    left: var(--spacing-small); /* Adjusted for smaller screens */
+    top: var(--spacing-small);
+    left: var(--spacing-small);
     width: calc(100% - var(--spacing-small) * 2);
     margin: 0;
   }
+}
+
+.metadataPopup,
+.metadataPopup .closeButton,
+.metadataPopup .maplink,
+.metadataPopup pre,
+.metadataPopup code {
+  font-family: var(--font-stack);
 }

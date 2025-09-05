@@ -70,7 +70,7 @@ const HomePage = () => {
               <br />
               <span className={styles.break}>we muse on marvels</span>
             </h1>
-            <h2>Aerial imagery</h2>
+            <h2>Abstract Altitudes</h2>
           </div>
           <div className={styles.imageWrapper}>
             <img
@@ -83,72 +83,37 @@ const HomePage = () => {
           </div>
         </div>
 
-        <footer
-          className={`${styles.credits} ${styles.contentOverlay} ${styles.textShadow}`}
-        >
-          <a
-            href="https://github.com/wrangel"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            wrangel
-          </a>
-          ,{" "}
-          <a
-            href="https://www.dji.com"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            DJI
-          </a>
-          ,{" "}
-          <a href="https://ptgui.com" target="_blank" rel="noopener noreferrer">
-            PTGui Pro
-          </a>
-          ,{" "}
-          <a
-            href="https://www.marzipano.net/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Marzipano
-          </a>
-          ,{" "}
-          <a
-            href="https://www.adobe.com/products/photoshop-lightroom.html"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Adobe Lightroom
-          </a>
-          ,{" "}
-          <a
-            href="https://www.perplexity.ai/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Perplexity AI
-          </a>
-          ,{" "}
-          <a
-            href="https://copilot.microsoft.com/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Microsoft Copilot
-          </a>
-          ,{" "}
-          <a href="https://kimi.com" target="_blank" rel="noopener noreferrer">
-            Kimi
-          </a>
-          ,{" "}
-          <a
-            href="https://mariushosting.com/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Marius Hosting
-          </a>
+        <footer className={styles.credits}>
+          <div className={`${styles.contentOverlay} ${styles.textShadow}`}>
+            <ul className={styles.creditsList}>
+              {[
+                { href: "https://github.com/wrangel ", label: "wrangel" },
+                { href: "https://www.dji.com ", label: "DJI" },
+                { href: "https://ptgui.com ", label: "PTGui Pro" },
+                {
+                  href: "https://www.adobe.com/products/photoshop-lightroom.html ",
+                  label: "Adobe Lightroom",
+                },
+                { href: "https://www.marzipano.net/ ", label: "Marzipano" },
+                { href: "https://www.perplexity.ai/ ", label: "Perplexity AI" },
+                {
+                  href: "https://copilot.microsoft.com/ ",
+                  label: "Microsoft Copilot",
+                },
+                { href: "https://kimi.com ", label: "Kimi" },
+                {
+                  href: "https://mariushosting.com/ ",
+                  label: "Marius Hosting",
+                },
+              ].map(({ href, label }) => (
+                <li key={label}>
+                  <a href={href} target="_blank" rel="noopener noreferrer">
+                    {label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
         </footer>
       </div>
     </>

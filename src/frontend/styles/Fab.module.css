@@ -2,8 +2,8 @@
 
 .fabContainer {
   position: fixed;
-  bottom: 20px;
-  right: 20px;
+  bottom: var(--spacing-large);
+  right: var(--spacing-large);
   display: flex;
   flex-direction: column;
   align-items: flex-end;
@@ -12,43 +12,49 @@
 .fabMenu {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: var(--spacing-small);
 }
 
+/* ----------  FAB  ---------- */
 .fab {
-  background-color: var(--fab-color);
-  color: white;
+  font-family: var(--font-stack);
+  text-shadow: var(--text-shadow-heavy);
+  background-color: var(--overlay-bg-light); /* same background as arrows */
+  color: #fff;
   border: none;
-  border-radius: 50%;
-  width: 52px;
-  height: 52px;
-  display: flex;
+  border-radius: var(
+    --overlay-border-radius
+  ); /* rounded corners but not circle */
+  padding: 0.5rem 1rem; /* padding instead of fixed width/height */
+  display: inline-flex;
   justify-content: center;
   align-items: center;
-  box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.3);
   cursor: pointer;
-  transition: background-color var(--transition-duration),
-    box-shadow var(--transition-duration);
-  font-family: var(--font-family);
+  transition: background-color var(--transition-duration);
+  font-size: 1rem;
+  box-shadow: var(--overlay-box-shadow);
+  user-select: none;
+  /* remove or adjust fixed size */
+  width: auto;
+  height: auto;
 }
 
 .fab:hover {
-  background-color: var(--fab-hover-color);
+  background-color: var(--fab-hover-color); /* Slightly darker blue on hover */
 }
 
 .fab:focus {
   outline: none;
-  box-shadow: 0px 0px 0px 3px rgba(66, 153, 225, 0.6);
 }
 
-.active {
-  background-color: var(--fab-active-color);
+.fab.active {
+  background-color: var(--fab-active-color); /* Active blue color */
 }
 
 @media (max-width: 600px) {
   .fabContainer {
-    bottom: 10px;
-    right: 10px;
+    bottom: var(--spacing-small);
+    right: var(--spacing-small);
   }
 
   .fab {
@@ -56,4 +62,40 @@
     height: 48px;
     font-size: 12px;
   }
+}
+
+/* ----------  arrows  ---------- */
+.leftArrow,
+.rightArrow {
+  position: fixed;
+  top: 50%;
+  transform: translateY(-50%);
+  background: var(--overlay-bg-light);
+  border: none;
+  color: #fff;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0.5rem 1rem;
+  border-radius: var(--overlay-border-radius);
+  transition: background-color 0.3s ease;
+  z-index: 1200;
+  user-select: none;
+
+  /* same font & shadow as FAB */
+  font-family: var(--font-stack);
+  text-shadow: var(--text-shadow-heavy);
+  box-shadow: var(--overlay-box-shadow);
+}
+
+.leftArrow:hover,
+.rightArrow:hover {
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.leftArrow {
+  left: 1rem;
+}
+
+.rightArrow {
+  right: 1rem;
 }

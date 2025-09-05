@@ -160,7 +160,7 @@ footer.credits .textShadow {
 }
 
 footer.credits a {
-  color: var(--primary-color);
+  color: var(--text-color);
   text-decoration: none;
   font-weight: 500;
   white-space: nowrap;

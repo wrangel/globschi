@@ -73,7 +73,7 @@
   background: var(--overlay-bg-light);
   border: none;
   color: #fff;
-  font-size: 2rem;
+  font-size: 1.5rem;
   cursor: pointer;
   padding: 0.5rem 1rem;
   border-radius: var(--overlay-border-radius);

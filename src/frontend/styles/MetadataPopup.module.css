@@ -2,8 +2,8 @@
 
 .metadataPopup {
   position: absolute;
-  top: var(--spacing-medium); /* Margin from the top */
-  left: var(--spacing-medium); /* Margin from the left */
+  top: var(--spacing-medium); /* Initial position from the top */
+  left: var(--spacing-medium); /* Initial position from the left */
   background-color: var(--popup-bg-color, #000);
   color: var(--popup-text-color, #fff);
   padding: var(--popup-padding);
@@ -14,6 +14,7 @@
   box-sizing: border-box;
   font-family: var(--font-family);
   font-size: inherit;
+  transition: transform 0.2s ease; /* Smooth transition for dragging */
 }
 
 .content {

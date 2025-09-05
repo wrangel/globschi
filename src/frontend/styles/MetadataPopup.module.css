@@ -4,8 +4,8 @@
   position: absolute;
   top: var(--spacing-medium);
   left: var(--spacing-medium);
-  background-color: var(--popup-bg-color, #000);
-  color: var(--popup-text-color, #fff);
+  background-color: var(--popup-bg-color);
+  color: var(--popup-text-color);
   padding: var(--popup-padding);
   border-radius: var(--popup-border-radius);
   z-index: 1600;
@@ -13,12 +13,8 @@
   width: auto;
   box-sizing: border-box;
   font-family: var(--font-family);
-  font-size: inherit;
-  transition: transform 0.2s ease;
+  transition: transform var(--transition-duration) ease;
   will-change: transform;
-  pointer-events: auto; /* Ensure popover gets pointer events */
-  /* Optionally prevent accidental selection */
-  user-select: none;
 }
 
 .content {
@@ -30,7 +26,7 @@
   margin: 0 auto;
   background: transparent;
   border: none;
-  color: var(--close-button-color, grey);
+  color: var(--close-button-color);
   font-size: var(--close-button-font-size);
   cursor: pointer;
   transition: color var(--transition-duration);
@@ -38,16 +34,15 @@
 
 .closeButton:hover,
 .closeButton:focus {
-  color: var(--popup-text-color, #fff);
+  color: var(--popup-text-color);
 }
 
 .maplink {
   display: block;
   margin-top: var(--spacing-small);
-  color: var(--linkColor);
+  color: var(--link-color);
   text-decoration: none;
   font-family: var(--font-family);
-  font-size: inherit;
   transition: color var(--transition-duration);
 }
 

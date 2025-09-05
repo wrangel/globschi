@@ -2,8 +2,8 @@
 
 .fabContainer {
   position: fixed;
-  bottom: 20px;
-  right: 20px;
+  bottom: var(--spacing-large);
+  right: var(--spacing-large);
   display: flex;
   flex-direction: column;
   align-items: flex-end;
@@ -12,7 +12,7 @@
 .fabMenu {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: var(--spacing-small);
 }
 
 .fab {
@@ -42,7 +42,20 @@
 }
 
 .active {
-  background-color: var(--fab-active-color);
+  background-color: var(--primary-color);
+}
+
+@media (max-width: 600px) {
+  .fabContainer {
+    bottom: var(--spacing-small);
+    right: var(--spacing-small);
+  }
+
+  .fab {
+    width: 48px;
+    height: 48px;
+    font-size: 12px;
+  }
 }
 
 /* Left and right navigation arrows for ControlButtons */
@@ -75,23 +88,4 @@
 
 .rightArrow {
   right: 1rem;
-}
-
-@media (max-width: 600px) {
-  .fabContainer {
-    bottom: 10px;
-    right: 10px;
-  }
-
-  .fab {
-    width: 48px;
-    height: 48px;
-    font-size: 12px;
-  }
-
-  .leftArrow,
-  .rightArrow {
-    font-size: 1.5rem;
-    padding: 0.4rem 0.8rem;
-  }
 }

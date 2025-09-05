@@ -48,10 +48,8 @@
   --fab-color: rgba(153, 153, 153, 0.7);
   --fab-hover-color: rgba(124, 124, 124, 0.7);
 
-  /* New variables */
   --adjustment-height: 15px;
   --max-width-popup: 280px;
-  --linkColor: #ffffff; /* Bright blue color for better legibility */
 }
 
 body {
@@ -65,7 +63,7 @@ body {
 }
 
 code {
-  font-family: var(--code-font-family);
+  font-family: var(--font-family);
 }
 
 @keyframes spin {

@@ -5,27 +5,34 @@
   bottom: var(--spacing-large);
   right: var(--spacing-large);
   display: flex;
-  flex-direction: column;
+  flex-direction: column; /* keep vertical stacking for other fab groups if needed */
   align-items: flex-end;
+  z-index: 1100;
 }
 
 .fabMenu {
   display: flex;
-  flex-direction: column;
+  flex-direction: column; /* vertical by default */
   gap: var(--spacing-small);
 }
 
-/* ----------  FAB  ---------- */
+@media (max-width: 600px) {
+  .fabMenu {
+    flex-direction: row; /* horizontal on small screens */
+  }
+}
+
+/* ----------  FAB buttons  ---------- */
 .fab {
   font-family: var(--font-stack);
   text-shadow: var(--text-shadow-heavy);
-  background-color: var(--overlay-bg-light); /* same background as arrows */
+  background-color: var(
+    --overlay-bg-light
+  ); /* same as arrows and footer overlays */
   color: #fff;
   border: none;
-  border-radius: var(
-    --overlay-border-radius
-  ); /* rounded corners but not circle */
-  padding: 0.5rem 1rem; /* padding instead of fixed width/height */
+  border-radius: var(--overlay-border-radius);
+  padding: 0.5rem 1rem;
   display: inline-flex;
   justify-content: center;
   align-items: center;
@@ -34,13 +41,13 @@
   font-size: 1rem;
   box-shadow: var(--overlay-box-shadow);
   user-select: none;
-  /* remove or adjust fixed size */
   width: auto;
   height: auto;
+  min-width: 50px;
 }
 
 .fab:hover {
-  background-color: var(--fab-hover-color); /* Slightly darker blue on hover */
+  background-color: var(--fab-hover-color);
 }
 
 .fab:focus {
@@ -48,20 +55,7 @@
 }
 
 .fab.active {
-  background-color: var(--fab-active-color); /* Active blue color */
-}
-
-@media (max-width: 600px) {
-  .fabContainer {
-    bottom: var(--spacing-small);
-    right: var(--spacing-small);
-  }
-
-  .fab {
-    width: 48px;
-    height: 48px;
-    font-size: 12px;
-  }
+  background-color: var(--fab-active-color);
 }
 
 /* ----------  arrows  ---------- */
@@ -81,7 +75,6 @@
   z-index: 1200;
   user-select: none;
 
-  /* same font & shadow as FAB */
   font-family: var(--font-stack);
   text-shadow: var(--text-shadow-heavy);
   box-shadow: var(--overlay-box-shadow);
@@ -98,4 +91,35 @@
 
 .rightArrow {
   right: 1rem;
+}
+
+/* ---------- Responsive Fix for small screens ---------- */
+@media (max-width: 600px) {
+  .fabContainer {
+    bottom: var(--spacing-small);
+    right: var(--spacing-small);
+  }
+
+  .fabMenu {
+    gap: 0.5rem;
+  }
+
+  .fab {
+    padding: 0.4rem 0.75rem;
+    font-size: 0.9rem;
+    min-width: 40px;
+  }
+
+  /* Move arrows above FAB horizontal buttons to avoid overlap */
+  .rightArrow {
+    bottom: 4.5rem; /* adjust as needed */
+    top: auto;
+    right: var(--spacing-small);
+  }
+
+  .leftArrow {
+    bottom: 4.5rem;
+    top: auto;
+    left: var(--spacing-small);
+  }
 }

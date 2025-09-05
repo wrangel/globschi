@@ -1,6 +1,9 @@
+// src/backend/dataHandler.mjs
+
 import { Island } from "./models/islandModel.mjs";
 import { getUrls } from "./signedUrlServer.mjs";
 import { beautify } from "./metadataProcessor.mjs";
+import logger from "./utils/logger.mjs";
 
 /**
  * Fetches and combines data from MongoDB and AWS S3.
@@ -32,7 +35,7 @@ export async function getCombinedData() {
 
     return combinedData;
   } catch (error) {
-    console.error("Error in getCombinedData:", error);
+    logger.error("Error in getCombinedData:", error);
     throw new Error("Failed to fetch or process combined data");
   }
 }
@@ -51,12 +54,12 @@ async function fetchMongoData() {
     const data = await Island.find().lean().sort({ dateTime: -1 }).exec();
 
     if (!data || data.length === 0) {
-      console.warn("No data found in MongoDB");
+      logger.warn("No data found in MongoDB");
       return [];
     }
     return data;
   } catch (error) {
-    console.error("Error fetching data from MongoDB:", error);
+    logger.error("Error fetching data from MongoDB:", error);
     throw new Error("Failed to fetch data from MongoDB");
   }
 }

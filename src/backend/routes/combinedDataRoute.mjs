@@ -2,7 +2,7 @@
 
 import express from "express";
 import { getCombinedData } from "../dataHandler.mjs";
-import { getCachedData, setCachedData } from "../cache.mjs";
+import { getCachedData, setCachedData, invalidateCache } from "../cache.mjs";
 import logger from "../utils/logger.mjs";
 
 const router = express.Router();
@@ -27,8 +27,14 @@ router.get("/combined-data", async (req, res) => {
   try {
     // Fetch fresh combined data and cache it
     const combinedData = await getCombinedData();
-
     setCachedData(cacheKey, combinedData);
+
+    // Optionally, invalidate cache after a certain period
+    setTimeout(() => {
+      invalidateCache(cacheKey);
+      logger.info(`[CACHE INVALIDATION] Cache invalidated for key=${cacheKey}`);
+    }, 3600000); // Invalidate cache after 1 hour (3600000 milliseconds)
+
     res.status(200).json(combinedData);
   } catch (error) {
     logger.error("Error fetching combined data", { error });

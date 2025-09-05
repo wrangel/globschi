@@ -104,7 +104,7 @@ app.get("/", (req, res) => {
 });
 
 // Catch-all for all other routes - serves React app's index.html
-app.get("/*splat", generalLimiter, (req, res) => {
+app.get("/*", generalLimiter, (req, res) => {
   res.sendFile(path.join(__dirname, "../../build", "index.html"));
 });
 

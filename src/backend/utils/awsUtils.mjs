@@ -6,7 +6,6 @@ import {
   DeleteObjectsCommand,
   GetObjectCommand,
 } from "@aws-sdk/client-s3";
-
 import fs from "fs/promises";
 import logger from "../utils/logger.mjs";
 import { getId } from "./utils.mjs";

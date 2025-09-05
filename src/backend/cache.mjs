@@ -1,17 +1,25 @@
 // src/backend/cache.mjs
 
-/**
- * @module cache
- *
- * Simple in-memory caching layer using NodeCache with TTL.
- * Provides functions to get, set, invalidate cache entries,
- * and print cache statistics for debugging.
- */
-
 import NodeCache from "node-cache";
 import logger from "./utils/logger.mjs";
+import fs from "fs";
+import path from "path";
 
-const cache = new NodeCache({ stdTTL: 60 }); // Cache TTL of 60 seconds
+// Load configuration from environment variables or a config file
+const cacheTTL = parseInt(process.env.CACHE_TTL || 60); // Default TTL of 60 seconds
+const cacheCheckPeriod = parseInt(process.env.CACHE_CHECK_PERIOD || 60); // Default check period of 60 seconds
+const cacheDir = process.env.CACHE_DIR || "./cache"; // Default cache directory
+
+// Ensure the cache directory exists
+if (!fs.existsSync(cacheDir)) {
+  fs.mkdirSync(cacheDir, { recursive: true });
+}
+
+const cache = new NodeCache({
+  stdTTL: cacheTTL,
+  checkperiod: cacheCheckPeriod,
+  useClones: false,
+});
 
 /**
  * Retrieves cached data by key.

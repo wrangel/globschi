@@ -49,5 +49,10 @@ logger.on("error", (err) => {
   console.error("Logging error:", err);
 });
 
+// Function to dynamically adjust log level at runtime
+export function setLogLevel(level) {
+  logger.level = level;
+}
+
 // Export configured logger instance for use in other modules
 export default logger;

@@ -3,7 +3,7 @@
 .homePage {
   display: flex;
   flex-direction: column;
-  min-height: 100vh; /* changed from height to min-height */
+  min-height: 100vh;
   width: 100%;
   padding: var(--spacing-medium);
   box-sizing: border-box;
@@ -17,7 +17,7 @@
 }
 
 .mainContentWrapper {
-  flex-grow: 1; /* grows to fill available vertical space */
+  flex-grow: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -100,11 +100,6 @@
   -webkit-user-drag: none;
 }
 
-.textShadow {
-  text-shadow: 0 0 5px rgba(0, 0, 0, 0.8), 0 0 10px rgba(0, 0, 0, 0.6),
-    0 0 20px rgba(0, 0, 0, 0.4);
-}
-
 .contentOverlay {
   background-color: rgba(0, 0, 0, 0.35);
   border-radius: 0.5rem;
@@ -113,7 +108,7 @@
   z-index: 2;
 }
 
-/* Sticky footer styles */
+/* ---------- sticky footer ---------- */
 footer.credits {
   font-family: var(--font-family);
   font-size: 0.95rem;
@@ -125,7 +120,7 @@ footer.credits {
   width: 100%;
   padding: 0 1.5rem;
   box-sizing: border-box;
-  margin-top: auto; /* pushes footer to bottom */
+  margin-top: auto;
   position: relative;
   overflow: visible;
   white-space: nowrap;
@@ -140,6 +135,7 @@ footer.credits .contentOverlay {
   z-index: 2;
 }
 
+/* footer shadow – softer than headings */
 footer.credits .textShadow {
   text-shadow: 0 0 4px rgba(0, 0, 0, 0.85), 0 0 8px rgba(0, 0, 0, 0.7),
     0 0 12px rgba(0, 0, 0, 0.5);
@@ -178,8 +174,7 @@ footer.credits a:focus {
   text-decoration: underline;
 }
 
-/* Media queries */
-
+/* ---------- media queries ---------- */
 @media (orientation: landscape) and (min-width: 48em) {
   .mainContentWrapper {
     flex-direction: row;

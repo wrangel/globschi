@@ -103,8 +103,7 @@ app.get("/", (req, res) => {
   res.send("Server is running");
 });
 
-// Catch-all for all other routes - serves React app's index.html
-app.get("/*", generalLimiter, (req, res) => {
+app.get("/{*path}", generalLimiter, (req, res) => {
   res.sendFile(path.join(__dirname, "../../build", "index.html"));
 });
 

@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef, useCallback, memo } from "react";
 import PropTypes from "prop-types";
-import Fab2 from "./Fab2";
+import NavigationMedia from "./NavigationMedia";
 import ImagePopup from "./ImagePopup";
 import MetadataPopup from "./MetadataPopup";
 import PanoramaViewer from "./PanoramaViewer";
@@ -10,6 +10,18 @@ import LoadingOverlay from "./LoadingOverlay";
 import useKeyboardNavigation from "../hooks/useKeyboardNavigation";
 import styles from "../styles/Viewer.module.css";
 
+/**
+ * Viewer component shows either a panorama or image viewer with navigation,
+ * metadata display, fullscreen support, and loading states.
+ *
+ * Props:
+ * - item: The current item to view (pano or image).
+ * - onClose: Callback to close viewer.
+ * - onNext: Callback to go to next item.
+ * - onPrevious: Callback to go to previous item.
+ * - isNavigationMode: Whether navigation UI and controls should show.
+ * - toggleMode: Callback to toggle navigation mode.
+ */
 const Viewer = ({
   item,
   onClose,
@@ -22,24 +34,25 @@ const Viewer = ({
   const [isLoading, setIsLoading] = useState(true);
   const viewerRef = useRef(null);
 
+  // Custom hook for keyboard navigation (Esc, arrows etc)
   useKeyboardNavigation(onClose, onPrevious, onNext);
 
+  // Toggle metadata panel visibility
   const toggleMetadata = useCallback(() => {
     setShowMetadata((prev) => !prev);
   }, []);
 
+  // Callback when content finished loading
   const handleContentLoaded = useCallback(() => {
     setIsLoading(false);
   }, []);
 
+  // Handle ESC key: close metadata or viewer
   useEffect(() => {
     const handleEscKey = (event) => {
       if (event.key === "Escape") {
-        if (showMetadata) {
-          setShowMetadata(false);
-        } else {
-          onClose();
-        }
+        if (showMetadata) setShowMetadata(false);
+        else onClose();
       }
     };
 
@@ -49,11 +62,12 @@ const Viewer = ({
     };
   }, [showMetadata, onClose]);
 
+  // Toggle fullscreen mode on viewer container
   const toggleFullScreen = useCallback(() => {
     if (!document.fullscreenElement) {
       viewerRef.current.requestFullscreen().catch((err) => {
         console.error(
-          `Error attempting to enable full-screen mode: ${err.message} (${err.name})`
+          `Error trying to enable full-screen mode: ${err.message} (${err.name})`
         );
       });
     } else {
@@ -61,6 +75,7 @@ const Viewer = ({
     }
   }, []);
 
+  // Render either a panorama viewer or image popup based on item type
   const renderContent = useCallback(() => {
     if (item.viewer === "pano") {
       return (
@@ -69,6 +84,7 @@ const Viewer = ({
           levels={item.levels}
           initialViewParameters={item.initialViewParameters}
           onReady={handleContentLoaded}
+          onError={() => setIsLoading(false)} // Optional: handle errors too
         />
       );
     }
@@ -77,8 +93,8 @@ const Viewer = ({
         actualUrl={item.actualUrl}
         thumbnailUrl={item.thumbnailUrl}
         name={item.name}
-        onLoad={handleContentLoaded}
         isNavigationMode={isNavigationMode}
+        onLoad={handleContentLoaded}
       />
     );
   }, [item, isNavigationMode, handleContentLoaded]);
@@ -87,7 +103,7 @@ const Viewer = ({
     <div className={styles.viewer} ref={viewerRef}>
       {isLoading && <LoadingOverlay thumbnailUrl={item.thumbnailUrl} />}
       {renderContent()}
-      <Fab2
+      <NavigationMedia
         onClose={onClose}
         onNext={onNext}
         onPrevious={onPrevious}

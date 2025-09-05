@@ -4,21 +4,18 @@ import PropTypes from "prop-types";
 import styles from "../styles/LoadingErrorHandler.module.css";
 
 /**
- * LoadingErrorHandler component renders either a loading indicator,
- * an error message, or its children content based on the current state.
+ * LoadingErrorHandler component
+ * Conditionally renders loading UI, error message, or children content.
  *
- * Useful for managing loading and error states in UI while fetching data.
+ * Use as a wrapper component to manage loading and error states cleanly.
  *
- * @param {Object} props - Component props.
- * @param {boolean} props.isLoading - Whether data is currently loading.
+ * @param {Object} props
+ * @param {boolean} props.isLoading - Whether the data or content is loading.
  * @param {string} [props.error] - Optional error message to display.
- * @param {React.ReactNode} props.children - The child components to render when not loading or error.
- *
- * @returns {React.ReactElement} The loading UI, error UI, or children content.
+ * @param {React.ReactNode} props.children - Content to render if no loading or error.
  */
 const LoadingErrorHandler = ({ isLoading, error, children }) => {
   if (isLoading) {
-    // Show loading message or spinner while loading
     return (
       <div className={styles.container}>
         <p className={styles.message}>Loading...</p>
@@ -27,7 +24,6 @@ const LoadingErrorHandler = ({ isLoading, error, children }) => {
   }
 
   if (error) {
-    // Show error message if present
     return (
       <div className={styles.container}>
         <p className={`${styles.message} ${styles.error}`}>Error: {error}</p>
@@ -35,7 +31,6 @@ const LoadingErrorHandler = ({ isLoading, error, children }) => {
     );
   }
 
-  // If no loading or error, render children content normally
   return children;
 };
 

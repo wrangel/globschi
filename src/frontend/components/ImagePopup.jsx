@@ -1,22 +1,21 @@
 // src/frontend/components/ImagePopup.jsx
 
 import { useState, useEffect, useRef } from "react";
+import PropTypes from "prop-types";
 import LoadingOverlay from "./LoadingOverlay";
 import panzoom from "panzoom";
 import styles from "../styles/ImagePopup.module.css";
 
 /**
- * ImagePopup component displays an image with zoom and pan capabilities.
+ * ImagePopup component
+ * Displays a zoomable and pannable image with a loading indicator.
  *
- * It shows a loading overlay while the high-resolution image is loading,
- * disables page scrolling while the image is displayed,
- * and allows toggling pan/zoom navigation based on mode.
- *
- * @param {Object} props - Component props.
- * @param {string} props.actualUrl - URL of the main high-resolution image.
- * @param {string} props.thumbnailUrl - URL of the loading thumbnail image.
- * @param {string} props.name - Alt text / name of the image.
- * @param {boolean} props.isNavigationMode - Whether pan/zoom navigation is enabled.
+ * Props:
+ * - actualUrl: URL of the high-resolution image.
+ * - thumbnailUrl: URL of the loading thumbnail image for placeholder.
+ * - name: Alt text for the image.
+ * - isNavigationMode: Enables or disables pan/zoom interaction.
+ * - onLoad: Callback after image is loaded.
  */
 const ImagePopup = ({
   actualUrl,
@@ -25,21 +24,25 @@ const ImagePopup = ({
   isNavigationMode,
   onLoad,
 }) => {
-  const [isLoading, setIsLoading] = useState(true); // Loading state for high-res image
-  const imgRef = useRef(null); // Ref to image container DOM element
-  const panZoomInstanceRef = useRef(null); // Stores panzoom instance for control
+  const [isLoading, setIsLoading] = useState(true);
+  const imgRef = useRef(null);
+  const panZoomInstanceRef = useRef(null);
 
-  // Pre-load high-resolution image, update loading state when done
+  // Preload high-res image and update loading state
   useEffect(() => {
+    setIsLoading(true);
     const img = new Image();
     img.src = actualUrl;
+
     img.onload = () => {
       setIsLoading(false);
       if (onLoad) onLoad();
     };
+
+    // Optional: handle loading errors here if needed
   }, [actualUrl, onLoad]);
 
-  // Manage page scrollbar visibility while image is loading
+  // Disable page scrolling when image is loaded (modal active)
   useEffect(() => {
     if (!isLoading) {
       document.body.classList.add("hide-scrollbar");
@@ -47,26 +50,24 @@ const ImagePopup = ({
       document.body.classList.remove("hide-scrollbar");
     }
 
-    // Cleanup on unmount or URL change
     return () => {
       document.body.classList.remove("hide-scrollbar");
     };
   }, [isLoading]);
 
-  // Initialize panzoom on the image container once loading completes
+  // Initialize panzoom for image container after image loads
   useEffect(() => {
     if (!isLoading && imgRef.current) {
       const instance = panzoom(imgRef.current);
       panZoomInstanceRef.current = instance;
 
-      // Cleanup panzoom instance on unmount or reload
       return () => {
         instance.dispose();
       };
     }
   }, [isLoading]);
 
-  // Enable or disable panzoom navigation based on isNavigationMode prop
+  // Toggle panzoom navigation based on isNavigationMode prop
   useEffect(() => {
     if (panZoomInstanceRef.current) {
       if (isNavigationMode) {
@@ -79,7 +80,6 @@ const ImagePopup = ({
 
   return (
     <div className={`${styles.imagePopup} ${!isLoading ? styles.loaded : ""}`}>
-      {/* Show loading overlay while the high-res image is loading */}
       {isLoading && <LoadingOverlay thumbnailUrl={thumbnailUrl} />}
       <div ref={imgRef} className={styles.panzoomContainer}>
         <img
@@ -90,6 +90,14 @@ const ImagePopup = ({
       </div>
     </div>
   );
+};
+
+ImagePopup.propTypes = {
+  actualUrl: PropTypes.string.isRequired,
+  thumbnailUrl: PropTypes.string.isRequired,
+  name: PropTypes.string.isRequired,
+  isNavigationMode: PropTypes.bool.isRequired,
+  onLoad: PropTypes.func,
 };
 
 export default ImagePopup;

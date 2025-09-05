@@ -1,26 +1,39 @@
 // src/frontend/components/LoadingOverlay.jsx
 
+import PropTypes from "prop-types";
 import styles from "../styles/LoadingOverlay.module.css";
 
 /**
- * LoadingOverlay component displays a full overlay with a spinner
- * and optional thumbnail image while content is loading.
+ * LoadingOverlay component
  *
- * Typically used to indicate background loading state with visual feedback.
+ * Displays a fullscreen overlay with a spinner and optional thumbnail image.
  *
- * @param {Object} props - Component props
- * @param {string} [props.thumbnailUrl] - Optional URL of a thumbnail image to show while loading
- * @returns {JSX.Element} An overlay with spinner and optional thumbnail
+ * Props:
+ * - thumbnailUrl (optional): URL of a thumbnail image to show while loading.
+ *
+ * @param {Object} props
+ * @param {string} [props.thumbnailUrl] Optional thumbnail image URL.
+ * @returns {JSX.Element} Loading overlay element.
  */
-const LoadingOverlay = ({ thumbnailUrl }) => {
+function LoadingOverlay({ thumbnailUrl }) {
   return (
-    <div className={styles.loadingOverlay}>
+    <div className={styles.loadingOverlay} aria-live="polite" aria-busy="true">
       {thumbnailUrl && (
-        <img src={thumbnailUrl} alt="Thumbnail" className={styles.thumbnail} />
+        <img
+          src={thumbnailUrl}
+          alt="Loading preview thumbnail"
+          className={styles.thumbnail}
+          aria-hidden="true"
+          loading="lazy"
+        />
       )}
-      <div className={styles.spinner}></div>
+      <div className={styles.spinner} aria-label="Loading spinner"></div>
     </div>
   );
+}
+
+LoadingOverlay.propTypes = {
+  thumbnailUrl: PropTypes.string,
 };
 
 export default LoadingOverlay;

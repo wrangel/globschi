@@ -19,19 +19,24 @@
 .fab {
   font-family: var(--font-stack);
   text-shadow: var(--text-shadow-heavy);
-  background-color: var(--fab-color); /* Default grey color */
+  background-color: var(--overlay-bg-light); /* same background as arrows */
   color: #fff;
   border: none;
-  border-radius: 50%;
-  width: 52px;
-  height: 52px;
-  display: flex;
+  border-radius: var(
+    --overlay-border-radius
+  ); /* rounded corners but not circle */
+  padding: 0.5rem 1rem; /* padding instead of fixed width/height */
+  display: inline-flex;
   justify-content: center;
   align-items: center;
   cursor: pointer;
   transition: background-color var(--transition-duration);
-  font-size: 1rem; /* Adjust font size if needed */
+  font-size: 1rem;
   box-shadow: var(--overlay-box-shadow);
+  user-select: none;
+  /* remove or adjust fixed size */
+  width: auto;
+  height: auto;
 }
 
 .fab:hover {

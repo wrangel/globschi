@@ -14,10 +14,8 @@ const MetadataPopup = ({ metadata, latitude, longitude, onClose }) => {
     const handleResize = () => {
       setIsBelowThreshold(window.innerHeight < 500);
     };
-
     handleResize();
     window.addEventListener("resize", handleResize);
-
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
@@ -27,20 +25,32 @@ const MetadataPopup = ({ metadata, latitude, longitude, onClose }) => {
   const googleMapsLink = `https://www.google.com/maps?q=${latitude},${longitude}&zoom=${zoomLevel}&maptype=satellite`;
 
   const handleDragStart = (e) => {
-    const startX = e.clientX || e.touches[0].clientX;
-    const startY = e.clientY || e.touches[0].clientY;
+    // Prevent events from reaching underlying elements
+    e.stopPropagation();
+    e.preventDefault();
+
+    const startX = e.clientX ?? (e.touches ? e.touches[0].clientX : 0);
+    const startY = e.clientY ?? (e.touches ? e.touches[0].clientY : 0);
     const initialPosition = popupRef.current.getBoundingClientRect();
 
-    const handleDrag = (e) => {
-      const deltaX = (e.clientX || e.touches[0].clientX) - startX;
-      const deltaY = (e.clientY || e.touches[0].clientY) - startY;
+    const handleDrag = (ev) => {
+      ev.stopPropagation();
+      ev.preventDefault();
+      const clientX = ev.clientX ?? (ev.touches ? ev.touches[0].clientX : 0);
+      const clientY = ev.clientY ?? (ev.touches ? ev.touches[0].clientY : 0);
+      const deltaX = clientX - startX;
+      const deltaY = clientY - startY;
       setPopupPosition({
         x: initialPosition.left + deltaX,
         y: initialPosition.top + deltaY,
       });
     };
 
-    const handleDragEnd = () => {
+    const handleDragEnd = (ev) => {
+      if (ev) {
+        ev.stopPropagation();
+        ev.preventDefault();
+      }
       document.removeEventListener("mousemove", handleDrag);
       document.removeEventListener("touchmove", handleDrag);
       document.removeEventListener("mouseup", handleDragEnd);
@@ -58,11 +68,11 @@ const MetadataPopup = ({ metadata, latitude, longitude, onClose }) => {
       className={styles.metadataPopup}
       ref={popupRef}
       style={{
-        top: `${popupPosition.y}px`,
-        left: `${popupPosition.x}px`,
+        transform: `translate(${popupPosition.x}px, ${popupPosition.y}px)`,
       }}
       onMouseDown={handleDragStart}
       onTouchStart={handleDragStart}
+      // Ensure popup always intercepts pointer events
     >
       <button
         className={styles.closeButton}

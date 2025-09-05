@@ -2,19 +2,23 @@
 
 .metadataPopup {
   position: absolute;
-  top: var(--spacing-medium); /* Initial position from the top */
-  left: var(--spacing-medium); /* Initial position from the left */
+  top: var(--spacing-medium);
+  left: var(--spacing-medium);
   background-color: var(--popup-bg-color, #000);
   color: var(--popup-text-color, #fff);
   padding: var(--popup-padding);
   border-radius: var(--popup-border-radius);
-  z-index: 1600; /* Ensure this is higher than the ImagePopup */
+  z-index: 1600;
   max-width: var(--max-width-popup);
-  width: auto; /* Adjusted to fit content */
+  width: auto;
   box-sizing: border-box;
   font-family: var(--font-family);
   font-size: inherit;
-  transition: transform 0.2s ease; /* Smooth transition for dragging */
+  transition: transform 0.2s ease;
+  will-change: transform;
+  pointer-events: auto; /* Ensure popover gets pointer events */
+  /* Optionally prevent accidental selection */
+  user-select: none;
 }
 
 .content {
@@ -61,8 +65,8 @@
 
 @media (min-width: 320px) {
   .metadataPopup {
-    top: var(--spacing-small); /* Adjusted for smaller screens */
-    left: var(--spacing-small); /* Adjusted for smaller screens */
+    top: var(--spacing-small);
+    left: var(--spacing-small);
     width: calc(100% - var(--spacing-small) * 2);
     margin: 0;
   }

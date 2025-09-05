@@ -3,14 +3,6 @@
 import { useState, useEffect } from "react";
 import styles from "../styles/Fab.module.css";
 
-/**
- * Fab2 Component with arrows only, no swipe navigation.
- *
- * Displays navigation arrows and controls.
- * Navigation happens only by clicking arrows.
- *
- * Props and functions unchanged.
- */
 const Fab2 = ({
   onClose,
   onPrevious,
@@ -19,7 +11,6 @@ const Fab2 = ({
   isNavigationMode,
   onToggleFullScreen,
 }) => {
-  const [isOpen, setIsOpen] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
 
   useEffect(() => {
@@ -32,9 +23,6 @@ const Fab2 = ({
       document.removeEventListener("fullscreenchange", handleFullscreenChange);
     };
   }, []);
-
-  // Keyboard arrow navigation can stay or be removed—your choice.
-  // If you want only mouse clicks on arrows, remove this effect.
 
   return (
     <div
@@ -69,7 +57,7 @@ const Fab2 = ({
             onClick={onToggleFullScreen}
             aria-label="Full Screen"
           >
-            ⛶
+            Full
           </button>
 
           <button
@@ -77,7 +65,7 @@ const Fab2 = ({
             onClick={onToggleMetadata}
             aria-label="Toggle Metadata"
           >
-            i
+            Info
           </button>
 
           <button
@@ -85,7 +73,7 @@ const Fab2 = ({
             onClick={onClose}
             aria-label="Close"
           >
-            ×
+            Close
           </button>
         </div>
       )}
@@ -96,7 +84,7 @@ const Fab2 = ({
           onClick={onClose}
           aria-label="Close"
         >
-          ×
+          Close
         </button>
       )}
     </div>

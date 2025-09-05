@@ -19,7 +19,7 @@
 .fab {
   font-family: var(--font-stack);
   text-shadow: var(--text-shadow-heavy);
-  background-color: var(--fab-color); /* Light blue color */
+  background-color: var(--fab-color); /* Default grey color */
   color: #fff;
   border: none;
   border-radius: 50%;
@@ -42,7 +42,7 @@
 }
 
 .active {
-  background-color: var(--primary-color); /* Primary color for active state */
+  background-color: var(--fab-active-color); /* Active blue color */
 }
 
 @media (max-width: 600px) {

@@ -45,13 +45,9 @@
   --panorama-bg-color: black;
   --thumbnail-opacity: 0.5;
 
-  --fab-color: rgba(153, 153, 153, 0.7); /* Light blue color */
-  --fab-hover-color: rgba(
-    124,
-    124,
-    124,
-    0.7
-  ); /* Slightly darker blue on hover */
+  --fab-color: rgba(153, 153, 153, 0.7); /* Default grey color */
+  --fab-active-color: #4da6ff; /* Active blue color */
+  --fab-hover-color: #3b8cc2; /* Slightly darker blue on hover */
 
   --adjustment-height: 15px;
   --max-width-popup: 280px;

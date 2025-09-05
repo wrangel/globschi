@@ -31,6 +31,7 @@
   cursor: pointer;
   transition: background-color var(--transition-duration);
   font-size: 1rem; /* Adjust font size if needed */
+  box-shadow: var(--overlay-box-shadow);
 }
 
 .fab:hover {
@@ -41,7 +42,7 @@
   outline: none;
 }
 
-.active {
+.fab.active {
   background-color: var(--fab-active-color); /* Active blue color */
 }
 
@@ -64,13 +65,13 @@
   position: fixed;
   top: 50%;
   transform: translateY(-50%);
-  background: rgba(0, 0, 0, 0.3);
+  background: var(--overlay-bg-light);
   border: none;
   color: #fff;
   font-size: 2rem;
   cursor: pointer;
   padding: 0.5rem 1rem;
-  border-radius: 0.5rem;
+  border-radius: var(--overlay-border-radius);
   transition: background-color 0.3s ease;
   z-index: 1200;
   user-select: none;
@@ -78,6 +79,7 @@
   /* same font & shadow as FAB */
   font-family: var(--font-stack);
   text-shadow: var(--text-shadow-heavy);
+  box-shadow: var(--overlay-box-shadow);
 }
 
 .leftArrow:hover,

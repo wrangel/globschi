@@ -12,7 +12,9 @@
   max-width: var(--max-width-popup);
   width: auto;
   box-sizing: border-box;
-  font-family: var(--font-family);
+  font-size: 0.9rem;
+  font-family: var(--font-stack); /* ← new font */
+  text-shadow: var(--text-shadow-heavy); /* ← new shadow */
   transition: transform var(--transition-duration) ease;
   will-change: transform;
 }
@@ -30,6 +32,8 @@
   font-size: var(--close-button-font-size);
   cursor: pointer;
   transition: color var(--transition-duration);
+  font-family: var(--font-stack); /* ← keep same font */
+  text-shadow: var(--text-shadow-heavy); /* ← same shadow */
 }
 
 .closeButton:hover,
@@ -42,7 +46,8 @@
   margin-top: var(--spacing-small);
   color: var(--link-color);
   text-decoration: none;
-  font-family: var(--font-family);
+  font-family: var(--font-stack); /* ← new font */
+  text-shadow: var(--text-shadow-heavy); /* ← same shadow */
   transition: color var(--transition-duration);
 }
 
@@ -65,4 +70,12 @@
     width: calc(100% - var(--spacing-small) * 2);
     margin: 0;
   }
+}
+
+.metadataPopup,
+.metadataPopup .closeButton,
+.metadataPopup .maplink,
+.metadataPopup pre,
+.metadataPopup code {
+  font-family: var(--font-stack);
 }

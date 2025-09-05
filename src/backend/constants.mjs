@@ -27,13 +27,6 @@ export const DRONE_MODELS = Object.freeze({
 });
 
 /**
- * List of drones.
- * NOTE: The newest drone must be first in the array.
- * @constant {ReadonlyArray<string>}
- */
-export const DRONES = Object.freeze(["DJI Mini 4 Pro", "DJI Mini 2"]);
-
-/**
  * EXIF tag names used in image metadata extraction.
  * @constant {Object<string, string>}
  */
@@ -125,11 +118,6 @@ export const REVERSE_GEO_URL_ELEMENTS = Object.freeze([
   "https://api.mapbox.com/geocoding/v5/mapbox.places/",
   ".json?access_token=",
 ]);
-
-// Ensure MEDIA_PAGES is sorted alphabetically
-if (!MEDIA_PAGES.every((v, i, a) => !i || a[i - 1] <= v)) {
-  throw new Error("MEDIA_PAGES must be sorted alphabetically");
-}
 
 /**
  * String used when certain metadata values are unknown or missing.

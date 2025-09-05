@@ -10,7 +10,7 @@
  */
 
 import mongoose from "mongoose";
-import { CONTRIBUTORS, MEDIA_PAGES, DRONES } from "../constants.mjs";
+import { CONTRIBUTORS, MEDIA_PAGES, DRONE_MODELS } from "../constants.mjs";
 
 const islandSchema = new mongoose.Schema({
   /**
@@ -46,7 +46,7 @@ const islandSchema = new mongoose.Schema({
   drone: {
     type: String,
     required: true,
-    enum: DRONES,
+    enum: DRONE_MODELS,
   },
 
   /**

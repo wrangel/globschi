@@ -1,4 +1,4 @@
-// src/utils/utils.mjs
+// src/backend/utils/utils.mjs
 
 /**
  * Extracts the ID (filename without extension) from a file path.

@@ -3,7 +3,7 @@
 .fabContainer {
   position: fixed;
   bottom: var(--spacing-large);
-  right: 1.2rem;
+  right: 0.9rem;
   display: flex;
   flex-direction: column; /* keep vertical stacking for other fab groups if needed */
   align-items: flex-end;

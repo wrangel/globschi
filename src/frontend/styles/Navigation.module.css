@@ -16,12 +16,6 @@
   gap: var(--spacing-small);
 }
 
-@media (max-width: 600px) {
-  .fabMenu {
-    flex-direction: row; /* horizontal on small screens */
-  }
-}
-
 /* ----------  FAB buttons  ---------- */
 .fab {
   font-family: var(--font-stack);
@@ -93,14 +87,15 @@
   right: 1rem;
 }
 
-/* ---------- Responsive Fix for small screens ---------- */
-@media (max-width: 600px) {
+/* ---------- Unified Responsive Fix for small portrait & landscape phones ---------- */
+@media (max-width: 600px), (max-height: 600px) {
   .fabContainer {
     bottom: var(--spacing-small);
     right: var(--spacing-small);
   }
 
   .fabMenu {
+    flex-direction: row; /* horizontal on small screen widths OR small heights */
     gap: 0.5rem;
   }
 

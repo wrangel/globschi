@@ -1,8 +1,4 @@
-// src/utils/mongoUtils.mjs
-
-import mongoose from "mongoose";
 import logger from "../utils/logger.mjs";
-import { connectDB } from "../server.mjs";
 
 /**
  * Executes a MongoDB query within a managed connection lifecycle.
@@ -19,13 +15,7 @@ export async function executeMongoQuery(
   modelName = "Document",
   output = false
 ) {
-  let connection;
   try {
-    // Connect to MongoDB (reuse or create new depending on connectDB implementation)
-    connection = await connectDB();
-
-    if (output) logger.info("Connected to MongoDB");
-
     // Execute the provided query callback
     const result = await queryCallback();
 
@@ -53,12 +43,5 @@ export async function executeMongoQuery(
       });
     }
     throw error;
-  } finally {
-    // Disconnect from MongoDB to free resources
-    // Note: frequent connect/disconnect may cause overhead; consider connection pooling or reuse in high-load contexts
-    if (connection) {
-      await mongoose.disconnect();
-      if (output) logger.info("Disconnected from MongoDB");
-    }
   }
 }

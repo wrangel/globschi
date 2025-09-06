@@ -6,7 +6,6 @@ import { s3Client } from "./utils/awsUtils.mjs";
 import { EXPIRATION_TIME, MEDIA_PAGES } from "./constants.mjs";
 import { Island } from "./models/islandModel.mjs";
 import NodeCache from "node-cache";
-import util from "util"; /////
 
 const BUCKET = process.env.AWS_BUCKET;
 const REGION = process.env.AWS_DEFAULT_REGION;

@@ -10,7 +10,7 @@ import useKeyboardNavigation from "../hooks/useKeyboardNavigation";
  * an image or panorama viewer with navigation controls.
  *
  * Navigation via swipe gestures is disabled; navigation will only occur
- * when left/right arrows are clicked in Fab2.
+ * when left/right arrows are clicked in NavigationMedia.
  *
  * @param {Object} props - Component props.
  * @param {Object} props.item - The current media item to display.

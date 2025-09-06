@@ -5,7 +5,7 @@ import React, { Suspense, lazy } from "react";
 import { Routes, Route, useNavigate } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async"; // Add this import
 import ErrorBoundary from "./components/ErrorBoundary";
-import Fab1 from "./components/Fab1";
+import NavigationPages from "./components/NavigationPages";
 import LoadingOverlay from "./components/LoadingOverlay";
 
 // Lazy load the components
@@ -28,7 +28,7 @@ function App() {
             </Routes>
           </Suspense>
         </ErrorBoundary>
-        <Fab1 onNavigate={navigate} />
+        <NavigationPages onNavigate={navigate} />
       </div>
     </HelmetProvider>
   );

@@ -3,7 +3,7 @@
 import { GetObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { s3Client } from "./utils/awsUtils.mjs";
-import { EXPIRATION_TIME, MEDIA_PAGES } from "./constants.mjs";
+import { EXPIRATION_TIME } from "./constants.mjs";
 import { Island } from "./models/islandModel.mjs";
 import NodeCache from "node-cache";
 
@@ -29,17 +29,15 @@ async function signedUrl(key) {
 }
 
 export async function getUrls() {
-  const docs = await Island.find({ s3Folder: { $exists: true } })
-    .select("name type s3Folder")
-    .lean();
+  const docs = await Island.find().select("name type").lean();
 
   const results = [];
-  for (const { name, type, s3Folder } of docs) {
-    const thumbnailUrl = `${BASE_URL}/${s3Folder}/thumbnail.webp`;
+  for (const { name, type } of docs) {
+    const thumbnailUrl = `${BASE_URL}/${name}/thumbnail.webp`;
     const actualUrl =
-      type === MEDIA_PAGES.find((v) => v === "pan")
-        ? `${BASE_URL}/${s3Folder}/tiles`
-        : await signedUrl(`${s3Folder}/${s3Folder}.webp`);
+      type === "pan"
+        ? `${BASE_URL}/${name}/tiles`
+        : await signedUrl(`${name}/${name}.webp`);
 
     results.push({ name, type, urls: { thumbnailUrl, actualUrl } });
   }

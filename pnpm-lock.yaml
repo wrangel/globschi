@@ -1997,8 +1997,8 @@ packages:
     resolution: {integrity: sha512-8Ofs/AUQh8MaEcrlq5xOX0CQ9ypTF5dl78mjlMNfOK08fzpgTHQRQPBxcPlEtIw0yRpws+Zo/3r+5WRby7u3Gg==}
     engines: {node: '>= 0.6'}
 
-  ngraph.events@1.2.2:
-    resolution: {integrity: sha512-JsUbEOzANskax+WSYiAPETemLWYXmixuPAlmZmhIbIj6FH/WDgEGCGnRwUQBK0GjOnVm8Ui+e5IJ+5VZ4e32eQ==}
+  ngraph.events@1.3.2:
+    resolution: {integrity: sha512-38oe7gGmJec5V6Ejo5L3EWOpy2coJ5ZjY9oo9Sz1bE4wqoVorn/5iejGHtdR+5EwO6d1qOHqgqZxHt9dLqiLTw==}
 
   node-cache@5.1.2:
     resolution: {integrity: sha512-t1QzWwnk4sjLWaQAS8CHgOJ+RAfmHpxFWmc36IWTiWHQfs0w5JDMBS1b1ZxQteo0vVVuWJvIUKHDkkeK7vIGCg==}
@@ -4971,7 +4971,7 @@ snapshots:
 
   negotiator@1.0.0: {}
 
-  ngraph.events@1.2.2: {}
+  ngraph.events@1.3.2: {}
 
   node-cache@5.1.2:
     dependencies:
@@ -5071,7 +5071,7 @@ snapshots:
   panzoom@9.4.3:
     dependencies:
       amator: 1.1.0
-      ngraph.events: 1.2.2
+      ngraph.events: 1.3.2
       wheel: 1.0.0
 
   parent-module@1.0.1:

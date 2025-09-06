@@ -190,6 +190,34 @@ footer.credits a:focus {
   }
 }
 
+/* Landscape small viewport adjustments */
+@media (orientation: landscape) and (max-height: 600px) {
+  .homePage h1 {
+    font-size: calc(var(--font-size-medium) * 0.85);
+    line-height: 1.1;
+    margin-bottom: var(--spacing-small);
+  }
+
+  .homePage h2 {
+    font-size: calc(var(--font-size-small) * 0.9);
+    margin-top: 0.25rem;
+    margin-bottom: var(--spacing-small);
+  }
+
+  .imageWrapper {
+    margin-bottom: var(--spacing-medium);
+  }
+
+  .image {
+    max-height: 50vh; /* reduce image height */
+    max-width: 90vw;
+  }
+
+  .portraitLayout {
+    padding-top: 10vh;
+  }
+}
+
 @media (max-width: 600px), (max-height: 600px) {
   /* Footer as floating box in lower-left corner on small screens */
   footer.credits {

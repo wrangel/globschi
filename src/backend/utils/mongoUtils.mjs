@@ -1,8 +1,7 @@
 import logger from "../utils/logger.mjs";
 
 /**
- * Executes a MongoDB query within a managed connection lifecycle.
- * Opens a connection before the query, and disconnects after completion.
+ * Executes a MongoDB query.
  *
  * @param {Function} queryCallback - Async function executing the query.
  * @param {string} [modelName="Document"] - Model name used for logging.

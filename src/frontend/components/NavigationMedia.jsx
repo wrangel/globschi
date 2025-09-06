@@ -1,9 +1,9 @@
-// src/frontend/components/Fab2.jsx
+// src/frontend/components/NavigationMedia.jsx
 
 import { useState, useEffect } from "react";
-import styles from "../styles/Fab.module.css";
+import styles from "../styles/Navigation.module.css";
 
-const Fab2 = ({
+const NavigationMedia = ({
   onClose,
   onPrevious,
   onNext,
@@ -91,4 +91,4 @@ const Fab2 = ({
   );
 };
 
-export default Fab2;
+export default NavigationMedia;

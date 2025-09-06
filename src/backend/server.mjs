@@ -1,5 +1,3 @@
-// src/backend/server.mjs
-
 import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
@@ -8,6 +6,7 @@ import combinedDataRoute from "./routes/combinedDataRoute.mjs";
 import path from "path";
 import { fileURLToPath } from "url";
 import rateLimit from "express-rate-limit";
+import compression from "compression";
 
 /**
  * List of environment variables required for MongoDB connection.
@@ -49,6 +48,9 @@ app.use((req, res, next) => {
   logger.info(`Request received from origin: ${origin}`);
   next();
 });
+
+// Compression middleware
+app.use(compression());
 
 /**
  * Rate limiter middleware to limit excessive API requests.
@@ -122,6 +124,7 @@ app.use((err, req, res, next) => {
 
 // MongoDB connection configuration and handler function
 mongoose.set("strictQuery", false);
+
 const connectDB = () =>
   mongoose
     .connect(
@@ -132,10 +135,7 @@ const connectDB = () =>
       throw err;
     });
 
-/**
- * Start server only when this module is the main entry point.
- * Connect to MongoDB first, then listen on configured port.
- */
+// Start server only when this module is the main entry point
 const isMainModule = import.meta.url === `file://${process.argv[1]}`;
 
 if (isMainModule) {

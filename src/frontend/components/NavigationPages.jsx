@@ -1,10 +1,10 @@
-// src/frontend/components/Fab1.jsx
+// src/frontend/components/NavigationPages.jsx
 
 import { useLocation } from "react-router-dom";
-import styles from "../styles/Fab.module.css";
+import styles from "../styles/Navigation.module.css";
 
 /**
- * Floating Action Button (Fab1) component providing navigation links.
+ * Floating Action Button (NavigationPages) component providing navigation links.
  *
  * Displays a set of navigation buttons based on the current URL path.
  * Buttons highlight the active path and call onNavigate callback when clicked.
@@ -12,7 +12,7 @@ import styles from "../styles/Fab.module.css";
  * @param {Object} props - Component props.
  * @param {Function} props.onNavigate - Callback invoked with the new path on button click.
  */
-const Fab1 = ({ onNavigate }) => {
+const NavigationPages = ({ onNavigate }) => {
   const location = useLocation();
 
   // Define button configurations for different routes.
@@ -63,4 +63,4 @@ const Fab1 = ({ onNavigate }) => {
   );
 };
 
-export default Fab1;
+export default NavigationPages;

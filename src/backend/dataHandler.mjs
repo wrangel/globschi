@@ -47,7 +47,6 @@ export async function getCombinedData() {
  */
 async function fetchMongoData() {
   try {
-    // Query MongoDB for Island documents sorted by dateTime descending
     const data = await Island.find().lean().sort({ dateTime: -1 }).exec();
 
     if (!data || data.length === 0) {

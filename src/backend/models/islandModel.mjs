@@ -147,12 +147,6 @@ const islandSchema = new mongoose.Schema({
       fallbackOnly: { type: Boolean, default: false },
     },
   ],
-
-  /**
-   * Top-level S3 folder name (same as document name for panos, or custom).
-   * Used to reconstruct URLs without listing the bucket each time.
-   */
-  s3Folder: String,
 });
 
 export const Island = mongoose.model("Island", islandSchema);

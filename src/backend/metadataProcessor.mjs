@@ -158,37 +158,6 @@ function formatRoadWithLineBreaks(road, maxLength) {
 }
 
 /**
- * Logs summary of data processing steps including intersected and missing data.
- * @param {Array} mongoData - MongoDB data array.
- * @param {Array} presignedUrls - AWS S3 presigned URLs array.
- * @param {Array} intersectedData - Data found in both Mongo and S3.
- * @param {Array} onlyInMongo - Names present only in MongoDB.
- * @param {Array} onlyInAWS - Names present only in AWS S3.
- */
-function logBookkeepingInfo(
-  mongoData,
-  presignedUrls,
-  intersectedData,
-  onlyInMongo,
-  onlyInAWS
-) {
-  logger.info("Data Processing Summary:");
-  logger.info(`  MongoDB elements: ${mongoData.length}`);
-  logger.info(`  AWS S3 elements: ${presignedUrls.length}`);
-  logger.info(`  Intersected elements: ${intersectedData.length}`);
-  logger.info(`  Elements only in MongoDB: ${onlyInMongo.length}`);
-  logger.info(`  Elements only in AWS S3: ${onlyInAWS.length}`);
-
-  if (onlyInMongo.length > 0) {
-    logger.info("Elements missing from AWS S3:", onlyInMongo);
-  }
-
-  if (onlyInAWS.length > 0) {
-    logger.info("Elements missing from MongoDB:", onlyInAWS);
-  }
-}
-
-/**
  * Main exported function.
  * Processes MongoDB and AWS S3 data to produce combined, beautified dataset.
  * @param {Array} mongoData - Raw data from MongoDB.
@@ -202,14 +171,6 @@ export const beautify = async (mongoData, presignedUrls) => {
   const { intersectedData, onlyInMongo, onlyInAWS } = intersectData(
     mongoData,
     presignedUrls
-  );
-
-  logBookkeepingInfo(
-    mongoData,
-    presignedUrls,
-    intersectedData,
-    onlyInMongo,
-    onlyInAWS
   );
 
   try {

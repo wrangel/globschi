@@ -1,5 +1,8 @@
 // src/backend/models/islandModel.mjs
 
+import mongoose from "mongoose";
+import { CONTRIBUTORS, MEDIA_PAGES, DRONES } from "../constants.mjs";
+
 /**
  * Island model schema for MongoDB
  *
@@ -8,10 +11,6 @@
  *
  * @module models/islandModel
  */
-
-import mongoose from "mongoose";
-import { CONTRIBUTORS, MEDIA_PAGES, DRONES } from "../constants.mjs";
-
 const islandSchema = new mongoose.Schema({
   /**
    * Unique name identifier for the island photo or panorama.
@@ -148,6 +147,12 @@ const islandSchema = new mongoose.Schema({
       fallbackOnly: { type: Boolean, default: false },
     },
   ],
+
+  /**
+   * Top-level S3 folder name (same as document name for panos, or custom).
+   * Used to reconstruct URLs without listing the bucket each time.
+   */
+  s3Folder: String,
 });
 
 export const Island = mongoose.model("Island", islandSchema);

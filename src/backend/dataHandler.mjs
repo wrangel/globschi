@@ -47,9 +47,7 @@ export async function getCombinedData() {
  */
 async function fetchMongoData() {
   try {
-    console.time("Mongo query"); // Start timer
     const data = await Island.find().lean().sort({ dateTime: -1 }).exec();
-    console.timeEnd("Mongo query"); // End timer and log
 
     if (!data || data.length === 0) {
       console.warn("No data found in MongoDB");

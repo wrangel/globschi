@@ -1,95 +1,132 @@
-// src/backend/management/handleImage.mjs
-
 import fs from "fs/promises";
 import path from "path";
 import logger from "../utils/logger.mjs";
+import { MODIFIED_FOLDER, ORIGINAL_FOLDER, S3_FOLDER } from "../constants.mjs";
 import sharp from "sharp";
 import { execFile } from "child_process";
 import { promisify } from "util";
-import {
-  MAX_WEBP_DIMENSION,
-  THUMBNAIL_WIDTH,
-  THUMBNAIL_HEIGHT,
-  THUMBNAIL_QUALITY,
-  TEMP_PNG_SUFFIX,
-  THUMBNAIL_FILENAME,
-} from "../constants.mjs";
 
 const execFileAsync = promisify(execFile);
 
 /**
- * Process TIFF in "bearbeitet" and output webps in a sibling "s3" directory.
- * @param {string} mediaParentFolder - e.g. ".../pa_20230429_121442"
- * @param {string} outputBaseName - e.g. name property from metadata (used for .webp file name)
- * @returns {Promise<{losslessWebpPath: string, thumbnailWebpPath: string} | null>}
+ * Rename folder to newName.
+ * Move JPG files to original folder.
+ * Move TIFF file to modified folder, convert it to WebP images in modified/S3.
+ * @param {string} originalFolderPath
+ * @param {string} newName
+ * @returns {Promise<string>} new folder path
  */
-export async function handleImage(mediaParentFolder, outputBaseName) {
-  const bearbeitetFolder = path.join(mediaParentFolder, "bearbeitet");
-  const s3Folder = path.join(mediaParentFolder, "s3");
-  await fs.mkdir(s3Folder, { recursive: true });
+export async function handleFolder(originalFolderPath, newName) {
+  const parentDir = path.dirname(originalFolderPath);
+  const newFolderPath = path.join(parentDir, newName);
 
-  const files = await fs.readdir(bearbeitetFolder);
-  const tiffFiles = files.filter((f) => /\.tiff?$/i.test(f));
-  if (tiffFiles.length === 0) {
-    logger.warn(`No TIFF files found in ${bearbeitetFolder}`);
-    return null;
-  }
-  if (tiffFiles.length > 1) {
-    logger.warn(
-      `Multiple TIFF files found in ${bearbeitetFolder}, processing first: ${tiffFiles[0]}`
+  if (originalFolderPath !== newFolderPath) {
+    await fs.rename(originalFolderPath, newFolderPath);
+    logger.info(
+      `Renamed folder: '${originalFolderPath}' to '${newFolderPath}'`
+    );
+  } else {
+    logger.info(
+      `No rename needed: '${originalFolderPath}' is already named '${newName}'`
     );
   }
-  const tiffFile = tiffFiles[0];
-  const tiffFilePath = path.join(bearbeitetFolder, tiffFile);
 
-  const tempPngPath = path.join(
-    s3Folder,
-    `${outputBaseName}${TEMP_PNG_SUFFIX}`
-  );
+  // Paths
+  const modifiedPath = path.join(newFolderPath, MODIFIED_FOLDER);
+  const originalPath = path.join(newFolderPath, ORIGINAL_FOLDER);
+  const s3Path = path.join(modifiedPath, S3_FOLDER);
 
-  await execFileAsync("magick", [
-    tiffFilePath,
-    "-depth",
-    "8",
-    "-normalize",
-    tempPngPath,
+  // Ensure subfolders exist (create if missing)
+  await Promise.all([
+    fs.mkdir(modifiedPath, { recursive: true }),
+    fs.mkdir(originalPath, { recursive: true }),
+    fs.mkdir(s3Path, { recursive: true }),
   ]);
 
-  let image = sharp(tempPngPath);
-  const metadata = await image.metadata();
+  const files = await fs.readdir(newFolderPath);
 
-  const losslessWebpPath = path.join(s3Folder, `${outputBaseName}.webp`);
+  // Move all JPG/JPEG files from root to original folder
+  const jpgFiles = files.filter(
+    (f) => f.toLowerCase().endsWith(".jpg") || f.toLowerCase().endsWith(".jpeg")
+  );
 
-  let hrImage = image;
-  if (
-    metadata.width > MAX_WEBP_DIMENSION ||
-    metadata.height > MAX_WEBP_DIMENSION
-  ) {
-    const aspectRatio = metadata.width / metadata.height;
-    let newWidth = Math.min(metadata.width, MAX_WEBP_DIMENSION);
-    let newHeight = Math.round(newWidth / aspectRatio);
-    if (newHeight > MAX_WEBP_DIMENSION) {
-      newHeight = MAX_WEBP_DIMENSION;
-      newWidth = Math.round(newHeight * aspectRatio);
-    }
-    hrImage = image.resize(newWidth, newHeight, { fit: "inside" });
+  for (const file of jpgFiles) {
+    const src = path.join(newFolderPath, file);
+    const dest = path.join(originalPath, file);
+    await fs.rename(src, dest);
+    logger.info(`Moved JPG file ${file} to ${originalPath}`);
   }
-  await hrImage.webp({ lossless: true }).toFile(losslessWebpPath);
 
-  const thumbnailWebpPath = path.join(s3Folder, THUMBNAIL_FILENAME);
-  const tnImage = image
-    .webp({ lossless: false, quality: THUMBNAIL_QUALITY })
-    .resize({
-      width: THUMBNAIL_WIDTH,
-      height: THUMBNAIL_HEIGHT,
-      fit: "inside",
-      position: sharp.strategy.attention,
-    });
-  await tnImage.toFile(thumbnailWebpPath);
+  // Move TIFF file to modified folder (assume only one TIFF)
+  const tiffFiles = files.filter((f) => /\.tiff?$/i.test(f));
+  if (tiffFiles.length === 0) {
+    logger.warn(`No TIFF files found in ${newFolderPath}`);
+  } else {
+    const tiffFile = tiffFiles[0];
+    const srcTiff = path.join(newFolderPath, tiffFile);
+    const destTiff = path.join(modifiedPath, tiffFile);
+    await fs.rename(srcTiff, destTiff);
+    logger.info(`Moved TIFF file ${tiffFile} to ${modifiedPath}`);
 
-  await fs.unlink(tempPngPath);
+    // Convert TIFF to WebPs in s3 folder
+    const tempPngPath = path.join(s3Path, `${newName}_temp.png`);
 
-  logger.info(`Processed TIFF to WebP and thumbnail in "${s3Folder}"`);
+    try {
+      // Convert TIFF to PNG with ImageMagick
+      await execFileAsync("magick", [
+        destTiff,
+        "-depth",
+        "8",
+        "-normalize",
+        tempPngPath,
+      ]);
+      logger.info(`Converted TIFF to PNG: ${tempPngPath}`);
 
-  return { losslessWebpPath, thumbnailWebpPath };
+      const image = sharp(tempPngPath);
+      const metadata = await image.metadata();
+
+      // Create lossless WebP
+      let hrImage = image;
+      if (metadata.width > 16383 || metadata.height > 16383) {
+        const aspectRatio = metadata.width / metadata.height;
+        let newWidth = Math.min(metadata.width, 16383);
+        let newHeight = Math.round(newWidth / aspectRatio);
+        if (newHeight > 16383) {
+          newHeight = 16383;
+          newWidth = Math.round(newHeight * aspectRatio);
+        }
+        hrImage = image.resize(newWidth, newHeight, { fit: "inside" });
+      }
+      const losslessWebpPath = path.join(s3Path, `${newName}.webp`);
+      await hrImage.webp({ lossless: true }).toFile(losslessWebpPath);
+
+      // Create thumbnail WebP
+      const THUMBNAIL_QUALITY = 80;
+      const THUMBNAIL_WIDTH = 2000;
+      const THUMBNAIL_HEIGHT = 1300;
+      const THUMBNAIL_FILENAME = "thumbnail.webp";
+
+      const thumbnailWebpPath = path.join(s3Path, THUMBNAIL_FILENAME);
+      const tnImage = image
+        .webp({ lossless: false, quality: THUMBNAIL_QUALITY })
+        .resize({
+          width: THUMBNAIL_WIDTH,
+          height: THUMBNAIL_HEIGHT,
+          fit: "inside",
+          position: sharp.strategy.attention,
+        });
+      await tnImage.toFile(thumbnailWebpPath);
+
+      // Delete temp PNG
+      await fs.unlink(tempPngPath);
+
+      logger.info(
+        "Completed TIFF to WebP conversion and stored in modified/S3"
+      );
+    } catch (error) {
+      logger.error("Error processing TIFF to WebP:", error);
+    }
+  }
+
+  return newFolderPath;
 }

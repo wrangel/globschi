@@ -132,6 +132,13 @@ if (!MEDIA_PAGES.every((v, i, a) => !i || a[i - 1] <= v)) {
 }
 
 /**
+ * Names of special folders consistently used in media processing.
+ */
+export const MODIFIED_FOLDER = "modified";
+export const ORIGINAL_FOLDER = "original";
+export const S3_FOLDER = "S3";
+
+/**
  * String used when certain metadata values are unknown or missing.
  * @constant {string}
  */

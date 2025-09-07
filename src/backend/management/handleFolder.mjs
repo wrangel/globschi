@@ -6,6 +6,7 @@ import logger from "../utils/logger.mjs";
 
 /**
  * Rename a folder to the new name.
+ * Ensures subfolders 'modified', 'original', and 'modified/S3' are created.
  * @param {string} originalFolderPath - The full path of the folder to rename.
  * @param {string} newName - The new name for the folder.
  * @returns {Promise<string>} - The path to the renamed folder.
@@ -24,6 +25,21 @@ export async function handleFolder(originalFolderPath, newName) {
       `No rename needed: '${originalFolderPath}' is already named '${newName}'`
     );
   }
+
+  // Create required subfolders
+  const modifiedPath = path.join(newFolderPath, "modified");
+  const originalPath = path.join(newFolderPath, "original");
+  const s3Path = path.join(modifiedPath, "S3");
+
+  await Promise.all([
+    fs.mkdir(modifiedPath, { recursive: true }),
+    fs.mkdir(originalPath, { recursive: true }),
+    fs.mkdir(s3Path, { recursive: true }),
+  ]);
+
+  logger.info(
+    `Ensured subfolders exist: 'modified/', 'original/', 'modified/S3/' inside ${newFolderPath}`
+  );
 
   return newFolderPath;
 }

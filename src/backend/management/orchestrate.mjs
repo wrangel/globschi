@@ -49,7 +49,6 @@ export async function orchestrate() {
 
         console.log(processed.metadata);
 
-        /*
         const mediaType = processed.metadata.type;
         const newName = processed.metadata.name;
 
@@ -81,7 +80,6 @@ export async function orchestrate() {
 
         // 7. Upload media to S3
         await uploadMedia(newFolderPath, newName);
-           */
       } catch (error) {
         logger.error(`Error processing folder ${mediaDirPath}`, { error });
       }

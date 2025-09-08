@@ -48,23 +48,35 @@ async function orchestrate() {
       // 2. Rename folder first
       const newFolderPath = await handleFolder(mediaDirPath, newName);
 
+      /*
+
+
       // 3. Handle media based on type
+      let panoExtraProps = null;
       if (mediaType === "hdr" || mediaType === "wide_angle") {
         await handleImage(newFolderPath, newName);
       } else if (mediaType === "pano") {
-        await handlePano(newFolderPath, newName);
+        panoExtraProps = await handlePano(newFolderPath, newName);
       } else {
         // fallback or unknown mediaType (e.g., video)
         logger.warn(`Unknown media type: ${mediaType}`);
       }
 
-      // 4. Upload metadata to MongoDB
+      // 4. Merge pano-specific props into metadata if any
+      if (panoExtraProps) {
+        processed.metadata.levels = panoExtraProps.levels || null;
+        processed.metadata.initialViewParameters =
+          panoExtraProps.initialViewParameters || null;
+      }
+
+      // 5. Upload metadata to MongoDB
       await uploadMetadata(processed.metadata);
 
       logger.info(`Completed processing for folder: ${mediaDirPath}`);
 
-      // 5. Upload media to S3
+      // 6. Upload media to S3
       await uploadMedia(newFolderPath, newName);
+      */
     } catch (error) {
       logger.error(`Error processing folder ${mediaDirPath}`, { error });
     }

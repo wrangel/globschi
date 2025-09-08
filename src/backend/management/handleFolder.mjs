@@ -5,10 +5,6 @@ import path from "path";
 import logger from "../utils/logger.mjs";
 import { MODIFIED_FOLDER, ORIGINAL_FOLDER, S3_FOLDER } from "../constants.mjs";
 
-const modifiedPath = path.join(newFolderPath, MODIFIED_FOLDER);
-const originalPath = path.join(newFolderPath, ORIGINAL_FOLDER);
-const s3Path = path.join(modifiedPath, S3_FOLDER);
-
 /**
  * Rename a folder to the new name.
  * Ensures subfolders 'modified', 'original', and 'modified/S3' are created.

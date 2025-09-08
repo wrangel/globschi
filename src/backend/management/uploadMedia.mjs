@@ -34,8 +34,8 @@ async function folderExistsInS3(bucketName, prefix) {
 
 /**
  * Recursively upload all files in localDir to S3 bucket under s3Prefix
- * @param {string} localDir - absolute path of local folder
- * @param {string} s3Prefix - prefix inside S3 bucket (e.g. folder name)
+ * @param {string} localDir - absolute path of local folder (e.g. X/modified/S3)
+ * @param {string} s3Prefix - prefix inside S3 bucket (e.g. renamed folder name X)
  */
 async function uploadDirectoryToS3(localDir, s3Prefix) {
   const entries = await fs.readdir(localDir, { withFileTypes: true });
@@ -44,6 +44,7 @@ async function uploadDirectoryToS3(localDir, s3Prefix) {
     if (entry.name.startsWith(".")) continue; // skip dotfiles
 
     const fullPath = path.join(localDir, entry.name);
+    // Construct S3 Key preserving folder hierarchy relative to s3Prefix
     const s3Key = `${s3Prefix}/${entry.name}`;
 
     if (entry.isDirectory()) {
@@ -77,12 +78,12 @@ async function uploadDirectoryToS3(localDir, s3Prefix) {
 }
 
 /**
- * Uploads the 's3' folder inside the media folder to S3 if it doesn't exist already
- * @param {string} mediaFolderPath - absolute path to media folder (e.g. /.../pa_20230429_121442)
- * @param {string} folderName - folder name to use as S3 prefix (e.g. pa_20230429_121442)
+ * Uploads the 'modified/S3' folder inside the media folder to S3 as renamed folder prefix
+ * @param {string} mediaFolderPath - absolute path to media folder renamed (e.g. /.../pa_20250403_121314)
+ * @param {string} folderName - renamed folder name used as S3 prefix (e.g. pa_20250403_121314)
  */
 export async function uploadMedia(mediaFolderPath, folderName) {
-  const s3FolderPath = path.join(mediaFolderPath, "s3");
+  const s3FolderPath = path.join(mediaFolderPath, "modified", "S3");
 
   const exists = await folderExistsInS3(BUCKET_NAME, folderName);
   if (exists) {

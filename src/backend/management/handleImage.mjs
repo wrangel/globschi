@@ -1,3 +1,5 @@
+// src/backend/management/handleImage.mjs
+
 import fs from "fs/promises";
 import path from "path";
 import logger from "../utils/logger.mjs";
@@ -16,7 +18,7 @@ const execFileAsync = promisify(execFile);
  * @param {string} newName
  * @returns {Promise<string>} new folder path
  */
-export async function handleFolder(originalFolderPath, newName) {
+export async function handleImage(originalFolderPath, newName) {
   const parentDir = path.dirname(originalFolderPath);
   const newFolderPath = path.join(parentDir, newName);
 

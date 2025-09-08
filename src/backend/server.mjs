@@ -1,3 +1,5 @@
+// src/backend/server.mjs
+
 import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
@@ -7,10 +9,9 @@ import path from "path";
 import { fileURLToPath } from "url";
 import rateLimit from "express-rate-limit";
 import compression from "compression";
+import { connectDB, closeDB } from "./utils/mongodbConnection.mjs";
 
-/**
- * List of environment variables required for MongoDB connection.
- */
+// List of environment variables required for MongoDB connection
 const requiredEnvVars = [
   "MONGODB_DB_USER",
   "MONGODB_DB_PASSWORD",
@@ -52,9 +53,7 @@ app.use((req, res, next) => {
 // Compression middleware
 app.use(compression());
 
-/**
- * Rate limiter middleware to limit excessive API requests.
- */
+// Rate limiter middleware to limit excessive API requests
 const apiLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 100, // limit each IP to 100 requests per window
@@ -87,9 +86,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 app.use(express.static(path.join(__dirname, "../../build")));
 
-/**
- * Rate limiter for general non-API routes (including catch-all).
- */
+// Rate limiter for general non-API routes (including catch-all)
 const generalLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 100,
@@ -125,23 +122,12 @@ app.use((err, req, res, next) => {
 // MongoDB connection configuration and handler function
 mongoose.set("strictQuery", false);
 
-const connectDB = () =>
-  mongoose
-    .connect(
-      `mongodb+srv://${process.env.MONGODB_DB_USER}:${process.env.MONGODB_DB_PASSWORD}@${process.env.MONGODB_SERVER}/${process.env.MONGODB_DB}?retryWrites=true&w=majority`
-    )
-    .catch((err) => {
-      logger.error("MongoDB connection error:", err);
-      throw err;
-    });
-
 // Start server only when this module is the main entry point
 const isMainModule = import.meta.url === `file://${process.argv[1]}`;
 
 if (isMainModule) {
   connectDB()
     .then(() => {
-      logger.info("Successfully connected to MongoDB");
       app.listen(PORT, () => {
         logger.info(`Server is running on port ${PORT}`);
       });
@@ -152,5 +138,5 @@ if (isMainModule) {
     });
 }
 
-// Export connectDB for external use/testing
-export { connectDB };
+// Export closeDB for external use/testing
+export { closeDB };

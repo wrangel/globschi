@@ -6,6 +6,14 @@ import logger from "../utils/logger.mjs";
 
 export async function uploadMetadata(doc) {
   try {
+    // Remove _id fields from levels array if present
+    if (doc.levels) {
+      doc.levels = doc.levels.map((level) => {
+        delete level._id; // Remove _id field if it exists
+        return level;
+      });
+    }
+
     const result = await executeMongoQuery(async () => {
       // Use updateOne with upsert:true to insert if doesn't exist
       return await Island.updateOne(

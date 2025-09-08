@@ -1,7 +1,9 @@
 // src/backend/models/islandModel.mjs
 
 import mongoose from "mongoose";
-import { CONTRIBUTORS, MEDIA_PAGES, DRONES } from "../constants.mjs";
+import { CONTRIBUTORS, MEDIA_PAGES, DRONE_MODELS } from "../constants.mjs";
+
+const droneModelCodes = Object.keys(DRONE_MODELS);
 
 /**
  * Island model schema for MongoDB
@@ -45,7 +47,7 @@ const islandSchema = new mongoose.Schema({
   drone: {
     type: String,
     required: true,
-    enum: DRONES,
+    enum: droneModelCodes,
   },
 
   /**

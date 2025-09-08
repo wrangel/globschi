@@ -27,13 +27,6 @@ export const DRONE_MODELS = Object.freeze({
 });
 
 /**
- * List of drones.
- * NOTE: The newest drone must be first in the array.
- * @constant {ReadonlyArray<string>}
- */
-export const DRONES = Object.freeze(["DJI Mini 4 Pro", "DJI Mini 2"]);
-
-/**
  * EXIF tag names used in image metadata extraction.
  * @constant {Object<string, string>}
  */

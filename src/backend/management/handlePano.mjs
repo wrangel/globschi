@@ -5,6 +5,7 @@ import path from "path";
 import AdmZip from "adm-zip";
 import sharp from "sharp";
 import logger from "../utils/logger.mjs";
+import vm from "vm";
 import {
   THUMBNAIL_WIDTH,
   THUMBNAIL_HEIGHT,
@@ -16,29 +17,32 @@ import {
 } from "../constants.mjs";
 
 /**
- * Parse levels and initialViewParameters from data.js content.
- * Expects data.js exporting a JavaScript object or assignment with those properties.
+ * Parse levels and initialViewParameters from data.js content by evaluating it.
  * @param {string} dataJsContent
  * @returns {{levels: any, initialViewParameters: any} | null}
  */
 function parseDataJs(dataJsContent) {
   try {
-    // Simple regex extraction of properties. Adjust if your data.js format differs.
-    const levelsMatch = dataJsContent.match(/levels\s*:\s*(\[[\s\S]*?\])/);
-    const initialViewMatch = dataJsContent.match(
-      /initialViewParameters\s*:\s*({[\s\S]*?})/
-    );
+    const script = new vm.Script(dataJsContent + "\nAPP_DATA;");
+    const context = vm.createContext({});
+    const APP_DATA = script.runInContext(context);
 
-    const levels = levelsMatch ? JSON.parse(levelsMatch[1]) : null;
-    const initialViewParameters = initialViewMatch
-      ? JSON.parse(initialViewMatch[1])
-      : null;
+    if (
+      APP_DATA &&
+      APP_DATA.scenes &&
+      APP_DATA.scenes.length > 0 &&
+      APP_DATA.scenes[0]
+    ) {
+      const scene = APP_DATA.scenes[0];
+      return {
+        levels: scene.levels || null,
+        initialViewParameters: scene.initialViewParameters || null,
+      };
+    }
 
-    return { levels, initialViewParameters };
+    return null;
   } catch (err) {
-    logger.warn(
-      `Failed to parse data.js levels or initialViewParameters: ${err}`
-    );
+    console.warn(`Failed to parse data.js using vm: ${err}`);
     return null;
   }
 }
@@ -51,10 +55,50 @@ export async function handlePano(mediaFolderPath, folderName) {
 
   logger.info(`[${folderName}]: Starting pano processing`);
 
+  // Ensure modified folder exists
+  await fs.mkdir(modifiedPath, { recursive: true });
+
+  // Move .pts files to modified folder
+  const rootFiles = await fs.readdir(mediaFolderPath);
+  const ptsFiles = rootFiles.filter((f) => f.toLowerCase().endsWith(".pts"));
+  for (const file of ptsFiles) {
+    const src = path.join(mediaFolderPath, file);
+    const dest = path.join(modifiedPath, file);
+    await fs.rename(src, dest);
+    logger.info(`[${folderName}]: Moved ${file} to modified folder`);
+  }
+
+  // Move project-title.zip to modified folder if not already there
+  if (rootFiles.includes("project-title.zip")) {
+    const src = path.join(mediaFolderPath, "project-title.zip");
+    const dest = path.join(modifiedPath, "project-title.zip");
+    if (src !== dest) {
+      await fs.rename(src, dest);
+      logger.info(
+        `[${folderName}]: Moved project-title.zip to modified folder`
+      );
+    }
+  }
+
+  // Move any panorama preview JPEGs (e.g. "PANO_XXXX Panorama.jpeg") to modified
+  const panoramaPreviewFiles = rootFiles.filter(
+    (f) => /^PANO_\d+.*\.jpe?g$/i.test(f) && !/^PANO_\d{4}\.jpe?g$/i.test(f) // exclude exact PANO_####.jpg files, which go to original later
+  );
+  for (const file of panoramaPreviewFiles) {
+    const src = path.join(mediaFolderPath, file);
+    const dest = path.join(modifiedPath, file);
+    await fs.rename(src, dest);
+    logger.info(
+      `[${folderName}]: Moved panorama preview ${file} to modified folder`
+    );
+  }
+
   // Move all PANO_<xxxx>.jpg files from root to original folder
   await fs.mkdir(originalPath, { recursive: true });
-  const rootFiles = await fs.readdir(mediaFolderPath);
-  const panoJpgFiles = rootFiles.filter((f) => /^PANO_\d{4}\.jpe?g$/i.test(f));
+  const updatedRootFiles = await fs.readdir(mediaFolderPath);
+  const panoJpgFiles = updatedRootFiles.filter((f) =>
+    /^PANO_\d{4}\.jpe?g$/i.test(f)
+  );
   for (const file of panoJpgFiles) {
     const src = path.join(mediaFolderPath, file);
     const dest = path.join(originalPath, file);
@@ -62,8 +106,7 @@ export async function handlePano(mediaFolderPath, folderName) {
     logger.info(`[${folderName}]: Moved ${file} to original folder`);
   }
 
-  // Assume s3Folder exists externally (no mkdir here)
-
+  // Extract ZIP from modified folder into s3/project-title-extract-temp
   const extractPath = path.join(s3Folder, "project-title-extract-temp");
 
   try {
@@ -76,7 +119,6 @@ export async function handlePano(mediaFolderPath, folderName) {
       return null;
     }
 
-    // Extract project-title.zip into temp folder
     logger.info(`[${folderName}]: Extracting ZIP to ${extractPath}`);
     try {
       const zip = new AdmZip(zipPath);

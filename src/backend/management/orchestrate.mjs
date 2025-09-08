@@ -48,9 +48,6 @@ async function orchestrate() {
       // 2. Rename folder first
       const newFolderPath = await handleFolder(mediaDirPath, newName);
 
-      /*
-
-
       // 3. Handle media based on type
       let panoExtraProps = null;
       if (mediaType === "hdr" || mediaType === "wide_angle") {
@@ -76,7 +73,6 @@ async function orchestrate() {
 
       // 6. Upload media to S3
       await uploadMedia(newFolderPath, newName);
-      */
     } catch (error) {
       logger.error(`Error processing folder ${mediaDirPath}`, { error });
     }

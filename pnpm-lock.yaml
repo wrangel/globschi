@@ -125,6 +125,9 @@ importers:
       vite-plugin-eslint:
         specifier: ^1.8.1
         version: 1.8.1(eslint@9.35.0)(vite@7.1.4(@types/node@24.3.1)(terser@5.44.0))
+      vm:
+        specifier: ^0.1.0
+        version: 0.1.0
 
 packages:
 
@@ -2554,6 +2557,9 @@ packages:
         optional: true
       yaml:
         optional: true
+
+  vm@0.1.0:
+    resolution: {integrity: sha512-1aKVjgohVDnVhGrJLhl2k8zIrapH+7HsdnIjGvBp3XX2OCj6XGzsIbDp9rZ3r7t6qgDfXEE1EoEAEOLJm9LKnw==}
 
   web-streams-polyfill@3.3.3:
     resolution: {integrity: sha512-d2JWLCivmZYTSIoge9MsgFCZrt571BikcWGYkjC1khllbTeDlGqZ2D8vD8E/lJa8WGWbb7Plm8/XJYV7IJHZZw==}
@@ -5667,6 +5673,8 @@ snapshots:
       '@types/node': 24.3.1
       fsevents: 2.3.3
       terser: 5.44.0
+
+  vm@0.1.0: {}
 
   web-streams-polyfill@3.3.3: {}
 

@@ -4,6 +4,7 @@ import { readdir } from "fs/promises";
 import path from "path";
 import mongoose from "mongoose";
 import logger from "../utils/logger.mjs";
+import { connectDB, closeDB } from "../utils/mongodbConnection.mjs";
 
 import { collectMetadata } from "./collectMetadata.mjs";
 import { handleFolder } from "./handleFolder.mjs";
@@ -19,11 +20,7 @@ import { uploadMedia } from "./uploadMedia.mjs";
 export async function orchestrate() {
   try {
     // 1. Connect to MongoDB before starting processing loop
-    await mongoose.connect(process.env.MONGO_URI, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-      serverSelectionTimeoutMS: 10000,
-    });
+    await connectDB();
     logger.info("MongoDB connected");
 
     const baseDir = process.env.INPUT_DIRECTORY;
@@ -50,6 +47,9 @@ export async function orchestrate() {
           continue;
         }
 
+        console.log(processed.metadata);
+
+        /*
         const mediaType = processed.metadata.type;
         const newName = processed.metadata.name;
 
@@ -81,6 +81,7 @@ export async function orchestrate() {
 
         // 7. Upload media to S3
         await uploadMedia(newFolderPath, newName);
+           */
       } catch (error) {
         logger.error(`Error processing folder ${mediaDirPath}`, { error });
       }
@@ -90,12 +91,7 @@ export async function orchestrate() {
     throw err;
   } finally {
     // 8. Close MongoDB connection gracefully when done
-    try {
-      await mongoose.connection.close();
-      logger.info("MongoDB connection closed");
-    } catch (closeErr) {
-      logger.error("Failed to close MongoDB connection:", closeErr);
-    }
+    await closeDB();
   }
 }
 

@@ -1,10 +1,10 @@
-// src/backend/management/handlePano.mjs
+// src/backend/management/uploader/handlePano.mjs
 
 import fs from "fs/promises";
 import path from "path";
 import AdmZip from "adm-zip";
 import sharp from "sharp";
-import logger from "../utils/logger.mjs";
+import logger from "../../utils/logger.mjs";
 import vm from "vm";
 import {
   THUMBNAIL_WIDTH,
@@ -14,7 +14,7 @@ import {
   MODIFIED_FOLDER,
   ORIGINAL_FOLDER,
   S3_FOLDER,
-} from "../constants.mjs";
+} from "../../constants.mjs";
 
 /**
  * Parse levels and initialViewParameters from data.js content by evaluating it.

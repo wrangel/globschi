@@ -1,9 +1,13 @@
-// src/backend/management/handleFolder.mjs
+// src/backend/management/uploader/handleFolder.mjs
 
 import fs from "fs/promises";
 import path from "path";
-import logger from "../utils/logger.mjs";
-import { MODIFIED_FOLDER, ORIGINAL_FOLDER, S3_FOLDER } from "../constants.mjs";
+import logger from "../../utils/logger.mjs";
+import {
+  MODIFIED_FOLDER,
+  ORIGINAL_FOLDER,
+  S3_FOLDER,
+} from "../../constants.mjs";
 
 /**
  * Rename a folder to the new name.

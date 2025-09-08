@@ -8,6 +8,7 @@ import {
 import logger from "../utils/logger.mjs";
 import { Island } from "../models/islandModel.mjs";
 import { executeMongoQuery } from "../utils/mongoUtils.mjs";
+import { connectDB, closeDB } from "../utils/mongodbConnection.mjs";
 
 const s3Client = new S3Client({ region: process.env.AWS_REGION });
 
@@ -56,6 +57,10 @@ async function deleteS3Folders(bucketName, folders) {
 
 async function main() {
   try {
+    // Connect to MongoDB
+    await connectDB();
+    logger.info("MongoDB connected");
+
     const s3Folders = await listTopLevelFolders(process.env.AWS_BUCKET);
     const mongoDocs = await executeMongoQuery(
       () => Island.find().lean(),
@@ -77,21 +82,26 @@ async function main() {
 
     if (s3Only.length === 0) {
       logger.info("No S3 folders to delete — all match MongoDB documents.");
-      return;
+    } else {
+      logger.warn(
+        `Deleting S3 folders with no matching Mongo document: ${s3Only.join(
+          ", "
+        )}`
+      );
+
+      await deleteS3Folders(process.env.AWS_BUCKET, s3Only);
+
+      logger.info(`Deleted ${s3Only.length} orphaned S3 folders.`);
     }
-
-    logger.warn(
-      `Deleting S3 folders with no matching Mongo document: ${s3Only.join(
-        ", "
-      )}`
-    );
-
-    await deleteS3Folders(process.env.AWS_BUCKET, s3Only);
-
-    logger.info(`Deleted ${s3Only.length} orphaned S3 folders.`);
   } catch (error) {
     logger.error("Error deleting S3 folders missing in MongoDB:", { error });
+  } finally {
+    // Close MongoDB connection gracefully when done
+    await closeDB();
+    logger.info("MongoDB connection closed");
   }
 }
 
-main().catch(console.error);
+main().catch((err) => {
+  logger.error("Uncaught error in bookKeeper:", { error: err });
+});

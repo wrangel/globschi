@@ -1,11 +1,11 @@
-// src/backend/management/uploadMedia.mjs
+// src/backend/management/uploader/uploadMedia.mjs
 
 import fs from "fs/promises";
 import path from "path";
 import { Upload } from "@aws-sdk/lib-storage";
 import { ListObjectsV2Command } from "@aws-sdk/client-s3";
-import { s3Client } from "../utils/awsUtils.mjs"; // your existing configured S3 client
-import logger from "../utils/logger.mjs";
+import { s3Client } from "../../utils/awsUtils.mjs"; // your existing configured S3 client
+import logger from "../../utils/logger.mjs";
 
 const BUCKET_NAME = process.env.AWS_BUCKET;
 
@@ -85,6 +85,7 @@ async function uploadDirectoryToS3(localDir, s3Prefix) {
 export async function uploadMedia(mediaFolderPath, folderName) {
   const s3FolderPath = path.join(mediaFolderPath, "modified", "S3");
 
+  logger.info(`Checking if S3 folder with prefix ${folderName} exists...`);
   const exists = await folderExistsInS3(BUCKET_NAME, folderName);
   if (exists) {
     logger.info(

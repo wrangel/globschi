@@ -1,8 +1,8 @@
-// src/backend/management/uploadMetadata.mjs
+// src/backend/management/uploader/uploadMetadata.mjs
 
-import { Island } from "../models/islandModel.mjs";
-import { executeMongoQuery } from "../utils/mongoUtils.mjs";
-import logger from "../utils/logger.mjs";
+import { Island } from "../../models/islandModel.mjs";
+import { executeMongoQuery } from "../../utils/mongoUtils.mjs";
+import logger from "../../utils/logger.mjs";
 
 export async function uploadMetadata(doc) {
   try {

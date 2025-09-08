@@ -1,10 +1,10 @@
-// src/backend/management/orchestrate.mjs
+// src/backend/management/uploader/orchestrate.mjs
 
 import { readdir } from "fs/promises";
 import path from "path";
 import mongoose from "mongoose";
-import logger from "../utils/logger.mjs";
-import { connectDB, closeDB } from "../utils/mongodbConnection.mjs";
+import logger from "../../utils/logger.mjs";
+import { connectDB, closeDB } from "../../utils/mongodbConnection.mjs";
 
 import { collectMetadata } from "./collectMetadata.mjs";
 import { handleFolder } from "./handleFolder.mjs";

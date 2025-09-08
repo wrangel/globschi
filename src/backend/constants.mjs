@@ -63,7 +63,7 @@ export const MAX_WEBP_DIMENSION = 16383;
  * Must be sorted alphabetically.
  * @constant {ReadonlyArray<string>}
  */
-export const MEDIA_PAGES = Object.freeze(["hdr", "pan", "wide_angle"]);
+export const MEDIA_PAGES = Object.freeze(["hdr", "pano", "wide_angle"]);
 
 /**
  * Prefixes for different media types used in naming conventions.

@@ -35,7 +35,7 @@ export async function getUrls() {
   for (const { name, type } of docs) {
     const thumbnailUrl = `${BASE_URL}/${name}/thumbnail.webp`;
     const actualUrl =
-      type === "pan"
+      type === "pano"
         ? `${BASE_URL}/${name}/tiles`
         : await signedUrl(`${name}/${name}.webp`);
 

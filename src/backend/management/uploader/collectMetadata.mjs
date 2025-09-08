@@ -1,10 +1,10 @@
-// src/backend/management/collectMetadata.mjs
+// src/backend/management/uploader/collectMetadata.mjs
 
 import { readdir, readFile } from "fs/promises";
 import path from "path";
 import fetch from "node-fetch"; // for reverse geocoding API calls
 import ExifParser from "exif-parser";
-import logger from "../utils/logger.mjs";
+import logger from "../../utils/logger.mjs";
 import {
   CONTRIBUTORS,
   REVERSE_GEO_ADDRESS_COMPONENTS,
@@ -14,7 +14,7 @@ import {
   EXIF_TAGS,
   ALTITUDE_UNIT,
   UNKNOWN_VALUE,
-} from "../constants.mjs";
+} from "../../constants.mjs";
 
 // Utility: prompt user for input
 import readline from "readline";
@@ -95,19 +95,14 @@ function getDate(str) {
 }
 
 /**
- * Determine media type based on number of JPEG files in "original" directory.
+ * Determine media type based on number of JPG files in the directory.
  * @param {string} parentDir
  * @returns {Promise<string>}
  */
 async function determineMediaType(parentDir) {
   try {
-    const originalPath = path.join(parentDir, "original");
-    const files = await readdir(originalPath);
-    const imageCount = files.filter(
-      (file) =>
-        file.toLowerCase().endsWith(".jpg") ||
-        file.toLowerCase().endsWith(".jpeg")
-    ).length;
+    const files = await readdir(parentDir);
+    const imageCount = files.filter((file) => file.endsWith(".JPG")).length;
 
     if (imageCount <= 5) return "hdr";
     if (imageCount >= 26 && imageCount <= 35) return "pano";
@@ -165,10 +160,9 @@ async function reverseGeocode(longitude, latitude) {
  * @param {string} author
  * @returns {Promise<Object|null>}
  */
-async function readExifFromFirstJPEGInOriginal(parentDir, mediaType, author) {
+async function readExifFromFirstJPG(parentDir, mediaType, author) {
   try {
-    const originalPath = path.join(parentDir, "original");
-    const files = await readdir(originalPath);
+    const files = await readdir(parentDir);
 
     const jpgFile = files.find(
       (file) =>
@@ -176,18 +170,27 @@ async function readExifFromFirstJPEGInOriginal(parentDir, mediaType, author) {
         file.toLowerCase().endsWith(".jpeg")
     );
     if (!jpgFile) {
-      logger.warn(`No JPEG file found in ${originalPath}`);
+      logger.warn(`No JPEG file found in ${parentDir}`);
       return null;
     }
 
-    const filePath = path.join(originalPath, jpgFile);
+    const filePath = path.join(parentDir, jpgFile);
     const imgBuffer = await readFile(filePath);
 
     const parser = ExifParser.create(imgBuffer);
     const exifData = parser.parse();
 
+    console.log(exifData);
+
     // Detect drone model from EXIF tag
-    let drone = DRONE_MODELS[exifData.tags[EXIF_TAGS.MODEL]] || "Unknown";
+    let drone = UNKNOWN_VALUE;
+    if (exifData.tags[EXIF_TAGS.MODEL]) {
+      // Extract the model code by removing brackets and other characters
+      const modelCode = exifData.tags[EXIF_TAGS.MODEL]
+        .replace(/[\[\]]/g, "")
+        .trim();
+      drone = DRONE_MODELS[modelCode] || UNKNOWN_VALUE;
+    }
 
     const type = mediaType;
 
@@ -263,13 +266,12 @@ async function promptAuthorForMedia(mediaName) {
  */
 export async function collectMetadata(mediaDirPath) {
   const mediaType = await determineMediaType(mediaDirPath);
+
   const originalName = path.basename(mediaDirPath);
   const author = await promptAuthorForMedia(originalName);
-  const exifData = await readExifFromFirstJPEGInOriginal(
-    mediaDirPath,
-    mediaType,
-    author
-  );
+
+  const exifData = await readExifFromFirstJPG(mediaDirPath, mediaType, author);
+
   if (!exifData) return null;
 
   // Prepare metadata for database insertion
@@ -291,10 +293,5 @@ export async function collectMetadata(mediaDirPath) {
     noViews: 0,
   };
 
-  const fileInfo = {
-    key: originalName,
-    // Add other file info properties if needed
-  };
-
-  return { metadata, fileInfo };
+  return { metadata };
 }

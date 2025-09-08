@@ -27,13 +27,6 @@ export const DRONE_MODELS = Object.freeze({
 });
 
 /**
- * List of drones.
- * NOTE: The newest drone must be first in the array.
- * @constant {ReadonlyArray<string>}
- */
-export const DRONES = Object.freeze(["DJI Mini 4 Pro", "DJI Mini 2"]);
-
-/**
  * EXIF tag names used in image metadata extraction.
  * @constant {Object<string, string>}
  */
@@ -63,7 +56,7 @@ export const MAX_WEBP_DIMENSION = 16383;
  * Must be sorted alphabetically.
  * @constant {ReadonlyArray<string>}
  */
-export const MEDIA_PAGES = Object.freeze(["hdr", "pan", "wide_angle"]);
+export const MEDIA_PAGES = Object.freeze(["hdr", "pano", "wide_angle"]);
 
 /**
  * Prefixes for different media types used in naming conventions.
@@ -130,6 +123,13 @@ export const REVERSE_GEO_URL_ELEMENTS = Object.freeze([
 if (!MEDIA_PAGES.every((v, i, a) => !i || a[i - 1] <= v)) {
   throw new Error("MEDIA_PAGES must be sorted alphabetically");
 }
+
+/**
+ * Names of special folders consistently used in media processing.
+ */
+export const MODIFIED_FOLDER = "modified";
+export const ORIGINAL_FOLDER = "original";
+export const S3_FOLDER = "S3";
 
 /**
  * String used when certain metadata values are unknown or missing.

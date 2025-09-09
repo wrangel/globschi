@@ -1,5 +1,4 @@
 // src/frontend/views/GridPage.js
-
 import React, { useCallback } from "react";
 import { Helmet } from "react-helmet-async";
 import PortfolioGrid from "../components/PortfolioGrid";

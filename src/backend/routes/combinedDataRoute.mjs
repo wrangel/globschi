@@ -1,5 +1,4 @@
 // src/backend/routes/combinedDataRoute.mjs
-
 import express from "express";
 import { getCombinedData } from "../dataHandler.mjs";
 import { getCachedData, setCachedData } from "../cache.mjs";

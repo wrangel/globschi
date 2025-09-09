@@ -1,4 +1,10 @@
-/* src/frontend/styles/Metadata.module.css */
+/* src/frontend/styles/MetadataPopup.module.css */
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1599; /* just below popup */
+  background: transparent;
+}
 
 .metadataPopup {
   position: absolute;
@@ -13,32 +19,15 @@
   width: auto;
   box-sizing: border-box;
   font-size: 0.9rem;
-  font-family: var(--font-stack); /* ← new font */
-  text-shadow: var(--text-shadow-heavy); /* ← new shadow */
+  font-family: var(--font-stack);
+  text-shadow: var(--text-shadow-heavy);
   transition: transform var(--transition-duration) ease;
   will-change: transform;
 }
 
 .content {
   text-align: center;
-}
-
-.closeButton {
-  display: block;
-  margin: 0 auto;
-  background: transparent;
-  border: none;
-  color: var(--close-button-color);
-  font-size: var(--close-button-font-size);
-  cursor: pointer;
-  transition: color var(--transition-duration);
-  font-family: var(--font-stack); /* ← keep same font */
-  text-shadow: var(--text-shadow-heavy); /* ← same shadow */
-}
-
-.closeButton:hover,
-.closeButton:focus {
-  color: var(--popup-text-color);
+  padding-top: 14px; /* space for pill */
 }
 
 .maplink {
@@ -46,11 +35,10 @@
   margin-top: var(--spacing-small);
   color: var(--link-color);
   text-decoration: none;
-  font-family: var(--font-stack); /* ← new font */
-  text-shadow: var(--text-shadow-heavy); /* ← same shadow */
+  font-family: var(--font-stack);
+  text-shadow: var(--text-shadow-heavy);
   transition: color var(--transition-duration);
 }
-
 .maplink:hover,
 .maplink:focus {
   text-decoration: underline;
@@ -58,11 +46,27 @@
 
 .mapIframe {
   width: 100%;
-  height: auto;
-  max-height: var(--max-width-popup);
+  height: 50vh;
   border: none;
 }
 
+/* ---------- pill / close button ---------- */
+.dragPill {
+  position: absolute;
+  top: 6px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 36px;
+  height: 5px;
+  border-radius: 3px;
+  background: var(--pill-color, rgba(255, 255, 255, 0.6));
+  border: none;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+/* responsive tweaks */
 @media (min-width: 320px) {
   .metadataPopup {
     top: var(--spacing-small);
@@ -72,10 +76,7 @@
   }
 }
 
-.metadataPopup,
-.metadataPopup .closeButton,
-.metadataPopup .maplink,
-.metadataPopup pre,
-.metadataPopup code {
-  font-family: var(--font-stack);
+.metadataPopup {
+  position: absolute; /* you already have this */
+  transform: none !important; /* we manage top/left ourselves while dragging */
 }

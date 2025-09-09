@@ -1,6 +1,6 @@
 // src/components/Viewer.jsx
 
-import React, { useState, useEffect, useRef, useCallback, memo } from "react";
+import { useState, useEffect, useRef, useCallback, memo } from "react";
 import PropTypes from "prop-types";
 import NavigationMedia from "./NavigationMedia";
 import ImagePopup from "./ImagePopup";
@@ -69,6 +69,7 @@ const Viewer = ({
           levels={item.levels}
           initialViewParameters={item.initialViewParameters}
           onReady={handleContentLoaded}
+          onError={(err) => console.error("Panorama error:", err)}
         />
       );
     }
@@ -84,7 +85,13 @@ const Viewer = ({
   }, [item, isNavigationMode, handleContentLoaded]);
 
   return (
-    <div className={styles.viewer} ref={viewerRef}>
+    <div
+      className={styles.viewer}
+      ref={viewerRef}
+      role="region"
+      aria-label={`Media viewer for ${item.name || "item"}`}
+      tabIndex={-1} // focusable container for assistive tech
+    >
       {isLoading && <LoadingOverlay thumbnailUrl={item.thumbnailUrl} />}
       {renderContent()}
       <NavigationMedia
@@ -95,6 +102,8 @@ const Viewer = ({
         isNavigationMode={isNavigationMode}
         toggleMode={toggleMode}
         onToggleFullScreen={toggleFullScreen}
+        isFirst={item.isFirst}
+        isLast={item.isLast}
       />
       {showMetadata && (
         <MetadataPopup
@@ -132,6 +141,8 @@ Viewer.propTypes = {
         fallbackOnly: PropTypes.bool,
       })
     ),
+    isFirst: PropTypes.bool,
+    isLast: PropTypes.bool,
   }).isRequired,
   onClose: PropTypes.func.isRequired,
   onNext: PropTypes.func.isRequired,

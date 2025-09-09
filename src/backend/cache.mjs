@@ -11,11 +11,11 @@
 import NodeCache from "node-cache";
 import logger from "./utils/logger.mjs";
 
-const cache = new NodeCache({ stdTTL: 60 }); // Cache TTL of 60 seconds
+const cache = new NodeCache({ stdTTL: 60, checkperiod: 120 }); // Cache TTL of 60 seconds, cleanup every 120 seconds
 
 /**
  * Retrieves cached data by key.
- * Logs cache hit or miss.
+ * Logs cache hit or miss for observability.
  * @param {string} key - Cache key
  * @returns {*} Cached value or undefined if not found
  */
@@ -33,12 +33,13 @@ export const getCachedData = (key) => {
       `[CACHE ERROR] getCachedData failed for key=${key}: ${error.message}`,
       { error }
     );
-    return null;
+    return undefined;
   }
 };
 
 /**
  * Stores data in cache with the given key.
+ * Overwrites existing entries.
  * @param {string} key - Cache key
  * @param {*} value - Data to cache
  */
@@ -55,7 +56,8 @@ export const setCachedData = (key, value) => {
 };
 
 /**
- * Deletes a cache entry by key, for manual deletion scenarios.
+ * Deletes a cache entry by key.
+ * Useful for manual invalidation in specific scenarios.
  * @param {string} key - Cache key
  */
 export const invalidateCache = (key) => {
@@ -71,7 +73,7 @@ export const invalidateCache = (key) => {
 };
 
 /**
- * Logs cache statistics to help with debugging.
+ * Logs cache statistics to help with debugging cache usage and performance.
  */
 export const printCacheStats = () => {
   try {

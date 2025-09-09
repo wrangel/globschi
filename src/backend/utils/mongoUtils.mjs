@@ -4,6 +4,7 @@ import logger from "../utils/logger.mjs";
 
 /**
  * Executes a MongoDB query.
+ * Logs results if output is enabled and handles errors seamlessly.
  *
  * @param {Function} queryCallback - Async function executing the query.
  * @param {string} [modelName="Document"] - Model name used for logging.
@@ -17,10 +18,8 @@ export async function executeMongoQuery(
   output = false
 ) {
   try {
-    // Execute the provided query callback
     const result = await queryCallback();
 
-    // Log results if output is enabled
     if (output) {
       if (Array.isArray(result)) {
         logger.info(`\nAll ${modelName}s in MongoDB:`);
@@ -43,6 +42,7 @@ export async function executeMongoQuery(
         error,
       });
     }
+    // Rethrow to let callers handle as needed
     throw error;
   }
 }

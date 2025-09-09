@@ -21,8 +21,10 @@ const useKeyboardNavigation = (onClose, onPrevious, onNext) => {
         event.key === "ArrowLeft" &&
         typeof onPrevious === "function"
       ) {
+        event.preventDefault(); // Optional: prevent scrolling
         onPrevious();
       } else if (event.key === "ArrowRight" && typeof onNext === "function") {
+        event.preventDefault(); // Optional: prevent scrolling
         onNext();
       }
     },

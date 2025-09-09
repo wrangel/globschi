@@ -29,11 +29,25 @@ function GridPage() {
   const onPrevious = useCallback(handlePreviousItem, [handlePreviousItem]);
 
   if (isLoading) {
-    return <LoadingOverlay />;
+    return (
+      <LoadingOverlay
+        ariaLive="polite"
+        ariaLabel="Loading gallery images, please wait"
+      />
+    );
   }
 
   if (error) {
-    return <div className={styles.homePage}>Error: {error}</div>;
+    return (
+      <div
+        className={styles.homePage}
+        role="alert"
+        aria-live="assertive"
+        tabIndex={-1}
+      >
+        Error: {error}
+      </div>
+    );
   }
 
   return (
@@ -46,7 +60,10 @@ function GridPage() {
           content="Explore our gallery of stunning drone-captured aerial images. View our portfolio of breathtaking landscapes and unique perspectives from above."
         />
       </Helmet>
-      <div className={styles.homePage}>
+      <a href="#main-content" className="skip-link">
+        Skip to main content
+      </a>
+      <main id="main-content" className={styles.homePage}>
         {items.length > 0 ? (
           <PortfolioGrid items={items} onItemClick={onItemClick} />
         ) : (
@@ -61,7 +78,7 @@ function GridPage() {
             onPrevious={onPrevious}
           />
         )}
-      </div>
+      </main>
     </>
   );
 }

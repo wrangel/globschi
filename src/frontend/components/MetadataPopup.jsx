@@ -4,107 +4,166 @@ import { useState, useEffect, useRef } from "react";
 import PropTypes from "prop-types";
 import styles from "../styles/MetadataPopup.module.css";
 
+const SWIPE_THRESHOLD = 60; // px
+
 const MetadataPopup = ({ metadata, latitude, longitude, onClose }) => {
   const zoomLevel = 13;
   const [isBelowThreshold, setIsBelowThreshold] = useState(false);
   const [popupPosition, setPopupPosition] = useState({ x: 0, y: 0 });
   const popupRef = useRef(null);
+  const triggerRef = useRef(null);
+  const dragRef = useRef({ startY: 0, dragging: false });
 
+  // Track window resize to toggle map/link display
   useEffect(() => {
-    const handleResize = () => {
-      setIsBelowThreshold(window.innerHeight < 500);
-    };
+    const handleResize = () => setIsBelowThreshold(window.innerHeight < 500);
     handleResize();
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  // Focus management: Save focus on mount, focus popup, restore on unmount
+  useEffect(() => {
+    triggerRef.current = document.activeElement;
+    popupRef.current?.focus();
+    return () => {
+      triggerRef.current?.focus();
+    };
+  }, []);
+
+  // Google Maps embed URL and link for fallback
   const googleMapsUrl = `https://www.google.com/maps/embed/v1/place?key=${
     import.meta.env.VITE_GOOGLE_MAPS_API_KEY
   }&q=${latitude},${longitude}&zoom=${zoomLevel}&maptype=satellite`;
   const googleMapsLink = `https://www.google.com/maps?q=${latitude},${longitude}&zoom=${zoomLevel}&maptype=satellite`;
 
+  /* ---------- silky drag-to-move ---------- */
   const handleDragStart = (e) => {
-    // Prevent events from reaching underlying elements
     e.stopPropagation();
     e.preventDefault();
 
-    const startX = e.clientX ?? (e.touches ? e.touches[0].clientX : 0);
-    const startY = e.clientY ?? (e.touches ? e.touches[0].clientY : 0);
-    const initialPosition = popupRef.current.getBoundingClientRect();
+    const popup = popupRef.current;
+    if (!popup) return;
 
-    const handleDrag = (ev) => {
-      ev.stopPropagation();
-      ev.preventDefault();
-      const clientX = ev.clientX ?? (ev.touches ? ev.touches[0].clientX : 0);
-      const clientY = ev.clientY ?? (ev.touches ? ev.touches[0].clientY : 0);
-      const deltaX = clientX - startX;
-      const deltaY = clientY - startY;
-      setPopupPosition({
-        x: initialPosition.left + deltaX,
-        y: initialPosition.top + deltaY,
-      });
+    // read current *pixel* position once
+    const startRect = popup.getBoundingClientRect();
+    const parentRect = popup.offsetParent.getBoundingClientRect();
+    let baseLeft = startRect.left - parentRect.left; // absolute left
+    let baseTop = startRect.top - parentRect.top; // absolute top
+
+    // cancel any leftover transform so we work in pure px space
+    popup.style.transform = "none";
+
+    // apply absolute coords so element doesn't jump
+    popup.style.left = `${baseLeft}px`;
+    popup.style.top = `${baseTop}px`;
+
+    const isTouch = e.type === "touchstart";
+    const pointer = isTouch ? e.touches[0] : e;
+    let lastX = pointer.clientX;
+    let lastY = pointer.clientY;
+
+    const onMove = (ev) => {
+      const p = isTouch ? ev.touches[0] : ev;
+      baseLeft += p.clientX - lastX;
+      baseTop += p.clientY - lastY;
+      lastX = p.clientX;
+      lastY = p.clientY;
+      popup.style.left = `${baseLeft}px`;
+      popup.style.top = `${baseTop}px`;
     };
 
-    const handleDragEnd = (ev) => {
-      if (ev) {
-        ev.stopPropagation();
-        ev.preventDefault();
-      }
-      document.removeEventListener("mousemove", handleDrag);
-      document.removeEventListener("touchmove", handleDrag);
-      document.removeEventListener("mouseup", handleDragEnd);
-      document.removeEventListener("touchend", handleDragEnd);
+    const onUp = () => {
+      // commit final coords to React so next render matches
+      setPopupPosition({ x: baseLeft, y: baseTop });
+      document.removeEventListener(isTouch ? "touchmove" : "mousemove", onMove);
+      document.removeEventListener(isTouch ? "touchend" : "mouseup", onUp);
     };
 
-    document.addEventListener("mousemove", handleDrag);
-    document.addEventListener("touchmove", handleDrag, { passive: false });
-    document.addEventListener("mouseup", handleDragEnd);
-    document.addEventListener("touchend", handleDragEnd);
+    document.addEventListener(isTouch ? "touchmove" : "mousemove", onMove, {
+      passive: true,
+    });
+    document.addEventListener(isTouch ? "touchend" : "mouseup", onUp);
+  };
+
+  /* ---------- swipe-down-to-dismiss ---------- */
+  const onTouchStart = (e) => {
+    dragRef.current.startY = e.touches[0].clientY;
+    dragRef.current.dragging = true;
+  };
+  const onTouchMove = (e) => {
+    if (!dragRef.current.dragging) return;
+    const deltaY = e.touches[0].clientY - dragRef.current.startY;
+    if (deltaY > 0) setPopupPosition((p) => ({ ...p, y: deltaY }));
+  };
+  const onTouchEnd = (e) => {
+    dragRef.current.dragging = false;
+    const deltaY = e.changedTouches[0].clientY - dragRef.current.startY;
+    if (deltaY > SWIPE_THRESHOLD) onClose();
+    else setPopupPosition({ x: 0, y: 0 }); // snap back
   };
 
   return (
-    <div
-      className={styles.metadataPopup}
-      ref={popupRef}
-      style={{
-        transform: `translate(${popupPosition.x}px, ${popupPosition.y}px)`,
-      }}
-      onMouseDown={handleDragStart}
-      onTouchStart={handleDragStart}
-      // Ensure popup always intercepts pointer events
-    >
-      <button
-        className={styles.closeButton}
+    <>
+      <div
+        className={styles.backdrop}
         onClick={onClose}
-        aria-label="Close metadata popup"
+        aria-hidden="true"
+        tabIndex={-1}
+      />
+
+      <div
+        className={styles.metadataPopup}
+        ref={popupRef}
+        style={{
+          transform: `translate(${popupPosition.x}px, ${popupPosition.y}px)`,
+        }}
+        onMouseDown={handleDragStart}
+        onTouchStart={handleDragStart}
+        onTouchMove={onTouchMove}
+        onTouchEnd={onTouchEnd}
+        role="dialog"
+        aria-modal="true"
+        tabIndex={-1}
+        aria-label="Metadata popup"
       >
-        ×
-      </button>
-      <div className={styles.content}>
-        <pre>{metadata}</pre>
-        {isBelowThreshold ? (
-          <a
-            href={googleMapsLink}
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.maplink}
-          >
-            View on map
-          </a>
-        ) : (
-          <iframe
-            className={styles.mapIframe}
-            width="100%"
-            style={{ height: "50vh" }}
-            src={googleMapsUrl}
-            title={`Map showing location at latitude ${latitude} and longitude ${longitude}`}
-            allowFullScreen
-            loading="lazy"
-          ></iframe>
-        )}
+        {/* universal pill / close target */}
+        <button
+          className={styles.dragPill}
+          onClick={onClose}
+          onTouchEnd={(e) => {
+            e.preventDefault();
+            onClose();
+          }}
+          aria-label="Close metadata popup"
+          type="button"
+        />
+
+        <div className={styles.content}>
+          <pre>{metadata}</pre>
+          {isBelowThreshold ? (
+            <a
+              href={googleMapsLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.maplink}
+            >
+              View on map
+            </a>
+          ) : (
+            <iframe
+              className={styles.mapIframe}
+              width="100%"
+              style={{ height: "50vh" }}
+              src={googleMapsUrl}
+              title={`Map lat:${latitude} lng:${longitude}`}
+              allowFullScreen
+              loading="lazy"
+            />
+          )}
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 

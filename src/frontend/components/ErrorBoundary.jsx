@@ -21,7 +21,7 @@ import styles from "../styles/ErrorBoundary.module.css";
 class ErrorBoundary extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { hasError: false }; // Tracks error presence
+    this.state = { hasError: false, error: null }; // Tracks error presence and stores error
   }
 
   /**
@@ -32,7 +32,7 @@ class ErrorBoundary extends React.Component {
    * @returns {Object} New state with hasError set to true
    */
   static getDerivedStateFromError(error) {
-    return { hasError: true };
+    return { hasError: true, error };
   }
 
   /**
@@ -44,13 +44,14 @@ class ErrorBoundary extends React.Component {
    */
   componentDidCatch(error, errorInfo) {
     console.error("Uncaught error:", error, errorInfo);
+    // Could integrate with error monitoring service here
   }
 
   /**
    * Resets the error state to allow retrying rendering.
    */
   handleRetry = () => {
-    this.setState({ hasError: false });
+    this.setState({ hasError: false, error: null });
   };
 
   render() {

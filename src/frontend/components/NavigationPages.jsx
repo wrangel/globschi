@@ -16,7 +16,7 @@ const NavigationPages = ({ onNavigate }) => {
   const location = useLocation();
 
   // Define button configurations for different routes.
-  // Here the same list is used for all specified paths.
+  // Use the same buttons for all listed paths.
   const buttonConfig = {
     "/": [
       { label: "Map", path: "/map" },
@@ -50,6 +50,7 @@ const NavigationPages = ({ onNavigate }) => {
         }`}
         onClick={() => onNavigate(button.path)}
         aria-label={`Go to ${button.label}`}
+        type="button"
       >
         {button.label}
       </button>
@@ -57,9 +58,14 @@ const NavigationPages = ({ onNavigate }) => {
   };
 
   return (
-    <div className={styles.fabContainer} style={{ zIndex: 950 }}>
+    <nav
+      className={styles.fabContainer}
+      style={{ zIndex: 950 }}
+      aria-label="Page navigation"
+      role="navigation"
+    >
       <div className={styles.fabMenu}>{renderButtons()}</div>
-    </div>
+    </nav>
   );
 };
 

@@ -4,13 +4,13 @@ import fs from "fs/promises";
 import path from "path";
 import { Upload } from "@aws-sdk/lib-storage";
 import { ListObjectsV2Command } from "@aws-sdk/client-s3";
-import { s3Client } from "../../utils/awsUtils.mjs"; // your existing configured S3 client
+import { s3Client } from "../../utils/awsUtils.mjs";
 import logger from "../../utils/logger.mjs";
 
 const BUCKET_NAME = process.env.AWS_BUCKET;
 
 /**
- * Checks if any object exists in S3 with the given prefix (folder)
+ * Checks if any object exists in S3 with the given prefix (folder).
  * @param {string} bucketName
  * @param {string} prefix - the S3 folder prefix
  * @returns {Promise<boolean>} true if folder has contents
@@ -33,7 +33,7 @@ async function folderExistsInS3(bucketName, prefix) {
 }
 
 /**
- * Recursively upload all files in localDir to S3 bucket under s3Prefix
+ * Recursively upload all files in localDir to S3 bucket under s3Prefix.
  * @param {string} localDir - absolute path of local folder (e.g. X/modified/S3)
  * @param {string} s3Prefix - prefix inside S3 bucket (e.g. renamed folder name X)
  */
@@ -44,8 +44,7 @@ async function uploadDirectoryToS3(localDir, s3Prefix) {
     if (entry.name.startsWith(".")) continue; // skip dotfiles
 
     const fullPath = path.join(localDir, entry.name);
-    // Construct S3 Key preserving folder hierarchy relative to s3Prefix
-    const s3Key = `${s3Prefix}/${entry.name}`;
+    const s3Key = `${s3Prefix}/${entry.name}`; // preserve folder structure relative to prefix
 
     if (entry.isDirectory()) {
       await uploadDirectoryToS3(fullPath, s3Key);
@@ -78,7 +77,7 @@ async function uploadDirectoryToS3(localDir, s3Prefix) {
 }
 
 /**
- * Uploads the 'modified/S3' folder inside the media folder to S3 as renamed folder prefix
+ * Uploads the 'modified/S3' folder inside the media folder to S3 as renamed folder prefix.
  * @param {string} mediaFolderPath - absolute path to media folder renamed (e.g. /.../pa_20250403_121314)
  * @param {string} folderName - renamed folder name used as S3 prefix (e.g. pa_20250403_121314)
  */

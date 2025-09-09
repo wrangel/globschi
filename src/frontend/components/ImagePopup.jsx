@@ -1,22 +1,11 @@
 // src/frontend/components/ImagePopup.jsx
 
 import { useState, useEffect, useRef } from "react";
-import LoadingOverlay from "./LoadingOverlay";
 import panzoom from "panzoom";
 import styles from "../styles/ImagePopup.module.css";
 
 /**
- * ImagePopup component displays an image with zoom and pan capabilities.
- *
- * It shows a loading overlay while the high-resolution image is loading,
- * disables page scrolling while the image is displayed,
- * and allows toggling pan/zoom navigation based on mode.
- *
- * @param {Object} props - Component props.
- * @param {string} props.actualUrl - URL of the main high-resolution image.
- * @param {string} props.thumbnailUrl - URL of the loading thumbnail image.
- * @param {string} props.name - Alt text / name of the image.
- * @param {boolean} props.isNavigationMode - Whether pan/zoom navigation is enabled.
+ * ImagePopup component with robust error handling and accessibility.
  */
 const ImagePopup = ({
   actualUrl,
@@ -25,48 +14,44 @@ const ImagePopup = ({
   isNavigationMode,
   onLoad,
 }) => {
-  const [isLoading, setIsLoading] = useState(true); // Loading state for high-res image
-  const imgRef = useRef(null); // Ref to image container DOM element
-  const panZoomInstanceRef = useRef(null); // Stores panzoom instance for control
+  const [isLoading, setIsLoading] = useState(true);
+  const [hasError, setHasError] = useState(false);
+  const [showBleep, setShowBleep] = useState(false);
+  const imgRef = useRef(null);
+  const panZoomInstanceRef = useRef(null);
 
-  // Pre-load high-resolution image, update loading state when done
   useEffect(() => {
+    setIsLoading(true);
+    setHasError(false);
+    setShowBleep(false);
+
     const img = new Image();
     img.src = actualUrl;
     img.onload = () => {
       setIsLoading(false);
+      setShowBleep(true);
       if (onLoad) onLoad();
+
+      // Hide the bleep button after 1 second
+      setTimeout(() => setShowBleep(false), 500);
+    };
+    img.onerror = () => {
+      setHasError(true);
+      setIsLoading(false);
     };
   }, [actualUrl, onLoad]);
 
-  // Manage page scrollbar visibility while image is loading
   useEffect(() => {
-    if (!isLoading) {
-      document.body.classList.add("hide-scrollbar");
-    } else {
-      document.body.classList.remove("hide-scrollbar");
-    }
-
-    // Cleanup on unmount or URL change
-    return () => {
-      document.body.classList.remove("hide-scrollbar");
-    };
-  }, [isLoading]);
-
-  // Initialize panzoom on the image container once loading completes
-  useEffect(() => {
-    if (!isLoading && imgRef.current) {
+    if (!isLoading && !hasError && imgRef.current) {
       const instance = panzoom(imgRef.current);
       panZoomInstanceRef.current = instance;
 
-      // Cleanup panzoom instance on unmount or reload
       return () => {
         instance.dispose();
       };
     }
-  }, [isLoading]);
+  }, [isLoading, hasError]);
 
-  // Enable or disable panzoom navigation based on isNavigationMode prop
   useEffect(() => {
     if (panZoomInstanceRef.current) {
       if (isNavigationMode) {
@@ -77,17 +62,54 @@ const ImagePopup = ({
     }
   }, [isNavigationMode]);
 
-  return (
-    <div className={`${styles.imagePopup} ${!isLoading ? styles.loaded : ""}`}>
-      {/* Show loading overlay while the high-res image is loading */}
-      {isLoading && <LoadingOverlay thumbnailUrl={thumbnailUrl} />}
-      <div ref={imgRef} className={styles.panzoomContainer}>
+  if (hasError) {
+    return (
+      <div className={styles.imagePopup} role="alert" aria-live="assertive">
+        <p>Failed to load image: {name}</p>
         <img
-          src={actualUrl}
-          alt={name}
-          className={`${styles.image} ${isLoading ? styles.hidden : ""}`}
+          src={thumbnailUrl}
+          alt={`${name} thumbnail fallback`}
+          className={styles.thumbnailFullViewport}
         />
       </div>
+    );
+  }
+
+  return (
+    <div className={styles.imagePopup}>
+      {isLoading && (
+        <img
+          src={thumbnailUrl}
+          alt={`${name} thumbnail`}
+          className={styles.thumbnailFullViewport}
+        />
+      )}
+      <div
+        ref={imgRef}
+        className={`${styles.panzoomContainer} ${
+          isLoading ? styles.hidden : ""
+        }`}
+        tabIndex={0} // make container focusable for keyboard users
+        aria-label={name}
+        role="img"
+      >
+        <img src={actualUrl} alt={name} className={styles.image} />
+      </div>
+
+      {/* Show the bleep indicator button for 1 second after load */}
+      {showBleep && (
+        <button
+          className={styles.bleepButton}
+          aria-label="Image loaded indicator"
+          type="button"
+          tabIndex={-1} // not focusable by tab
+          onClick={() => {
+            console.info("Bleep indicator clicked");
+          }}
+        >
+          ●
+        </button>
+      )}
     </div>
   );
 };

@@ -10,6 +10,8 @@ const NavigationMedia = ({
   onToggleMetadata,
   isNavigationMode,
   onToggleFullScreen,
+  isFirst,
+  isLast,
 }) => {
   const [isFullscreen, setIsFullscreen] = useState(false);
 
@@ -24,29 +26,49 @@ const NavigationMedia = ({
     };
   }, []);
 
+  const handleClose = () => {
+    if (isFullscreen) {
+      document.exitFullscreen().catch((err) => {
+        console.error(
+          `Error attempting to exit full-screen mode: ${err.message} (${err.name})`
+        );
+      });
+    } else {
+      onClose();
+    }
+  };
+
   return (
     <div
       className={`${styles.fabContainer} ${
         isFullscreen ? styles.fullscreen : ""
       }`}
       style={{ zIndex: 1100 }}
+      role="navigation"
+      aria-label="Media navigation controls"
     >
       {isNavigationMode && !isFullscreen && (
         <>
-          <button
-            className={styles.leftArrow}
-            aria-label="Previous"
-            onClick={onPrevious}
-          >
-            ←
-          </button>
-          <button
-            className={styles.rightArrow}
-            aria-label="Next"
-            onClick={onNext}
-          >
-            →
-          </button>
+          {!isFirst && (
+            <button
+              className={styles.leftArrow}
+              aria-label="Previous media"
+              onClick={onPrevious}
+              type="button"
+            >
+              ←
+            </button>
+          )}
+          {!isLast && (
+            <button
+              className={styles.rightArrow}
+              aria-label="Next media"
+              onClick={onNext}
+              type="button"
+            >
+              →
+            </button>
+          )}
         </>
       )}
 
@@ -55,7 +77,8 @@ const NavigationMedia = ({
           <button
             className={styles.fab}
             onClick={onToggleFullScreen}
-            aria-label="Full Screen"
+            aria-label="Enter full screen"
+            type="button"
           >
             Full
           </button>
@@ -63,15 +86,17 @@ const NavigationMedia = ({
           <button
             className={styles.fab}
             onClick={onToggleMetadata}
-            aria-label="Toggle Metadata"
+            aria-label="Toggle metadata panel"
+            type="button"
           >
             Info
           </button>
 
           <button
             className={`${styles.fab}`}
-            onClick={onClose}
-            aria-label="Close"
+            onClick={handleClose}
+            aria-label="Close media navigation"
+            type="button"
           >
             Close
           </button>
@@ -81,8 +106,9 @@ const NavigationMedia = ({
       {isFullscreen && (
         <button
           className={`${styles.fab}`}
-          onClick={onClose}
-          aria-label="Close"
+          onClick={handleClose}
+          aria-label="Exit full screen and close"
+          type="button"
         >
           Close
         </button>

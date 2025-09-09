@@ -1,6 +1,6 @@
 // src/frontend/hooks/useItems.jsx
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useDebugValue } from "react";
 
 let cachedItems = null;
 
@@ -21,6 +21,9 @@ export const useItems = () => {
   const [items, setItems] = useState(cachedItems ? [...cachedItems] : []);
   const [isLoading, setIsLoading] = useState(!cachedItems);
   const [error, setError] = useState(null);
+
+  // Debug value for React DevTools only
+  useDebugValue(items, (items) => `Items count: ${items.length}`);
 
   // Shallow equality check helper to avoid unnecessary state updates
   const isSameArray = (a, b) => {

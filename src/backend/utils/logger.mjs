@@ -11,6 +11,13 @@ import DailyRotateFile from "winston-daily-rotate-file";
  * - Daily rotating file transports:
  *   - One for general info logs (rotates daily, compressed, keeps 14 days)
  *   - One for error logs only (rotates daily, compressed, keeps 14 days)
+ *
+ * Best practices included:
+ * - Use JSON logs with timestamps for structured logging
+ * - Separate error and info logs into different files for analysis
+ * - Use console colorization for readability during development
+ * - Handle internal logger errors gracefully
+ * - Enable log file compression and rotation to save disk space
  */
 const logger = createLogger({
   level: process.env.LOG_LEVEL || "info",

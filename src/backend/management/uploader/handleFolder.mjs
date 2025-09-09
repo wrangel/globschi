@@ -10,11 +10,12 @@ import {
 } from "../../constants.mjs";
 
 /**
- * Rename a folder to the new name.
- * Ensures subfolders 'modified', 'original', and 'modified/S3' are created.
- * @param {string} originalFolderPath - The full path of the folder to rename.
- * @param {string} newName - The new name for the folder.
- * @returns {Promise<string>} - The path to the renamed folder.
+ * Rename a folder to a new name if different,
+ * then ensure subfolders "modified", "original", and "modified/S3" exist.
+ *
+ * @param {string} originalFolderPath - Full path of folder to rename.
+ * @param {string} newName - Target folder name.
+ * @returns {Promise<string>} The new folder path.
  */
 export async function handleFolder(originalFolderPath, newName) {
   const parentDir = path.dirname(originalFolderPath);
@@ -27,15 +28,16 @@ export async function handleFolder(originalFolderPath, newName) {
     );
   } else {
     logger.info(
-      `No rename needed: '${originalFolderPath}' is already named '${newName}'`
+      `No rename needed: '${originalFolderPath}' already named '${newName}'`
     );
   }
 
-  // Create required subfolders
-  const modifiedPath = path.join(newFolderPath, "modified");
-  const originalPath = path.join(newFolderPath, "original");
-  const s3Path = path.join(modifiedPath, "S3");
+  // Compose subfolder paths using constants
+  const modifiedPath = path.join(newFolderPath, MODIFIED_FOLDER);
+  const originalPath = path.join(newFolderPath, ORIGINAL_FOLDER);
+  const s3Path = path.join(modifiedPath, S3_FOLDER);
 
+  // Create subfolders if missing, recursively
   await Promise.all([
     fs.mkdir(modifiedPath, { recursive: true }),
     fs.mkdir(originalPath, { recursive: true }),
@@ -43,7 +45,7 @@ export async function handleFolder(originalFolderPath, newName) {
   ]);
 
   logger.info(
-    `Ensured subfolders exist: 'modified/', 'original/', 'modified/S3/' inside ${newFolderPath}`
+    `Ensured subfolders exist: '${MODIFIED_FOLDER}/', '${ORIGINAL_FOLDER}/', '${MODIFIED_FOLDER}/${S3_FOLDER}/' inside ${newFolderPath}`
   );
 
   return newFolderPath;

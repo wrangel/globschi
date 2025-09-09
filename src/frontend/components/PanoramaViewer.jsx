@@ -20,11 +20,10 @@ const PanoramaViewer = ({
   useEffect(() => {
     if (!panoPath || !levels?.length || !panoramaElement.current) return;
 
-    // Clean up previous viewer instance if it exists
     viewerRef.current?.destroy();
     viewerRef.current = null;
 
-    // Create Marzipano viewer
+    // Create Marzipano viewer with WebGL optimizations
     const viewer = new Marzipano.Viewer(panoramaElement.current, {
       stage: {
         pixelRatio: window.devicePixelRatio || 1,
@@ -32,30 +31,26 @@ const PanoramaViewer = ({
       },
     });
 
-    // Set explicit black background to prevent flicker
+    // Set black background to prevent flicker
     const canvas = viewer.stage().domElement();
     canvas.style.backgroundColor = "black";
     canvas.style.opacity = "1";
 
     viewerRef.current = viewer;
 
-    // Create scene geometry and source
     const geometry = new Marzipano.CubeGeometry(levels);
     const source = Marzipano.ImageUrlSource.fromString(
       `${panoPath}/{z}/{f}/{y}/{x}.jpg`,
       { cubeMapPreviewUrl: `${panoPath}/preview.jpg` }
     );
 
-    // Handle errors
     if (onError) {
       source.addEventListener("error", (err) => {
         onError(err);
-        // Optionally log
         console.error(`Error loading panorama: ${err.message}`);
       });
     }
 
-    // Use the supplied initial view params or fallback
     let viewParams = DEFAULT_VIEW;
     if (
       initialViewParameters &&
@@ -83,14 +78,15 @@ const PanoramaViewer = ({
       view,
       pinFirstLevel: true,
     });
+
     scene.switchTo({ transitionDuration: 1000 });
 
-    // Autorotate setup – persists unless panorama truly changes
     const autorotate = Marzipano.autorotate({
       yawSpeed: 0.075,
       targetPitch: 0,
       targetFov: Math.PI / 2,
     });
+
     if (typeof viewer.setIdleMovement === "function") {
       viewer.setIdleMovement(3000, autorotate);
     } else {
@@ -99,7 +95,10 @@ const PanoramaViewer = ({
 
     if (onReady) onReady();
 
-    // Cleanup ONLY when actual pano or levels change
+    // Accessibility note:
+    // Marzipano does not provide built-in aria or keyboard navigation for hotspots.
+    // Developers should augment with custom accessible controls if needed.
+
     return () => {
       viewerRef.current?.destroy();
       viewerRef.current = null;
@@ -112,6 +111,7 @@ const PanoramaViewer = ({
       className={styles.panoramaViewer}
       role="application"
       aria-label="360 degree panorama viewer"
+      tabIndex={0} // Make container focusable for screen readers and keyboard users
     />
   );
 };

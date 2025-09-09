@@ -2,7 +2,6 @@
 
 import { readdir } from "fs/promises";
 import path from "path";
-import mongoose from "mongoose";
 import logger from "../../utils/logger.mjs";
 import { connectDB, closeDB } from "../../utils/mongodbConnection.mjs";
 
@@ -15,16 +14,15 @@ import { uploadMedia } from "./uploadMedia.mjs";
 
 /**
  * Orchestrate processing of multiple media folders.
- * Opens MongoDB connection, processes, then closes connection when done.
+ * Connects to MongoDB, processes folders, uploads metadata and media,
+ * and closes the DB connection when finished or on errors.
  */
 export async function orchestrate() {
   try {
-    // 1. Connect to MongoDB before starting processing loop
     await connectDB();
     logger.info("MongoDB connected");
 
     const baseDir = process.env.INPUT_DIRECTORY;
-
     const entries = await readdir(baseDir, { withFileTypes: true });
     const mediaFolders = entries
       .filter((ent) => ent.isDirectory())
@@ -40,45 +38,43 @@ export async function orchestrate() {
     for (const mediaDirPath of mediaFolders) {
       logger.info(`Processing folder: ${mediaDirPath}`);
       try {
-        // 2. Collect metadata
+        // Collect metadata info about media in folder
         const processed = await collectMetadata(mediaDirPath);
         if (!processed || !processed.metadata) {
           logger.warn(`No metadata returned for ${mediaDirPath}, skipping.`);
           continue;
         }
 
-        console.log(processed.metadata);
-
         const mediaType = processed.metadata.type;
         const newName = processed.metadata.name;
 
-        // 3. Rename folder first
+        // Rename folder to new name before processing media files
         const newFolderPath = await handleFolder(mediaDirPath, newName);
 
-        // 4. Handle media based on type
         let panoExtraProps = null;
+
+        // Branch handling based on media type
         if (mediaType === "hdr" || mediaType === "wide_angle") {
           await handleImage(newFolderPath, newName);
         } else if (mediaType === "pano") {
           panoExtraProps = await handlePano(newFolderPath, newName);
         } else {
-          // fallback or unknown mediaType (e.g., video)
           logger.warn(`Unknown media type: ${mediaType}`);
         }
 
-        // 5. Merge pano-specific props into metadata if any
+        // Merge pano-specific properties if any
         if (panoExtraProps) {
           processed.metadata.levels = panoExtraProps.levels || null;
           processed.metadata.initialViewParameters =
             panoExtraProps.initialViewParameters || null;
         }
 
-        // 6. Upload metadata to MongoDB
+        // Upload metadata to MongoDB
         await uploadMetadata(processed.metadata);
 
         logger.info(`Completed processing for folder: ${mediaDirPath}`);
 
-        // 7. Upload media to S3
+        // Upload media files to S3
         await uploadMedia(newFolderPath, newName);
       } catch (error) {
         logger.error(`Error processing folder ${mediaDirPath}`, { error });
@@ -88,12 +84,12 @@ export async function orchestrate() {
     logger.error("Failed MongoDB connection or orchestration:", err);
     throw err;
   } finally {
-    // 8. Close MongoDB connection gracefully when done
+    // Always close DB connection after completion or error
     await closeDB();
   }
 }
 
-// Launch orchestration with error handling for uncaught async errors
+// Auto launch orchestration process with global error catch
 orchestrate().catch((err) => {
   logger.error("Uncaught error in orchestrator:", { error: err });
 });

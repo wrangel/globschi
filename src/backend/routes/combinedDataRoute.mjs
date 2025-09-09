@@ -6,15 +6,9 @@ import logger from "../utils/logger.mjs";
 
 const router = express.Router();
 
-/**
- * GET /combined-data
- * Retrieves combined data from cache or fetches fresh data if cache is empty.
- * Responds with JSON array of combined data.
- */
 router.get("/combined-data", async (req, res) => {
-  const cacheKey = "combined-data"; // Cache key for combined data
+  const cacheKey = "combined-data";
 
-  // Attempt to get cached data
   const cachedData = getCachedData(cacheKey);
   if (cachedData) {
     logger.info("[CACHE HIT] Returning cached combined-data");
@@ -24,8 +18,13 @@ router.get("/combined-data", async (req, res) => {
   logger.info("[CACHE MISS] Fetching fresh combined-data");
 
   try {
-    // Fetch fresh combined data and cache it
     const combinedData = await getCombinedData();
+
+    // Add isFirst and isLast flags
+    combinedData.forEach((item, index) => {
+      item.isFirst = index === 0;
+      item.isLast = index === combinedData.length - 1;
+    });
 
     setCachedData(cacheKey, combinedData);
     res.status(200).json(combinedData);

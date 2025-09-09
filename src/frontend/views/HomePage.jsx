@@ -39,7 +39,7 @@ const HomePage = () => {
   return (
     <>
       <Helmet>
-        <title>Abstract Altitudes - Aerial Imagery</title>
+        <title>Abstract Altitudes</title>
         <link rel="canonical" href={DOMAIN} />
         <meta
           name="description"

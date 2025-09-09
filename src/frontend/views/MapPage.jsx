@@ -90,7 +90,7 @@ const MapPage = () => {
     <>
       <Helmet>
         <link rel="canonical" href={`${DOMAIN}map`} />
-        <title>Abstract Altitudes - Interactive Drone Imagery Map</title>
+        <title>Abstract Altitudes</title>
         <meta
           name="description"
           content="Explore our interactive map showcasing stunning drone-captured aerial images from various locations. Discover breathtaking views and unique perspectives from above."

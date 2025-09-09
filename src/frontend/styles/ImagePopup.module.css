@@ -4,24 +4,36 @@
   position: fixed;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
+  width: 100vw;
+  height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 1050;
-  background-color: black; /* Fully opaque */
+  background-color: black; /* fully opaque */
   overflow: hidden;
   transition: background-color var(--transition-duration) ease;
 }
 
-/* You can keep the loaded class for fade or brightness effects */
 .imagePopup.loaded {
   background-color: black;
 }
 
-.hide-scrollbar {
-  overflow: hidden;
+.thumbnailFullViewport {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  object-fit: contain;
+  z-index: 1040;
+  background-color: black;
+}
+
+.hidden {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--transition-duration) ease-in-out;
 }
 
 .panzoomContainer {
@@ -30,78 +42,45 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  position: relative;
+  z-index: 1050;
 }
 
 .image {
-  width: 100%;
-  height: auto;
   max-width: 100%;
   max-height: 100%;
   object-fit: contain;
-  transition: opacity var(--transition-duration) ease-in-out;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+  transition: opacity var(--transition-duration) ease-in-out;
 }
 
-.hidden {
-  opacity: 0;
-}
-
-.loadingSpinner {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: var(--spinner-size);
-  height: var(--spinner-size);
-  border: var(--spinner-border) solid var(--spinner-color);
-  border-radius: 50%;
-  border-top: var(--spinner-border) solid var(--spinner-border-top);
-  animation: spin 0.6s linear infinite;
-}
-
-@keyframes spin {
-  0% {
-    transform: translate(-50%, -50%) rotate(0deg);
-  }
-  100% {
-    transform: translate(-50%, -50%) rotate(360deg);
-  }
-}
-
-.closeButton {
-  position: absolute;
-  top: var(--spacing-medium);
-  right: var(--spacing-medium);
-  background: none;
+/* Bleep indicator button style */
+.bleepButton {
+  position: fixed;
+  bottom: 1.5rem;
+  left: 1.5rem;
+  width: 2rem;
+  height: 2rem;
+  background-color: #2c4bd6;
   border: none;
-  color: var(--text-color);
-  font-size: var(--font-size-large);
-  cursor: pointer;
-  padding: var(--spacing-small);
-  transition: opacity var(--transition-duration) ease;
+  border-radius: 50%;
+  cursor: default;
   opacity: 0.8;
-  z-index: 1060;
-}
-
-.closeButton:hover,
-.closeButton:focus {
-  opacity: 1;
-  outline: none;
-}
-
-.closeButton:focus-visible {
-  box-shadow: 0 0 0 2px var(--primary-color);
+  z-index: 1100;
+  box-shadow: 0 0 10px #2c4bd6aa;
+  font-size: 1.5rem;
+  line-height: 1rem;
+  color: black;
+  user-select: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none; /* prevents clicking */
 }
 
 @media (max-width: 768px) {
   .image {
     width: 100%;
     max-height: 95%;
-  }
-
-  .closeButton {
-    font-size: var(--font-size-medium);
-    top: var(--spacing-small);
-    right: var(--spacing-small);
   }
 }

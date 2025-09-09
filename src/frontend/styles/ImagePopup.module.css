@@ -1,7 +1,5 @@
 /* src/styles/ImagePopup.module.css */
 
-/* src/styles/ImagePopup.module.css */
-
 .imagePopup {
   position: fixed;
   top: 0;
@@ -11,14 +9,15 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 1050; /* Ensure this is lower than the MetadataPopup */
-  background-color: transparent; /* Start with transparent background */
-  overflow: hidden; /* Hide any overflow content */
+  z-index: 1050;
+  background-color: black; /* Fully opaque */
+  overflow: hidden;
+  transition: background-color var(--transition-duration) ease;
 }
 
+/* You can keep the loaded class for fade or brightness effects */
 .imagePopup.loaded {
-  background-color: black; /* Switch to solid black when loaded */
-  overflow: hidden; /* Ensure no overflow when loaded */
+  background-color: black;
 }
 
 .hide-scrollbar {

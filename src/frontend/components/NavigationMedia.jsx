@@ -44,14 +44,17 @@ const NavigationMedia = ({
         isFullscreen ? styles.fullscreen : ""
       }`}
       style={{ zIndex: 1100 }}
+      role="navigation"
+      aria-label="Media navigation controls"
     >
       {isNavigationMode && !isFullscreen && (
         <>
           {!isFirst && (
             <button
               className={styles.leftArrow}
-              aria-label="Previous"
+              aria-label="Previous media"
               onClick={onPrevious}
+              type="button"
             >
               ←
             </button>
@@ -59,8 +62,9 @@ const NavigationMedia = ({
           {!isLast && (
             <button
               className={styles.rightArrow}
-              aria-label="Next"
+              aria-label="Next media"
               onClick={onNext}
+              type="button"
             >
               →
             </button>
@@ -73,7 +77,8 @@ const NavigationMedia = ({
           <button
             className={styles.fab}
             onClick={onToggleFullScreen}
-            aria-label="Full Screen"
+            aria-label="Enter full screen"
+            type="button"
           >
             Full
           </button>
@@ -81,7 +86,8 @@ const NavigationMedia = ({
           <button
             className={styles.fab}
             onClick={onToggleMetadata}
-            aria-label="Toggle Metadata"
+            aria-label="Toggle metadata panel"
+            type="button"
           >
             Info
           </button>
@@ -89,7 +95,8 @@ const NavigationMedia = ({
           <button
             className={`${styles.fab}`}
             onClick={handleClose}
-            aria-label="Close"
+            aria-label="Close media navigation"
+            type="button"
           >
             Close
           </button>
@@ -100,7 +107,8 @@ const NavigationMedia = ({
         <button
           className={`${styles.fab}`}
           onClick={handleClose}
-          aria-label="Close"
+          aria-label="Exit full screen and close"
+          type="button"
         >
           Close
         </button>

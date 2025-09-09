@@ -1,4 +1,5 @@
 // src/frontend/components/MetadataPopup.jsx
+
 import { useState, useEffect, useRef } from "react";
 import PropTypes from "prop-types";
 import styles from "../styles/MetadataPopup.module.css";
@@ -10,8 +11,10 @@ const MetadataPopup = ({ metadata, latitude, longitude, onClose }) => {
   const [isBelowThreshold, setIsBelowThreshold] = useState(false);
   const [popupPosition, setPopupPosition] = useState({ x: 0, y: 0 });
   const popupRef = useRef(null);
+  const triggerRef = useRef(null);
   const dragRef = useRef({ startY: 0, dragging: false });
 
+  // Track window resize to toggle map/link display
   useEffect(() => {
     const handleResize = () => setIsBelowThreshold(window.innerHeight < 500);
     handleResize();
@@ -19,6 +22,16 @@ const MetadataPopup = ({ metadata, latitude, longitude, onClose }) => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  // Focus management: Save focus on mount, focus popup, restore on unmount
+  useEffect(() => {
+    triggerRef.current = document.activeElement;
+    popupRef.current?.focus();
+    return () => {
+      triggerRef.current?.focus();
+    };
+  }, []);
+
+  // Google Maps embed URL and link for fallback
   const googleMapsUrl = `https://www.google.com/maps/embed/v1/place?key=${
     import.meta.env.VITE_GOOGLE_MAPS_API_KEY
   }&q=${latitude},${longitude}&zoom=${zoomLevel}&maptype=satellite`;
@@ -92,7 +105,12 @@ const MetadataPopup = ({ metadata, latitude, longitude, onClose }) => {
 
   return (
     <>
-      <div className={styles.backdrop} onClick={onClose} aria-hidden="true" />
+      <div
+        className={styles.backdrop}
+        onClick={onClose}
+        aria-hidden="true"
+        tabIndex={-1}
+      />
 
       <div
         className={styles.metadataPopup}
@@ -104,6 +122,10 @@ const MetadataPopup = ({ metadata, latitude, longitude, onClose }) => {
         onTouchStart={handleDragStart}
         onTouchMove={onTouchMove}
         onTouchEnd={onTouchEnd}
+        role="dialog"
+        aria-modal="true"
+        tabIndex={-1}
+        aria-label="Metadata popup"
       >
         {/* universal pill / close target */}
         <button

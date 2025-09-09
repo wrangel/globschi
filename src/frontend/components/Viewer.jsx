@@ -69,6 +69,7 @@ const Viewer = ({
           levels={item.levels}
           initialViewParameters={item.initialViewParameters}
           onReady={handleContentLoaded}
+          onError={(err) => console.error("Panorama error:", err)}
         />
       );
     }
@@ -84,7 +85,13 @@ const Viewer = ({
   }, [item, isNavigationMode, handleContentLoaded]);
 
   return (
-    <div className={styles.viewer} ref={viewerRef}>
+    <div
+      className={styles.viewer}
+      ref={viewerRef}
+      role="region"
+      aria-label={`Media viewer for ${item.name || "item"}`}
+      tabIndex={-1} // focusable container for assistive tech
+    >
       {isLoading && <LoadingOverlay thumbnailUrl={item.thumbnailUrl} />}
       {renderContent()}
       <NavigationMedia
@@ -134,8 +141,8 @@ Viewer.propTypes = {
         fallbackOnly: PropTypes.bool,
       })
     ),
-    isFirst: PropTypes.bool, // define prop type for isFirst
-    isLast: PropTypes.bool, // define prop type for isLast
+    isFirst: PropTypes.bool,
+    isLast: PropTypes.bool,
   }).isRequired,
   onClose: PropTypes.func.isRequired,
   onNext: PropTypes.func.isRequired,

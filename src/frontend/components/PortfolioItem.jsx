@@ -27,8 +27,8 @@ const PortfolioItem = memo(({ item, onItemClick }) => {
   const handleKeyDown = useCallback(
     (event) => {
       if (event.key === "Enter" || event.key === " ") {
-        event.preventDefault(); // Prevent default space and enter key scrolling
-        onItemClick(item); // Trigger click via keyboard
+        event.preventDefault();
+        onItemClick(item);
       }
     },
     [item, onItemClick]
@@ -36,7 +36,7 @@ const PortfolioItem = memo(({ item, onItemClick }) => {
 
   if (!item || !item.thumbnailUrl) {
     console.warn("PortfolioItem: Invalid item data");
-    return null; // Avoid rendering if data is invalid
+    return null;
   }
 
   return (
@@ -44,14 +44,14 @@ const PortfolioItem = memo(({ item, onItemClick }) => {
       className={styles.portfolioItem}
       onClick={handleClick}
       onKeyDown={handleKeyDown}
-      role="button" // Accessibility role for keyboard users
-      tabIndex={0} // Make div focusable and reachable by keyboard
-      aria-label={`View ${item.id}`} // Descriptive label for assistive tech
+      role="button"
+      tabIndex={0}
+      aria-label={`View portfolio item ${item.id}`}
     >
       <img
         src={item.thumbnailUrl}
-        alt={item.id || "Portfolio item"} // Provide meaningful alt for images
-        loading="lazy" // Lazy load images to improve performance
+        alt={item.id || "Portfolio item"}
+        loading="lazy"
       />
     </div>
   );

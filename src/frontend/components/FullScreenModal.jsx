@@ -6,17 +6,6 @@ import styles from "../styles/FullScreenModal.module.css";
 
 /**
  * FullScreenModal component renders a fullscreen modal dialog with focus trapping and keyboard controls.
- *
- * Features:
- * - Focus management: traps keyboard focus within the modal when opened.
- * - Keyboard accessibility: supports Tab navigation inside modal and Escape to close.
- * - Restores focus to the element that triggered the modal on close.
- * - Click outside modal content closes the modal.
- *
- * @param {Object} props - Component props.
- * @param {boolean} props.isOpen - Whether the modal is open.
- * @param {Function} props.onClose - Callback function to close the modal.
- * @param {React.ReactNode} props.children - Content to render inside the modal.
  */
 const FullScreenModal = memo(({ isOpen, onClose, children }) => {
   const modalRef = useRef(null);
@@ -28,16 +17,17 @@ const FullScreenModal = memo(({ isOpen, onClose, children }) => {
       triggerRef.current = document.activeElement;
 
       // Focus the first focusable element within the modal
-      const firstFocusableElement = modalRef.current.querySelector(
-        'button, [href], [tabindex]:not([tabindex="-1"]), input, select, textarea'
-      );
+      // You might want to expand focusable selector depending on your needs (e.g. buttons, inputs, selects, textareas, links, etc.)
+      const focusableSelector =
+        'button, [href], [tabindex]:not([tabindex="-1"]), input, select, textarea';
+      const firstFocusableElement =
+        modalRef.current.querySelector(focusableSelector);
       firstFocusableElement?.focus();
 
       // Handle keyboard navigation and closing
       const handleKeyDown = (event) => {
-        const focusableElements = modalRef.current.querySelectorAll(
-          'button, [href], [tabindex]:not([tabindex="-1"]), input, select, textarea'
-        );
+        const focusableElements =
+          modalRef.current.querySelectorAll(focusableSelector);
         const firstElement = focusableElements[0];
         const lastElement = focusableElements[focusableElements.length - 1];
 
@@ -73,7 +63,6 @@ const FullScreenModal = memo(({ isOpen, onClose, children }) => {
     }
   }, [isOpen, onClose]);
 
-  // Do not render modal if not open
   if (!isOpen) return null;
 
   return (

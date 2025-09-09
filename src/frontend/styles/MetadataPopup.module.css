@@ -31,9 +31,11 @@
   color: var(--close-button-color);
   font-size: var(--close-button-font-size);
   cursor: pointer;
-  transition: color var(--transition-duration);
-  font-family: var(--font-stack); /* ← keep same font */
-  text-shadow: var(--text-shadow-heavy); /* ← same shadow */
+  min-width: 40px;
+  min-height: 40px;
+  pointer-events: auto;
+  font-family: var(--font-stack);
+  text-shadow: var(--text-shadow-heavy);
 }
 
 .closeButton:hover,

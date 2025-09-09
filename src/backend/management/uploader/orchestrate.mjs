@@ -2,7 +2,6 @@
 
 import { readdir } from "fs/promises";
 import path from "path";
-import mongoose from "mongoose";
 import logger from "../../utils/logger.mjs";
 import { connectDB, closeDB } from "../../utils/mongodbConnection.mjs";
 
@@ -46,8 +45,6 @@ export async function orchestrate() {
           logger.warn(`No metadata returned for ${mediaDirPath}, skipping.`);
           continue;
         }
-
-        console.log(processed.metadata);
 
         const mediaType = processed.metadata.type;
         const newName = processed.metadata.name;

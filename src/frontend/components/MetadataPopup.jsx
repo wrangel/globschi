@@ -78,9 +78,11 @@ const MetadataPopup = ({ metadata, latitude, longitude, onClose }) => {
         className={styles.closeButton}
         onClick={onClose}
         aria-label="Close metadata popup"
+        type="button"
       >
-        ×
+        Close
       </button>
+
       <div className={styles.content}>
         <pre>{metadata}</pre>
         {isBelowThreshold ? (

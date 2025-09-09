@@ -1,5 +1,4 @@
 // src/frontend/components/MetadataPopup.jsx
-
 import { useState, useEffect, useRef } from "react";
 import PropTypes from "prop-types";
 import styles from "../styles/MetadataPopup.module.css";
@@ -25,33 +24,53 @@ const MetadataPopup = ({ metadata, latitude, longitude, onClose }) => {
   }&q=${latitude},${longitude}&zoom=${zoomLevel}&maptype=satellite`;
   const googleMapsLink = `https://www.google.com/maps?q=${latitude},${longitude}&zoom=${zoomLevel}&maptype=satellite`;
 
-  /* ---------- drag-to-move (desktop) ---------- */
+  /* ---------- silky drag-to-move ---------- */
   const handleDragStart = (e) => {
     e.stopPropagation();
     e.preventDefault();
-    const startX = e.clientX ?? (e.touches ? e.touches[0].clientX : 0);
-    const startY = e.clientY ?? (e.touches ? e.touches[0].clientY : 0);
-    const initialRect = popupRef.current.getBoundingClientRect();
+
+    const popup = popupRef.current;
+    if (!popup) return;
+
+    // read current *pixel* position once
+    const startRect = popup.getBoundingClientRect();
+    const parentRect = popup.offsetParent.getBoundingClientRect();
+    let baseLeft = startRect.left - parentRect.left; // absolute left
+    let baseTop = startRect.top - parentRect.top; // absolute top
+
+    // cancel any leftover transform so we work in pure px space
+    popup.style.transform = "none";
+
+    // apply absolute coords so element doesn't jump
+    popup.style.left = `${baseLeft}px`;
+    popup.style.top = `${baseTop}px`;
+
+    const isTouch = e.type === "touchstart";
+    const pointer = isTouch ? e.touches[0] : e;
+    let lastX = pointer.clientX;
+    let lastY = pointer.clientY;
 
     const onMove = (ev) => {
-      const x = ev.clientX ?? (ev.touches ? ev.touches[0].clientX : 0);
-      const y = ev.clientY ?? (ev.touches ? ev.touches[0].clientY : 0);
-      setPopupPosition({
-        x: initialRect.left + (x - startX),
-        y: initialRect.top + (y - startY),
-      });
-    };
-    const onEnd = () => {
-      document.removeEventListener("mousemove", onMove);
-      document.removeEventListener("touchmove", onMove);
-      document.removeEventListener("mouseup", onEnd);
-      document.removeEventListener("touchend", onEnd);
+      const p = isTouch ? ev.touches[0] : ev;
+      baseLeft += p.clientX - lastX;
+      baseTop += p.clientY - lastY;
+      lastX = p.clientX;
+      lastY = p.clientY;
+      popup.style.left = `${baseLeft}px`;
+      popup.style.top = `${baseTop}px`;
     };
 
-    document.addEventListener("mousemove", onMove);
-    document.addEventListener("touchmove", onMove, { passive: false });
-    document.addEventListener("mouseup", onEnd);
-    document.addEventListener("touchend", onEnd);
+    const onUp = () => {
+      // commit final coords to React so next render matches
+      setPopupPosition({ x: baseLeft, y: baseTop });
+      document.removeEventListener(isTouch ? "touchmove" : "mousemove", onMove);
+      document.removeEventListener(isTouch ? "touchend" : "mouseup", onUp);
+    };
+
+    document.addEventListener(isTouch ? "touchmove" : "mousemove", onMove, {
+      passive: true,
+    });
+    document.addEventListener(isTouch ? "touchend" : "mouseup", onUp);
   };
 
   /* ---------- swipe-down-to-dismiss ---------- */
@@ -73,7 +92,6 @@ const MetadataPopup = ({ metadata, latitude, longitude, onClose }) => {
 
   return (
     <>
-      {/* invisible backdrop: tap outside to close */}
       <div className={styles.backdrop} onClick={onClose} aria-hidden="true" />
 
       <div
@@ -87,7 +105,7 @@ const MetadataPopup = ({ metadata, latitude, longitude, onClose }) => {
         onTouchMove={onTouchMove}
         onTouchEnd={onTouchEnd}
       >
-        {/* modern pill / close button */}
+        {/* universal pill / close target */}
         <button
           className={styles.dragPill}
           onClick={onClose}

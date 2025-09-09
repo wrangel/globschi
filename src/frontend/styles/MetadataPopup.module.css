@@ -75,3 +75,8 @@
     margin: 0;
   }
 }
+
+.metadataPopup {
+  position: absolute; /* you already have this */
+  transform: none !important; /* we manage top/left ourselves while dragging */
+}

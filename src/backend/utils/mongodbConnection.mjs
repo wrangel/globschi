@@ -3,13 +3,15 @@
 import mongoose from "mongoose";
 import logger from "../utils/logger.mjs";
 
+/**
+ * Establishes a connection to MongoDB using Mongoose.
+ * Uses serverSelectionTimeoutMS for connection timeout control.
+ */
 const connectDB = async () => {
   try {
     await mongoose.connect(
       `mongodb+srv://${process.env.MONGODB_DB_USER}:${process.env.MONGODB_DB_PASSWORD}@${process.env.MONGODB_SERVER}/${process.env.MONGODB_DB}?retryWrites=true&w=majority`,
       {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
         serverSelectionTimeoutMS: 10000,
       }
     );
@@ -20,6 +22,9 @@ const connectDB = async () => {
   }
 };
 
+/**
+ * Gracefully closes the MongoDB connection.
+ */
 const closeDB = async () => {
   try {
     await mongoose.connection.close();

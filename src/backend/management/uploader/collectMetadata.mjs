@@ -16,28 +16,28 @@ import {
   UNKNOWN_VALUE,
 } from "../../constants.mjs";
 
-// Utility: prompt user for input
 import readline from "readline";
+
 /**
- * Async function prompting a question and returning the answer.
- * @param {string} q
+ * Async prompt for user input in console.
+ * @param {string} promptText
  * @returns {Promise<string>}
  */
-const question = async (q) => {
+function question(promptText) {
   const rl = readline.createInterface({
     input: process.stdin,
     output: process.stdout,
   });
   return new Promise((resolve) => {
-    rl.question(q, (answer) => {
+    rl.question(promptText, (answer) => {
       rl.close();
       resolve(answer);
     });
   });
-};
+}
 
 /**
- * Validate user input to be one of validOptions, keep prompting otherwise.
+ * Validate the input against valid options, reprompt if invalid.
  * @param {string} input
  * @param {string[]} validOptions
  * @param {string} inputType
@@ -53,7 +53,8 @@ async function validateInput(input, validOptions, inputType) {
 }
 
 /**
- * Parse altitude string/number to number with support for fractions and 'm' suffix.
+ * Parse altitude value from string or number.
+ * Supports fractional strings and "m" suffix.
  * @param {string|number} altitudeValue
  * @returns {number|null}
  */
@@ -69,7 +70,8 @@ function getAltitude(altitudeValue) {
 }
 
 /**
- * Parse coordinate string/number to numeric value.
+ * Parse coordinate value from string or number.
+ * Supports fractional strings.
  * @param {string|number} coordValue
  * @returns {number}
  */
@@ -82,7 +84,8 @@ function getCoordinates(coordValue) {
 }
 
 /**
- * Convert EXIF date-time string in format "YYYY:MM:DD HH:MM:SS" to Date object.
+ * Parse EXIF date/time string to Date object.
+ * Format expected: "YYYY:MM:DD HH:MM:SS"
  * @param {string} str
  * @returns {Date|null}
  */
@@ -95,7 +98,7 @@ function getDate(str) {
 }
 
 /**
- * Determine media type based on number of JPG files in the directory.
+ * Determine media type by counting JPGs in directory.
  * @param {string} parentDir
  * @returns {Promise<string>}
  */
@@ -114,10 +117,10 @@ async function determineMediaType(parentDir) {
 }
 
 /**
- * Reverse geocode given longitude and latitude using configured API.
+ * Perform reverse geocoding for longitude and latitude via API.
  * @param {number} longitude
  * @param {number} latitude
- * @returns {Promise<Object>} Address components object
+ * @returns {Promise<Object>} Address component object
  */
 async function reverseGeocode(longitude, latitude) {
   const createReverseGeoUrl = (lon, lat) =>
@@ -153,8 +156,8 @@ async function reverseGeocode(longitude, latitude) {
 }
 
 /**
- * Read EXIF data from first JPEG in "original" folder.
- * Extract metadata including drone model, media type, datetime, location.
+ * Reads EXIF metadata from the first JPEG in the parent directory.
+ * Also detects drone model, prepares media name, reverse geocodes location.
  * @param {string} parentDir
  * @param {string} mediaType
  * @param {string} author
@@ -163,7 +166,6 @@ async function reverseGeocode(longitude, latitude) {
 async function readExifFromFirstJPG(parentDir, mediaType, author) {
   try {
     const files = await readdir(parentDir);
-
     const jpgFile = files.find(
       (file) =>
         file.toLowerCase().endsWith(".jpg") ||
@@ -176,14 +178,11 @@ async function readExifFromFirstJPG(parentDir, mediaType, author) {
 
     const filePath = path.join(parentDir, jpgFile);
     const imgBuffer = await readFile(filePath);
-
     const parser = ExifParser.create(imgBuffer);
     const exifData = parser.parse();
 
-    // Detect drone model from EXIF tag
     let drone = UNKNOWN_VALUE;
     if (exifData.tags[EXIF_TAGS.MODEL]) {
-      // Extract the model code by removing brackets and other characters
       const modelCode = exifData.tags[EXIF_TAGS.MODEL]
         .replace(/[\[\]]/g, "")
         .trim();
@@ -191,11 +190,8 @@ async function readExifFromFirstJPG(parentDir, mediaType, author) {
     }
 
     const type = mediaType;
-
-    // Get prefix for naming by media type
     const prefix = MEDIA_PREFIXES[type] || "";
 
-    // Format date time string from EXIF or use unknown
     let dateTimeString = UNKNOWN_VALUE;
     if (exifData.tags[EXIF_TAGS.DATE_TIME_ORIGINAL]) {
       const d = new Date(exifData.tags[EXIF_TAGS.DATE_TIME_ORIGINAL] * 1000);
@@ -208,7 +204,6 @@ async function readExifFromFirstJPG(parentDir, mediaType, author) {
     const dateTime =
       dateTimeString === UNKNOWN_VALUE ? null : getDate(dateTimeString);
 
-    // Compose name with prefix and datetime or fallback
     let name = "";
     if (dateTime) {
       const pad = (n) => n.toString().padStart(2, "0");
@@ -242,13 +237,13 @@ async function readExifFromFirstJPG(parentDir, mediaType, author) {
       author,
     };
   } catch (err) {
-    console.error("Error reading EXIF ", err);
+    console.error("Error reading EXIF", err);
     return null;
   }
 }
 
 /**
- * Prompt user for the author of the media, validating input.
+ * Prompt user for the author of media, validating input.
  * @param {string} mediaName
  * @returns {Promise<string>}
  */
@@ -260,19 +255,16 @@ async function promptAuthorForMedia(mediaName) {
 /**
  * Main function to collect metadata for one media directory.
  * @param {string} mediaDirPath
- * @returns {Promise<{meta Object, fileInfo: Object}|null>}
+ * @returns {Promise<{meta Object}|null>}
  */
 export async function collectMetadata(mediaDirPath) {
   const mediaType = await determineMediaType(mediaDirPath);
-
   const originalName = path.basename(mediaDirPath);
   const author = await promptAuthorForMedia(originalName);
 
   const exifData = await readExifFromFirstJPG(mediaDirPath, mediaType, author);
-
   if (!exifData) return null;
 
-  // Prepare metadata for database insertion
   const metadata = {
     name: exifData.name,
     type: exifData.type,

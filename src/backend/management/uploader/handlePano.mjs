@@ -47,6 +47,12 @@ function parseDataJs(dataJsContent) {
   }
 }
 
+/**
+ * Manage panorama folder: move files, extract ZIP, create thumbnail, parse metadata.
+ * @param {string} mediaFolderPath
+ * @param {string} folderName
+ * @returns {Promise<{levels: any, initialViewParameters: any} | null>}
+ */
 export async function handlePano(mediaFolderPath, folderName) {
   const modifiedPath = path.join(mediaFolderPath, MODIFIED_FOLDER);
   const originalPath = path.join(mediaFolderPath, ORIGINAL_FOLDER);
@@ -80,9 +86,9 @@ export async function handlePano(mediaFolderPath, folderName) {
     }
   }
 
-  // Move any panorama preview JPEGs (e.g. "PANO_XXXX Panorama.jpeg") to modified
+  // Move panorama preview JPEGs (not exact PANO_####.jpg) to modified
   const panoramaPreviewFiles = rootFiles.filter(
-    (f) => /^PANO_\d+.*\.jpe?g$/i.test(f) && !/^PANO_\d{4}\.jpe?g$/i.test(f) // exclude exact PANO_####.jpg files, which go to original later
+    (f) => /^PANO_\d+.*\.jpe?g$/i.test(f) && !/^PANO_\d{4}\.jpe?g$/i.test(f) // exclude exact PANO_####.jpg files
   );
   for (const file of panoramaPreviewFiles) {
     const src = path.join(mediaFolderPath, file);
@@ -93,7 +99,7 @@ export async function handlePano(mediaFolderPath, folderName) {
     );
   }
 
-  // Move all PANO_<xxxx>.jpg files from root to original folder
+  // Move exact PANO_####.jpg files from root to original folder
   await fs.mkdir(originalPath, { recursive: true });
   const updatedRootFiles = await fs.readdir(mediaFolderPath);
   const panoJpgFiles = updatedRootFiles.filter((f) =>
@@ -140,7 +146,7 @@ export async function handlePano(mediaFolderPath, folderName) {
 
     if (subfolders.length !== 1) {
       logger.warn(
-        `[${folderName}]: Expected exactly one subfolder inside extracted tiles folder, found ${subfolders.length}. Skipping tiles move.`
+        `[${folderName}]: Expected exactly one subfolder in tiles, found ${subfolders.length}. Skipping tiles move.`
       );
     } else {
       const singleTileSubfolder = path.join(
@@ -174,7 +180,7 @@ export async function handlePano(mediaFolderPath, folderName) {
       }
     }
 
-    // Parse data.js file for properties
+    // Parse data.js file for levels and initialViewParameters
     const dataJsPath = path.join(extractPath, "app-files", "data.js");
     let extractedProperties = null;
     try {
@@ -193,7 +199,7 @@ export async function handlePano(mediaFolderPath, folderName) {
       logger.warn(`[${folderName}]: Could not read data.js: ${err.message}`);
     }
 
-    // Remove extraction temp folder
+    // Remove extraction temporary folder
     try {
       await fs.rm(extractPath, { recursive: true, force: true });
       logger.info(`[${folderName}]: Deleted project-title extraction folder`);
@@ -203,7 +209,7 @@ export async function handlePano(mediaFolderPath, folderName) {
       );
     }
 
-    // Create thumbnail.webp from JPG inside modified folder into s3 folder
+    // Create thumbnail.webp from JPG inside modified folder into s3
     const modifiedFiles = await fs.readdir(modifiedPath);
     const jpgFile = modifiedFiles.find((f) => /\.jpe?g$/i.test(f));
     if (!jpgFile) {

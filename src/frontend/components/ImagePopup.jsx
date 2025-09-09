@@ -80,7 +80,7 @@ const ImagePopup = ({
           tabIndex={-1} // not focusable by tab
           onClick={() => {
             // Optional: could trigger a sound, animation, or console log
-            console.log("Bleep indicator clicked");
+            console.info("Bleep indicator clicked");
           }}
         >
           ●

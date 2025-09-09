@@ -180,8 +180,6 @@ async function readExifFromFirstJPG(parentDir, mediaType, author) {
     const parser = ExifParser.create(imgBuffer);
     const exifData = parser.parse();
 
-    console.log(exifData);
-
     // Detect drone model from EXIF tag
     let drone = UNKNOWN_VALUE;
     if (exifData.tags[EXIF_TAGS.MODEL]) {

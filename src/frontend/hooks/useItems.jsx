@@ -1,4 +1,5 @@
 // src/frontend/hooks/useItems.jsx
+
 import { useState, useEffect, useCallback, useDebugValue } from "react";
 
 let cachedItems = null;
@@ -21,7 +22,7 @@ export const useItems = () => {
   const [isLoading, setIsLoading] = useState(!cachedItems);
   const [error, setError] = useState(null);
 
-  // Log items state for debugging React DevTools (optional)
+  // Debug value for React DevTools only
   useDebugValue(items, (items) => `Items count: ${items.length}`);
 
   // Shallow equality check helper to avoid unnecessary state updates
@@ -36,20 +37,10 @@ export const useItems = () => {
   // Function to fetch data from API with timeout and abort controller
   const fetchData = useCallback(async () => {
     if (cachedItems) {
-      console.debug(
-        "[useItems] Using cached items, count:",
-        cachedItems.length
-      );
       setItems((prevItems) => {
         if (isSameArray(prevItems, cachedItems)) {
-          console.debug(
-            "[useItems] Cached items same as prev, skipping update"
-          );
           return prevItems; // Avoid update if same array
         }
-        console.debug(
-          "[useItems] Cached items differ from prev, updating state"
-        );
         return [...cachedItems];
       });
       setIsLoading(false);
@@ -64,8 +55,6 @@ export const useItems = () => {
         import.meta.env.VITE_API_URL || "http://localhost:8081/api/";
       const url = `${apiUrl}${apiUrl.endsWith("/") ? "" : "/"}combined-data`;
 
-      console.debug("[useItems] Fetching data from API:", url);
-
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 10000);
 
@@ -77,25 +66,15 @@ export const useItems = () => {
       }
 
       const data = await response.json();
-      console.debug("[useItems] Fetched items from API:", data.length);
-      console.debug("[useItems] Sample item flags:", {
-        isFirst: data[0]?.isFirst,
-        isLast: data[0]?.isLast,
-      });
 
       setItems((prevItems) => {
         if (isSameArray(prevItems, data)) {
-          console.debug(
-            "[useItems] Fetched data same as prev, skipping update"
-          );
           return prevItems; // Avoid update if identical contents
         }
-        console.debug("[useItems] Updating items state with new data");
         return [...data];
       });
       cachedItems = [...data];
     } catch (e) {
-      console.error("[useItems] Error fetching items:", e);
       setError(
         e.name === "AbortError"
           ? "Request timed out. Please try again."
@@ -106,11 +85,6 @@ export const useItems = () => {
     }
   }, []);
 
-  // Log items changes for debugging
-  useEffect(() => {
-    console.debug("[useItems] items state updated, length:", items.length);
-  }, [items]);
-
   // Fetch data on initial hook mount
   useEffect(() => {
     fetchData();
@@ -118,7 +92,6 @@ export const useItems = () => {
 
   // Clears cached data and refreshes from network
   const clearCache = useCallback(() => {
-    console.debug("[useItems] Clearing cache!");
     cachedItems = null;
     setItems([]);
     setIsLoading(true);

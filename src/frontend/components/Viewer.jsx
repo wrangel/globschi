@@ -83,8 +83,6 @@ const Viewer = ({
     );
   }, [item, isNavigationMode, handleContentLoaded]);
 
-  console.log("Current item isFirst:", item.isFirst, "isLast:", item.isLast);
-
   return (
     <div className={styles.viewer} ref={viewerRef}>
       {isLoading && <LoadingOverlay thumbnailUrl={item.thumbnailUrl} />}

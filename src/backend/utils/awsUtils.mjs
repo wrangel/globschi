@@ -7,9 +7,8 @@ import {
   GetObjectCommand,
 } from "@aws-sdk/client-s3";
 
-import fs from "fs/promises";
+import fsExtra from "fs-extra";
 import logger from "../utils/logger.mjs";
-import { getId } from "./utils.mjs";
 
 // Validate all required AWS environment variables on module load
 const requiredEnvVars = [
@@ -109,6 +108,7 @@ export async function listS3BucketContents(
 
 /**
  * Downloads an object from the specified S3 bucket and writes it directly to the local file system.
+ * Supports streaming response to file efficiently.
  *
  * @param {string} bucketName - The name of the S3 bucket.
  * @param {string} key - The key (path) of the object in the bucket.
@@ -121,13 +121,23 @@ export async function downloadS3Object(bucketName, key, localPath) {
     const command = new GetObjectCommand({ Bucket: bucketName, Key: key });
     const response = await s3Client.send(command);
 
-    // Write the entire object body to the local file path
-    await fs.writeFile(localPath, response.Body);
+    if (response.Body?.pipe) {
+      // Stream S3 object directly to file
+      const writable = fsExtra.createWriteStream(localPath);
+      await new Promise((resolve, reject) => {
+        response.Body.pipe(writable);
+        writable.on("finish", resolve);
+        writable.on("error", reject);
+      });
+    } else {
+      // Fallback for non-stream body (e.g. Buffer)
+      await fsExtra.writeFile(localPath, response.Body);
+    }
 
-    logger.info(`Downloaded ${key} to ${localPath}`);
+    logger.info(`Downloaded S3 object ${key} to local path ${localPath}`);
   } catch (error) {
     logger.error(
-      `Error downloading object ${key} from bucket ${bucketName}: ${error.message}`,
+      `Failed to download S3 object '${key}' from bucket '${bucketName}': ${error.message}`,
       { error }
     );
     throw error;
@@ -142,13 +152,11 @@ export async function downloadS3Object(bucketName, key, localPath) {
  * @throws Will throw if deletion fails or input objects array is invalid.
  */
 export async function deleteS3Objects(objects) {
-  // Bucket name obtained from environment for object deletion
   const bucketName = process.env.AWS_BUCKET_ORIGINALS;
   if (!bucketName) {
     throw new Error("Bucket name is not defined in environment variables.");
   }
 
-  // Validate input
   if (!Array.isArray(objects) || objects.length === 0) {
     throw new Error("Invalid input: objects must be a non-empty array.");
   }
@@ -163,7 +171,6 @@ export async function deleteS3Objects(objects) {
 
     logger.info(`Deleted ${result.Deleted.length} objects from ${bucketName}`);
 
-    // Log failures for individual objects if any
     if (result.Errors && result.Errors.length > 0) {
       result.Errors.forEach((error) => {
         logger.warn(`Failed to delete object ${error.Key}: ${error.Message}`);
@@ -176,7 +183,21 @@ export async function deleteS3Objects(objects) {
       `Error deleting objects from bucket ${bucketName}: ${error.message}`,
       { error }
     );
-
     throw error;
   }
 }
+
+/**
+ * Extracts the ID (filename without extension) from a file path.
+ *
+ * Given a file path, returns the substring between the last slash (/) and the last dot (.),
+ * effectively extracting just the filename without its extension.
+ *
+ * @param {string} path - Full file path or filename with extension.
+ * @returns {string} Extracted ID (filename without extension).
+ *
+ * @example
+ * getId('/path/to/file/12345.webp'); // returns '12345'
+ */
+export const getId = (path) =>
+  path.substring(path.lastIndexOf("/") + 1, path.lastIndexOf("."));

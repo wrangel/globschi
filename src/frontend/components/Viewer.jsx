@@ -1,6 +1,6 @@
 // src/components/Viewer.jsx
 
-import React, { useState, useEffect, useRef, useCallback, memo } from "react";
+import { useState, useEffect, useRef, useCallback, memo } from "react";
 import PropTypes from "prop-types";
 import NavigationMedia from "./NavigationMedia";
 import ImagePopup from "./ImagePopup";

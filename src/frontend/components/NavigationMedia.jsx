@@ -24,6 +24,18 @@ const NavigationMedia = ({
     };
   }, []);
 
+  const handleClose = () => {
+    if (isFullscreen) {
+      document.exitFullscreen().catch((err) => {
+        console.error(
+          `Error attempting to exit full-screen mode: ${err.message} (${err.name})`
+        );
+      });
+    } else {
+      onClose();
+    }
+  };
+
   return (
     <div
       className={`${styles.fabContainer} ${
@@ -70,7 +82,7 @@ const NavigationMedia = ({
 
           <button
             className={`${styles.fab}`}
-            onClick={onClose}
+            onClick={handleClose}
             aria-label="Close"
           >
             Close
@@ -81,7 +93,7 @@ const NavigationMedia = ({
       {isFullscreen && (
         <button
           className={`${styles.fab}`}
-          onClick={onClose}
+          onClick={handleClose}
           aria-label="Close"
         >
           Close

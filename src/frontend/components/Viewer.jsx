@@ -83,6 +83,8 @@ const Viewer = ({
     );
   }, [item, isNavigationMode, handleContentLoaded]);
 
+  console.log("Current item isFirst:", item.isFirst, "isLast:", item.isLast);
+
   return (
     <div className={styles.viewer} ref={viewerRef}>
       {isLoading && <LoadingOverlay thumbnailUrl={item.thumbnailUrl} />}
@@ -95,6 +97,8 @@ const Viewer = ({
         isNavigationMode={isNavigationMode}
         toggleMode={toggleMode}
         onToggleFullScreen={toggleFullScreen}
+        isFirst={item.isFirst}
+        isLast={item.isLast}
       />
       {showMetadata && (
         <MetadataPopup
@@ -132,6 +136,8 @@ Viewer.propTypes = {
         fallbackOnly: PropTypes.bool,
       })
     ),
+    isFirst: PropTypes.bool, // define prop type for isFirst
+    isLast: PropTypes.bool, // define prop type for isLast
   }).isRequired,
   onClose: PropTypes.func.isRequired,
   onNext: PropTypes.func.isRequired,

@@ -10,6 +10,8 @@ const NavigationMedia = ({
   onToggleMetadata,
   isNavigationMode,
   onToggleFullScreen,
+  isFirst,
+  isLast,
 }) => {
   const [isFullscreen, setIsFullscreen] = useState(false);
 
@@ -45,20 +47,24 @@ const NavigationMedia = ({
     >
       {isNavigationMode && !isFullscreen && (
         <>
-          <button
-            className={styles.leftArrow}
-            aria-label="Previous"
-            onClick={onPrevious}
-          >
-            ←
-          </button>
-          <button
-            className={styles.rightArrow}
-            aria-label="Next"
-            onClick={onNext}
-          >
-            →
-          </button>
+          {!isFirst && (
+            <button
+              className={styles.leftArrow}
+              aria-label="Previous"
+              onClick={onPrevious}
+            >
+              ←
+            </button>
+          )}
+          {!isLast && (
+            <button
+              className={styles.rightArrow}
+              aria-label="Next"
+              onClick={onNext}
+            >
+              →
+            </button>
+          )}
         </>
       )}
 

@@ -32,17 +32,14 @@ logger.info("Starting server...");
 const app = express();
 const PORT = process.env.PORT || 8081;
 
-// CORS configuration: allow specific origins and preflight success status
-const corsOrigin = [
-  "http://localhost:3000",
-  "https://drone.ellesmere.synology.me",
-];
+// CORS configuration: allow specific origins
+const corsOrigin = ["http://localhost:3000", "drone.ellesmere.synology.me"];
 
+// Enable CORS middleware with credentials support
 app.use(
   cors({
     origin: corsOrigin,
     credentials: true,
-    optionsSuccessStatus: 200, // Handle legacy browsers' preflight request response
   })
 );
 
@@ -59,7 +56,7 @@ app.use(compression());
 // Rate limiter middleware to limit excessive API requests
 const apiLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // limit each IP to 100 requests per windowMs
+  max: 100, // limit each IP to 100 requests per window
   message: {
     error: "Too many requests from this IP, please try again after 15 minutes",
   },

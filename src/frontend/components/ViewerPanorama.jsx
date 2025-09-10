@@ -1,13 +1,13 @@
-// src/components/PanoramaViewer.jsx
+// src/components/ViewerPanorama.jsx
 
-import { useRef, useEffect } from "react";
+import { useRef, useLayoutEffect, useState } from "react";
 import PropTypes from "prop-types";
 import Marzipano from "marzipano";
-import styles from "../styles/PanoramaViewer.module.css";
+import styles from "../styles/ViewerPanorama.module.css";
 
 const DEFAULT_VIEW = { yaw: 0, pitch: 0, fov: Math.PI / 4 };
 
-const PanoramaViewer = ({
+const ViewerPanorama = ({
   panoPath,
   levels,
   initialViewParameters,
@@ -16,29 +16,27 @@ const PanoramaViewer = ({
 }) => {
   const panoramaElement = useRef(null);
   const viewerRef = useRef(null);
+  const sceneRef = useRef(null);
+  const [loaded, setLoaded] = useState(false);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (!panoPath || !levels?.length || !panoramaElement.current) return;
 
-    viewerRef.current?.destroy();
-    viewerRef.current = null;
+    if (!viewerRef.current) {
+      viewerRef.current = new Marzipano.Viewer(panoramaElement.current, {
+        stage: {
+          pixelRatio: window.devicePixelRatio || 1,
+          preserveDrawingBuffer: false,
+        },
+      });
 
-    // Create Marzipano viewer with WebGL optimizations
-    const viewer = new Marzipano.Viewer(panoramaElement.current, {
-      stage: {
-        pixelRatio: window.devicePixelRatio || 1,
-        preserveDrawingBuffer: false,
-      },
-    });
-
-    // Set black background to prevent flicker
-    const canvas = viewer.stage().domElement();
-    canvas.style.backgroundColor = "black";
-    canvas.style.opacity = "1";
-
-    viewerRef.current = viewer;
+      const canvas = viewerRef.current.stage().domElement();
+      canvas.style.backgroundColor = "black";
+      canvas.style.opacity = "1";
+    }
 
     const geometry = new Marzipano.CubeGeometry(levels);
+
     const source = Marzipano.ImageUrlSource.fromString(
       `${panoPath}/{z}/{f}/{y}/{x}.jpg`,
       { cubeMapPreviewUrl: `${panoPath}/preview.jpg` }
@@ -59,11 +57,6 @@ const PanoramaViewer = ({
       typeof initialViewParameters.fov === "number"
     ) {
       viewParams = initialViewParameters;
-    } else {
-      console.warn(
-        "[PanoramaViewer] initialViewParameters missing or invalid → fallback",
-        initialViewParameters
-      );
     }
 
     const limiter = Marzipano.RectilinearView.limit.traditional(
@@ -72,51 +65,58 @@ const PanoramaViewer = ({
     );
     const view = new Marzipano.RectilinearView(viewParams, limiter);
 
-    const scene = viewer.createScene({
-      source,
-      geometry,
-      view,
-      pinFirstLevel: true,
-    });
+    // If scene exists, just update source, geometry, and view
+    if (sceneRef.current) {
+      sceneRef.current.setSource(source);
+      // Don't recreate scene every time; update view params or create new scene carefully
+    } else {
+      sceneRef.current = viewerRef.current.createScene({
+        source,
+        geometry,
+        view,
+        pinFirstLevel: true,
+      });
+      sceneRef.current.switchTo({ transitionDuration: 1000 });
+    }
 
-    scene.switchTo({ transitionDuration: 1000 });
-
+    // Setup autorotate similar as before
     const autorotate = Marzipano.autorotate({
       yawSpeed: 0.075,
       targetPitch: 0,
       targetFov: Math.PI / 2,
     });
 
-    if (typeof viewer.setIdleMovement === "function") {
-      viewer.setIdleMovement(3000, autorotate);
+    if (typeof viewerRef.current.setIdleMovement === "function") {
+      viewerRef.current.setIdleMovement(3000, autorotate);
     } else {
-      viewer.startMovement(autorotate);
+      viewerRef.current.startMovement(autorotate);
     }
 
+    setLoaded(true);
     if (onReady) onReady();
 
-    // Accessibility note:
-    // Marzipano does not provide built-in aria or keyboard navigation for hotspots.
-    // Developers should augment with custom accessible controls if needed.
-
     return () => {
-      viewerRef.current?.destroy();
-      viewerRef.current = null;
+      if (viewerRef.current) {
+        viewerRef.current.destroy();
+        viewerRef.current = null;
+        sceneRef.current = null;
+      }
     };
   }, [panoPath, levels, initialViewParameters, onReady, onError]);
 
   return (
     <div
       ref={panoramaElement}
-      className={styles.panoramaViewer}
+      className={styles.ViewerPanorama}
       role="application"
       aria-label="360 degree panorama viewer"
-      tabIndex={0} // Make container focusable for screen readers and keyboard users
+      tabIndex={0}
+      style={{ backgroundColor: loaded ? undefined : "black" }}
     />
   );
 };
 
-PanoramaViewer.propTypes = {
+ViewerPanorama.propTypes = {
   panoPath: PropTypes.string.isRequired,
   levels: PropTypes.arrayOf(
     PropTypes.shape({
@@ -134,4 +134,4 @@ PanoramaViewer.propTypes = {
   onError: PropTypes.func,
 };
 
-export default PanoramaViewer;
+export default ViewerPanorama;

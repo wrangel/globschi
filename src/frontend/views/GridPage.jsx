@@ -54,7 +54,7 @@ function GridPage() {
     <>
       <Helmet>
         <link rel="canonical" href={`${DOMAIN}grid`} />
-        <title>Abstract Altitudes - Drone Imagery Gallery</title>
+        <title>Abstract Altitudes</title>
         <meta
           name="description"
           content="Explore our gallery of stunning drone-captured aerial images. View our portfolio of breathtaking landscapes and unique perspectives from above."

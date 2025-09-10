@@ -1,6 +1,6 @@
 import { Island } from "./models/islandModel.mjs";
-import { getUrls } from "./signedUrlServer.mjs";
-import { beautify } from "./metadataProcessor.mjs";
+import { getUrls } from "./s3Handler.mjs";
+import { beautify } from "./metadataHandler.mjs";
 
 /**
  * Fetches and combines data from MongoDB and AWS S3.

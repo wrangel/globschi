@@ -3,12 +3,50 @@
 import { useState, useEffect, useRef, useCallback, memo } from "react";
 import PropTypes from "prop-types";
 import NavigationMedia from "./NavigationMedia";
-import ImagePopup from "./ImagePopup";
+import ViewerImage from "./ViewerImage";
 import MetadataPopup from "./MetadataPopup";
-import PanoramaViewer from "./PanoramaViewer";
+import ViewerPanorama from "./ViewerPanorama";
 import LoadingOverlay from "./LoadingOverlay";
 import useKeyboardNavigation from "../hooks/useKeyboardNavigation";
 import styles from "../styles/Viewer.module.css";
+
+// 1. Create a memoized component to handle the conditional rendering
+const MediaContent = memo(({ item, isNavigationMode, onContentLoaded }) => {
+  if (item.viewer === "pano") {
+    return (
+      <ViewerPanorama
+        panoPath={item.panoPath}
+        levels={item.levels}
+        initialViewParameters={item.initialViewParameters}
+        onReady={onContentLoaded}
+        onError={(err) => console.error("Panorama error:", err)}
+      />
+    );
+  }
+  return (
+    <ViewerImage
+      actualUrl={item.actualUrl}
+      thumbnailUrl={item.thumbnailUrl}
+      name={item.name}
+      onLoad={onContentLoaded}
+      isNavigationMode={isNavigationMode}
+    />
+  );
+});
+
+MediaContent.propTypes = {
+  item: PropTypes.shape({
+    viewer: PropTypes.oneOf(["pano", "img"]).isRequired,
+    panoPath: PropTypes.string,
+    actualUrl: PropTypes.string,
+    levels: PropTypes.array,
+    initialViewParameters: PropTypes.object,
+    thumbnailUrl: PropTypes.string,
+    name: PropTypes.string,
+  }).isRequired,
+  isNavigationMode: PropTypes.bool.isRequired,
+  onContentLoaded: PropTypes.func.isRequired,
+};
 
 const Viewer = ({
   item,
@@ -61,39 +99,23 @@ const Viewer = ({
     }
   }, []);
 
-  const renderContent = useCallback(() => {
-    if (item.viewer === "pano") {
-      return (
-        <PanoramaViewer
-          panoPath={item.panoPath}
-          levels={item.levels}
-          initialViewParameters={item.initialViewParameters}
-          onReady={handleContentLoaded}
-          onError={(err) => console.error("Panorama error:", err)}
-        />
-      );
-    }
-    return (
-      <ImagePopup
-        actualUrl={item.actualUrl}
-        thumbnailUrl={item.thumbnailUrl}
-        name={item.name}
-        onLoad={handleContentLoaded}
-        isNavigationMode={isNavigationMode}
-      />
-    );
-  }, [item, isNavigationMode, handleContentLoaded]);
-
   return (
     <div
       className={styles.viewer}
       ref={viewerRef}
       role="region"
       aria-label={`Media viewer for ${item.name || "item"}`}
-      tabIndex={-1} // focusable container for assistive tech
+      tabIndex={-1}
     >
       {isLoading && <LoadingOverlay thumbnailUrl={item.thumbnailUrl} />}
-      {renderContent()}
+
+      {/* 2. Render the new memoized component here */}
+      <MediaContent
+        item={item}
+        isNavigationMode={isNavigationMode}
+        onContentLoaded={handleContentLoaded}
+      />
+
       <NavigationMedia
         onClose={onClose}
         onNext={onNext}
@@ -105,50 +127,20 @@ const Viewer = ({
         isFirst={item.isFirst}
         isLast={item.isLast}
       />
-      {showMetadata && (
-        <MetadataPopup
-          metadata={item.metadata}
-          latitude={item.latitude}
-          longitude={item.longitude}
-          onClose={() => setShowMetadata(false)}
-        />
-      )}
+      {/* 3. The MetadataPopup is no longer conditionally rendered */}
+      <MetadataPopup
+        metadata={item.metadata}
+        latitude={item.latitude}
+        longitude={item.longitude}
+        onClose={() => setShowMetadata(false)}
+        isVisible={showMetadata}
+      />
     </div>
   );
 };
 
 Viewer.propTypes = {
-  item: PropTypes.shape({
-    id: PropTypes.string.isRequired,
-    viewer: PropTypes.oneOf(["pano", "img"]).isRequired,
-    drone: PropTypes.string,
-    metadata: PropTypes.string.isRequired,
-    latitude: PropTypes.number,
-    longitude: PropTypes.number,
-    name: PropTypes.string,
-    thumbnailUrl: PropTypes.string.isRequired,
-    panoPath: PropTypes.string,
-    actualUrl: PropTypes.string,
-    initialViewParameters: PropTypes.shape({
-      yaw: PropTypes.number.isRequired,
-      pitch: PropTypes.number.isRequired,
-      fov: PropTypes.number.isRequired,
-    }),
-    levels: PropTypes.arrayOf(
-      PropTypes.shape({
-        tileSize: PropTypes.number.isRequired,
-        size: PropTypes.number.isRequired,
-        fallbackOnly: PropTypes.bool,
-      })
-    ),
-    isFirst: PropTypes.bool,
-    isLast: PropTypes.bool,
-  }).isRequired,
-  onClose: PropTypes.func.isRequired,
-  onNext: PropTypes.func.isRequired,
-  onPrevious: PropTypes.func.isRequired,
-  isNavigationMode: PropTypes.bool.isRequired,
-  toggleMode: PropTypes.func.isRequired,
+  // ... (unchanged)
 };
 
 export default memo(Viewer);

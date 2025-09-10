@@ -1,6 +1,6 @@
-/* src/styles/PanoramaViewer.module.css */
+/* src/styles/ViewerPanorama.module.css */
 
-.panoramaViewer {
+.ViewerPanorama {
   position: fixed;
   top: 0;
   left: 0;
@@ -12,7 +12,7 @@
 }
 
 /* Ensure Marzipano’s WebGL canvas fits container exactly */
-.panoramaViewer canvas {
+.ViewerPanorama canvas {
   width: 100% !important;
   height: 100% !important;
   display: block; /* remove inline spacing */

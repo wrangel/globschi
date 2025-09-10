@@ -1,10 +1,4 @@
 /* src/frontend/styles/MetadataPopup.module.css */
-.backdrop {
-  position: fixed;
-  inset: 0;
-  z-index: 1599; /* just below popup */
-  background: transparent;
-}
 
 .metadataPopup {
   position: absolute;
@@ -21,13 +15,21 @@
   font-size: 0.9rem;
   font-family: var(--font-stack);
   text-shadow: var(--text-shadow-heavy);
+  cursor: grab; /* Indicate draggable area */
+  user-select: none; /* Prevent text selection on drag */
   transition: transform var(--transition-duration) ease;
   will-change: transform;
 }
 
+.metadataPopup:active {
+  cursor: grabbing;
+  user-select: none;
+}
+
 .content {
   text-align: center;
-  padding-top: 14px; /* space for pill */
+  padding-top: 14px; /* space for draggable pill */
+  user-select: text; /* allow text selection inside content */
 }
 
 .maplink {
@@ -39,6 +41,7 @@
   text-shadow: var(--text-shadow-heavy);
   transition: color var(--transition-duration);
 }
+
 .maplink:hover,
 .maplink:focus {
   text-decoration: underline;
@@ -50,7 +53,7 @@
   border: none;
 }
 
-/* ---------- pill / close button ---------- */
+/* Draggable pill / close button */
 .dragPill {
   position: absolute;
   top: 6px;
@@ -66,17 +69,6 @@
   touch-action: manipulation;
 }
 
-/* responsive tweaks */
-@media (min-width: 320px) {
-  .metadataPopup {
-    top: var(--spacing-small);
-    left: var(--spacing-small);
-    width: calc(100% - var(--spacing-small) * 2);
-    margin: 0;
-  }
-}
-
-.metadataPopup {
-  position: absolute; /* you already have this */
-  transform: none !important; /* we manage top/left ourselves while dragging */
+.thumbnailFullViewport {
+  will-change: opacity; /* keeps layer on GPU = zero repaint */
 }

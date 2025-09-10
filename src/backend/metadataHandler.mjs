@@ -1,4 +1,4 @@
-// src/backend/metadataProcessor.mjs
+// src/backend/metadataHandler.mjs
 
 import logger from "./utils/logger.mjs";
 

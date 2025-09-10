@@ -4,6 +4,7 @@
   inset: 0;
   z-index: 1599; /* just below popup */
   background: transparent;
+  pointer-events: auto;
 }
 
 .metadataPopup {
@@ -79,4 +80,5 @@
 .metadataPopup {
   position: absolute; /* you already have this */
   transform: none !important; /* we manage top/left ourselves while dragging */
+  pointer-events: auto; /* only the popup itself reacts to mouse/touch */
 }

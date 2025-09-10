@@ -86,23 +86,6 @@ const MetadataPopup = ({ metadata, latitude, longitude, onClose }) => {
     document.addEventListener(isTouch ? "touchend" : "mouseup", onUp);
   };
 
-  /* ---------- swipe-down-to-dismiss ---------- */
-  const onTouchStart = (e) => {
-    dragRef.current.startY = e.touches[0].clientY;
-    dragRef.current.dragging = true;
-  };
-  const onTouchMove = (e) => {
-    if (!dragRef.current.dragging) return;
-    const deltaY = e.touches[0].clientY - dragRef.current.startY;
-    if (deltaY > 0) setPopupPosition((p) => ({ ...p, y: deltaY }));
-  };
-  const onTouchEnd = (e) => {
-    dragRef.current.dragging = false;
-    const deltaY = e.changedTouches[0].clientY - dragRef.current.startY;
-    if (deltaY > SWIPE_THRESHOLD) onClose();
-    else setPopupPosition({ x: 0, y: 0 }); // snap back
-  };
-
   return (
     <>
       <div
@@ -120,8 +103,6 @@ const MetadataPopup = ({ metadata, latitude, longitude, onClose }) => {
         }}
         onMouseDown={handleDragStart}
         onTouchStart={handleDragStart}
-        onTouchMove={onTouchMove}
-        onTouchEnd={onTouchEnd}
         role="dialog"
         aria-modal="true"
         tabIndex={-1}

@@ -68,3 +68,7 @@
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
 }
+
+.thumbnailFullViewport {
+  will-change: opacity; /* keeps layer on GPU = zero repaint */
+}

@@ -1,12 +1,9 @@
 // src/frontend/components/ImagePopup.jsx
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, memo } from "react";
 import panzoom from "panzoom";
 import styles from "../styles/ImagePopup.module.css";
 
-/**
- * ImagePopup component with robust error handling and accessibility.
- */
 const ImagePopup = ({
   actualUrl,
   thumbnailUrl,
@@ -20,6 +17,7 @@ const ImagePopup = ({
   const imgRef = useRef(null);
   const panZoomInstanceRef = useRef(null);
 
+  /* ---------- image load ---------- */
   useEffect(() => {
     setIsLoading(true);
     setHasError(false);
@@ -31,8 +29,6 @@ const ImagePopup = ({
       setIsLoading(false);
       setShowBleep(true);
       if (onLoad) onLoad();
-
-      // Hide the bleep button after 1 second
       setTimeout(() => setShowBleep(false), 500);
     };
     img.onerror = () => {
@@ -41,27 +37,24 @@ const ImagePopup = ({
     };
   }, [actualUrl, onLoad]);
 
+  /* ---------- panzoom ---------- */
   useEffect(() => {
     if (!isLoading && !hasError && imgRef.current) {
       const instance = panzoom(imgRef.current);
       panZoomInstanceRef.current = instance;
-
-      return () => {
-        instance.dispose();
-      };
+      return () => instance.dispose();
     }
   }, [isLoading, hasError]);
 
   useEffect(() => {
     if (panZoomInstanceRef.current) {
-      if (isNavigationMode) {
-        panZoomInstanceRef.current.resume();
-      } else {
-        panZoomInstanceRef.current.pause();
-      }
+      isNavigationMode
+        ? panZoomInstanceRef.current.resume()
+        : panZoomInstanceRef.current.pause();
     }
   }, [isNavigationMode]);
 
+  /* ---------- error fallback ---------- */
   if (hasError) {
     return (
       <div className={styles.imagePopup} role="alert" aria-live="assertive">
@@ -77,35 +70,55 @@ const ImagePopup = ({
 
   return (
     <div className={styles.imagePopup}>
-      {isLoading && (
-        <img
-          src={thumbnailUrl}
-          alt={`${name} thumbnail`}
-          className={styles.thumbnailFullViewport}
-        />
-      )}
+      {/* THUMBNAIL: always in DOM, opacity only – no layout shift */}
+      <img
+        src={thumbnailUrl}
+        alt={`${name} thumbnail`}
+        className={styles.thumbnailFullViewport}
+        style={{
+          opacity: isLoading ? 1 : 0,
+          pointerEvents: "none",
+          position: "fixed",
+          inset: 0,
+          width: "100vw",
+          height: "100vh",
+          objectFit: "contain",
+          zIndex: 1040,
+          transition: "opacity 0.15s ease", // faster fade
+        }}
+      />
+
+      {/* MAIN IMAGE: pan-zoom container */}
       <div
         ref={imgRef}
-        className={`${styles.panzoomContainer} ${
-          isLoading ? styles.hidden : ""
-        }`}
-        tabIndex={0} // make container focusable for keyboard users
+        className={styles.panzoomContainer}
+        style={{
+          opacity: isLoading ? 0 : 1,
+          pointerEvents: isLoading ? "none" : "auto",
+          width: "100%",
+          height: "100%",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          position: "relative",
+          zIndex: 1050,
+          transition: "opacity 0.15s ease",
+        }}
+        tabIndex={0}
         aria-label={name}
         role="img"
       >
         <img src={actualUrl} alt={name} className={styles.image} />
       </div>
 
-      {/* Show the bleep indicator button for 1 second after load */}
+      {/* bleep indicator */}
       {showBleep && (
         <button
           className={styles.bleepButton}
           aria-label="Image loaded indicator"
           type="button"
-          tabIndex={-1} // not focusable by tab
-          onClick={() => {
-            console.info("Bleep indicator clicked");
-          }}
+          tabIndex={-1}
+          onClick={() => console.info("Bleep indicator clicked")}
         >
           ●
         </button>
@@ -114,4 +127,4 @@ const ImagePopup = ({
   );
 };
 
-export default ImagePopup;
+export default memo(ImagePopup);

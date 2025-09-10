@@ -4,7 +4,13 @@ import { useState, useEffect, useRef } from "react";
 import PropTypes from "prop-types";
 import styles from "../styles/MetadataPopup.module.css";
 
-const MetadataPopup = ({ metadata, latitude, longitude, onClose }) => {
+const MetadataPopup = ({
+  metadata,
+  latitude,
+  longitude,
+  onClose,
+  isVisible,
+}) => {
   const zoomLevel = 13;
   const [isBelowThreshold, setIsBelowThreshold] = useState(false);
   const [popupPosition, setPopupPosition] = useState({ x: 0, y: 0 });
@@ -21,12 +27,13 @@ const MetadataPopup = ({ metadata, latitude, longitude, onClose }) => {
 
   // Focus management to restore focus on close
   useEffect(() => {
-    triggerRef.current = document.activeElement;
-    popupRef.current?.focus();
-    return () => {
+    if (isVisible) {
+      triggerRef.current = document.activeElement;
+      popupRef.current?.focus();
+    } else {
       triggerRef.current?.focus?.();
-    };
-  }, []);
+    }
+  }, [isVisible]);
 
   const googleMapsUrl = `https://www.google.com/maps/embed/v1/place?key=${
     import.meta.env.VITE_GOOGLE_MAPS_API_KEY
@@ -79,16 +86,19 @@ const MetadataPopup = ({ metadata, latitude, longitude, onClose }) => {
     document.addEventListener(isTouch ? "touchend" : "mouseup", onUp);
   };
 
-  // Use style with left/top from drag or default initial
-  const style =
-    popupPosition.x === 0 && popupPosition.y === 0
+  // Use style with left/top from drag or default initial, and control visibility
+  const style = {
+    ...(popupPosition.x === 0 && popupPosition.y === 0
       ? {} // use CSS positioning (top/left from CSS)
       : {
           transform: "none",
           left: `${popupPosition.x}px`,
           top: `${popupPosition.y}px`,
           position: "absolute",
-        };
+        }),
+    opacity: isVisible ? 1 : 0,
+    pointerEvents: isVisible ? "auto" : "none",
+  };
 
   return (
     <div
@@ -144,6 +154,7 @@ MetadataPopup.propTypes = {
   latitude: PropTypes.number.isRequired,
   longitude: PropTypes.number.isRequired,
   onClose: PropTypes.func.isRequired,
+  isVisible: PropTypes.bool.isRequired,
 };
 
 export default MetadataPopup;

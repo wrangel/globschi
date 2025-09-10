@@ -4,17 +4,14 @@ import { useState, useEffect, useRef } from "react";
 import PropTypes from "prop-types";
 import styles from "../styles/MetadataPopup.module.css";
 
-const SWIPE_THRESHOLD = 60; // px
-
 const MetadataPopup = ({ metadata, latitude, longitude, onClose }) => {
   const zoomLevel = 13;
   const [isBelowThreshold, setIsBelowThreshold] = useState(false);
   const [popupPosition, setPopupPosition] = useState({ x: 0, y: 0 });
   const popupRef = useRef(null);
   const triggerRef = useRef(null);
-  const dragRef = useRef({ startY: 0, dragging: false });
 
-  // Track window resize to toggle map/link display
+  // Track window resize to toggle map vs link display
   useEffect(() => {
     const handleResize = () => setIsBelowThreshold(window.innerHeight < 500);
     handleResize();
@@ -22,22 +19,21 @@ const MetadataPopup = ({ metadata, latitude, longitude, onClose }) => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  // Focus management: Save focus on mount, focus popup, restore on unmount
+  // Focus management to restore focus on close
   useEffect(() => {
     triggerRef.current = document.activeElement;
     popupRef.current?.focus();
     return () => {
-      triggerRef.current?.focus();
+      triggerRef.current?.focus?.();
     };
   }, []);
 
-  // Google Maps embed URL and link for fallback
   const googleMapsUrl = `https://www.google.com/maps/embed/v1/place?key=${
     import.meta.env.VITE_GOOGLE_MAPS_API_KEY
   }&q=${latitude},${longitude}&zoom=${zoomLevel}&maptype=satellite`;
   const googleMapsLink = `https://www.google.com/maps?q=${latitude},${longitude}&zoom=${zoomLevel}&maptype=satellite`;
 
-  /* ---------- silky drag-to-move ---------- */
+  // Draggable popup logic
   const handleDragStart = (e) => {
     e.stopPropagation();
     e.preventDefault();
@@ -45,16 +41,14 @@ const MetadataPopup = ({ metadata, latitude, longitude, onClose }) => {
     const popup = popupRef.current;
     if (!popup) return;
 
-    // read current *pixel* position once
     const startRect = popup.getBoundingClientRect();
     const parentRect = popup.offsetParent.getBoundingClientRect();
-    let baseLeft = startRect.left - parentRect.left; // absolute left
-    let baseTop = startRect.top - parentRect.top; // absolute top
 
-    // cancel any leftover transform so we work in pure px space
+    let baseLeft = startRect.left - parentRect.left;
+    let baseTop = startRect.top - parentRect.top;
+
+    // Remove transform to work with pure px positioning
     popup.style.transform = "none";
-
-    // apply absolute coords so element doesn't jump
     popup.style.left = `${baseLeft}px`;
     popup.style.top = `${baseTop}px`;
 
@@ -74,7 +68,6 @@ const MetadataPopup = ({ metadata, latitude, longitude, onClose }) => {
     };
 
     const onUp = () => {
-      // commit final coords to React so next render matches
       setPopupPosition({ x: baseLeft, y: baseTop });
       document.removeEventListener(isTouch ? "touchmove" : "mousemove", onMove);
       document.removeEventListener(isTouch ? "touchend" : "mouseup", onUp);
@@ -86,65 +79,63 @@ const MetadataPopup = ({ metadata, latitude, longitude, onClose }) => {
     document.addEventListener(isTouch ? "touchend" : "mouseup", onUp);
   };
 
+  // Use style with left/top from drag or default initial
+  const style =
+    popupPosition.x === 0 && popupPosition.y === 0
+      ? {} // use CSS positioning (top/left from CSS)
+      : {
+          transform: "none",
+          left: `${popupPosition.x}px`,
+          top: `${popupPosition.y}px`,
+          position: "absolute",
+        };
+
   return (
-    <>
-      <div
-        className={styles.backdrop}
+    <div
+      className={styles.metadataPopup}
+      ref={popupRef}
+      style={style}
+      onMouseDown={handleDragStart}
+      onTouchStart={handleDragStart}
+      role="dialog"
+      aria-modal="true"
+      tabIndex={-1}
+      aria-label="Metadata popup"
+    >
+      <button
+        className={styles.dragPill}
         onClick={onClose}
-        aria-hidden="true"
-        tabIndex={-1}
-      />
-
-      <div
-        className={styles.metadataPopup}
-        ref={popupRef}
-        style={{
-          transform: `translate(${popupPosition.x}px, ${popupPosition.y}px)`,
+        onTouchEnd={(e) => {
+          e.preventDefault();
+          onClose();
         }}
-        onMouseDown={handleDragStart}
-        onTouchStart={handleDragStart}
-        role="dialog"
-        aria-modal="true"
-        tabIndex={-1}
-        aria-label="Metadata popup"
-      >
-        {/* universal pill / close target */}
-        <button
-          className={styles.dragPill}
-          onClick={onClose}
-          onTouchEnd={(e) => {
-            e.preventDefault();
-            onClose();
-          }}
-          aria-label="Close metadata popup"
-          type="button"
-        />
-
-        <div className={styles.content}>
-          <pre>{metadata}</pre>
-          {isBelowThreshold ? (
-            <a
-              href={googleMapsLink}
-              target="_blank"
-              rel="noopener noreferrer"
-              className={styles.maplink}
-            >
-              View on map
-            </a>
-          ) : (
-            <iframe
-              className={styles.mapIframe}
-              width="100%"
-              style={{ height: "50vh" }}
-              src={googleMapsUrl}
-              title={`Map lat:${latitude} lng:${longitude}`}
-              allowFullScreen
-              loading="lazy"
-            />
-          )}
-        </div>
+        aria-label="Close metadata popup"
+        type="button"
+      />
+      <div className={styles.content}>
+        <pre>{metadata}</pre>
+        {isBelowThreshold ? (
+          <a
+            href={googleMapsLink}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={styles.maplink}
+          >
+            View on map
+          </a>
+        ) : (
+          <iframe
+            className={styles.mapIframe}
+            width="100%"
+            style={{ height: "50vh" }}
+            src={googleMapsUrl}
+            title={`Map location at latitude ${latitude} and longitude ${longitude}`}
+            allowFullScreen
+            loading="lazy"
+          />
+        )}
       </div>
-    </>
+    </div>
   );
 };
 

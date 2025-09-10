@@ -66,6 +66,16 @@
   --overlay-box-shadow: 0 4px 15px rgba(0, 0, 0, 0.7);
   --text-shadow-heavy: 0 0 5px rgba(0, 0, 0, 0.8), 0 0 10px rgba(0, 0, 0, 0.6),
     0 0 20px rgba(0, 0, 0, 0.4);
+
+  /* visually hide the accessibility "Skip to main content" link */
+  a[href="#main-content"] {
+    position: absolute;
+    left: -10000px;
+    top: auto;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
 }
 
 body {

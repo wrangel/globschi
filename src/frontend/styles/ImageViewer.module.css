@@ -1,6 +1,6 @@
-/* src/styles/ImagePopup.module.css */
+/* src/styles/ImageViewer.module.css */
 
-.imagePopup {
+.ImageViewer {
   position: fixed;
   top: 0;
   left: 0;
@@ -15,7 +15,7 @@
   transition: background-color var(--transition-duration) ease;
 }
 
-.imagePopup.loaded {
+.ImageViewer.loaded {
   background-color: black;
 }
 

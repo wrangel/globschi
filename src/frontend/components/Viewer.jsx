@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef, useCallback, memo } from "react";
 import PropTypes from "prop-types";
 import NavigationMedia from "./NavigationMedia";
-import ImagePopup from "./ImagePopup";
+import ImageViewer from "./ImageViewer";
 import MetadataPopup from "./MetadataPopup";
 import PanoramaViewer from "./PanoramaViewer";
 import LoadingOverlay from "./LoadingOverlay";
@@ -74,7 +74,7 @@ const Viewer = ({
       );
     }
     return (
-      <ImagePopup
+      <ImageViewer
         actualUrl={item.actualUrl}
         thumbnailUrl={item.thumbnailUrl}
         name={item.name}

@@ -1,6 +1,6 @@
-/* src/styles/ImageViewer.module.css */
+/* src/styles/ViewerImage.module.css */
 
-.ImageViewer {
+.ViewerImage {
   position: fixed;
   top: 0;
   left: 0;
@@ -15,7 +15,7 @@
   transition: background-color var(--transition-duration) ease;
 }
 
-.ImageViewer.loaded {
+.ViewerImage.loaded {
   background-color: black;
 }
 

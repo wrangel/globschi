@@ -1,13 +1,13 @@
-// src/components/PanoramaViewer.jsx
+// src/components/ViewerPanorama.jsx
 
 import { useRef, useLayoutEffect, useState } from "react";
 import PropTypes from "prop-types";
 import Marzipano from "marzipano";
-import styles from "../styles/PanoramaViewer.module.css";
+import styles from "../styles/ViewerPanorama.module.css";
 
 const DEFAULT_VIEW = { yaw: 0, pitch: 0, fov: Math.PI / 4 };
 
-const PanoramaViewer = ({
+const ViewerPanorama = ({
   panoPath,
   levels,
   initialViewParameters,
@@ -107,7 +107,7 @@ const PanoramaViewer = ({
   return (
     <div
       ref={panoramaElement}
-      className={styles.panoramaViewer}
+      className={styles.ViewerPanorama}
       role="application"
       aria-label="360 degree panorama viewer"
       tabIndex={0}
@@ -116,7 +116,7 @@ const PanoramaViewer = ({
   );
 };
 
-PanoramaViewer.propTypes = {
+ViewerPanorama.propTypes = {
   panoPath: PropTypes.string.isRequired,
   levels: PropTypes.arrayOf(
     PropTypes.shape({
@@ -134,4 +134,4 @@ PanoramaViewer.propTypes = {
   onError: PropTypes.func,
 };
 
-export default PanoramaViewer;
+export default ViewerPanorama;

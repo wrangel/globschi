@@ -3,9 +3,9 @@
 import { useState, useEffect, useRef, useCallback, memo } from "react";
 import PropTypes from "prop-types";
 import NavigationMedia from "./NavigationMedia";
-import ImageViewer from "./ImageViewer";
+import ViewerImage from "./ViewerImage";
 import MetadataPopup from "./MetadataPopup";
-import PanoramaViewer from "./PanoramaViewer";
+import ViewerPanorama from "./ViewerPanorama";
 import LoadingOverlay from "./LoadingOverlay";
 import useKeyboardNavigation from "../hooks/useKeyboardNavigation";
 import styles from "../styles/Viewer.module.css";
@@ -64,7 +64,7 @@ const Viewer = ({
   const renderContent = useCallback(() => {
     if (item.viewer === "pano") {
       return (
-        <PanoramaViewer
+        <ViewerPanorama
           panoPath={item.panoPath}
           levels={item.levels}
           initialViewParameters={item.initialViewParameters}
@@ -74,7 +74,7 @@ const Viewer = ({
       );
     }
     return (
-      <ImageViewer
+      <ViewerImage
         actualUrl={item.actualUrl}
         thumbnailUrl={item.thumbnailUrl}
         name={item.name}

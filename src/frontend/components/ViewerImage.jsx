@@ -1,10 +1,10 @@
-// src/frontend/components/ImageViewer.jsx
+// src/frontend/components/ViewerImage.jsx
 
 import { useState, useEffect, useRef, memo } from "react";
 import panzoom from "panzoom";
-import styles from "../styles/ImageViewer.module.css";
+import styles from "../styles/ViewerImage.module.css";
 
-const ImageViewer = ({
+const ViewerImage = ({
   actualUrl,
   thumbnailUrl,
   name,
@@ -57,7 +57,7 @@ const ImageViewer = ({
   /* ---------- error fallback ---------- */
   if (hasError) {
     return (
-      <div className={styles.ImageViewer} role="alert" aria-live="assertive">
+      <div className={styles.ViewerImage} role="alert" aria-live="assertive">
         <p>Failed to load image: {name}</p>
         <img
           src={thumbnailUrl}
@@ -69,7 +69,7 @@ const ImageViewer = ({
   }
 
   return (
-    <div className={styles.ImageViewer}>
+    <div className={styles.ViewerImage}>
       {/* THUMBNAIL: always in DOM, opacity only – no layout shift */}
       <img
         src={thumbnailUrl}
@@ -127,4 +127,4 @@ const ImageViewer = ({
   );
 };
 
-export default memo(ImageViewer);
+export default memo(ViewerImage);

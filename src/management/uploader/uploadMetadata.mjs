@@ -1,6 +1,6 @@
-import { Island } from "../../models/islandModel.mjs";
-import { executeMongoQuery } from "../../utils/mongoUtils.mjs";
-import logger from "../../utils/logger.mjs";
+import { Island } from "../../backend/models/islandModel.mjs";
+import { executeMongoQuery } from "../../backend/utils/mongoUtils.mjs";
+import logger from "../../backend/utils/logger.mjs";
 
 /**
  * Uploads or updates metadata document in MongoDB.

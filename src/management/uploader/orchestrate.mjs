@@ -2,8 +2,8 @@
 
 import { readdir } from "fs/promises";
 import path from "path";
-import logger from "../../utils/logger.mjs";
-import { connectDB, closeDB } from "../../utils/mongodbConnection.mjs";
+import logger from "../../backend/utils/logger.mjs";
+import { connectDB, closeDB } from "../../backend/utils/mongodbConnection.mjs";
 
 import { collectMetadata } from "./collectMetadata.mjs";
 import { handleFolder } from "./handleFolder.mjs";
@@ -68,7 +68,6 @@ export async function orchestrate() {
           processed.metadata.initialViewParameters =
             panoExtraProps.initialViewParameters || null;
         }
-
         // Upload metadata to MongoDB
         await uploadMetadata(processed.metadata);
 

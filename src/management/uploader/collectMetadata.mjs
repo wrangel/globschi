@@ -4,7 +4,7 @@ import { readdir, readFile } from "fs/promises";
 import path from "path";
 import fetch from "node-fetch"; // for reverse geocoding API calls
 import ExifParser from "exif-parser";
-import logger from "../../utils/logger.mjs";
+import logger from "../../backend/utils/logger.mjs";
 import {
   CONTRIBUTORS,
   REVERSE_GEO_ADDRESS_COMPONENTS,
@@ -14,7 +14,7 @@ import {
   EXIF_TAGS,
   ALTITUDE_UNIT,
   UNKNOWN_VALUE,
-} from "../../constants.mjs";
+} from "../../backend/constants.mjs";
 
 import readline from "readline";
 

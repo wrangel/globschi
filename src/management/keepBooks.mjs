@@ -5,10 +5,10 @@ import {
   ListObjectsV2Command,
   DeleteObjectsCommand,
 } from "@aws-sdk/client-s3";
-import logger from "../utils/logger.mjs";
-import { Island } from "../models/islandModel.mjs";
-import { executeMongoQuery } from "../utils/mongoUtils.mjs";
-import { connectDB, closeDB } from "../utils/mongodbConnection.mjs";
+import logger from "../backend/utils/logger.mjs";
+import { Island } from "../backend/models/islandModel.mjs";
+import { executeMongoQuery } from "../backend/utils/mongoUtils.mjs";
+import { connectDB, closeDB } from "../backend/utils/mongodbConnection.mjs";
 
 const s3Client = new S3Client({ region: process.env.AWS_REGION });
 

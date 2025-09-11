@@ -1,10 +1,9 @@
 // src/backend/management/uploader/handlePano.mjs
-
 import fs from "fs/promises";
 import path from "path";
 import AdmZip from "adm-zip";
 import sharp from "sharp";
-import logger from "../../utils/logger.mjs";
+import logger from "../../backend/utils/logger.mjs";
 import vm from "vm";
 import {
   THUMBNAIL_WIDTH,
@@ -14,7 +13,7 @@ import {
   MODIFIED_FOLDER,
   ORIGINAL_FOLDER,
   S3_FOLDER,
-} from "../../constants.mjs";
+} from "../../backend/constants.mjs";
 
 /**
  * Parse levels and initialViewParameters from data.js content by evaluating it.
@@ -61,20 +60,53 @@ export async function handlePano(mediaFolderPath, folderName) {
 
   logger.info(`[${folderName}]: Starting pano processing`);
 
-  // Ensure modified folder exists
+  // Ensure modified and original folders exist
   await fs.mkdir(modifiedPath, { recursive: true });
+  await fs.mkdir(originalPath, { recursive: true });
 
-  // Move .pts files to modified folder
   const rootFiles = await fs.readdir(mediaFolderPath);
-  const ptsFiles = rootFiles.filter((f) => f.toLowerCase().endsWith(".pts"));
+
+  // Single regex to match both originals and previews with any extension
+  const panoRegex = /^(.+?)_(\d{4})( Panorama)?\.[^.]+$/i;
+
+  // Process files: split originals (no Panorama) and previews (with Panorama)
+  for (const file of rootFiles) {
+    const match = file.match(panoRegex);
+    if (!match) continue;
+
+    const [, base, index, panoramaSuffix] = match;
+    const src = path.join(mediaFolderPath, file);
+
+    if (panoramaSuffix) {
+      // ' Panorama' present - preview file => move to modified folder
+      const dest = path.join(modifiedPath, file);
+      await fs.rename(src, dest);
+      logger.info(
+        `[${folderName}]: Moved preview file ${file} to modified folder`
+      );
+    } else {
+      // No ' Panorama' - original file => move to original folder
+      const dest = path.join(originalPath, file);
+      await fs.rename(src, dest);
+      logger.info(
+        `[${folderName}]: Moved original file ${file} to original folder`
+      );
+    }
+  }
+
+  // Special handling of .pts files (already moved above if matched in panoRegex),
+  // but if there are any outside this pattern, ensure to move .pts files anyway
+  const ptsFiles = rootFiles.filter(
+    (f) => f.toLowerCase().endsWith(".pts") && !panoRegex.test(f)
+  );
   for (const file of ptsFiles) {
     const src = path.join(mediaFolderPath, file);
     const dest = path.join(modifiedPath, file);
     await fs.rename(src, dest);
-    logger.info(`[${folderName}]: Moved ${file} to modified folder`);
+    logger.info(`[${folderName}]: Moved pts file ${file} to modified folder`);
   }
 
-  // Move project-title.zip to modified folder if not already there
+  // Move project-title.zip to modified folder if present and not already moved
   if (rootFiles.includes("project-title.zip")) {
     const src = path.join(mediaFolderPath, "project-title.zip");
     const dest = path.join(modifiedPath, "project-title.zip");
@@ -86,33 +118,7 @@ export async function handlePano(mediaFolderPath, folderName) {
     }
   }
 
-  // Move panorama preview JPEGs (not exact PANO_####.jpg) to modified
-  const panoramaPreviewFiles = rootFiles.filter(
-    (f) => /^PANO_\d+.*\.jpe?g$/i.test(f) && !/^PANO_\d{4}\.jpe?g$/i.test(f) // exclude exact PANO_####.jpg files
-  );
-  for (const file of panoramaPreviewFiles) {
-    const src = path.join(mediaFolderPath, file);
-    const dest = path.join(modifiedPath, file);
-    await fs.rename(src, dest);
-    logger.info(
-      `[${folderName}]: Moved panorama preview ${file} to modified folder`
-    );
-  }
-
-  // Move exact PANO_####.jpg files from root to original folder
-  await fs.mkdir(originalPath, { recursive: true });
-  const updatedRootFiles = await fs.readdir(mediaFolderPath);
-  const panoJpgFiles = updatedRootFiles.filter((f) =>
-    /^PANO_\d{4}\.jpe?g$/i.test(f)
-  );
-  for (const file of panoJpgFiles) {
-    const src = path.join(mediaFolderPath, file);
-    const dest = path.join(originalPath, file);
-    await fs.rename(src, dest);
-    logger.info(`[${folderName}]: Moved ${file} to original folder`);
-  }
-
-  // Extract ZIP from modified folder into s3/project-title-extract-temp
+  // Proceed with extracting ZIP and processing tiles as before
   const extractPath = path.join(s3Folder, "project-title-extract-temp");
 
   try {
@@ -155,7 +161,6 @@ export async function handlePano(mediaFolderPath, folderName) {
       );
       const s3TilesDest = path.join(s3Folder, "tiles");
 
-      // Delete existing s3/tiles if any
       try {
         await fs.rm(s3TilesDest, { recursive: true, force: true });
         logger.info(`[${folderName}]: Deleted existing s3/tiles folder`);
@@ -165,11 +170,9 @@ export async function handlePano(mediaFolderPath, folderName) {
         );
       }
 
-      // Rename subfolder to s3/tiles
       await fs.rename(singleTileSubfolder, s3TilesDest);
       logger.info(`[${folderName}]: Moved and renamed tiles to s3/tiles`);
 
-      // Remove extracted tiles base folder
       try {
         await fs.rm(originalTilesBase, { recursive: true, force: true });
         logger.info(`[${folderName}]: Deleted extracted tiles base folder`);
@@ -209,9 +212,9 @@ export async function handlePano(mediaFolderPath, folderName) {
       );
     }
 
-    // Create thumbnail.webp from JPG inside modified folder into s3
+    // Create thumbnail.webp from first JPG/JPEG in modified folder
     const modifiedFiles = await fs.readdir(modifiedPath);
-    const jpgFile = modifiedFiles.find((f) => /\.jpe?g$/i.test(f));
+    const jpgFile = modifiedFiles.find((f) => /\.(jpe?g)$/i.test(f));
     if (!jpgFile) {
       logger.warn(
         `[${folderName}]: No JPG found in modified folder for thumbnail`

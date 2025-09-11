@@ -2,12 +2,12 @@
 
 import fs from "fs/promises";
 import path from "path";
-import logger from "../../utils/logger.mjs";
+import logger from "../../backend/utils/logger.mjs";
 import {
   MODIFIED_FOLDER,
   ORIGINAL_FOLDER,
   S3_FOLDER,
-} from "../../constants.mjs";
+} from "../../backend/constants.mjs";
 import sharp from "sharp";
 import { execFile } from "child_process";
 import { promisify } from "util";

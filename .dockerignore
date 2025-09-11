@@ -17,8 +17,8 @@ env.production
 # Local development folders and build artifacts
 Material/
 logs/
-src/backend/tests/
-src/backend/management/
+src/backend/
+src/management/
 
 # Frontend build output folders (if used locally during development)
 dist/

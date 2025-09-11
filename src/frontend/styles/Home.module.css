@@ -45,8 +45,8 @@
 .image {
   width: auto;
   height: auto;
-  max-width: 100vw; /* Prevent horizontal overflow */
-  max-height: 60vh; /* Limit image height to 60% viewport */
+  max-width: 70vw; /* Prevent horizontal overflow */
+  max-height: 38vh; /* Limit image height to 60% viewport */
   object-fit: contain;
   border-radius: 8px;
   z-index: 2;

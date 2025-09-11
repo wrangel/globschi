@@ -6,6 +6,7 @@ import { Helmet } from "react-helmet-async";
 import { useItems } from "../hooks/useItems";
 import styles from "../styles/Home.module.css";
 import { DOMAIN } from "../constants";
+import mascotImage from "../assets/mascot.png";
 
 const HomePage = () => {
   const navigate = useNavigate();
@@ -74,8 +75,8 @@ const HomePage = () => {
           </div>
           <div className={styles.imageWrapper}>
             <img
-              src="/globschi.jpg"
-              alt="Globschi"
+              src={mascotImage} //
+              alt="Abstract Altitudes Mascot"
               className={styles.image}
               onClick={handleImageClick}
               style={{ cursor: "pointer" }}

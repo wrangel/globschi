@@ -28,6 +28,7 @@ export async function handleImage(originalFolderPath, newName) {
   const parentDir = path.dirname(originalFolderPath);
   const newFolderPath = path.join(parentDir, newName);
 
+  // Rename folder if needed
   if (originalFolderPath !== newFolderPath) {
     await fs.rename(originalFolderPath, newFolderPath);
     logger.info(
@@ -39,26 +40,25 @@ export async function handleImage(originalFolderPath, newName) {
     );
   }
 
-  // Define subfolder paths
+  // Define paths for subfolders
   const modifiedPath = path.join(newFolderPath, MODIFIED_FOLDER);
   const originalPath = path.join(newFolderPath, ORIGINAL_FOLDER);
   const s3Path = path.join(modifiedPath, S3_FOLDER);
 
-  // Ensure required subfolders exist recursively
+  // Create all required subfolders unconditionally
   await Promise.all([
     fs.mkdir(modifiedPath, { recursive: true }),
     fs.mkdir(originalPath, { recursive: true }),
     fs.mkdir(s3Path, { recursive: true }),
   ]);
 
-  // Read all files in the folder root
+  // Read all files in the new folder root
   const files = await fs.readdir(newFolderPath);
 
-  // Move JPG/JPEG files to original folder
+  // Move JPG/JPEG files to original folder if any
   const jpgFiles = files.filter(
     (f) => f.toLowerCase().endsWith(".jpg") || f.toLowerCase().endsWith(".jpeg")
   );
-
   for (const file of jpgFiles) {
     const src = path.join(newFolderPath, file);
     const dest = path.join(originalPath, file);
@@ -66,74 +66,77 @@ export async function handleImage(originalFolderPath, newName) {
     logger.info(`Moved JPG file ${file} to ${originalPath}`);
   }
 
-  // Move TIFF (assuming only one) to modified folder
+  // Move TIFF files (handle all TIFF files, process each)
   const tiffFiles = files.filter((f) => /\.tiff?$/i.test(f));
   if (tiffFiles.length === 0) {
     logger.warn(`No TIFF files found in ${newFolderPath}`);
   } else {
-    const tiffFile = tiffFiles[0];
-    const srcTiff = path.join(newFolderPath, tiffFile);
-    const destTiff = path.join(modifiedPath, tiffFile);
-    await fs.rename(srcTiff, destTiff);
-    logger.info(`Moved TIFF file ${tiffFile} to ${modifiedPath}`);
+    for (const tiffFile of tiffFiles) {
+      const srcTiff = path.join(newFolderPath, tiffFile);
+      const destTiff = path.join(modifiedPath, tiffFile);
+      await fs.rename(srcTiff, destTiff);
+      logger.info(`Moved TIFF file ${tiffFile} to ${modifiedPath}`);
 
-    // Convert TIFF to PNG using ImageMagick
-    const tempPngPath = path.join(s3Path, `${newName}_temp.png`);
-    try {
-      await execFileAsync("magick", [
-        destTiff,
-        "-depth",
-        "8",
-        "-normalize",
-        tempPngPath,
-      ]);
-      logger.info(`Converted TIFF to PNG: ${tempPngPath}`);
+      // Convert each TIFF to PNG then WebP lossless and thumbnail in modified/S3
+      const baseName = path.parse(tiffFile).name;
+      const tempPngPath = path.join(s3Path, `${baseName}_temp.png`);
+      try {
+        await execFileAsync("magick", [
+          destTiff,
+          "-depth",
+          "8",
+          "-normalize",
+          tempPngPath,
+        ]);
+        logger.info(`Converted TIFF to PNG: ${tempPngPath}`);
 
-      const image = sharp(tempPngPath);
-      const metadata = await image.metadata();
+        const image = sharp(tempPngPath);
+        const metadata = await image.metadata();
 
-      // Resize if dimensions exceed WebP max size (16383)
-      let hrImage = image;
-      if (metadata.width > 16383 || metadata.height > 16383) {
-        const aspectRatio = metadata.width / metadata.height;
-        let newWidth = Math.min(metadata.width, 16383);
-        let newHeight = Math.round(newWidth / aspectRatio);
-        if (newHeight > 16383) {
-          newHeight = 16383;
-          newWidth = Math.round(newHeight * aspectRatio);
+        // Resize if dimensions exceed WebP max size (16383)
+        let hrImage = image;
+        if (metadata.width > 16383 || metadata.height > 16383) {
+          const aspectRatio = metadata.width / metadata.height;
+          let newWidth = Math.min(metadata.width, 16383);
+          let newHeight = Math.round(newWidth / aspectRatio);
+          if (newHeight > 16383) {
+            newHeight = 16383;
+            newWidth = Math.round(newHeight * aspectRatio);
+          }
+          hrImage = image.resize(newWidth, newHeight, { fit: "inside" });
         }
-        hrImage = image.resize(newWidth, newHeight, { fit: "inside" });
+
+        // Write lossless WebP file
+        const losslessWebpPath = path.join(s3Path, `${baseName}.webp`);
+        await hrImage.webp({ lossless: true }).toFile(losslessWebpPath);
+
+        // Write thumbnail WebP file
+        const THUMBNAIL_QUALITY = 80;
+        const THUMBNAIL_WIDTH = 2000;
+        const THUMBNAIL_HEIGHT = 1300;
+        const THUMBNAIL_FILENAME = "thumbnail.webp";
+        const thumbnailWebpPath = path.join(s3Path, THUMBNAIL_FILENAME);
+
+        const tnImage = image
+          .webp({ lossless: false, quality: THUMBNAIL_QUALITY })
+          .resize({
+            width: THUMBNAIL_WIDTH,
+            height: THUMBNAIL_HEIGHT,
+            fit: "inside",
+            position: sharp.strategy.attention,
+          });
+        await tnImage.toFile(thumbnailWebpPath);
+
+        // Clean up temp PNG
+        await fs.unlink(tempPngPath);
+
+        logger.info(`Completed TIFF to WebP conversion for ${tiffFile}`);
+      } catch (error) {
+        logger.error(
+          `Error processing TIFF to WebP for file ${tiffFile}:`,
+          error
+        );
       }
-
-      // Create lossless WebP
-      const losslessWebpPath = path.join(s3Path, `${newName}.webp`);
-      await hrImage.webp({ lossless: true }).toFile(losslessWebpPath);
-
-      // Create thumbnail WebP
-      const THUMBNAIL_QUALITY = 80;
-      const THUMBNAIL_WIDTH = 2000;
-      const THUMBNAIL_HEIGHT = 1300;
-      const THUMBNAIL_FILENAME = "thumbnail.webp";
-      const thumbnailWebpPath = path.join(s3Path, THUMBNAIL_FILENAME);
-
-      const tnImage = image
-        .webp({ lossless: false, quality: THUMBNAIL_QUALITY })
-        .resize({
-          width: THUMBNAIL_WIDTH,
-          height: THUMBNAIL_HEIGHT,
-          fit: "inside",
-          position: sharp.strategy.attention,
-        });
-      await tnImage.toFile(thumbnailWebpPath);
-
-      // Delete temporary PNG
-      await fs.unlink(tempPngPath);
-
-      logger.info(
-        "Completed TIFF to WebP conversion and stored in modified/S3"
-      );
-    } catch (error) {
-      logger.error("Error processing TIFF to WebP:", error);
     }
   }
 

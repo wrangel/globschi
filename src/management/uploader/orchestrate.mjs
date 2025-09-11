@@ -68,8 +68,6 @@ export async function orchestrate() {
           processed.metadata.initialViewParameters =
             panoExtraProps.initialViewParameters || null;
         }
-
-        /* TODO add switch
         // Upload metadata to MongoDB
         await uploadMetadata(processed.metadata);
 
@@ -77,7 +75,6 @@ export async function orchestrate() {
 
         // Upload media files to S3
         await uploadMedia(newFolderPath, newName);
-        */
       } catch (error) {
         logger.error(`Error processing folder ${mediaDirPath}`, { error });
       }

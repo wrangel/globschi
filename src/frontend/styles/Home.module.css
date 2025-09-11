@@ -38,18 +38,23 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-bottom: var(--spacing-large);
+  margin-bottom: 0;
+  position: relative;
   z-index: 2;
 }
 
 .image {
+  display: block; /* keeps image free from inline gap */
   width: auto;
   height: auto;
-  max-width: 70vw; /* Prevent horizontal overflow */
-  max-height: 38vh; /* Limit image height to 60% viewport */
+  max-width: 50vw;
+  max-height: 31vh;
   object-fit: contain;
   border-radius: 8px;
   z-index: 2;
+
+  box-shadow: none; /* Remove any shadow from the image itself */
+  transition: box-shadow 0.3s ease; /* Optional, keep if you have hover effects */
 }
 
 .homePage h1 {
@@ -110,8 +115,7 @@
   display: inline-block;
   box-shadow: var(--overlay-box-shadow);
   z-index: 2;
-  max-height: 60vh; /* Optional max-height with scroll */
-  overflow-y: auto;
+  /* Removed max-height and overflow-y */
 }
 
 /* Skip link for accessibility */

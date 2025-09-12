@@ -117,7 +117,7 @@ const Map = () => {
               tileSize={512}
               zoomOffset={-1}
               id="mapbox/satellite-v9"
-              accessToken={import.meta.env.VITE_MAPBOX_ACCESS_TOKEN}
+              accessToken={import.meta.env.VITE_MAPBOX_PUBLIC_TOKEN}
             />
             {items.map((item) => (
               <Marker

@@ -124,7 +124,7 @@ async function determineMediaType(parentDir) {
  */
 async function reverseGeocode(longitude, latitude) {
   const createReverseGeoUrl = (lon, lat) =>
-    `${REVERSE_GEO_URL_ELEMENTS[0]}${lon},${lat}${REVERSE_GEO_URL_ELEMENTS[1]}${process.env.ACCESS_TOKEN}`;
+    `${REVERSE_GEO_URL_ELEMENTS[0]}${lon},${lat}${REVERSE_GEO_URL_ELEMENTS[1]}${process.env.MAPBOX_SECRET_TOKEN}`;
   const url = createReverseGeoUrl(longitude, latitude);
 
   try {

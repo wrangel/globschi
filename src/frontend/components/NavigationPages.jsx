@@ -15,23 +15,19 @@ import styles from "../styles/Navigation.module.css";
 const NavigationPages = ({ onNavigate }) => {
   const location = useLocation();
 
-  // Define button configurations for different routes.
-  // Use the same buttons for all listed paths.
+  // Define button configurations for different routes without "Home"
   const buttonConfig = {
     "/": [
       { label: "Map", path: "/map" },
       { label: "Grid", path: "/grid" },
-      { label: "Home", path: "/" },
     ],
     "/grid": [
       { label: "Map", path: "/map" },
       { label: "Grid", path: "/grid" },
-      { label: "Home", path: "/" },
     ],
     "/map": [
       { label: "Map", path: "/map" },
       { label: "Grid", path: "/grid" },
-      { label: "Home", path: "/" },
     ],
   };
 

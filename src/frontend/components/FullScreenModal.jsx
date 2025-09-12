@@ -58,7 +58,12 @@ const FullScreenModal = memo(({ isOpen, onClose, children }) => {
       return () => {
         document.removeEventListener("keydown", handleKeyDown);
         // Restore focus to the trigger element after modal closes
-        triggerRef.current?.focus();
+        if (
+          triggerRef.current &&
+          document.activeElement !== triggerRef.current
+        ) {
+          triggerRef.current.focus();
+        }
       };
     }
   }, [isOpen, onClose]);
@@ -74,6 +79,7 @@ const FullScreenModal = memo(({ isOpen, onClose, children }) => {
         role="dialog"
         aria-modal="true"
         aria-labelledby="modal-title"
+        tabIndex={-1}
       >
         <h2 id="modal-title" className={styles.visuallyHidden}>
           Modal Title
@@ -83,6 +89,7 @@ const FullScreenModal = memo(({ isOpen, onClose, children }) => {
           className={styles.closeButton}
           onClick={onClose}
           aria-label="Close Modal"
+          type="button"
         >
           ×
         </button>

@@ -1,4 +1,4 @@
-// src/components/ViewerPanorama.jsx
+// src/frontend/components/ViewerPanorama.jsx
 
 import { useRef, useLayoutEffect, useState } from "react";
 import PropTypes from "prop-types";

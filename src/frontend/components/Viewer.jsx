@@ -1,4 +1,4 @@
-// src/components/Viewer.jsx
+// src/frontend/components/Viewer.jsx
 
 import { useState, useEffect, useRef, useCallback, memo } from "react";
 import PropTypes from "prop-types";

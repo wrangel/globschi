@@ -1,4 +1,4 @@
-// src/components/PortfolioItem.jsx
+// src/frontend/components/PortfolioItem.jsx
 
 import { memo, useCallback } from "react";
 import PropTypes from "prop-types";

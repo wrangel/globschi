@@ -31,7 +31,9 @@ const PopupMetadata = ({
       triggerRef.current = document.activeElement;
       popupRef.current?.focus();
     } else {
-      triggerRef.current?.focus?.();
+      if (triggerRef.current && document.activeElement !== triggerRef.current) {
+        triggerRef.current.focus();
+      }
     }
   }, [isVisible]);
 
@@ -150,7 +152,7 @@ const PopupMetadata = ({
 };
 
 PopupMetadata.propTypes = {
-  metadata: PropTypes.string.isRequired,
+  metadat: PropTypes.string.isRequired,
   latitude: PropTypes.number.isRequired,
   longitude: PropTypes.number.isRequired,
   onClose: PropTypes.func.isRequired,

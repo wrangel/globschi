@@ -94,6 +94,7 @@ const Home = () => {
                   label: "Adobe Lightroom",
                 },
                 { href: "https://www.marzipano.net/ ", label: "Marzipano" },
+                { href: "https://www.perplexity.ai/ ", label: "Perplexity AI" },
               ].map(({ href, label }) => (
                 <li key={label}>
                   <a href={href} target="_blank" rel="noopener noreferrer">

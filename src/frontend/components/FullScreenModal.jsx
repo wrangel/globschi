@@ -13,18 +13,15 @@ const FullScreenModal = memo(({ isOpen, onClose, children }) => {
 
   useEffect(() => {
     if (isOpen) {
-      // Store the currently focused element so we can restore focus when modal closes
       triggerRef.current = document.activeElement;
 
-      // Focus the first focusable element within the modal
-      // You might want to expand focusable selector depending on your needs (e.g. buttons, inputs, selects, textareas, links, etc.)
       const focusableSelector =
-        'button, [href], [tabindex]:not([tabindex="-1"]), input, select, textarea';
-      const firstFocusableElement =
-        modalRef.current.querySelector(focusableSelector);
+        'a[href], area[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), button:not([disabled]), iframe, object, embed, [tabindex]:not([tabindex="-1"]), [contenteditable]';
+      const focusableElements =
+        modalRef.current.querySelectorAll(focusableSelector);
+      const firstFocusableElement = focusableElements[0];
       firstFocusableElement?.focus();
 
-      // Handle keyboard navigation and closing
       const handleKeyDown = (event) => {
         const focusableElements =
           modalRef.current.querySelectorAll(focusableSelector);
@@ -32,7 +29,6 @@ const FullScreenModal = memo(({ isOpen, onClose, children }) => {
         const lastElement = focusableElements[focusableElements.length - 1];
 
         if (event.key === "Tab") {
-          // Trap focus inside the modal
           if (event.shiftKey && document.activeElement === firstElement) {
             event.preventDefault();
             lastElement.focus();
@@ -46,19 +42,20 @@ const FullScreenModal = memo(({ isOpen, onClose, children }) => {
         }
 
         if (event.key === "Escape") {
-          // Close modal on Escape key press
           onClose();
         }
       };
 
-      // Attach keyboard handler
       document.addEventListener("keydown", handleKeyDown);
 
-      // Cleanup on modal close or unmount
       return () => {
         document.removeEventListener("keydown", handleKeyDown);
-        // Restore focus to the trigger element after modal closes
-        triggerRef.current?.focus();
+        if (
+          triggerRef.current &&
+          document.activeElement !== triggerRef.current
+        ) {
+          triggerRef.current.focus();
+        }
       };
     }
   }, [isOpen, onClose]);
@@ -74,6 +71,7 @@ const FullScreenModal = memo(({ isOpen, onClose, children }) => {
         role="dialog"
         aria-modal="true"
         aria-labelledby="modal-title"
+        tabIndex={-1}
       >
         <h2 id="modal-title" className={styles.visuallyHidden}>
           Modal Title
@@ -83,6 +81,7 @@ const FullScreenModal = memo(({ isOpen, onClose, children }) => {
           className={styles.closeButton}
           onClick={onClose}
           aria-label="Close Modal"
+          type="button"
         >
           ×
         </button>

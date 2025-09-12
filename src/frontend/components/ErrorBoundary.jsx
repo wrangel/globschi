@@ -1,71 +1,60 @@
-// src/components/ErrorBoundary.jsx
+// src/frontend/components/ErrorBoundary.jsx
 
 import React from "react";
-import styles from "../styles/ErrorBoundary.module.css";
+import LoadingErrorHandler from "./LoadingErrorHandler";
 
 /**
- * ErrorBoundary component to catch JavaScript errors in child components.
- *
- * This component catches errors during rendering, in lifecycle methods,
- * and in constructors of the entire component tree below it.
- * Instead of crashing the entire app, it displays a fallback UI.
- *
- * Usage:
- * Wrap parts of your React app in <ErrorBoundary> to catch errors locally.
- *
- * Example:
- * <ErrorBoundary>
- *   <MyComponent />
- * </ErrorBoundary>
+ * ErrorBoundary component to catch JavaScript errors in child components
+ * and display a consistent error UI using LoadingErrorHandler.
  */
 class ErrorBoundary extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { hasError: false, error: null }; // Tracks error presence and stores error
+    this.state = { hasError: false, errorMessage: null };
   }
 
-  /**
-   * React lifecycle method invoked after an error has been thrown by a child component.
-   * Updates state so the next render shows the fallback UI.
-   *
-   * @param {Error} error - The caught error
-   * @returns {Object} New state with hasError set to true
-   */
   static getDerivedStateFromError(error) {
-    return { hasError: true, error };
+    // Update state to display fallback UI
+    return {
+      hasError: true,
+      errorMessage: error.message || "An error occurred.",
+    };
   }
 
-  /**
-   * Lifecycle method for side effects after an error is caught.
-   * Here you can log errors to an external reporting service.
-   *
-   * @param {Error} error - The caught error
-   * @param {Object} errorInfo - Additional information about the error (component stack)
-   */
   componentDidCatch(error, errorInfo) {
+    // Log error details for monitoring
     console.error("Uncaught error:", error, errorInfo);
-    // Could integrate with error monitoring service here
+    // Optionally call an external logging service here
   }
 
-  /**
-   * Resets the error state to allow retrying rendering.
-   */
   handleRetry = () => {
-    this.setState({ hasError: false, error: null });
+    // Reset error state to attempt re-render of children
+    this.setState({ hasError: false, errorMessage: null });
   };
 
   render() {
     if (this.state.hasError) {
-      // Render fallback UI with retry button
+      // Render LoadingErrorHandler with error styling and retry button
       return (
-        <div className={styles.errorBoundary}>
-          <h1>Something went wrong.</h1>
-          <button onClick={this.handleRetry}>Try Again</button>
-        </div>
+        <LoadingErrorHandler isLoading={false} error={this.state.errorMessage}>
+          {/* Provide a retry button to reset the error */}
+          <button
+            onClick={this.handleRetry}
+            aria-label="Retry"
+            type="button"
+            style={{
+              marginTop: "1rem",
+              padding: "0.5rem 1rem",
+              cursor: "pointer",
+            }}
+          >
+            Try Again
+          </button>
+        </LoadingErrorHandler>
       );
     }
 
-    // If no error, render children normally
+    // Render normally if no error
     return this.props.children;
   }
 }

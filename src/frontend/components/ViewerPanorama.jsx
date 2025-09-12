@@ -1,4 +1,4 @@
-// src/components/ViewerPanorama.jsx
+// src/frontend/components/ViewerPanorama.jsx
 
 import { useRef, useLayoutEffect, useState } from "react";
 import PropTypes from "prop-types";
@@ -49,6 +49,11 @@ const ViewerPanorama = ({
       });
     }
 
+    const limiter = Marzipano.RectilinearView.limit.traditional(
+      1024,
+      (120 * Math.PI) / 180
+    );
+
     let viewParams = DEFAULT_VIEW;
     if (
       initialViewParameters &&
@@ -59,16 +64,15 @@ const ViewerPanorama = ({
       viewParams = initialViewParameters;
     }
 
-    const limiter = Marzipano.RectilinearView.limit.traditional(
-      1024,
-      (120 * Math.PI) / 180
-    );
     const view = new Marzipano.RectilinearView(viewParams, limiter);
 
-    // If scene exists, just update source, geometry, and view
     if (sceneRef.current) {
       sceneRef.current.setSource(source);
-      // Don't recreate scene every time; update view params or create new scene carefully
+      // Explicitly update view on existing scene
+      sceneRef.current.view().setYaw(viewParams.yaw);
+      sceneRef.current.view().setPitch(viewParams.pitch);
+      sceneRef.current.view().setFov(viewParams.fov);
+      sceneRef.current.view().update(); // force update
     } else {
       sceneRef.current = viewerRef.current.createScene({
         source,
@@ -79,7 +83,6 @@ const ViewerPanorama = ({
       sceneRef.current.switchTo({ transitionDuration: 1000 });
     }
 
-    // Setup autorotate similar as before
     const autorotate = Marzipano.autorotate({
       yawSpeed: 0.075,
       targetPitch: 0,

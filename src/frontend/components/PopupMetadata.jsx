@@ -31,7 +31,9 @@ const PopupMetadata = ({
       triggerRef.current = document.activeElement;
       popupRef.current?.focus();
     } else {
-      triggerRef.current?.focus?.();
+      if (triggerRef.current && document.activeElement !== triggerRef.current) {
+        triggerRef.current.focus();
+      }
     }
   }, [isVisible]);
 
@@ -124,26 +126,27 @@ const PopupMetadata = ({
       />
       <div className={styles.content}>
         <pre>{metadata}</pre>
-        {isBelowThreshold ? (
-          <a
-            href={googleMapsLink}
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.maplink}
-          >
-            View on map
-          </a>
-        ) : (
-          <iframe
-            className={styles.mapIframe}
-            width="100%"
-            style={{ height: "50vh" }}
-            src={googleMapsUrl}
-            title={`Map location at latitude ${latitude} and longitude ${longitude}`}
-            allowFullScreen
-            loading="lazy"
-          />
-        )}
+        {isVisible &&
+          (isBelowThreshold ? (
+            <a
+              href={googleMapsLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.maplink}
+            >
+              View on map
+            </a>
+          ) : (
+            <iframe
+              className={styles.mapIframe}
+              width="100%"
+              style={{ height: "50vh" }}
+              src={googleMapsUrl}
+              title={`Map location at latitude ${latitude} and longitude ${longitude}`}
+              allowFullScreen
+              loading="lazy"
+            />
+          ))}
       </div>
     </div>
   );

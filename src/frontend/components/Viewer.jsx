@@ -1,5 +1,3 @@
-// src/components/Viewer.jsx
-
 import { useState, useEffect, useRef, useCallback, memo } from "react";
 import PropTypes from "prop-types";
 import NavigationMedia from "./NavigationMedia";
@@ -109,7 +107,6 @@ const Viewer = ({
     >
       {isLoading && <LoadingOverlay thumbnailUrl={item.thumbnailUrl} />}
 
-      {/* 2. Render the new memoized component here */}
       <MediaContent
         item={item}
         isNavigationMode={isNavigationMode}
@@ -127,7 +124,7 @@ const Viewer = ({
         isFirst={item.isFirst}
         isLast={item.isLast}
       />
-      {/* 3. The PopupMetadata is no longer conditionally rendered */}
+
       <PopupMetadata
         metadata={item.metadata}
         latitude={item.latitude}
@@ -140,7 +137,30 @@ const Viewer = ({
 };
 
 Viewer.propTypes = {
-  // ... (unchanged)
+  item: PropTypes.shape({
+    id: PropTypes.string,
+    viewer: PropTypes.oneOf(["pano", "img"]).isRequired,
+    panoPath: PropTypes.string,
+    actualUrl: PropTypes.string,
+    thumbnailUrl: PropTypes.string,
+    name: PropTypes.string,
+    levels: PropTypes.array,
+    initialViewParameters: PropTypes.shape({
+      yaw: PropTypes.number,
+      pitch: PropTypes.number,
+      fov: PropTypes.number,
+    }),
+    metadata: PropTypes.string,
+    latitude: PropTypes.number,
+    longitude: PropTypes.number,
+    isFirst: PropTypes.bool,
+    isLast: PropTypes.bool,
+  }).isRequired,
+  onClose: PropTypes.func.isRequired,
+  onNext: PropTypes.func,
+  onPrevious: PropTypes.func,
+  isNavigationMode: PropTypes.bool.isRequired,
+  toggleMode: PropTypes.func.isRequired,
 };
 
 export default memo(Viewer);

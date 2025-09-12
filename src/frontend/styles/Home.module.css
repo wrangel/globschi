@@ -47,8 +47,8 @@
   display: block; /* keeps image free from inline gap */
   width: auto;
   height: auto;
-  max-width: 50vw;
-  max-height: 31vh;
+  max-width: 100vw;
+  max-height: 28vh;
   object-fit: contain;
   border-radius: 8px;
   z-index: 2;
@@ -98,7 +98,7 @@
   left: 50%;
   height: 100%;
   width: auto;
-  max-height: 100vh; /* Limit background image height */
+  max-height: 100vh;
   transform: translate(-50%, -50%);
   object-fit: cover;
   object-position: center center;
@@ -115,7 +115,6 @@
   display: inline-block;
   box-shadow: var(--overlay-box-shadow);
   z-index: 2;
-  /* Removed max-height and overflow-y */
 }
 
 /* Skip link for accessibility */
@@ -173,7 +172,6 @@ footer.credits .contentOverlay {
   z-index: 2;
 }
 
-/* footer shadow – softer than headings */
 footer.credits .textShadow {
   text-shadow: var(--text-shadow-heavy);
 }
@@ -241,7 +239,7 @@ footer.credits a:focus {
     margin-bottom: var(--spacing-medium);
   }
   .image {
-    max-height: 50vh; /* further reduce image height in tall landscape */
+    max-height: 50vh;
     max-width: 90vw;
   }
   .portraitLayout {
@@ -297,4 +295,10 @@ footer.credits a:focus {
   .homePage h1 {
     font-size: var(--font-size-small);
   }
+}
+
+html,
+body {
+  max-width: 100vw;
+  overflow-x: hidden;
 }

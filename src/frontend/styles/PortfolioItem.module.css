@@ -1,3 +1,5 @@
+/* src/frontend/styles/PortfolioItem.module.css */
+
 .portfolioItem {
   margin-bottom: var(--gutter-size); /* Use variable for margin */
   overflow: hidden;

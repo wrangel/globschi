@@ -1,11 +1,11 @@
-// src/frontend/components/ViewerPopup.jsx
+// src/frontend/components/PopupViewer.jsx
 
 import React, { useState } from "react";
 import FullScreenModal from "./FullScreenModal";
 import Viewer from "./Viewer";
 import useKeyboardNavigation from "../hooks/useKeyboardNavigation";
 
-const ViewerPopup = ({ item, isOpen, onClose, onNext, onPrevious }) => {
+const PopupViewer = ({ item, isOpen, onClose, onNext, onPrevious }) => {
   const [isNavigationMode, setIsNavigationMode] = useState(true);
 
   const toggleMode = () => {
@@ -33,4 +33,4 @@ const ViewerPopup = ({ item, isOpen, onClose, onNext, onPrevious }) => {
   );
 };
 
-export default React.memo(ViewerPopup);
+export default React.memo(PopupViewer);

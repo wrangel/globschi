@@ -15,9 +15,8 @@ env.production
 .DS_Store
 
 # Local development folders and build artifacts
-Material/
 logs/
-src/backend/
+material/
 src/management/
 
 # Frontend build output folders (if used locally during development)

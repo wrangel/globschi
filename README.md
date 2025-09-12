@@ -1,13 +1,17 @@
 # Abstract Altitudes
 
-This website is designed to display aerial photography and videography captured during our drone flights. Explore the beauty of landscapes, cityscapes, and unique perspectives that only drone photography can provide.
+Showcase for aerial photography and videography captured during drone flights.  
+Explore landscapes, cityscapes and unique perspectives that only drone photography can provide.
 
 ## Table of Contents
 
 - [Features](#features)
 - [Technologies Used](#technologies-used)
+- [Prerequisites](#prerequisites)
+- [Environment Variables](#environment-variables)
 - [Installation](#installation)
-- [Usage](#usage)
+- [Usage / Scripts](#usage--scripts)
+- [Media Upload Folder Layout](#media-upload-folder-layout)
 - [Contributing](#contributing)
 - [License](#license)
 - [Contact](#contact)
@@ -15,97 +19,119 @@ This website is designed to display aerial photography and videography captured 
 
 ## Features
 
-- **Image Gallery**: High-quality images.
-- **Detailed Metadata**: Each image includes EXIF data such as date, location, and camera settings.
-- **Responsive Design**: The website is optimized for both desktop and mobile devices.
+- **Image Gallery** – high-resolution stills
+- **Interactive Map** – every shot geotagged
+- **Pano Viewer** – 360° spherical images via Marzipano
+- **Responsive Design** – desktop, tablet & mobile
+- **PWA ready** – installable offline app
 
 ## Technologies Used
 
-This project is built using the following technologies:
-
-- **Frontend**: React.js
-- **Backend**: Node.js with Express
-- **Metadata Database**: MongoDB Atlas
-- **Cloud Storage**: AWS S3
+- **Frontend**: React 18 + Vite
+- **Backend**: Node.js 20 + Express
+- **DB**: MongoDB Atlas (collection `abstractaltitudes`)
+- **Object Storage**: AWS S3 bucket
 - **Image Processing**: Sharp
 - **Reverse Geocoding**: Mapbox
+- **Containerisation**: Docker / Docker Compose
+
+## Prerequisites
+
+1. MongoDB Atlas cluster + database with a collection named `abstractaltitudes`
+2. AWS S3 bucket (and IAM keys with `PutObject`, `DeleteObject`, `ListBucket`)
+3. Mapbox account (https://mapbox.com) – enable **Geocoding API**
+4. Google Cloud account – enable **Maps JavaScript API** (key reserved for future use)
+5. Node ≥ 20 & pnpm ≥ 8
+6. Docker Desktop (only if you run the containerised version)
+
+## Environment Variables
+
+The table below shows every key you must supply.  
+Put them in `.env` (local dev) **and** `env.production` (build time) unless the **Scope** column says otherwise.
+
+| Variable                   | Example / Hint                    | Scope         | Purpose                                                                            |
+| -------------------------- | --------------------------------- | ------------- | ---------------------------------------------------------------------------------- |
+| `MONGODB_SERVER`           | `cluster0.xxxxx.mongodb.net`      | both          | MongoDB Atlas host                                                                 |
+| `MONGODB_DB`               | `abstractaltitudes`               | both          | database name                                                                      |
+| `MONGODB_DB_USER`          | `dbUser`                          | both          | Atlas DB user                                                                      |
+| `MONGODB_DB_PASSWORD`      | `superSecretPw`                   | both          | Atlas DB password                                                                  |
+| `AWS_BUCKET`               | `my-drone-assets`                 | both          | S3 bucket for originals & derivatives                                              |
+| `AWS_ACCESS_KEY_ID`        | `AKIA…`                           | both          | IAM key with `PutObject`, `DeleteObject`, `ListBucket`                             |
+| `AWS_SECRET_ACCESS_KEY`    | `wJalrXUtnFEMI/K7MDENG/bPxRfiCY…` | both          | IAM secret                                                                         |
+| `AWS_DEFAULT_REGION`       | `eu-central-1`                    | both          | bucket region                                                                      |
+| `MAPBOX_SECRET_TOKEN`      | `sk.eyJ1Ijoi……`                   | **prod only** | server-side reverse-geocoding                                                      |
+| `VITE_MAPBOX_PUBLIC_TOKEN` | `pk.eyJ1Ijoi……`                   | both          | browser-side tiles & fonts                                                         |
+| `VITE_GOOGLE_MAPS_API_KEY` | `AIzaSyA……`                       | both          | Google services (reserved)                                                         |
+| `VITE_API_URL`             | `http://localhost:8081/api`       | **dev only**  | front-end → back-end route                                                         |
+| `VITE_API_URL`             | `/api`                            | **prod only** | same route, root-relative                                                          |
+| `INPUT_DIRECTORY`          | `/Users/me/DroneUploads`          | **dev only**  | base folder that contains your `nonpano/` and `pano/` directories for the uploader |
+
+&gt; [!IMPORTANT]  
+&gt; Never commit `.env` or `env.production`; they are already listed in `.gitignore`.
 
 ## Installation
 
-To get started with this project, follow these steps:
+```bash
+git clone https://github.com/wrangel/globschi.git
+cd globschi
+pnpm install
+```
 
-1. Clone the repository:
+Create the two env-files in the root (see table above) and fill in the values.
 
-   ```bash
-   git clone https://github.com/wrangel/globschi.git
-   ```
+## Usage / Scripts
 
-2. Navigate to the project directory:
+| Command       | Purpose                                                                       |
+| ------------- | ----------------------------------------------------------------------------- |
+| `pnpm dev`    | Start backend + Vite frontend locally (no Docker)                             |
+| `pnpm dev -u` | Same as above, but updates & audits deps first                                |
+| `pnpm test`   | Build & run the full stack locally in Docker                                  |
+| `pnpm prod`   | Build images and push `wrangel/globschi-{frontend,backend}:2.1` to Docker Hub |
 
-   ```bash
-   cd globschi
-   ```
+Management helpers:
 
-3. Install dependencies:
+```bash
+pnpm run manage keep-books   # sync DB ↔ S3 metadata
+pnpm run manage upload-media # ingest new imagery (see layout below)
+```
 
-   ```bash
-   pnpm install
-   ```
+## Media Upload Folder Layout
 
-4. Set up your environment variables:
+Place everything inside the folder you point the uploader to:
 
-   - Create a `.env` file in the root directory and add your configuration (e.g., MongoDB Atlas credentials, AWS keys).
+```text
+your-ingest-folder/
+├── nonpano/
+│   └── any-name/
+│       ├── IMG_1234.JPG          # original drone still
+│       ├── IMG_1234.tif          # 16-bit TIFF derived from RAW (optional)
+│       └── …
+└── pano/
+    └── any-name/
+        ├── DJI_0001.JPG          # individual aerial shots
+        ├── DJI_0002.JPG
+        ├── pano-equirect.jpg     # stitched 360° equirectangular (e.g. from PTGui Pro)
+        ├── pano-equirect.pts     # stitched 360° equirectangular project file (e.g. from PTGui Pro)
+        └── project-title.zip     # Marzipano project exported from https://www.marzipano.net/tool/
+```
 
-5. Use the helper functions:
-
-   ```bash
-   pnpm run manage {keep-books|upload-media|batch-delete|debug-mongo|test-aws}
-   pnpm run manage keep-books # Synchronizes data and metadata between and within data and metadata storages
-   pnpm run manage upload-media # Upload media from your local client
-   pnpm run manage batch-delete # Batch deletes elements from the bucket with the original media. Use with caution.
-   pnpm run manage debug-mongo # Test if metadata storage is available
-   pnpm run manage test-aws # Test if data storage is available
-   ```
-
-6. Start the application:
-
-   ```bash
-   pnpm dev -u # Run locally after updating the project
-   pnpm dev # Run locally
-   pnpm test # Run containerized app locally
-   pnpm prod # Deploy images to Docker Hub
-   ```
-
-7. Open your browser and navigate to `http://localhost:3000` to view the application.
-
-## Usage
-
-Once the application is running, you can explore the gallery of images. Click on any image to view it in detail, along with its metadata.
+The uploader walks these folders, uploads originals to S3, writes metadata to MongoDB and generates the multiple sizes required by the gallery.
 
 ## Contributing
 
-Contributions are welcome! If you would like to contribute to this project, please follow these steps:
-
-1. Fork the repository.
-2. Create a new branch (`git checkout -b feature/YourFeature`).
-3. Make your changes and commit them (`git commit -m 'Add some feature'`).
-4. Push to the branch (`git push origin feature/YourFeature`).
-5. Open a pull request.
+1. Fork the repo
+2. `git checkout -b feature/YourFeature`
+3. Commit & push
+4. Open a pull request
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+MIT – see [LICENSE](LICENSE)
 
 ## Contact
 
-For any inquiries or feedback, please reach out to me at:
-
-- GitHub: [wrangel](https://github.com/wrangel)
+GitHub: [@wrangel](https://github.com/wrangel)
 
 ## Acknowledgments
 
-I would like to express my gratitude to **Perplexity.ai**, which has been instrumental in helping me throughout this project. Its powerful capabilities for information discovery and content generation have significantly enhanced my workflow and decision-making process.
-
----
-
-Thank you for visiting my Abstract Altitudes!
+Thanks to [Perplexity.ai](https://www.perplexity.ai/), [kimi.com](https://kimi.com), [Microsoft Copilot](https://copilot.microsoft.com/) and [Marius Hosting](https://mariushosting.com/) for making this possible.

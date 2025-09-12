@@ -1,6 +1,6 @@
-/* src/frontend/styles/MetadataPopup.module.css */
+/* src/frontend/styles/PopupMetadata.module.css */
 
-.metadataPopup {
+.PopupMetadata {
   position: absolute;
   top: var(--spacing-medium);
   left: var(--spacing-medium);
@@ -21,7 +21,7 @@
   will-change: transform;
 }
 
-.metadataPopup:active {
+.PopupMetadata:active {
   cursor: grabbing;
   user-select: none;
 }

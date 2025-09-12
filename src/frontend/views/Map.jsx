@@ -1,4 +1,4 @@
-// src/frontend/views/MapPage.js
+// src/frontend/views/Map.js
 
 import React, { useCallback, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
@@ -6,10 +6,11 @@ import { MapContainer, TileLayer, Marker, useMap } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import LoadingErrorHandler from "../components/LoadingErrorHandler";
-import ViewerPopup from "../components/ViewerPopup";
+import PopupViewer from "../components/PopupViewer";
 import { useItems } from "../hooks/useItems";
 import { useItemViewer } from "../hooks/useItemViewer";
 import { useLoadingError } from "../hooks/useLoadingError";
+import MascotCorner from "../components/MascotCorner";
 import {
   MAP_INITIAL_CENTER,
   MAP_INITIAL_ZOOM,
@@ -36,7 +37,6 @@ const FitBounds = ({ items }) => {
       const latitudes = items.map((item) => item.latitude);
       const longitudes = items.map((item) => item.longitude);
 
-      // Adjust offsets for tighter fit
       const latOffset = 0.5;
       const lngOffset = 0.5;
 
@@ -51,14 +51,14 @@ const FitBounds = ({ items }) => {
         ],
       ];
 
-      map.fitBounds(bounds, { padding: [10, 10] }); // Optional padding
+      map.fitBounds(bounds, { padding: [10, 10] });
     }
   }, [items, map]);
 
   return null;
 };
 
-const MapPage = () => {
+const Map = () => {
   const { items, isLoading: isItemsLoading, error: itemsError } = useItems();
   const { isLoading, error, setErrorMessage, stopLoading } =
     useLoadingError(true);
@@ -71,7 +71,6 @@ const MapPage = () => {
     handlePreviousItem,
   } = useItemViewer(items);
 
-  // Memoize handlers passed to ViewerPopup and Marker events for stable refs
   const onItemClick = useCallback(handleItemClick, [handleItemClick]);
   const onClose = useCallback(handleClosePopup, [handleClosePopup]);
   const onNext = useCallback(handleNextItem, [handleNextItem]);
@@ -88,6 +87,8 @@ const MapPage = () => {
 
   return (
     <>
+      <MascotCorner />
+      {/* Fixed overlay in upper left corner */}
       <Helmet>
         <link rel="canonical" href={`${DOMAIN}map`} />
         <title>Abstract Altitudes</title>
@@ -97,7 +98,7 @@ const MapPage = () => {
         />
       </Helmet>
       <LoadingErrorHandler isLoading={isLoading} error={error}>
-        <div className={styles.mapPageContainer}>
+        <div className={styles.MapContainer}>
           <MapContainer
             center={MAP_INITIAL_CENTER}
             zoom={MAP_INITIAL_ZOOM}
@@ -116,7 +117,7 @@ const MapPage = () => {
               tileSize={512}
               zoomOffset={-1}
               id="mapbox/satellite-v9"
-              accessToken={import.meta.env.VITE_MAPBOX_ACCESS_TOKEN}
+              accessToken={import.meta.env.VITE_MAPBOX_PUBLIC_TOKEN}
             />
             {items.map((item) => (
               <Marker
@@ -131,7 +132,7 @@ const MapPage = () => {
           </MapContainer>
 
           {isModalOpen && (
-            <ViewerPopup
+            <PopupViewer
               item={selectedItem}
               isOpen={isModalOpen}
               onClose={onClose}
@@ -145,4 +146,4 @@ const MapPage = () => {
   );
 };
 
-export default React.memo(MapPage);
+export default React.memo(Map);

@@ -1,6 +1,6 @@
 /* src/frontend/styles/Grid.module.css */
 
-.gridPage {
+.Grid {
   text-align: center;
   padding: var(--spacing-large);
   max-width: 1200px;
@@ -28,7 +28,7 @@
 }
 
 @media (max-width: 768px) {
-  .gridPage {
+  .Grid {
     padding: var(--spacing-medium);
   }
 

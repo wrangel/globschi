@@ -3,12 +3,15 @@
 import { useState, useEffect, useCallback, useDebugValue } from "react";
 
 let cachedItems = null;
+let cacheTimestamp = 0;
+const CACHE_TTL = 5 * 60 * 1000; // Cache time-to-live in milliseconds (5 minutes)
 
 /**
  * Custom hook to fetch and cache portfolio or data items from an API endpoint.
  *
  * Implements caching to avoid redundant network requests,
  * with support for loading, error states, refetching, and cache clearing.
+ * Cache expires after a TTL to keep data fresh.
  *
  * @returns {Object} An object containing:
  *   - items: Array of fetched items,
@@ -36,13 +39,13 @@ export const useItems = () => {
 
   // Function to fetch data from API with timeout and abort controller
   const fetchData = useCallback(async () => {
-    if (cachedItems) {
-      setItems((prevItems) => {
-        if (isSameArray(prevItems, cachedItems)) {
-          return prevItems; // Avoid update if same array
-        }
-        return [...cachedItems];
-      });
+    const now = Date.now();
+
+    // Use cache if fresh
+    if (cachedItems && now - cacheTimestamp < CACHE_TTL) {
+      setItems((prevItems) =>
+        isSameArray(prevItems, cachedItems) ? prevItems : [...cachedItems]
+      );
       setIsLoading(false);
       return;
     }
@@ -67,13 +70,11 @@ export const useItems = () => {
 
       const data = await response.json();
 
-      setItems((prevItems) => {
-        if (isSameArray(prevItems, data)) {
-          return prevItems; // Avoid update if identical contents
-        }
-        return [...data];
-      });
+      setItems((prevItems) =>
+        isSameArray(prevItems, data) ? prevItems : [...data]
+      );
       cachedItems = [...data];
+      cacheTimestamp = Date.now(); // Update cache timestamp
     } catch (e) {
       setError(
         e.name === "AbortError"
@@ -93,6 +94,7 @@ export const useItems = () => {
   // Clears cached data and refreshes from network
   const clearCache = useCallback(() => {
     cachedItems = null;
+    cacheTimestamp = 0;
     setItems([]);
     setIsLoading(true);
     fetchData();

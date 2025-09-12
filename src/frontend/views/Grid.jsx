@@ -7,12 +7,12 @@ import ViewerPopup from "../components/ViewerPopup";
 import { useItems } from "../hooks/useItems";
 import { useItemViewer } from "../hooks/useItemViewer";
 import LoadingOverlay from "../components/LoadingOverlay";
+import MascotCorner from "../components/MascotCorner";
 import styles from "../styles/Grid.module.css";
 import { DOMAIN } from "../constants";
 
 function Grid() {
   const { items, isLoading, error } = useItems();
-
   const {
     selectedItem,
     isModalOpen,
@@ -22,7 +22,6 @@ function Grid() {
     handlePreviousItem,
   } = useItemViewer(items);
 
-  // Memoize handlers passed down to ViewerPopup and PortfolioGrid for stable references
   const onItemClick = useCallback(handleItemClick, [handleItemClick]);
   const onClose = useCallback(handleClosePopup, [handleClosePopup]);
   const onNext = useCallback(handleNextItem, [handleNextItem]);
@@ -52,6 +51,7 @@ function Grid() {
 
   return (
     <>
+      <MascotCorner />
       <Helmet>
         <link rel="canonical" href={`${DOMAIN}grid`} />
         <title>Abstract Altitudes</title>

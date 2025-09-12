@@ -10,6 +10,7 @@ import ViewerPopup from "../components/ViewerPopup";
 import { useItems } from "../hooks/useItems";
 import { useItemViewer } from "../hooks/useItemViewer";
 import { useLoadingError } from "../hooks/useLoadingError";
+import MascotCorner from "../components/MascotCorner";
 import {
   MAP_INITIAL_CENTER,
   MAP_INITIAL_ZOOM,
@@ -36,7 +37,6 @@ const FitBounds = ({ items }) => {
       const latitudes = items.map((item) => item.latitude);
       const longitudes = items.map((item) => item.longitude);
 
-      // Adjust offsets for tighter fit
       const latOffset = 0.5;
       const lngOffset = 0.5;
 
@@ -51,7 +51,7 @@ const FitBounds = ({ items }) => {
         ],
       ];
 
-      map.fitBounds(bounds, { padding: [10, 10] }); // Optional padding
+      map.fitBounds(bounds, { padding: [10, 10] });
     }
   }, [items, map]);
 
@@ -71,7 +71,6 @@ const Map = () => {
     handlePreviousItem,
   } = useItemViewer(items);
 
-  // Memoize handlers passed to ViewerPopup and Marker events for stable refs
   const onItemClick = useCallback(handleItemClick, [handleItemClick]);
   const onClose = useCallback(handleClosePopup, [handleClosePopup]);
   const onNext = useCallback(handleNextItem, [handleNextItem]);
@@ -88,6 +87,8 @@ const Map = () => {
 
   return (
     <>
+      <MascotCorner />
+      {/* Fixed overlay in upper left corner */}
       <Helmet>
         <link rel="canonical" href={`${DOMAIN}map`} />
         <title>Abstract Altitudes</title>

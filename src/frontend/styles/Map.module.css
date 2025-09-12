@@ -1,3 +1,5 @@
+/* src/styles/Map.module.css */
+
 .leafletContainer {
   z-index: 800; /* Ensure this is lower than the hamburger menu’s z-index */
 }

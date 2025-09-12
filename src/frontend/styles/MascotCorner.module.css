@@ -1,0 +1,17 @@
+/* src/frontend/styles/MascotCorner.module.css */
+
+.mascotCorner {
+  position: fixed;
+  top: 1.5vw;
+  left: 1.5vw; /* or right: 1.5vw; for right corner */
+  width: 56px;
+  height: auto;
+  z-index: 2500;
+  pointer-events: none;
+  user-select: none;
+}
+
+.mascotCornerRight {
+  left: auto;
+  right: 1.5vw;
+}

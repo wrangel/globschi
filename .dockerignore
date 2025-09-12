@@ -16,6 +16,7 @@ env.production
 
 # Local development folders and build artifacts
 logs/
+material/
 src/management/
 
 # Frontend build output folders (if used locally during development)

@@ -1,6 +1,6 @@
 /* src/frontend/styles/Home.module.css */
 
-.homePage {
+.Home {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
@@ -57,7 +57,7 @@
   transition: box-shadow 0.3s ease; /* Optional, keep if you have hover effects */
 }
 
-.homePage h1 {
+.Home h1 {
   margin: 0;
   color: var(--text-color);
   font-size: var(--font-size-large);
@@ -68,7 +68,7 @@
   z-index: 2;
 }
 
-.homePage h2 {
+.Home h2 {
   margin-top: var(--spacing-small);
   color: var(--text-color);
   font-size: var(--font-size-medium);
@@ -219,18 +219,18 @@ footer.credits a:focus {
 }
 
 @media (orientation: portrait) {
-  .homePage {
+  .Home {
     justify-content: flex-start;
   }
 }
 
 @media (orientation: landscape) and (max-height: 600px) {
-  .homePage h1 {
+  .Home h1 {
     font-size: calc(var(--font-size-medium) * 0.85);
     line-height: 1.1;
     margin-bottom: var(--spacing-small);
   }
-  .homePage h2 {
+  .Home h2 {
     font-size: calc(var(--font-size-small) * 0.9);
     margin-top: 0.25rem;
     margin-bottom: var(--spacing-small);
@@ -286,13 +286,13 @@ footer.credits a:focus {
 }
 
 @media (max-width: 48em) {
-  .homePage h1 {
+  .Home h1 {
     font-size: var(--font-size-medium);
   }
 }
 
 @media (max-width: 30em) {
-  .homePage h1 {
+  .Home h1 {
     font-size: var(--font-size-small);
   }
 }

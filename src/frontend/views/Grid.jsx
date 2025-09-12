@@ -1,4 +1,4 @@
-// src/frontend/views/GridPage.js
+// src/frontend/views/Grid.js
 
 import React, { useCallback } from "react";
 import { Helmet } from "react-helmet-async";
@@ -10,7 +10,7 @@ import LoadingOverlay from "../components/LoadingOverlay";
 import styles from "../styles/Grid.module.css";
 import { DOMAIN } from "../constants";
 
-function GridPage() {
+function Grid() {
   const { items, isLoading, error } = useItems();
 
   const {
@@ -40,7 +40,7 @@ function GridPage() {
   if (error) {
     return (
       <div
-        className={styles.homePage}
+        className={styles.Home}
         role="alert"
         aria-live="assertive"
         tabIndex={-1}
@@ -63,7 +63,7 @@ function GridPage() {
       <a href="#main-content" className="skip-link">
         Skip to main content
       </a>
-      <main id="main-content" className={styles.homePage}>
+      <main id="main-content" className={styles.Home}>
         {items.length > 0 ? (
           <PortfolioGrid items={items} onItemClick={onItemClick} />
         ) : (
@@ -83,4 +83,4 @@ function GridPage() {
   );
 }
 
-export default React.memo(GridPage);
+export default React.memo(Grid);

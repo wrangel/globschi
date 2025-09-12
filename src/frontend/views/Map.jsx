@@ -1,4 +1,4 @@
-// src/frontend/views/MapPage.js
+// src/frontend/views/Map.js
 
 import React, { useCallback, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
@@ -58,7 +58,7 @@ const FitBounds = ({ items }) => {
   return null;
 };
 
-const MapPage = () => {
+const Map = () => {
   const { items, isLoading: isItemsLoading, error: itemsError } = useItems();
   const { isLoading, error, setErrorMessage, stopLoading } =
     useLoadingError(true);
@@ -97,7 +97,7 @@ const MapPage = () => {
         />
       </Helmet>
       <LoadingErrorHandler isLoading={isLoading} error={error}>
-        <div className={styles.mapPageContainer}>
+        <div className={styles.MapContainer}>
           <MapContainer
             center={MAP_INITIAL_CENTER}
             zoom={MAP_INITIAL_ZOOM}
@@ -145,4 +145,4 @@ const MapPage = () => {
   );
 };
 
-export default React.memo(MapPage);
+export default React.memo(Map);

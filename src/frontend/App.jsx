@@ -16,9 +16,9 @@ const fetcher = (url) => fetch(url).then((res) => res.json());
 preload("http://localhost:8081/api/combined-data", fetcher);
 
 // Lazy load the components
-const HomePage = lazy(() => import("./views/HomePage"));
-const GridPage = lazy(() => import("./views/GridPage"));
-const MapPage = lazy(() => import("./views/MapPage"));
+const Home = lazy(() => import("./views/Home"));
+const Grid = lazy(() => import("./views/Grid"));
+const Map = lazy(() => import("./views/Map"));
 
 function App() {
   const navigate = useNavigate();
@@ -29,9 +29,9 @@ function App() {
         <ErrorBoundary>
           <Suspense fallback={<LoadingOverlay />}>
             <Routes>
-              <Route path="/" element={<HomePage />} />
-              <Route path="/grid" element={<GridPage />} />
-              <Route path="/map" element={<MapPage />} />
+              <Route path="/" element={<Home />} />
+              <Route path="/grid" element={<Grid />} />
+              <Route path="/map" element={<Map />} />
             </Routes>
           </Suspense>
         </ErrorBoundary>

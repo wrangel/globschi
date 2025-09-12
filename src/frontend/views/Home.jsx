@@ -1,4 +1,4 @@
-// src/frontend/views/HomePage.js
+// src/frontend/views/Home.js
 
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
@@ -8,7 +8,7 @@ import styles from "../styles/Home.module.css";
 import { DOMAIN } from "../constants";
 import mascotImage from "../assets/mascot.png";
 
-const HomePage = () => {
+const Home = () => {
   const navigate = useNavigate();
   const { items } = useItems();
   const [randomPano, setRandomPano] = useState(null);
@@ -60,9 +60,7 @@ const HomePage = () => {
       )}
 
       <div
-        className={`${styles.homePage} ${
-          isPortrait ? styles.portraitLayout : ""
-        }`}
+        className={`${styles.Home} ${isPortrait ? styles.portraitLayout : ""}`}
       >
         <div className={styles.contentOverlay}>
           <div className={`${styles.textWrapper} ${styles.textShadow}`}>
@@ -121,4 +119,4 @@ const HomePage = () => {
   );
 };
 
-export default HomePage;
+export default Home;

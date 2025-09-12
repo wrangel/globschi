@@ -8,7 +8,7 @@
   z-index: 1000; /* Ensure the viewer is behind the popups */
 }
 
-.metadataPopup {
+.PopupMetadata {
   position: absolute;
   bottom: var(--spacing-medium);
   left: var(--spacing-medium);
@@ -22,14 +22,14 @@
 }
 
 /* Optional: Focus styles for accessibility */
-.metadataPopup:focus {
+.PopupMetadata:focus {
   outline: none; /* Remove default outline */
   box-shadow: 0 0 0 2px var(--primary-color); /* Custom focus outline */
 }
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
-  .metadataPopup {
+  .PopupMetadata {
     left: var(--spacing-small); /* Adjust left spacing on smaller screens */
     bottom: var(--spacing-small); /* Adjust bottom spacing on smaller screens */
     padding: var(

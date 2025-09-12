@@ -3,7 +3,7 @@
 import React, { useCallback } from "react";
 import { Helmet } from "react-helmet-async";
 import PortfolioGrid from "../components/PortfolioGrid";
-import ViewerPopup from "../components/ViewerPopup";
+import PopupViewer from "../components/PopupViewer";
 import { useItems } from "../hooks/useItems";
 import { useItemViewer } from "../hooks/useItemViewer";
 import LoadingOverlay from "../components/LoadingOverlay";
@@ -70,7 +70,7 @@ function Grid() {
           <p>No items to display.</p>
         )}
         {isModalOpen && (
-          <ViewerPopup
+          <PopupViewer
             item={selectedItem}
             isOpen={isModalOpen}
             onClose={onClose}

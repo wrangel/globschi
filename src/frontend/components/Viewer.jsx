@@ -4,7 +4,7 @@ import { useState, useEffect, useRef, useCallback, memo } from "react";
 import PropTypes from "prop-types";
 import NavigationMedia from "./NavigationMedia";
 import ViewerImage from "./ViewerImage";
-import MetadataPopup from "./MetadataPopup";
+import PopupMetadata from "./PopupMetadata";
 import ViewerPanorama from "./ViewerPanorama";
 import LoadingOverlay from "./LoadingOverlay";
 import useKeyboardNavigation from "../hooks/useKeyboardNavigation";
@@ -127,8 +127,8 @@ const Viewer = ({
         isFirst={item.isFirst}
         isLast={item.isLast}
       />
-      {/* 3. The MetadataPopup is no longer conditionally rendered */}
-      <MetadataPopup
+      {/* 3. The PopupMetadata is no longer conditionally rendered */}
+      <PopupMetadata
         metadata={item.metadata}
         latitude={item.latitude}
         longitude={item.longitude}

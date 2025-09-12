@@ -6,7 +6,7 @@ import { MapContainer, TileLayer, Marker, useMap } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import LoadingErrorHandler from "../components/LoadingErrorHandler";
-import ViewerPopup from "../components/ViewerPopup";
+import PopupViewer from "../components/PopupViewer";
 import { useItems } from "../hooks/useItems";
 import { useItemViewer } from "../hooks/useItemViewer";
 import { useLoadingError } from "../hooks/useLoadingError";
@@ -132,7 +132,7 @@ const Map = () => {
           </MapContainer>
 
           {isModalOpen && (
-            <ViewerPopup
+            <PopupViewer
               item={selectedItem}
               isOpen={isModalOpen}
               onClose={onClose}

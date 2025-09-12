@@ -1,10 +1,10 @@
-// src/frontend/components/MetadataPopup.jsx
+// src/frontend/components/PopupMetadata.jsx
 
 import { useState, useEffect, useRef } from "react";
 import PropTypes from "prop-types";
-import styles from "../styles/MetadataPopup.module.css";
+import styles from "../styles/PopupMetadata.module.css";
 
-const MetadataPopup = ({
+const PopupMetadata = ({
   metadata,
   latitude,
   longitude,
@@ -102,7 +102,7 @@ const MetadataPopup = ({
 
   return (
     <div
-      className={styles.metadataPopup}
+      className={styles.PopupMetadata}
       ref={popupRef}
       style={style}
       onMouseDown={handleDragStart}
@@ -149,7 +149,7 @@ const MetadataPopup = ({
   );
 };
 
-MetadataPopup.propTypes = {
+PopupMetadata.propTypes = {
   metadata: PropTypes.string.isRequired,
   latitude: PropTypes.number.isRequired,
   longitude: PropTypes.number.isRequired,
@@ -157,4 +157,4 @@ MetadataPopup.propTypes = {
   isVisible: PropTypes.bool.isRequired,
 };
 
-export default MetadataPopup;
+export default PopupMetadata;

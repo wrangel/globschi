@@ -15,29 +15,25 @@ import styles from "../styles/Navigation.module.css";
 const NavigationPages = ({ onNavigate }) => {
   const location = useLocation();
 
-  // Define button configurations for different routes without "Home"
+  // Button configuration for each route with conditional buttons
   const buttonConfig = {
     "/": [
       { label: "Map", path: "/map" },
       { label: "Grid", path: "/grid" },
     ],
-    "/grid": [
-      { label: "Map", path: "/map" },
-      { label: "Grid", path: "/grid" },
-    ],
     "/map": [
-      { label: "Map", path: "/map" },
-      { label: "Grid", path: "/grid" },
+      { label: "Grid", path: "/grid" }, // Only Grid button shown on Map page
+    ],
+    "/grid": [
+      { label: "Map", path: "/map" }, // Only Map button shown on Grid page
     ],
   };
 
   /**
-   * Render navigation buttons corresponding to the current route.
-   * Highlights the active route button.
+   * Render navigation buttons based on current path.
    */
   const renderButtons = () => {
     const buttons = buttonConfig[location.pathname] || [];
-
     return buttons.map((button) => (
       <button
         key={button.path}

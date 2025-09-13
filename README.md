@@ -96,8 +96,8 @@ Add these entries with appropriate absolute paths to your `.env` file only, as t
 ## Installation
 
 ```bash
-git clone https://github.com/wrangel/AbstractAltitudes.git
-cd AbstractAltitudes
+git clone https://github.com/wrangel/abstractaltitudes.git
+cd abstractaltitudes
 pnpm install
 ```
 

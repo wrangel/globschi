@@ -70,6 +70,7 @@ const Viewer = ({
     setIsLoading(false);
   }, []);
 
+  // Handle Escape key for closing metadata or popup
   useEffect(() => {
     const handleEscKey = (event) => {
       if (event.key === "Escape") {
@@ -80,12 +81,32 @@ const Viewer = ({
         }
       }
     };
-
     document.addEventListener("keydown", handleEscKey);
     return () => {
       document.removeEventListener("keydown", handleEscKey);
     };
   }, [showMetadata, onClose]);
+
+  // Isolated immediate left/right arrow keys navigation for non-pano viewer
+  useEffect(() => {
+    if (item.viewer === "pano") return;
+
+    const handleArrowKeys = (event) => {
+      if (event.key === "ArrowLeft") {
+        event.preventDefault();
+        if (onPrevious) onPrevious();
+      } else if (event.key === "ArrowRight") {
+        event.preventDefault();
+        if (onNext) onNext();
+      }
+    };
+
+    document.addEventListener("keydown", handleArrowKeys);
+
+    return () => {
+      document.removeEventListener("keydown", handleArrowKeys);
+    };
+  }, [item.viewer, onPrevious, onNext]);
 
   const toggleFullScreen = useCallback(() => {
     if (!document.fullscreenElement) {

@@ -5,7 +5,7 @@ import path from "path";
 import sharp from "sharp";
 
 // === Set these constants ===
-const BASE_FOLDER = "/Volumes/Sicherung/Familie/Medien/Drohne/Sonstige"; // absolute or relative to script
+const BASE_FOLDER = "/Volumes/Sicherung/Familie/Medien/Drohne/Webseite"; // absolute or relative to script
 const OUTPUT_FOLDER =
   "/Users/matthiaswettstein/Library/CloudStorage/OneDrive-Persönlich/Bilder/Video"; // absolute or relative to script
 

@@ -1,3 +1,5 @@
+// src/frontend/components/Viewer.jsx
+
 import { useState, useEffect, useRef, useCallback, memo } from "react";
 import PropTypes from "prop-types";
 import NavigationMedia from "./NavigationMedia";
@@ -107,7 +109,9 @@ const Viewer = ({
     >
       {isLoading && <LoadingOverlay thumbnailUrl={item.thumbnailUrl} />}
 
+      {/* Key added to force remount on item change */}
       <MediaContent
+        key={item.id || item.actualUrl}
         item={item}
         isNavigationMode={isNavigationMode}
         onContentLoaded={handleContentLoaded}

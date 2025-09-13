@@ -96,8 +96,8 @@ Add these entries with appropriate absolute paths to your `.env` file only, as t
 ## Installation
 
 ```bash
-git clone https://github.com/wrangel/globschi.git
-cd globschi
+git clone https://github.com/wrangel/AbstractAltitudes.git
+cd abstractaltitudes
 pnpm install
 ```
 
@@ -105,12 +105,12 @@ Create the two env-files in the root (see table above) and fill in the values.
 
 ## Usage / Scripts
 
-| Command       | Purpose                                                                       |
-| ------------- | ----------------------------------------------------------------------------- |
-| `pnpm dev`    | Start backend + Vite frontend locally (no Docker)                             |
-| `pnpm dev -u` | Same as above, but updates & audits deps first                                |
-| `pnpm test`   | Build & run the full stack locally in Docker                                  |
-| `pnpm prod`   | Build images and push `wrangel/globschi-{frontend,backend}:2.1` to Docker Hub |
+| Command       | Purpose                                                                                |
+| ------------- | -------------------------------------------------------------------------------------- |
+| `pnpm dev`    | Start backend + Vite frontend locally (no Docker)                                      |
+| `pnpm dev -u` | Same as above, but updates & audits deps first                                         |
+| `pnpm test`   | Build & run the full stack locally in Docker                                           |
+| `pnpm prod`   | Build images and push `wrangel/abstractaltitudes-{frontend,backend}:2.1` to Docker Hub |
 
 Management helpers:
 

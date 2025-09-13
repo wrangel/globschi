@@ -78,7 +78,7 @@ export async function orchestrate() {
         await uploadMedia(newFolderPath, newName);
 
         // Archive media files
-        await convertThenArchive(newFolderPath, newName);
+        // TODO Test first -- await convertThenArchive(newFolderPath, newName);
       } catch (error) {
         logger.error(`Error processing folder ${mediaDirPath}`, { error });
       }

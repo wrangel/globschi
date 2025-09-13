@@ -11,6 +11,7 @@ import { handleImage } from "./handleImage.mjs";
 import { handlePano } from "./handlePano.mjs";
 import { uploadMetadata } from "./uploadMetadata.mjs";
 import { uploadMedia } from "./uploadMedia.mjs";
+import { convertThenArchive } from "./archive.mjs";
 
 /**
  * Orchestrate processing of multiple media folders.
@@ -75,6 +76,9 @@ export async function orchestrate() {
 
         // Upload media files to S3
         await uploadMedia(newFolderPath, newName);
+
+        // Archive media files
+        // TODO Test first -- await convertThenArchive(newFolderPath, newName);
       } catch (error) {
         logger.error(`Error processing folder ${mediaDirPath}`, { error });
       }

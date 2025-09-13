@@ -22,8 +22,8 @@
 
   # Define your images explicitly instead of all images
   IMAGES=(
-    "wrangel/globschi-frontend:2.1" # Use the tags defined in docker-compose.yml
-    "wrangel/globschi-backend:2.1"
+    "wrangel/abstractaltitudes-frontend:2.1" # Use the tags defined in docker-compose.yml
+    "wrangel/abstractaltitudes-backend:2.1"
   )
 
   echo "Pushing built images to Docker registry..."

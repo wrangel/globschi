@@ -12,13 +12,15 @@ import logger from "./utils/logger.mjs";
 import combinedDataRoute from "./routes/combinedDataRoute.mjs";
 import { connectDB, closeDB } from "./utils/mongodbConnection.mjs";
 
-// ---------- env check (same style as original) ----------
+// ---- Environment variable validation ----
 const requiredEnvVars = [
   "MONGODB_DB_USER",
   "MONGODB_DB_PASSWORD",
   "MONGODB_SERVER",
   "MONGODB_DB",
+  "CORS_ORIGINS",
 ];
+
 requiredEnvVars.forEach((v) => {
   if (!process.env[v]) {
     logger.error(`Missing required environment variable: ${v}`);
@@ -26,24 +28,41 @@ requiredEnvVars.forEach((v) => {
   }
 });
 
-logger.info("Starting server...");
+// ---- Parse and prepare CORS origins ----
+const corsOrigins = process.env.CORS_ORIGINS.split(",")
+  .map((x) => x.trim())
+  .filter(Boolean); // Remove empty strings
 
+if (!corsOrigins.length) {
+  logger.error("No valid domains in CORS_ORIGINS env var!");
+  process.exit(1);
+}
+
+logger.info(`Server allows CORS from: ${corsOrigins.join(", ")}`);
+
+// ---- Express initialization ----
 const app = express();
 const PORT = process.env.PORT || 8081;
 
-// ---------- CORS (unchanged) ----------
-const corsOrigin = ["http://localhost:3000", "drone.ellesmere.synology.me"];
-app.use(
-  cors({
-    origin: corsOrigin,
-    credentials: true,
-  })
-);
+// ---- Dynamic CORS function middleware ----
+const corsOptions = {
+  origin: function (origin, callback) {
+    // Allow requests with no origin (e.g., curl, testing, mobile apps)
+    if (!origin || corsOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      logger.warn(`CORS BLOCKED: origin "${origin}" not in whitelist`);
+      callback(new Error(`Not allowed by CORS: ${origin}`));
+    }
+  },
+  credentials: true,
+};
+app.use(cors(corsOptions));
 
-// ---------- NEW: security headers ----------
-app.use(helmet({ contentSecurityPolicy: false })); // SPA friendly
+// ---- Security headers for SPA ----
+app.use(helmet({ contentSecurityPolicy: false })); // Allows inline scripts/style for SPAs
 
-// ---------- NEW: brotli + gzip + etag for SPA ----------
+// ---- Brotli/gzip static serving of built SPA assets (public/index.html etc) ----
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 import expressStaticGzip from "express-static-gzip";
 app.use(
@@ -56,17 +75,17 @@ app.use(
   })
 );
 
-// ---------- compression (kept) ----------
+// ---- Compression for all HTTP responses ----
 app.use(compression({ level: 6, threshold: 1024 }));
 
-// ---------- request logger (kept) ----------
+// ---- Log request origins (shows which client is connecting) ----
 app.use((req, res, next) => {
   const origin = req.headers.origin;
   logger.info(`Request received from origin: ${origin}`);
   next();
 });
 
-// ---------- NEW: health / readiness ----------
+// ---- Health and readiness endpoints ----
 app.get("/healthz", (_, res) => res.status(200).send("ok"));
 app.get("/ready", async (_, res) => {
   try {
@@ -77,7 +96,7 @@ app.get("/ready", async (_, res) => {
   }
 });
 
-// ---------- rate limit (skip probes) ----------
+// ---- API rate limiting (except health probes) ----
 const apiLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 100,
@@ -90,7 +109,7 @@ const apiLimiter = rateLimit({
 });
 app.use("/api", apiLimiter);
 
-// ---------- routes (unchanged) ----------
+// ---- Register main API route(s) and a MongoDB test ----
 app.use("/api", combinedDataRoute);
 app.get("/api/test-mongo", async (req, res) => {
   try {
@@ -102,7 +121,7 @@ app.get("/api/test-mongo", async (req, res) => {
   }
 });
 
-// ---------- catch-all (unchanged) ----------
+// ---- Catch-all SPA fallback for unknown paths ----
 const generalLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 100,
@@ -117,7 +136,7 @@ app.get("/*splat", generalLimiter, (req, res) => {
   res.sendFile(path.join(__dirname, "../../build", "index.html"));
 });
 
-// ---------- error handler (unchanged) ----------
+// ---- Final error handler ----
 app.use((err, req, res, next) => {
   logger.error("Unhandled error:", err);
   res.status(500).json({
@@ -129,7 +148,7 @@ app.use((err, req, res, next) => {
   });
 });
 
-// ---------- NEW: graceful shutdown ----------
+// ---- Graceful shutdown ----
 mongoose.set("strictQuery", false);
 const isMainModule = import.meta.url === `file://${process.argv[1]}`;
 if (isMainModule) {
@@ -151,5 +170,5 @@ if (isMainModule) {
     });
 }
 
-// keep original export
+// Let other modules trigger graceful shutdown
 export { closeDB };

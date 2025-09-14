@@ -1,9 +1,10 @@
 // src/frontend/views/Home.js
 
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { useItems } from "../hooks/useItems";
+import useWindowHeight from "../hooks/useWindowHeight";
 import styles from "../styles/Home.module.css";
 import { DOMAIN } from "../constants";
 import mascotImage from "../assets/mascot.png";
@@ -15,6 +16,7 @@ const Home = () => {
   const [isPortrait, setIsPortrait] = useState(
     window.innerHeight > window.innerWidth
   );
+  const isVeryShort = useWindowHeight(360);
 
   useEffect(() => {
     if (items.length > 0) {
@@ -60,7 +62,9 @@ const Home = () => {
       )}
 
       <div
-        className={`${styles.Home} ${isPortrait ? styles.portraitLayout : ""}`}
+        className={`${styles.Home} ${isPortrait ? styles.portraitLayout : ""} ${
+          isVeryShort ? styles.veryShortViewport : ""
+        }`}
       >
         <div className={styles.contentOverlay}>
           <div className={`${styles.textWrapper} ${styles.textShadow}`}>
@@ -73,7 +77,7 @@ const Home = () => {
           </div>
           <div className={styles.imageWrapper}>
             <img
-              src={mascotImage} //
+              src={mascotImage}
               alt="Abstract Altitudes Mascot"
               className={styles.image}
               onClick={handleImageClick}

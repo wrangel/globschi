@@ -302,3 +302,18 @@ body {
   max-width: 100vw;
   overflow-x: hidden;
 }
+
+/* Fix for very narrow landscape viewports with low height to prevent scrollbar */
+.veryShortViewport {
+  padding-top: 1vh !important;
+  padding-bottom: 1vh !important;
+  max-height: 100vh !important;
+  overflow-y: hidden !important;
+}
+
+/* Optional: reduce image size a bit for very short heights to save vertical space */
+@media (orientation: landscape) and (max-height: 360px) {
+  .image {
+    max-height: 15vh;
+  }
+}

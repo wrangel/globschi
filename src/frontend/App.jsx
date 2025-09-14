@@ -13,7 +13,8 @@ import { preload } from "swr";
 const fetcher = (url) => fetch(url).then((res) => res.json());
 
 // Preload items early on app start
-preload("http://localhost:8081/api/combined-data", fetcher);
+const apiBaseUrl = import.meta.env.VITE_API_URL || "http://localhost:8081/api";
+preload(`${apiBaseUrl.replace(/\/+$/, "")}/combined-data`, fetcher);
 
 // Lazy load the components
 const Home = lazy(() => import("./views/Home"));

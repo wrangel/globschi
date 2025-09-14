@@ -56,7 +56,7 @@ export const useItems = () => {
 
       const apiUrl =
         import.meta.env.VITE_API_URL || "http://localhost:8081/api/";
-      const url = "/api/combined-data";
+      const url = `${apiUrl}${apiUrl.endsWith("/") ? "" : "/"}combined-data`;
 
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 10000);

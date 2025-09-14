@@ -13,7 +13,10 @@ import { preload } from "swr";
 const fetcher = (url) => fetch(url).then((res) => res.json());
 
 // Preload items early on app start
-const apiBaseUrl = import.meta.env.VITE_API_URL || "http://localhost:8081/api";
+const apiBaseUrl = import.meta.env.VITE_API_URL;
+if (!apiBaseUrl) {
+  throw new Error("VITE_API_URL environment variable is not set");
+}
 preload(`${apiBaseUrl.replace(/\/+$/, "")}/combined-data`, fetcher);
 
 // Lazy load the components

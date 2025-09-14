@@ -54,8 +54,10 @@ export const useItems = () => {
       setIsLoading(true);
       setError(null);
 
-      const apiUrl =
-        import.meta.env.VITE_API_URL || "http://localhost:8081/api/";
+      const apiUrl = import.meta.env.VITE_API_URL;
+      if (!apiUrl) {
+        throw new Error("VITE_API_URL environment variable is not set");
+      }
       const url = `${apiUrl}${apiUrl.endsWith("/") ? "" : "/"}combined-data`;
 
       const controller = new AbortController();

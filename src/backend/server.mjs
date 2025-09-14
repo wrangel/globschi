@@ -38,8 +38,6 @@ if (!corsOrigins.length) {
   process.exit(1);
 }
 
-logger.info(`Server allows CORS from: ${corsOrigins.join(", ")}`);
-
 // ---- Express initialization ----
 const app = express();
 const PORT = process.env.PORT || 8081;

@@ -13,6 +13,8 @@ import { uploadMetadata } from "./uploadMetadata.mjs";
 import { uploadMedia } from "./uploadMedia.mjs";
 import { convertThenArchive } from "./archive.mjs";
 
+const DRY_RUN = process.env.NODE_DRY_RUN === "1";
+
 /**
  * Orchestrate processing of multiple media folders.
  * Connects to MongoDB, processes folders, uploads metadata and media,
@@ -69,13 +71,14 @@ export async function orchestrate() {
           processed.metadata.initialViewParameters =
             panoExtraProps.initialViewParameters || null;
         }
+
         // Upload metadata to MongoDB
-        await uploadMetadata(processed.metadata);
+        if (!DRY_RUN) await uploadMetadata(processed.metadata);
 
         logger.info(`Completed processing for folder: ${mediaDirPath}`);
 
         // Upload media files to S3
-        await uploadMedia(newFolderPath, newName);
+        if (!DRY_RUN) await uploadMedia(newFolderPath, newName);
 
         // Archive media files
         // TODO Test first -- await convertThenArchive(newFolderPath, newName);

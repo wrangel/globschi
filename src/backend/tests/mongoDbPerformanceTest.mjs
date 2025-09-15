@@ -1,19 +1,22 @@
 // src/backend/tests/mongoDbPerformanceTest.mjs
-// Run with nodemon --env-file=.env ./src/backend/tests/mongoDbPerformanceTest.mjs
 
-import mongoose from "mongoose";
+import { connectDB, closeDB } from "../utils/mongodbConnection.mjs";
 import { Island } from "../models/islandModel.mjs";
 
 async function runExplain() {
-  await mongoose.connect(process.env.MONGODB_URI);
+  try {
+    await connectDB();
 
-  const explainResult = await Island.find()
-    .sort({ dateTime: -1 })
-    .explain("executionStats");
+    const explainResult = await Island.find()
+      .sort({ dateTime: -1 })
+      .explain("executionStats");
 
-  console.log(JSON.stringify(explainResult, null, 2));
-
-  await mongoose.disconnect();
+    console.log(JSON.stringify(explainResult, null, 2));
+  } catch (err) {
+    console.error("Error running explain:", err);
+  } finally {
+    await closeDB();
+  }
 }
 
-runExplain().catch(console.error);
+runExplain();

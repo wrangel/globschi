@@ -8,7 +8,7 @@ import { useItems } from "../hooks/useItems";
 import { useItemViewer } from "../hooks/useItemViewer";
 import LoadingOverlay from "../components/LoadingOverlay";
 import MascotCorner from "../components/MascotCorner";
-import ErrorBoundary from "../components/ErrorBoundary"; // import ErrorBoundary
+import ErrorBoundary from "../components/ErrorBoundary";
 import styles from "../styles/Grid.module.css";
 import { DOMAIN } from "../constants";
 

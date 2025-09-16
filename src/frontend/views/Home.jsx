@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { useItems } from "../hooks/useItems";
 import useWindowHeight from "../hooks/useWindowHeight";
+import LazyImage from "../components/LazyImage";
 import styles from "../styles/Home.module.css";
 import { DOMAIN } from "../constants";
 import mascotImage from "../assets/mascot.png";
@@ -53,10 +54,11 @@ const Home = () => {
       {/* Background image wrapper */}
       {randomPano && (
         <div className={styles.backgroundWrapper}>
-          <img
+          <LazyImage
             src={randomPano.thumbnailUrl}
             alt="Background panorama"
-            draggable={false}
+            className={styles.backgroundImage}
+            placeholderSrc="" // Optionally provide low res placeholder
           />
         </div>
       )}
@@ -76,11 +78,12 @@ const Home = () => {
             <h2>Abstract Altitudes</h2>
           </div>
           <div className={styles.imageWrapper}>
-            <img
+            <LazyImage
               src={mascotImage}
               alt="Abstract Altitudes Mascot"
               className={styles.image}
               onClick={handleImageClick}
+              placeholderSrc="" // Optionally low res placeholder
               style={{ cursor: "pointer" }}
             />
           </div>

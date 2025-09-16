@@ -8,7 +8,7 @@ import PopupMetadata from "./PopupMetadata";
 import ViewerPanorama from "./ViewerPanorama";
 import LoadingOverlay from "./LoadingOverlay";
 import useKeyboardNavigation from "../hooks/useKeyboardNavigation";
-import ErrorBoundary from "./ErrorBoundary"; // Import ErrorBoundary
+import ErrorBoundary from "./ErrorBoundary";
 import styles from "../styles/Viewer.module.css";
 
 const MediaContent = memo(({ item, isNavigationMode, onContentLoaded }) => {

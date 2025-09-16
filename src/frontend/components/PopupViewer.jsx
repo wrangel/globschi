@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import FullScreenModal from "./FullScreenModal";
 import Viewer from "./Viewer";
-import ErrorBoundary from "./ErrorBoundary"; // import ErrorBoundary
+import ErrorBoundary from "./ErrorBoundary";
 import useKeyboardNavigation from "../hooks/useKeyboardNavigation";
 
 const PopupViewer = ({ item, isOpen, onClose, onNext, onPrevious }) => {

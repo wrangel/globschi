@@ -1,8 +1,9 @@
 // src/frontend/components/MascotCorner.jsx
 
 import { Link, useLocation } from "react-router-dom";
-import styles from "../styles/MascotCorner.module.css";
+import LazyImage from "./LazyImage";
 import mascotImage from "../assets/mascot.png";
+import styles from "../styles/MascotCorner.module.css";
 
 export default function MascotCorner() {
   const location = useLocation();
@@ -18,11 +19,12 @@ export default function MascotCorner() {
       aria-label="Go to homepage"
       className={styles.mascotCornerLink}
     >
-      <img
+      <LazyImage
         src={mascotImage}
         alt="Corporate mascot"
         className={styles.mascotCorner}
         draggable={false}
+        placeholderSrc="" // Optionally add a placeholder image URL here
       />
     </Link>
   );

@@ -2,12 +2,15 @@
 
 import { useState, useEffect, useRef } from "react";
 import PropTypes from "prop-types";
+import LazyImage from "./LazyImage";
 import styles from "../styles/PopupMetadata.module.css";
 
 const PopupMetadata = ({
   metadata,
   latitude,
   longitude,
+  panoramaUrl, // new prop: URL of the panorama image
+  panoramaThumbUrl, // new prop: thumbnail for the panorama placeholder
   onClose,
   isVisible,
 }) => {
@@ -17,7 +20,6 @@ const PopupMetadata = ({
   const popupRef = useRef(null);
   const triggerRef = useRef(null);
 
-  // Track window resize to toggle map vs link display
   useEffect(() => {
     const handleResize = () => setIsBelowThreshold(window.innerHeight < 500);
     handleResize();
@@ -25,7 +27,6 @@ const PopupMetadata = ({
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  // Focus management to restore focus on close
   useEffect(() => {
     if (isVisible) {
       triggerRef.current = document.activeElement;
@@ -36,11 +37,6 @@ const PopupMetadata = ({
       }
     }
   }, [isVisible]);
-
-  const googleMapsUrl = `https://www.google.com/maps/embed/v1/place?key=${
-    import.meta.env.VITE_GOOGLE_MAPS_API_KEY
-  }&q=${latitude},${longitude}&zoom=${zoomLevel}&maptype=satellite`;
-  const googleMapsLink = `https://www.google.com/maps?q=${latitude},${longitude}&zoom=${zoomLevel}&maptype=satellite`;
 
   // Draggable popup logic
   const handleDragStart = (e) => {
@@ -56,7 +52,6 @@ const PopupMetadata = ({
     let baseLeft = startRect.left - parentRect.left;
     let baseTop = startRect.top - parentRect.top;
 
-    // Remove transform to work with pure px positioning
     popup.style.transform = "none";
     popup.style.left = `${baseLeft}px`;
     popup.style.top = `${baseTop}px`;
@@ -88,10 +83,9 @@ const PopupMetadata = ({
     document.addEventListener(isTouch ? "touchend" : "mouseup", onUp);
   };
 
-  // Use style with left/top from drag or default initial, and control visibility
   const style = {
     ...(popupPosition.x === 0 && popupPosition.y === 0
-      ? {} // use CSS positioning (top/left from CSS)
+      ? {}
       : {
           transform: "none",
           left: `${popupPosition.x}px`,
@@ -101,6 +95,11 @@ const PopupMetadata = ({
     opacity: isVisible ? 1 : 0,
     pointerEvents: isVisible ? "auto" : "none",
   };
+
+  const googleMapsUrl = `https://www.google.com/maps/embed/v1/place?key=${
+    import.meta.env.VITE_GOOGLE_MAPS_API_KEY
+  }&q=${latitude},${longitude}&zoom=${zoomLevel}&maptype=satellite`;
+  const googleMapsLink = `https://www.google.com/maps?q=${latitude},${longitude}&zoom=${zoomLevel}&maptype=satellite`;
 
   return (
     <div
@@ -126,6 +125,17 @@ const PopupMetadata = ({
       />
       <div className={styles.content}>
         <pre>{metadata}</pre>
+
+        {/* Lazy load panorama image */}
+        {isVisible && panoramaUrl && (
+          <LazyImage
+            src={panoramaUrl}
+            placeholderSrc={panoramaThumbUrl}
+            alt="Panorama view"
+            className={styles.panoramaImage}
+          />
+        )}
+
         {isVisible &&
           (isBelowThreshold ? (
             <a
@@ -156,6 +166,8 @@ PopupMetadata.propTypes = {
   metadata: PropTypes.string.isRequired,
   latitude: PropTypes.number.isRequired,
   longitude: PropTypes.number.isRequired,
+  panoramaUrl: PropTypes.string,
+  panoramaThumbUrl: PropTypes.string,
   onClose: PropTypes.func.isRequired,
   isVisible: PropTypes.bool.isRequired,
 };

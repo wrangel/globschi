@@ -89,6 +89,7 @@ const Map = () => {
   return (
     <>
       <MascotCorner />
+      {/* Fixed overlay in upper left corner */}
       <Helmet>
         <link rel="canonical" href={`${DOMAIN}map`} />
         <title>Abstract Altitudes</title>
@@ -112,7 +113,24 @@ const Map = () => {
               doubleClickZoom={true}
               touchZoom={true}
             >
-              {/* TileLayer, Markers, FitBounds ... */}
+              <TileLayer
+                url="https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}"
+                attribution="© Mapbox © OpenStreetMap"
+                tileSize={512}
+                zoomOffset={-1}
+                id="mapbox/satellite-v9"
+                accessToken={import.meta.env.VITE_MAPBOX_PUBLIC_TOKEN}
+              />
+              {items.map((item) => (
+                <Marker
+                  key={item.id}
+                  position={[item.latitude, item.longitude]}
+                  icon={redPinIcon}
+                  eventHandlers={{ click: () => onItemClick(item) }}
+                />
+              ))}
+
+              <FitBounds items={items} />
             </MapContainer>
 
             {isModalOpen && (

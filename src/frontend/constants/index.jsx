@@ -54,3 +54,13 @@ const redPinIcon = new L.Icon({
 
 // The base domain for the app; trailing slash ensured for consistency with URLs
 export const DOMAIN = "https://abstractaltitudes.com/";
+
+/** Base URL for every backend call – guaranteed to exist. */
+const API_BASE_URL = (() => {
+  const raw = import.meta.env.VITE_API_URL;
+  if (!raw) throw new Error("VITE_API_URL environment variable is not set");
+  return raw.replace(/\/+$/, "");
+})();
+
+/** Full endpoint that both useItems and the SWR preload call need. */
+export const COMBINED_DATA_URL = `${API_BASE_URL}/combined-data`;

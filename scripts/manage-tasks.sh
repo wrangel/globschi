@@ -2,28 +2,33 @@
 
 # Run locally!
 
-# Function to keep books
+# --- defaults
+DRY_RUN=false
+
+# --- parse CLI
+while getopts "n" opt; do
+  case $opt in
+    n) DRY_RUN=true ;;
+    *) echo "Usage: $0 [-n] {keep-books|upload-media}"; exit 1 ;;
+  esac
+done
+shift $((OPTIND-1))   # remove the flag(s) so $1 becomes the command
+
+# --- helpers
 keep_books() {
-    echo "Keeping books..."
-    node --env-file=.env ./src/management/keepBooks.mjs
+  echo "Keeping books..."
+  node --env-file=.env ./src/management/keepBooks.mjs
 }
 
-# Function to upload media
 upload_media() {
-    echo "Uploading media..."
+  echo "Uploading media..."
+  NODE_DRY_RUN=$(( DRY_RUN ? 1 : 0 )) \
     node --env-file=.env ./src/management/uploader/orchestrate.mjs
 }
 
-# Check the command-line argument and execute the corresponding function
+# --- dispatch
 case "$1" in
-    keep-books)
-        keep_books
-        ;;
-    upload-media)
-        upload_media
-        ;;
-    *)
-        echo "Usage: pnpm run manage {keep-books|upload-media}"
-        exit 1
-        ;;
+  keep-books) keep_books ;;
+  upload-media) upload_media ;;
+  *) echo "Usage: $0 [-n] {keep-books|upload-media}"; exit 1 ;;
 esac

@@ -1,10 +1,11 @@
 // src/frontend/hooks/useItems.jsx
 
 import { useState, useEffect, useCallback, useDebugValue } from "react";
+import { COMBINED_DATA_URL } from "../constants";
 
 let cachedItems = null;
 let cacheTimestamp = 0;
-const CACHE_TTL = 5 * 60 * 1000; // Cache time-to-live in milliseconds (5 minutes)
+const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
 
 /**
  * Custom hook to fetch and cache portfolio or data items from an API endpoint.
@@ -54,14 +55,12 @@ export const useItems = () => {
       setIsLoading(true);
       setError(null);
 
-      const apiUrl =
-        import.meta.env.VITE_API_URL || "http://localhost:8081/api/";
-      const url = `${apiUrl}${apiUrl.endsWith("/") ? "" : "/"}combined-data`;
-
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 10000);
 
-      const response = await fetch(url, { signal: controller.signal });
+      const response = await fetch(COMBINED_DATA_URL, {
+        signal: controller.signal,
+      });
       clearTimeout(timeoutId);
 
       if (!response.ok) {

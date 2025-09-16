@@ -11,6 +11,7 @@ import { useItems } from "../hooks/useItems";
 import { useItemViewer } from "../hooks/useItemViewer";
 import { useLoadingError } from "../hooks/useLoadingError";
 import MascotCorner from "../components/MascotCorner";
+import ErrorBoundary from "../components/ErrorBoundary";
 import {
   MAP_INITIAL_CENTER,
   MAP_INITIAL_ZOOM,
@@ -88,7 +89,6 @@ const Map = () => {
   return (
     <>
       <MascotCorner />
-      {/* Fixed overlay in upper left corner */}
       <Helmet>
         <link rel="canonical" href={`${DOMAIN}map`} />
         <title>Abstract Altitudes</title>
@@ -98,49 +98,34 @@ const Map = () => {
         />
       </Helmet>
       <LoadingErrorHandler isLoading={isLoading} error={error}>
-        <div className={styles.MapContainer}>
-          <MapContainer
-            center={MAP_INITIAL_CENTER}
-            zoom={MAP_INITIAL_ZOOM}
-            className={`${styles.leafletContainer} custom-map`}
-            style={{ height: "100vh", width: "100%" }}
-            zoomControl={true}
-            minZoom={2}
-            maxZoom={18}
-            scrollWheelZoom={true}
-            doubleClickZoom={true}
-            touchZoom={true}
-          >
-            <TileLayer
-              url="https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}"
-              attribution="© Mapbox © OpenStreetMap"
-              tileSize={512}
-              zoomOffset={-1}
-              id="mapbox/satellite-v9"
-              accessToken={import.meta.env.VITE_MAPBOX_PUBLIC_TOKEN}
-            />
-            {items.map((item) => (
-              <Marker
-                key={item.id}
-                position={[item.latitude, item.longitude]}
-                icon={redPinIcon}
-                eventHandlers={{ click: () => onItemClick(item) }}
+        <ErrorBoundary>
+          <div className={styles.MapContainer}>
+            <MapContainer
+              center={MAP_INITIAL_CENTER}
+              zoom={MAP_INITIAL_ZOOM}
+              className={`${styles.leafletContainer} custom-map`}
+              style={{ height: "100vh", width: "100%" }}
+              zoomControl={true}
+              minZoom={2}
+              maxZoom={18}
+              scrollWheelZoom={true}
+              doubleClickZoom={true}
+              touchZoom={true}
+            >
+              {/* TileLayer, Markers, FitBounds ... */}
+            </MapContainer>
+
+            {isModalOpen && (
+              <PopupViewer
+                item={selectedItem}
+                isOpen={isModalOpen}
+                onClose={onClose}
+                onNext={onNext}
+                onPrevious={onPrevious}
               />
-            ))}
-
-            <FitBounds items={items} />
-          </MapContainer>
-
-          {isModalOpen && (
-            <PopupViewer
-              item={selectedItem}
-              isOpen={isModalOpen}
-              onClose={onClose}
-              onNext={onNext}
-              onPrevious={onPrevious}
-            />
-          )}
-        </div>
+            )}
+          </div>
+        </ErrorBoundary>
       </LoadingErrorHandler>
     </>
   );

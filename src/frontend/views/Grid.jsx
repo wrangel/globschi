@@ -8,6 +8,7 @@ import { useItems } from "../hooks/useItems";
 import { useItemViewer } from "../hooks/useItemViewer";
 import LoadingOverlay from "../components/LoadingOverlay";
 import MascotCorner from "../components/MascotCorner";
+import ErrorBoundary from "../components/ErrorBoundary"; // import ErrorBoundary
 import styles from "../styles/Grid.module.css";
 import { DOMAIN } from "../constants";
 
@@ -65,7 +66,9 @@ function Grid() {
       </a>
       <main id="main-content" className={styles.Home}>
         {items.length > 0 ? (
-          <PortfolioGrid items={items} onItemClick={onItemClick} />
+          <ErrorBoundary>
+            <PortfolioGrid items={items} onItemClick={onItemClick} />
+          </ErrorBoundary>
         ) : (
           <p>No items to display.</p>
         )}

@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import FullScreenModal from "./FullScreenModal";
 import Viewer from "./Viewer";
+import ErrorBoundary from "./ErrorBoundary"; // import ErrorBoundary
 import useKeyboardNavigation from "../hooks/useKeyboardNavigation";
 
 const PopupViewer = ({ item, isOpen, onClose, onNext, onPrevious }) => {
@@ -17,19 +18,21 @@ const PopupViewer = ({ item, isOpen, onClose, onNext, onPrevious }) => {
   if (!item) return null;
 
   return (
-    <FullScreenModal isOpen={isOpen} onClose={onClose}>
-      <div style={{ width: "100%", height: "100%" }}>
-        <Viewer
-          item={item}
-          isOpen={isOpen}
-          onClose={onClose}
-          onNext={onNext}
-          onPrevious={onPrevious}
-          isNavigationMode={isNavigationMode}
-          toggleMode={toggleMode}
-        />
-      </div>
-    </FullScreenModal>
+    <ErrorBoundary>
+      <FullScreenModal isOpen={isOpen} onClose={onClose}>
+        <div style={{ width: "100%", height: "100%" }}>
+          <Viewer
+            item={item}
+            isOpen={isOpen}
+            onClose={onClose}
+            onNext={onNext}
+            onPrevious={onPrevious}
+            isNavigationMode={isNavigationMode}
+            toggleMode={toggleMode}
+          />
+        </div>
+      </FullScreenModal>
+    </ErrorBoundary>
   );
 };
 

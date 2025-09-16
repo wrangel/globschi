@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef, memo } from "react";
 import panzoom from "panzoom";
+import LazyImage from "./LazyImage";
 import styles from "../styles/ViewerImage.module.css";
 
 const ViewerImage = ({
@@ -14,38 +15,42 @@ const ViewerImage = ({
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
   const [showBleep, setShowBleep] = useState(false);
-  const imgRef = useRef(null);
+
+  const containerRef = useRef(null);
   const panZoomInstanceRef = useRef(null);
 
-  /* ---------- image load ---------- */
-  useEffect(() => {
-    setIsLoading(true);
-    setHasError(false);
-    setShowBleep(false);
+  const handleLoad = () => {
+    setIsLoading(false);
+    setShowBleep(true);
+    if (onLoad) onLoad();
+    setTimeout(() => {
+      setShowBleep(false);
+    }, 500);
+  };
 
-    const img = new Image();
-    img.src = actualUrl;
-    img.onload = () => {
-      setIsLoading(false);
-      setShowBleep(true);
-      if (onLoad) onLoad();
-      setTimeout(() => setShowBleep(false), 500);
-    };
-    img.onerror = () => {
-      setHasError(true);
-      setIsLoading(false);
-    };
-  }, [actualUrl, onLoad]);
+  const handleError = () => {
+    setHasError(true);
+    setIsLoading(false);
+  };
 
-  /* ---------- panzoom ---------- */
+  // Setup and cleanup panzoom instance on image load/fail
   useEffect(() => {
-    if (!isLoading && !hasError && imgRef.current) {
-      const instance = panzoom(imgRef.current);
-      panZoomInstanceRef.current = instance;
-      return () => instance.dispose();
+    if (!isLoading && !hasError && containerRef.current) {
+      const img = containerRef.current.querySelector("img");
+      if (!panZoomInstanceRef.current && img) {
+        panZoomInstanceRef.current = panzoom(img);
+      }
     }
+
+    return () => {
+      if (panZoomInstanceRef.current) {
+        panZoomInstanceRef.current.dispose();
+        panZoomInstanceRef.current = null;
+      }
+    };
   }, [isLoading, hasError]);
 
+  // Pause or resume panzoom based on navigation mode
   useEffect(() => {
     if (panZoomInstanceRef.current) {
       isNavigationMode
@@ -54,7 +59,6 @@ const ViewerImage = ({
     }
   }, [isNavigationMode]);
 
-  /* ---------- error fallback ---------- */
   if (hasError) {
     return (
       <div className={styles.ViewerImage} role="alert" aria-live="assertive">
@@ -70,7 +74,7 @@ const ViewerImage = ({
 
   return (
     <div className={styles.ViewerImage}>
-      {/* THUMBNAIL: always in DOM, opacity only – no layout shift */}
+      {/* Thumbnail placeholder */}
       <img
         src={thumbnailUrl}
         alt={`${name} thumbnail`}
@@ -84,13 +88,13 @@ const ViewerImage = ({
           height: "100vh",
           objectFit: "contain",
           zIndex: 1040,
-          transition: "opacity 0.15s ease", // faster fade
+          transition: "opacity 0.15s ease",
         }}
       />
 
-      {/* MAIN IMAGE: pan-zoom container */}
+      {/* Main image container with panzoom */}
       <div
-        ref={imgRef}
+        ref={containerRef}
         className={styles.panzoomContainer}
         style={{
           opacity: isLoading ? 0 : 1,
@@ -108,10 +112,16 @@ const ViewerImage = ({
         aria-label={name}
         role="img"
       >
-        <img src={actualUrl} alt={name} className={styles.image} />
+        <LazyImage
+          src={actualUrl}
+          alt={name}
+          className={styles.image}
+          onLoad={handleLoad}
+          onError={handleError}
+        />
       </div>
 
-      {/* bleep indicator */}
+      {/* Image loaded bleep indicator */}
       {showBleep && (
         <button
           className={styles.bleepButton}

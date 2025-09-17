@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { useItems } from "../hooks/useItems";
 import useWindowHeight from "../hooks/useWindowHeight";
+import LazyImage from "../components/LazyImage";
 import styles from "../styles/Home.module.css";
 import { DOMAIN } from "../constants";
 import mascotImage from "../assets/mascot.png";
@@ -35,8 +36,10 @@ const Home = () => {
   }, []);
 
   const handleImageClick = () => {
-    const randomPage = Math.random() < 0.5 ? "/grid" : "/map";
-    navigate(randomPage);
+    requestAnimationFrame(() => {
+      const randomPage = Math.random() < 0.5 ? "/grid" : "/map";
+      navigate(randomPage);
+    });
   };
 
   return (
@@ -53,10 +56,11 @@ const Home = () => {
       {/* Background image wrapper */}
       {randomPano && (
         <div className={styles.backgroundWrapper}>
-          <img
+          <LazyImage
             src={randomPano.thumbnailUrl}
             alt="Background panorama"
-            draggable={false}
+            className={styles.backgroundImage}
+            placeholderSrc=""
           />
         </div>
       )}
@@ -75,13 +79,23 @@ const Home = () => {
             </h1>
             <h2>Abstract Altitudes</h2>
           </div>
-          <div className={styles.imageWrapper}>
-            <img
+
+          {/* Flexbox wrapper to center mascot image */}
+          <div
+            className={styles.imageCenterWrapper}
+            onClick={handleImageClick}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") handleImageClick();
+            }}
+            style={{ cursor: "pointer" }}
+          >
+            <LazyImage
               src={mascotImage}
               alt="Abstract Altitudes Mascot"
               className={styles.image}
-              onClick={handleImageClick}
-              style={{ cursor: "pointer" }}
+              placeholderSrc=""
             />
           </div>
         </div>

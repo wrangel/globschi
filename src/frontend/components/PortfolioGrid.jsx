@@ -20,7 +20,6 @@ import styles from "../styles/PortfolioGrid.module.css";
  * @returns {JSX.Element} The masonry grid wrapped in loading/error handler.
  */
 const PortfolioGrid = ({ items, onItemClick }) => {
-  // Custom hook to provide loading and error state; initialized as not loading
   const { isLoading, error } = useLoadingError(false);
 
   return (
@@ -33,9 +32,10 @@ const PortfolioGrid = ({ items, onItemClick }) => {
         >
           {items.map((item) => (
             <PortfolioItem
-              key={item.id} // Unique key for each item
-              item={item} // Portfolio item data prop
-              onItemClick={onItemClick} // Click handler prop
+              key={item.id}
+              item={item}
+              onItemClick={onItemClick}
+              useLazyImage={true} // new prop to toggle LazyImage use
             />
           ))}
         </Masonry>

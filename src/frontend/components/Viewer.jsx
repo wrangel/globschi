@@ -1,6 +1,6 @@
 // src/frontend/components/Viewer.jsx
 
-import { useState, useEffect, useRef, useCallback, memo } from "react";
+import React, { useState, useEffect, useRef, useCallback, memo } from "react";
 import PropTypes from "prop-types";
 import NavigationMedia from "./NavigationMedia";
 import ViewerImage from "./ViewerImage";
@@ -8,29 +8,30 @@ import PopupMetadata from "./PopupMetadata";
 import ViewerPanorama from "./ViewerPanorama";
 import LoadingOverlay from "./LoadingOverlay";
 import useKeyboardNavigation from "../hooks/useKeyboardNavigation";
+import ErrorBoundary from "./ErrorBoundary";
 import styles from "../styles/Viewer.module.css";
 
-// 1. Create a memoized component to handle the conditional rendering
 const MediaContent = memo(({ item, isNavigationMode, onContentLoaded }) => {
-  if (item.viewer === "pano") {
-    return (
-      <ViewerPanorama
-        panoPath={item.panoPath}
-        levels={item.levels}
-        initialViewParameters={item.initialViewParameters}
-        onReady={onContentLoaded}
-        onError={(err) => console.error("Panorama error:", err)}
-      />
-    );
-  }
   return (
-    <ViewerImage
-      actualUrl={item.actualUrl}
-      thumbnailUrl={item.thumbnailUrl}
-      name={item.name}
-      onLoad={onContentLoaded}
-      isNavigationMode={isNavigationMode}
-    />
+    <ErrorBoundary>
+      {item.viewer === "pano" ? (
+        <ViewerPanorama
+          panoPath={item.panoPath}
+          levels={item.levels}
+          initialViewParameters={item.initialViewParameters}
+          onReady={onContentLoaded}
+          onError={(err) => console.error("Panorama error:", err)}
+        />
+      ) : (
+        <ViewerImage
+          actualUrl={item.actualUrl}
+          thumbnailUrl={item.thumbnailUrl}
+          name={item.name}
+          onLoad={onContentLoaded}
+          isNavigationMode={isNavigationMode}
+        />
+      )}
+    </ErrorBoundary>
   );
 });
 
@@ -70,7 +71,6 @@ const Viewer = ({
     setIsLoading(false);
   }, []);
 
-  // Handle Escape key for closing metadata or popup
   useEffect(() => {
     const handleEscKey = (event) => {
       if (event.key === "Escape") {
@@ -87,7 +87,6 @@ const Viewer = ({
     };
   }, [showMetadata, onClose]);
 
-  // Isolated immediate left/right arrow keys navigation for non-pano viewer
   useEffect(() => {
     if (item.viewer === "pano") return;
 
@@ -130,7 +129,6 @@ const Viewer = ({
     >
       {isLoading && <LoadingOverlay thumbnailUrl={item.thumbnailUrl} />}
 
-      {/* Key added to force remount on item change */}
       <MediaContent
         key={item.id || item.actualUrl}
         item={item}
@@ -150,13 +148,15 @@ const Viewer = ({
         isLast={item.isLast}
       />
 
-      <PopupMetadata
-        metadata={item.metadata}
-        latitude={item.latitude}
-        longitude={item.longitude}
-        onClose={() => setShowMetadata(false)}
-        isVisible={showMetadata}
-      />
+      <ErrorBoundary>
+        <PopupMetadata
+          metadata={item.metadata}
+          latitude={item.latitude}
+          longitude={item.longitude}
+          onClose={() => setShowMetadata(false)}
+          isVisible={showMetadata}
+        />
+      </ErrorBoundary>
     </div>
   );
 };

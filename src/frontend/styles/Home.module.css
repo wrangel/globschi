@@ -317,3 +317,10 @@ body {
     max-height: 15vh;
   }
 }
+
+.imageCenterWrapper {
+  display: flex;
+  justify-content: center; /* centers horizontally */
+  align-items: center; /* centers vertically, optional if only horizontal needed */
+  width: 100%; /* full width of parent container */
+}

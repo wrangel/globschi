@@ -36,8 +36,10 @@ const Home = () => {
   }, []);
 
   const handleImageClick = () => {
-    const randomPage = Math.random() < 0.5 ? "/grid" : "/map";
-    navigate(randomPage);
+    requestAnimationFrame(() => {
+      const randomPage = Math.random() < 0.5 ? "/grid" : "/map";
+      navigate(randomPage);
+    });
   };
 
   return (
@@ -58,7 +60,7 @@ const Home = () => {
             src={randomPano.thumbnailUrl}
             alt="Background panorama"
             className={styles.backgroundImage}
-            placeholderSrc="" // Optionally provide low res placeholder
+            placeholderSrc=""
           />
         </div>
       )}
@@ -77,14 +79,23 @@ const Home = () => {
             </h1>
             <h2>Abstract Altitudes</h2>
           </div>
-          <div className={styles.imageWrapper}>
+
+          {/* Flexbox wrapper to center mascot image */}
+          <div
+            className={styles.imageCenterWrapper}
+            onClick={handleImageClick}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") handleImageClick();
+            }}
+            style={{ cursor: "pointer" }}
+          >
             <LazyImage
               src={mascotImage}
               alt="Abstract Altitudes Mascot"
               className={styles.image}
-              onClick={handleImageClick}
-              placeholderSrc="" // Optionally low res placeholder
-              style={{ cursor: "pointer" }}
+              placeholderSrc=""
             />
           </div>
         </div>

@@ -13,8 +13,8 @@
     "prod": "./scripts/prod-build.sh"
   },
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.888.0",
-    "@aws-sdk/s3-request-presigner": "^3.888.0",
+    "@aws-sdk/client-s3": "^3.890.0",
+    "@aws-sdk/s3-request-presigner": "^3.890.0",
     "compression": "^1.8.1",
     "cors": "^2.8.5",
     "express": "^5.1.0",
@@ -40,7 +40,7 @@
     "winston-daily-rotate-file": "^5.0.0"
   },
   "devDependencies": {
-    "@aws-sdk/lib-storage": "^3.888.0",
+    "@aws-sdk/lib-storage": "^3.890.0",
     "@vitejs/plugin-react": "^4.7.0",
     "adm-zip": "^0.5.16",
     "eslint": "^9.35.0",
@@ -51,7 +51,7 @@
     "globals": "^16.4.0",
     "node-exif": "^1.0.1",
     "node-fetch": "^3.3.2",
-    "sharp": "^0.34.3",
+    "sharp": "^0.34.4",
     "vite": "^7.1.5",
     "vite-plugin-eslint": "^1.8.1"
   },

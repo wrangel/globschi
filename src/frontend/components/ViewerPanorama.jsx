@@ -7,6 +7,33 @@ import styles from "../styles/ViewerPanorama.module.css";
 
 const DEFAULT_VIEW = { yaw: 0, pitch: 0, fov: Math.PI / 4 };
 
+/* ---- helpers ---- */
+// Probe for max cube map texture size on the current device
+function getMaxCubeMapSize() {
+  try {
+    const canvas = document.createElement("canvas");
+    const gl =
+      canvas.getContext("webgl") || canvas.getContext("experimental-webgl");
+    if (!gl) return 2048; // fallback
+    return gl.getParameter(gl.MAX_CUBE_MAP_TEXTURE_SIZE);
+  } catch {
+    return 2048;
+  }
+}
+
+// Runtime check (feature detect, not UA sniff) for WebGL support
+function hasWebGL() {
+  try {
+    const canvas = document.createElement("canvas");
+    return !!(
+      window.WebGLRenderingContext &&
+      (canvas.getContext("webgl") || canvas.getContext("experimental-webgl"))
+    );
+  } catch {
+    return false;
+  }
+}
+
 const ViewerPanorama = ({
   panoPath,
   levels,
@@ -18,24 +45,50 @@ const ViewerPanorama = ({
   const viewerRef = useRef(null);
   const sceneRef = useRef(null);
   const [loaded, setLoaded] = useState(false);
+  const [webglAbsent, setWebglAbsent] = useState(false);
 
+  // Only create viewer if WebGL is present
   useLayoutEffect(() => {
-    if (!panoPath || !levels?.length || !panoramaElement.current) return;
+    if (!panoramaElement.current || viewerRef.current) return;
 
-    if (!viewerRef.current) {
-      viewerRef.current = new Marzipano.Viewer(panoramaElement.current, {
-        stage: {
-          pixelRatio: window.devicePixelRatio || 1,
-          preserveDrawingBuffer: false,
-        },
-      });
-
-      const canvas = viewerRef.current.stage().domElement();
-      canvas.style.backgroundColor = "black";
-      canvas.style.opacity = "1";
+    if (!hasWebGL()) {
+      setWebglAbsent(true);
+      if (onError) onError(new Error("WebGL not supported"));
+      return;
+    } else {
+      setWebglAbsent(false);
     }
 
-    const geometry = new Marzipano.CubeGeometry(levels);
+    viewerRef.current = new Marzipano.Viewer(panoramaElement.current, {
+      stage: {
+        pixelRatio: window.devicePixelRatio || 1,
+        preserveDrawingBuffer: false,
+        generateMipmaps: false,
+      },
+    });
+
+    const canvas = viewerRef.current.stage().domElement();
+    canvas.style.backgroundColor = "black";
+    canvas.style.opacity = "1";
+  }, [onError]);
+
+  // react to pano or view changes, only if WebGL is present
+  useLayoutEffect(() => {
+    if (!panoPath || !levels?.length || !viewerRef.current || webglAbsent)
+      return;
+
+    const maxCubeSize = getMaxCubeMapSize();
+    const safeLevels = levels.map((l) => {
+      if (l.size <= maxCubeSize) return l;
+      const ratio = maxCubeSize / l.size;
+      return {
+        ...l,
+        size: maxCubeSize,
+        tileSize: Math.max(1, Math.floor(l.tileSize * ratio)),
+      };
+    });
+
+    const geometry = new Marzipano.CubeGeometry(safeLevels);
 
     const source = Marzipano.ImageUrlSource.fromString(
       `${panoPath}/{z}/{f}/{y}/{x}.jpg`,
@@ -68,11 +121,10 @@ const ViewerPanorama = ({
 
     if (sceneRef.current) {
       sceneRef.current.setSource(source);
-      // Explicitly update view on existing scene
       sceneRef.current.view().setYaw(viewParams.yaw);
       sceneRef.current.view().setPitch(viewParams.pitch);
       sceneRef.current.view().setFov(viewParams.fov);
-      sceneRef.current.view().update(); // force update
+      sceneRef.current.view().update();
     } else {
       sceneRef.current = viewerRef.current.createScene({
         source,
@@ -97,7 +149,10 @@ const ViewerPanorama = ({
 
     setLoaded(true);
     if (onReady) onReady();
+  }, [panoPath, levels, initialViewParameters, onReady, onError, webglAbsent]);
 
+  // Clean up
+  useLayoutEffect(() => {
     return () => {
       if (viewerRef.current) {
         viewerRef.current.destroy();
@@ -105,7 +160,35 @@ const ViewerPanorama = ({
         sceneRef.current = null;
       }
     };
-  }, [panoPath, levels, initialViewParameters, onReady, onError]);
+  }, []);
+
+  if (webglAbsent) {
+    // Show static fallback (preview image or simple message)
+    // To maximize UX, you could style this div or add a `<picture>` for responsive preview
+    return (
+      <div className={styles.ViewerPanoramaFallback}>
+        <p>
+          This device's browser does not support high-performance 360°
+          panoramas.
+          <br />
+          Try Chrome for best results.
+        </p>
+        {panoPath && (
+          <img
+            src={`${panoPath}/preview.jpg`}
+            alt="Panorama preview"
+            className={styles.staticPreview}
+            style={{
+              width: "100%",
+              maxWidth: "1024px",
+              display: "block",
+              margin: "0 auto",
+            }}
+          />
+        )}
+      </div>
+    );
+  }
 
   return (
     <div

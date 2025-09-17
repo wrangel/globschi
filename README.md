@@ -1,7 +1,6 @@
 # Abstract Altitudes
 
-Showcase for aerial photography and videography captured during drone flights.  
-Explore landscapes, cityscapes and unique perspectives that only drone photography can provide.
+Capturing breathtaking aerial imagery and video through drone flights, showcasing stunning landscapes, vibrant cityscapes, and unique perspectives from above.
 
 ## Table of Contents
 

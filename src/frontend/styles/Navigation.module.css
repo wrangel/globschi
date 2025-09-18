@@ -72,6 +72,10 @@
   font-family: var(--font-stack);
   text-shadow: var(--text-shadow-heavy);
   box-shadow: var(--overlay-box-shadow);
+
+  min-width: 40px;
+  text-align: center;
+  box-sizing: border-box;
 }
 
 .leftArrow:hover,

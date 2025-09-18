@@ -27,6 +27,8 @@ const LoadingOverlay = ({ thumbnailUrl }) => {
           className={styles.thumbnail}
           loading="lazy"
           decoding="async"
+          srcSet={`${thumbnailUrl}?w=300 300w, ${thumbnailUrl}?w=768 768w, ${thumbnailUrl}?w=1280 1280w`}
+          sizes="(max-width: 600px) 80vw, (max-width: 1200px) 50vw, 33vw"
         />
       )}
       <div className={styles.spinner} aria-label="Loading indicator" />

@@ -45,7 +45,8 @@ function Grid() {
         aria-live="assertive"
         tabIndex={-1}
       >
-        Error: {error}
+        <p>Error: {error}</p>
+        <button onClick={() => refetch()}>Retry</button>
       </div>
     );
   }
@@ -64,7 +65,11 @@ function Grid() {
       <a href="#main-content" className="skip-link">
         Skip to main content
       </a>
-      <main id="main-content" className={styles.Home}>
+      <main
+        id="main-content"
+        aria-label="Portfolio gallery"
+        className={styles.Home}
+      >
         {items.length > 0 ? (
           <ErrorBoundary>
             <PortfolioGrid items={items} onItemClick={onItemClick} />

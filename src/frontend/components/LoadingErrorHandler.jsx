@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import styles from "../styles/LoadingErrorHandler.module.css";
 
 /**
- * LoadingErrorHandler component renders either a loading indicator,
+ * LoadingErrorHandler component renders either a loading spinner,
  * an error message, or its children content based on the current state.
  *
  * Useful for managing loading and error states in UI while fetching data.
@@ -18,18 +18,23 @@ import styles from "../styles/LoadingErrorHandler.module.css";
  */
 const LoadingErrorHandler = ({ isLoading, error, children }) => {
   if (isLoading) {
-    // Show loading message or spinner while loading
+    // Show loading spinner with accessible role and label
     return (
-      <div className={styles.container}>
-        <p className={styles.message}>Loading...</p>
+      <div
+        className={styles.container}
+        role="status"
+        aria-live="polite"
+        aria-busy="true"
+      >
+        <div className={styles.spinner} aria-label="Loading indicator" />
       </div>
     );
   }
 
   if (error) {
-    // Show error message if present
+    // Show error message with aria-live for screen readers
     return (
-      <div className={styles.container}>
+      <div className={styles.container} role="alert" aria-live="assertive">
         <p className={`${styles.message} ${styles.error}`}>Error: {error}</p>
       </div>
     );

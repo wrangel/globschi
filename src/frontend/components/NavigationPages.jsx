@@ -1,53 +1,23 @@
 // src/frontend/components/NavigationPages.jsx
 
+import React, { memo } from "react";
 import { useLocation } from "react-router-dom";
 import styles from "../styles/Navigation.module.css";
 
-/**
- * Floating Action Button (NavigationPages) component providing navigation links.
- *
- * Displays a set of navigation buttons based on the current URL path.
- * Buttons highlight the active path and call onNavigate callback when clicked.
- *
- * @param {Object} props - Component props.
- * @param {Function} props.onNavigate - Callback invoked with the new path on button click.
- */
-const NavigationPages = ({ onNavigate }) => {
+const NavigationPages = memo(({ onNavigate }) => {
   const location = useLocation();
 
-  // Button configuration for each route with conditional buttons
+  // Button config based on location
   const buttonConfig = {
     "/": [
       { label: "Map", path: "/map" },
       { label: "Grid", path: "/grid" },
     ],
-    "/map": [
-      { label: "Grid", path: "/grid" }, // Only Grid button shown on Map page
-    ],
-    "/grid": [
-      { label: "Map", path: "/map" }, // Only Map button shown on Grid page
-    ],
+    "/map": [{ label: "Grid", path: "/grid" }],
+    "/grid": [{ label: "Map", path: "/map" }],
   };
 
-  /**
-   * Render navigation buttons based on current path.
-   */
-  const renderButtons = () => {
-    const buttons = buttonConfig[location.pathname] || [];
-    return buttons.map((button) => (
-      <button
-        key={button.path}
-        className={`${styles.fab} ${
-          location.pathname === button.path ? styles.active : ""
-        }`}
-        onClick={() => onNavigate(button.path)}
-        aria-label={`Go to ${button.label}`}
-        type="button"
-      >
-        {button.label}
-      </button>
-    ));
-  };
+  const buttons = buttonConfig[location.pathname] || [];
 
   return (
     <nav
@@ -56,9 +26,23 @@ const NavigationPages = ({ onNavigate }) => {
       aria-label="Page navigation"
       role="navigation"
     >
-      <div className={styles.fabMenu}>{renderButtons()}</div>
+      <div className={styles.fabMenu}>
+        {buttons.map(({ label, path }) => (
+          <button
+            key={path}
+            className={`${styles.fab} ${
+              location.pathname === path ? styles.active : ""
+            }`}
+            onClick={() => onNavigate(path)}
+            aria-label={`Go to ${label}`}
+            type="button"
+          >
+            {label}
+          </button>
+        ))}
+      </div>
     </nav>
   );
-};
+});
 
 export default NavigationPages;

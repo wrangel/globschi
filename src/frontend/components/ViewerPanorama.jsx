@@ -1,6 +1,6 @@
 // src/frontend/components/ViewerPanorama.jsx
 
-import { useRef, useLayoutEffect, useState } from "react";
+import { useRef, useLayoutEffect, useState, memo } from "react";
 import PropTypes from "prop-types";
 import Marzipano from "marzipano";
 import styles from "../styles/ViewerPanorama.module.css";
@@ -60,6 +60,9 @@ const ViewerPanorama = ({
     }
 
     viewerRef.current = new Marzipano.Viewer(panoramaElement.current, {
+      controls: {
+        mouseViewMode: "drag",
+      },
       stage: {
         pixelRatio: window.devicePixelRatio || 1,
         preserveDrawingBuffer: false,
@@ -67,12 +70,30 @@ const ViewerPanorama = ({
       },
     });
 
+    // Configure controls for drag smoothing
+    const controls = viewerRef.current.controls();
+    if (
+      controls &&
+      typeof controls.setFriction === "function" &&
+      typeof controls.setVelocityScale === "function"
+    ) {
+      controls.setFriction(0.15); // lower friction for smoother/slower drag
+      controls.setVelocityScale(0.25); // lower velocity scale for slower movement
+    } else {
+      // Fallback: direct access if available
+      const dragRotate = controls._dragRotate;
+      if (dragRotate) {
+        dragRotate.friction = 0.15;
+        dragRotate.velocityScale = 0.2;
+      }
+    }
+
     const canvas = viewerRef.current.stage().domElement();
     canvas.style.backgroundColor = "black";
     canvas.style.opacity = "1";
   }, [onError]);
 
-  // react to pano or view changes, only if WebGL is present
+  // React to pano or view changes, only if WebGL is present
   useLayoutEffect(() => {
     if (!panoPath || !levels?.length || !viewerRef.current || webglAbsent)
       return;
@@ -163,8 +184,6 @@ const ViewerPanorama = ({
   }, []);
 
   if (webglAbsent) {
-    // Show static fallback (preview image or simple message)
-    // To maximize UX, you could style this div or add a `<picture>` for responsive preview
     return (
       <div className={styles.ViewerPanoramaFallback}>
         <p>
@@ -220,4 +239,4 @@ ViewerPanorama.propTypes = {
   onError: PropTypes.func,
 };
 
-export default ViewerPanorama;
+export default memo(ViewerPanorama);

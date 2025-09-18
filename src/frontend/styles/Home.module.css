@@ -324,3 +324,38 @@ body {
   align-items: center; /* centers vertically, optional if only horizontal needed */
   width: 100%; /* full width of parent container */
 }
+
+/* Show visible focus outline only when keyboard navigation is detected */
+*:focus-visible {
+  outline-color: var(
+    --primary-color,
+    #005fcc
+  ); /* Use theme primary or fallback blue */
+  outline-style: solid;
+  outline-width: 3px;
+  outline-offset: 2px; /* Space so outline doesn't touch element edge */
+  transition: outline-color 0.15s ease-in-out;
+  border-radius: 4px; /* Optional: soften corners to match design */
+}
+
+/* Maintain a visible focus state on interactive elements */
+button:focus-visible,
+a:focus-visible,
+[role="button"]:focus-visible {
+  box-shadow: 0 0 0 3px var(--primary-color, #005fcc);
+}
+
+/* Avoid removing outlines entirely */
+:focus {
+  outline: none;
+}
+
+/* High contrast mode compatibility */
+@media (forced-colors: active) {
+  *:focus-visible {
+    outline-color: Highlight;
+    outline-style: solid;
+    outline-width: 3px;
+    outline-offset: 2px;
+  }
+}

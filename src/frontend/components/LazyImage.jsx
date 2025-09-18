@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 
-const LazyImage = ({ src, alt, className, style }) => {
+const LazyImage = ({ src, alt, className, style, width, height }) => {
   const imgRef = useRef(null);
   const [isVisible, setIsVisible] = useState(false);
 
@@ -19,14 +19,13 @@ const LazyImage = ({ src, alt, className, style }) => {
             }
           });
         },
-        { rootMargin: "100px" } // preload a bit before entering viewport
+        { rootMargin: "100px" }
       );
 
       observer.observe(imgRef.current);
 
       return () => observer.disconnect();
     } else {
-      // Fallback if IntersectionObserver is unsupported
       setIsVisible(true);
     }
   }, []);
@@ -34,11 +33,18 @@ const LazyImage = ({ src, alt, className, style }) => {
   return (
     <img
       ref={imgRef}
-      src={isVisible ? src : ""}
+      src={isVisible ? src : undefined} // Use undefined instead of empty string to avoid loading errors
       alt={alt}
       className={className}
-      style={style}
+      style={{
+        ...style,
+        width,
+        height,
+        aspectRatio: width && height ? `${width} / ${height}` : undefined,
+      }}
       loading="lazy"
+      width={width}
+      height={height}
     />
   );
 };

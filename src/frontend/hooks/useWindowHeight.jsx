@@ -1,6 +1,6 @@
 // src/frontend/hooks/useWindowHeight.jsx
 
-import { useState, useEffect } from "react";
+import { useState, useLayoutEffect } from "react";
 
 /**
  * Custom hook that returns a boolean indicating if the viewport height is less than or equal to the threshold.
@@ -8,16 +8,18 @@ import { useState, useEffect } from "react";
  * @returns {boolean} - true if viewport height <= threshold
  */
 const useWindowHeight = (threshold = 360) => {
-  const [isVeryShort, setIsVeryShort] = useState(
-    window.innerHeight <= threshold
+  const [isVeryShort, setIsVeryShort] = useState(() =>
+    typeof window !== "undefined" ? window.innerHeight <= threshold : false
   );
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const handleResize = () => {
       setIsVeryShort(window.innerHeight <= threshold);
     };
 
     window.addEventListener("resize", handleResize);
+    handleResize(); // Initialize on mount
+
     return () => window.removeEventListener("resize", handleResize);
   }, [threshold]);
 

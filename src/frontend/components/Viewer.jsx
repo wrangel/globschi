@@ -71,6 +71,10 @@ const Viewer = ({
     setIsLoading(false);
   }, []);
 
+  const handleCloseMetadata = useCallback(() => {
+    setShowMetadata(false);
+  }, []);
+
   useEffect(() => {
     const handleEscKey = (event) => {
       if (event.key === "Escape") {
@@ -153,39 +157,12 @@ const Viewer = ({
           metadata={item.metadata}
           latitude={item.latitude}
           longitude={item.longitude}
-          onClose={() => setShowMetadata(false)}
+          onClose={handleCloseMetadata}
           isVisible={showMetadata}
         />
       </ErrorBoundary>
     </div>
   );
-};
-
-Viewer.propTypes = {
-  item: PropTypes.shape({
-    id: PropTypes.string,
-    viewer: PropTypes.oneOf(["pano", "img"]).isRequired,
-    panoPath: PropTypes.string,
-    actualUrl: PropTypes.string,
-    thumbnailUrl: PropTypes.string,
-    name: PropTypes.string,
-    levels: PropTypes.array,
-    initialViewParameters: PropTypes.shape({
-      yaw: PropTypes.number,
-      pitch: PropTypes.number,
-      fov: PropTypes.number,
-    }),
-    metadata: PropTypes.string,
-    latitude: PropTypes.number,
-    longitude: PropTypes.number,
-    isFirst: PropTypes.bool,
-    isLast: PropTypes.bool,
-  }).isRequired,
-  onClose: PropTypes.func.isRequired,
-  onNext: PropTypes.func,
-  onPrevious: PropTypes.func,
-  isNavigationMode: PropTypes.bool.isRequired,
-  toggleMode: PropTypes.func.isRequired,
 };
 
 export default memo(Viewer);

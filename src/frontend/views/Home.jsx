@@ -86,6 +86,7 @@ const Home = () => {
             onClick={handleImageClick}
             role="button"
             tabIndex={0}
+            aria-label="View random portfolio page"
             onKeyDown={(e) => {
               if (e.key === "Enter" || e.key === " ") handleImageClick();
             }}

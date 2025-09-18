@@ -5,6 +5,14 @@ import panzoom from "panzoom";
 import LazyImage from "./LazyImage";
 import styles from "../styles/ViewerImage.module.css";
 
+function debounce(func, wait) {
+  let timeout;
+  return function (...args) {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => func(...args), wait);
+  };
+}
+
 const ViewerImage = ({
   actualUrl,
   thumbnailUrl,
@@ -23,9 +31,7 @@ const ViewerImage = ({
     setIsLoading(false);
     setShowBleep(true);
     if (onLoad) onLoad();
-    setTimeout(() => {
-      setShowBleep(false);
-    }, 500);
+    setTimeout(() => setShowBleep(false), 500);
   };
 
   const handleError = () => {
@@ -33,12 +39,24 @@ const ViewerImage = ({
     setIsLoading(false);
   };
 
-  // Setup and cleanup panzoom instance on image load/fail
   useEffect(() => {
     if (!isLoading && !hasError && containerRef.current) {
       const img = containerRef.current.querySelector("img");
       if (!panZoomInstanceRef.current && img) {
         panZoomInstanceRef.current = panzoom(img);
+        // Debounce panzoom events (example: zoom and pan triggers)
+        panZoomInstanceRef.current.on(
+          "pan",
+          debounce(() => {
+            // You can add logic here if needed on pan event.
+          }, 50)
+        );
+        panZoomInstanceRef.current.on(
+          "zoom",
+          debounce(() => {
+            // You can add logic here if needed on zoom event.
+          }, 50)
+        );
       }
     }
 
@@ -50,7 +68,6 @@ const ViewerImage = ({
     };
   }, [isLoading, hasError]);
 
-  // Pause or resume panzoom based on navigation mode
   useEffect(() => {
     if (panZoomInstanceRef.current) {
       isNavigationMode
@@ -74,7 +91,6 @@ const ViewerImage = ({
 
   return (
     <div className={styles.ViewerImage}>
-      {/* Thumbnail placeholder */}
       <img
         src={thumbnailUrl}
         alt={`${name} thumbnail`}
@@ -91,8 +107,6 @@ const ViewerImage = ({
           transition: "opacity 0.15s ease",
         }}
       />
-
-      {/* Main image container with panzoom */}
       <div
         ref={containerRef}
         className={styles.panzoomContainer}
@@ -120,8 +134,6 @@ const ViewerImage = ({
           onError={handleError}
         />
       </div>
-
-      {/* Image loaded bleep indicator */}
       {showBleep && (
         <button
           className={styles.bleepButton}

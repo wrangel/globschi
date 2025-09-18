@@ -1,14 +1,13 @@
 // src/frontend/components/MascotCorner.jsx
 
+import React, { memo } from "react";
 import { Link, useLocation } from "react-router-dom";
 import LazyImage from "./LazyImage";
 import mascotImage from "../assets/mascot.png";
 import styles from "../styles/MascotCorner.module.css";
 
-export default function MascotCorner() {
+const MascotCorner = () => {
   const location = useLocation();
-
-  // Hide mascot corner on homepage path "/"
   if (location.pathname === "/") {
     return null;
   }
@@ -24,8 +23,10 @@ export default function MascotCorner() {
         alt="Corporate mascot"
         className={styles.mascotCorner}
         draggable={false}
-        placeholderSrc="" // Optionally add a placeholder image URL here
+        placeholderSrc=""
       />
     </Link>
   );
-}
+};
+
+export default memo(MascotCorner);

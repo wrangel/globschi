@@ -72,3 +72,10 @@
 .thumbnailFullViewport {
   will-change: opacity; /* keeps layer on GPU = zero repaint */
 }
+
+.panoramaImage,
+.mapIframe {
+  width: 100%;
+  aspect-ratio: 16 / 9; /* prevent layout shifts */
+  display: block;
+}

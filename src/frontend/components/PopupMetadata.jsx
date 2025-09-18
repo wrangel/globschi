@@ -9,8 +9,8 @@ const PopupMetadata = ({
   metadata,
   latitude,
   longitude,
-  panoramaUrl, // new prop: URL of the panorama image
-  panoramaThumbUrl, // new prop: thumbnail for the panorama placeholder
+  panoramaUrl,
+  panoramaThumbUrl,
   onClose,
   isVisible,
 }) => {
@@ -38,7 +38,7 @@ const PopupMetadata = ({
     }
   }, [isVisible]);
 
-  // Draggable popup logic
+  // Draggable popup logic keeping original smoothness approach
   const handleDragStart = (e) => {
     e.stopPropagation();
     e.preventDefault();
@@ -78,7 +78,7 @@ const PopupMetadata = ({
     };
 
     document.addEventListener(isTouch ? "touchmove" : "mousemove", onMove, {
-      passive: true,
+      passive: false, // changed to false for touchmove to avoid scroll during drag
     });
     document.addEventListener(isTouch ? "touchend" : "mouseup", onUp);
   };

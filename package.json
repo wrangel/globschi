@@ -24,6 +24,7 @@
     "helmet": "^8.1.0",
     "leaflet": "^1.9.4",
     "marzipano": "^0.10.2",
+    "masonic": "^4.1.0",
     "mongoose": "^8.18.1",
     "node-cache": "^5.1.2",
     "panzoom": "^9.4.3",

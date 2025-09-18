@@ -102,6 +102,8 @@ const Map = () => {
         <ErrorBoundary>
           <div className={styles.MapContainer}>
             <MapContainer
+              role="region"
+              aria-label="Interactive map showing aerial imagery locations"
               center={MAP_INITIAL_CENTER}
               zoom={MAP_INITIAL_ZOOM}
               className={`${styles.leafletContainer} custom-map`}
@@ -126,6 +128,7 @@ const Map = () => {
                   key={item.id}
                   position={[item.latitude, item.longitude]}
                   icon={redPinIcon}
+                  title={item.name || "Map marker"} // use descriptive names
                   eventHandlers={{ click: () => onItemClick(item) }}
                 />
               ))}

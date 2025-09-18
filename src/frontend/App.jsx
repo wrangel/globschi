@@ -1,5 +1,7 @@
 // src/frontend/App.jsx
 
+// src/frontend/App.jsx
+
 import "./styles/Global.css";
 import React, { Suspense, lazy } from "react";
 import { Routes, Route, useNavigate } from "react-router-dom";
@@ -9,14 +11,12 @@ import { preload } from "swr";
 import ErrorBoundary from "./components/ErrorBoundary";
 import NavigationPages from "./components/NavigationPages";
 import LoadingOverlay from "./components/LoadingOverlay";
-import { COMBINED_DATA_URL } from "./constants"; // <-- NEW
+import { COMBINED_DATA_URL } from "./constants";
 
 const fetcher = (url) => fetch(url).then((res) => res.json());
 
-// Pre-load the endpoint once the env-var has been validated
 preload(COMBINED_DATA_URL, fetcher);
 
-// Lazy-loaded views
 const Home = lazy(() => import("./views/Home"));
 const Grid = lazy(() => import("./views/Grid"));
 const Map = lazy(() => import("./views/Map"));
@@ -27,6 +27,11 @@ function App() {
   return (
     <HelmetProvider>
       <div className="App">
+        {/* Visually hidden heading for accessibility and SEO */}
+        <h1 className="visually-hidden">
+          Capturing Breathtaking Aerial Photography
+        </h1>
+
         <ErrorBoundary>
           <Suspense fallback={<LoadingOverlay />}>
             <Routes>
@@ -36,6 +41,7 @@ function App() {
             </Routes>
           </Suspense>
         </ErrorBoundary>
+
         <NavigationPages onNavigate={navigate} />
       </div>
     </HelmetProvider>

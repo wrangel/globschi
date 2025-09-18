@@ -15,16 +15,18 @@ import { useEffect, useCallback } from "react";
 const useKeyboardNavigation = (onClose, onPrevious, onNext) => {
   const handleKeyDown = useCallback(
     (event) => {
+      if (event.repeat) return; // ignore holding key down firing repeatedly
+
       if (event.key === "Escape" && typeof onClose === "function") {
         onClose();
       } else if (
         event.key === "ArrowLeft" &&
         typeof onPrevious === "function"
       ) {
-        event.preventDefault(); // Optional: prevent scrolling
+        event.preventDefault();
         onPrevious();
       } else if (event.key === "ArrowRight" && typeof onNext === "function") {
-        event.preventDefault(); // Optional: prevent scrolling
+        event.preventDefault();
         onNext();
       }
     },
@@ -32,9 +34,9 @@ const useKeyboardNavigation = (onClose, onPrevious, onNext) => {
   );
 
   useEffect(() => {
-    document.addEventListener("keydown", handleKeyDown);
+    window.addEventListener("keydown", handleKeyDown);
     return () => {
-      document.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener("keydown", handleKeyDown);
     };
   }, [handleKeyDown]);
 };

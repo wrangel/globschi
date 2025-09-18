@@ -14,11 +14,22 @@ import styles from "../styles/LoadingOverlay.module.css";
  */
 const LoadingOverlay = ({ thumbnailUrl }) => {
   return (
-    <div className={styles.loadingOverlay}>
+    <div
+      className={styles.loadingOverlay}
+      role="status"
+      aria-live="polite"
+      aria-busy="true"
+    >
       {thumbnailUrl && (
-        <img src={thumbnailUrl} alt="Thumbnail" className={styles.thumbnail} />
+        <img
+          src={thumbnailUrl}
+          alt="Thumbnail"
+          className={styles.thumbnail}
+          loading="lazy"
+          decoding="async"
+        />
       )}
-      <div className={styles.spinner}></div>
+      <div className={styles.spinner} aria-label="Loading indicator" />
     </div>
   );
 };

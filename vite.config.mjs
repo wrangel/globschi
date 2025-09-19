@@ -29,17 +29,13 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks(id) {
-          if (id.includes("node_modules/react")) {
-            return "vendor_react";
-          }
-          if (id.includes("node_modules/marzipano")) {
-            return "vendor_marzipano";
-          }
-          if (id.includes("node_modules/hammerjs")) {
-            return "vendor_hammerjs";
-          }
           if (id.includes("node_modules")) {
-            return "vendor";
+            // use package name as chunk id for better splitting
+            const parts = id.split("node_modules/");
+            if (parts.length > 1) {
+              const pkgName = parts[1].split("/")[0];
+              return `vendor_${pkgName}`;
+            }
           }
         },
       },

@@ -24,7 +24,6 @@
     "helmet": "^8.1.0",
     "leaflet": "^1.9.4",
     "marzipano": "^0.10.2",
-    "masonic": "^4.1.0",
     "mongoose": "^8.18.1",
     "node-cache": "^5.1.2",
     "panzoom": "^9.4.3",
@@ -52,6 +51,7 @@
     "globals": "^16.4.0",
     "node-exif": "^1.0.1",
     "node-fetch": "^3.3.2",
+    "rollup-plugin-visualizer": "^6.0.3",
     "sharp": "^0.34.4",
     "vite": "^7.1.6",
     "vite-plugin-eslint": "^1.8.1"

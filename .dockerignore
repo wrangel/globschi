@@ -18,6 +18,7 @@ env.production
 logs/
 material/
 src/management/
+build
 
 # Frontend build output folders (if used locally during development)
 dist/

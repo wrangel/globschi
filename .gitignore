@@ -15,6 +15,7 @@ env.production
 # Other local folders and files
 logs/
 material/
+build
 
 # Ignore local Docker ignore file to avoid adding locally ignored files in the image
 .dockerignore

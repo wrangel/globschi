@@ -1,4 +1,4 @@
-// src/frontend/views/Map.js
+// src/frontend/pages/Map.js
 
 import React, { useCallback, useEffect } from "react";
 import { Helmet } from "react-helmet-async";

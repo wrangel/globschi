@@ -22,7 +22,6 @@
     "express-static-gzip": "^3.0.0",
     "fs-extra": "^11.3.2",
     "helmet": "^8.1.0",
-    "leaflet": "^1.9.4",
     "marzipano": "^0.10.2",
     "mongoose": "^8.18.1",
     "node-cache": "^5.1.2",

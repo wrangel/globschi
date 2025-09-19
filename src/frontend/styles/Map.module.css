@@ -1,45 +1,49 @@
 /* src/styles/Map.module.css */
 
-.leafletContainer {
-  z-index: 800; /* Ensure this is lower than the hamburger menu’s z-index */
+.mapContainer {
+  position: relative;
+  z-index: 800; /* Adjust as needed for overlay stacking, e.g. below menus */
+  width: 100%;
+  height: 100vh; /* Full viewport height */
 }
 
-.leafletMarkerIcon {
-  background: none;
-  border: none;
+/* Pigeon Maps tiles container */
+.pigeon-tiles {
+  filter: none; /* You can apply filters like grayscale or brightness here if desired */
 }
 
-/* Positioning the zoom control in the upper right corner */
-.leaflet-control-container {
-  z-index: 1000; /* Ensure controls are above other elements */
+/* Marker styles (you can restyle with custom CSS or overlay images) */
+.pigeon-marker {
+  cursor: pointer;
+  /* For default markers, Pigeon Maps uses SVG circles. You can customize marker styling here */
 }
 
-.custom-map .leaflet-control-zoom {
-  position: absolute !important; /* Use absolute positioning */
-  top: var(
-    --spacing-small
-  ) !important; /* Adjust as needed for spacing from the top */
-  right: var(
-    --spacing-small
-  ) !important; /* Position it in the upper right corner */
-  background: var(
-    --zoom-control-bg
-  ); /* Optional: Add a background for better visibility */
-  border-radius: var(
-    --zoom-control-border-radius
-  ); /* Optional: Add rounded corners */
-  box-shadow: var(
-    --zoom-control-box-shadow
-  ); /* Optional: Add a shadow for depth */
+/* Zoom control container */
+.zoomControlContainer {
+  position: absolute;
+  top: var(--spacing-small, 10px);
+  right: var(--spacing-small, 10px);
+  background: var(--zoom-control-bg, rgba(255, 255, 255, 0.8));
+  border-radius: var(--zoom-control-border-radius, 4px);
+  box-shadow: var(--zoom-control-box-shadow, 0 0 4px rgba(0, 0, 0, 0.3));
+  z-index: 1000; /* above markers and map */
 }
 
-.leaflet-popup-content-wrapper {
-  background-color: var(--popup-bg-color); /* Dark background for popups */
-  color: var(--popup-text-color); /* Light text for popups */
+/* Popup styles over the map (customize your PopupViewer) */
+.popupContent {
+  background-color: var(--popup-bg-color, #222);
+  color: var(--popup-text-color, #eee);
+  padding: 10px;
+  border-radius: 4px;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.6);
 }
 
-.leaflet-popup-tip {
-  background-color: var(
-    --popup-bg-color
-  ); /* Match popup tip with popup background */
+/* Example of positioning popup tip */
+.popupTip {
+  width: 0;
+  height: 0;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-top: 10px solid var(--popup-bg-color, #222);
+  margin: 0 auto;
 }

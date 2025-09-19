@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 
 export const useResponsiveGridWithRatio = (
   baseGutter = 16,
-  ratio = -2 / 16
+  ratio = -3 / 16
 ) => {
   const [gridConfig, setGridConfig] = useState({
     columnWidth: 300,

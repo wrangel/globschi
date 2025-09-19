@@ -22,3 +22,4 @@ build
 
 # Scripts & backend files - normally tracked, so comment out ignore unless needed
 scripts/prod-deploy.sh
+stats.html

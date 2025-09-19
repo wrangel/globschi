@@ -14,6 +14,8 @@ env.production
 # Mac OS system files
 .DS_Store
 
+stats.html
+
 # Local development folders and build artifacts
 logs/
 material/

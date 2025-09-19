@@ -1,10 +1,8 @@
 // src/frontend/pages/Map.js
 
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
-import { MapContainer, TileLayer, Marker, useMap } from "react-leaflet";
-import L from "leaflet";
-import "leaflet/dist/leaflet.css";
+import { Map, Marker } from "pigeon-maps";
 import LoadingErrorHandler from "../components/LoadingErrorHandler";
 import PopupViewer from "../components/PopupViewer";
 import { useItems } from "../hooks/useItems";
@@ -12,54 +10,49 @@ import { useItemViewer } from "../hooks/useItemViewer";
 import { useLoadingError } from "../hooks/useLoadingError";
 import MascotCorner from "../components/MascotCorner";
 import ErrorBoundary from "../components/ErrorBoundary";
-import {
-  MAP_INITIAL_CENTER,
-  MAP_INITIAL_ZOOM,
-  ICON_URLS,
-  ICON_SIZES,
-  DOMAIN,
-} from "../constants";
+import { DOMAIN } from "../constants";
 import styles from "../styles/Map.module.css";
 
-const redPinIcon = new L.Icon({
-  iconUrl: ICON_URLS.RED_MARKER,
-  shadowUrl: ICON_URLS.MARKER_SHADOW,
-  iconSize: ICON_SIZES.MARKER,
-  iconAnchor: ICON_SIZES.MARKER_ANCHOR,
-  popupAnchor: ICON_SIZES.POPUP_ANCHOR,
-  shadowSize: ICON_SIZES.SHADOW,
-});
+function mapboxSatelliteProvider(x, y, z, dpr) {
+  const token = import.meta.env.VITE_MAPBOX_PUBLIC_TOKEN;
+  return `https://api.mapbox.com/styles/v1/mapbox/satellite-v9/tiles/256/${z}/${x}/${y}${
+    dpr >= 2 ? "@2x" : ""
+  }?access_token=${token}`;
+}
 
-const FitBounds = ({ items }) => {
-  const map = useMap();
+function calculateBounds(items) {
+  if (!items.length) return { center: [0, 0], zoom: 2 };
 
-  useEffect(() => {
-    if (items.length > 0) {
-      const latitudes = items.map((item) => item.latitude);
-      const longitudes = items.map((item) => item.longitude);
+  let minLat = items[0].latitude,
+    maxLat = items[0].latitude,
+    minLng = items[0].longitude,
+    maxLng = items[0].longitude;
 
-      const latOffset = 0.5;
-      const lngOffset = 0.5;
+  items.forEach(({ latitude, longitude }) => {
+    if (latitude < minLat) minLat = latitude;
+    if (latitude > maxLat) maxLat = latitude;
+    if (longitude < minLng) minLng = longitude;
+    if (longitude > maxLng) maxLng = longitude;
+  });
 
-      const bounds = [
-        [
-          Math.min(...latitudes) - latOffset,
-          Math.min(...longitudes) - lngOffset,
-        ],
-        [
-          Math.max(...latitudes) + latOffset,
-          Math.max(...longitudes) + lngOffset,
-        ],
-      ];
+  const center = [(minLat + maxLat) / 2, (minLng + maxLng) / 2];
+  const latDelta = maxLat - minLat;
+  const lngDelta = maxLng - minLng;
+  const maxDelta = Math.max(latDelta, lngDelta);
 
-      map.fitBounds(bounds, { padding: [10, 10] });
-    }
-  }, [items, map]);
+  let zoom;
+  if (maxDelta > 60) zoom = 2;
+  else if (maxDelta > 30) zoom = 4;
+  else if (maxDelta > 15) zoom = 6;
+  else if (maxDelta > 10) zoom = 8;
+  else if (maxDelta > 5) zoom = 10;
+  else if (maxDelta > 2) zoom = 12;
+  else zoom = 14;
 
-  return null;
-};
+  return { center, zoom };
+}
 
-const Map = () => {
+const MapPage = () => {
   const { items, isLoading: isItemsLoading, error: itemsError } = useItems();
   const { isLoading, error, setErrorMessage, stopLoading } =
     useLoadingError(true);
@@ -77,6 +70,14 @@ const Map = () => {
   const onNext = useCallback(handleNextItem, [handleNextItem]);
   const onPrevious = useCallback(handlePreviousItem, [handlePreviousItem]);
 
+  const [view, setView] = useState({ center: [0, 0], zoom: 2 });
+
+  useEffect(() => {
+    if (items.length > 0) {
+      setView(calculateBounds(items));
+    }
+  }, [items]);
+
   useEffect(() => {
     if (!isItemsLoading) {
       stopLoading();
@@ -89,7 +90,6 @@ const Map = () => {
   return (
     <>
       <MascotCorner />
-      {/* Fixed overlay in upper left corner */}
       <Helmet>
         <link rel="canonical" href={`${DOMAIN}map`} />
         <title>Abstract Altitudes</title>
@@ -101,40 +101,26 @@ const Map = () => {
       <LoadingErrorHandler isLoading={isLoading} error={error}>
         <ErrorBoundary>
           <div className={styles.MapContainer}>
-            <MapContainer
-              role="region"
-              aria-label="Interactive map showing aerial imagery locations"
-              center={MAP_INITIAL_CENTER}
-              zoom={MAP_INITIAL_ZOOM}
-              className={`${styles.leafletContainer} custom-map`}
-              style={{ height: "100vh", width: "100%" }}
-              zoomControl={true}
+            <Map
+              provider={mapboxSatelliteProvider}
+              dprs={[1, 2]}
+              height={window.innerHeight}
+              width="100%"
+              center={view.center}
+              zoom={view.zoom}
+              onBoundsChanged={({ center, zoom }) => setView({ center, zoom })}
               minZoom={2}
               maxZoom={18}
-              scrollWheelZoom={true}
-              doubleClickZoom={true}
-              touchZoom={true}
             >
-              <TileLayer
-                url="https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}"
-                attribution="© Mapbox © OpenStreetMap"
-                tileSize={512}
-                zoomOffset={-1}
-                id="mapbox/satellite-v9"
-                accessToken={import.meta.env.VITE_MAPBOX_PUBLIC_TOKEN}
-              />
               {items.map((item) => (
                 <Marker
                   key={item.id}
-                  position={[item.latitude, item.longitude]}
-                  icon={redPinIcon}
-                  title={item.name || "Map marker"} // use descriptive names
-                  eventHandlers={{ click: () => onItemClick(item) }}
+                  anchor={[item.latitude, item.longitude]}
+                  onClick={() => onItemClick(item)}
+                  title={item.name || "Map marker"}
                 />
               ))}
-
-              <FitBounds items={items} />
-            </MapContainer>
+            </Map>
 
             {isModalOpen && (
               <PopupViewer
@@ -152,4 +138,4 @@ const Map = () => {
   );
 };
 
-export default React.memo(Map);
+export default React.memo(MapPage);

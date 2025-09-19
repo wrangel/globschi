@@ -1,17 +1,22 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
+import { visualizer } from "rollup-plugin-visualizer";
 
 export default defineConfig({
   plugins: [
     react({
-      // Tell the plugin to parse JSX also in .js files
       jsxInclude: ["**/*.jsx", "**/*.js"],
+    }),
+    visualizer({
+      open: true,
+      filename: "stats.html",
+      gzipSize: true,
+      brotliSize: true,
     }),
   ],
   server: {
-    port: 3000, // fallback: match CRA port
+    port: 3000,
     proxy: {
-      // Forward frontend requests for /api to the backend on 8081
       "/api": {
         target: "http://localhost:8081",
         changeOrigin: true,
@@ -20,14 +25,26 @@ export default defineConfig({
     },
   },
   build: {
-    outDir: "build", // optional: preserve CRA's default output folder
-  },
-  resolve: {
-    alias: {
-      // Optional: add shims or path aliases if needed later
+    outDir: "build",
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (id.includes("node_modules")) {
+            // use package name as chunk id for better splitting
+            const parts = id.split("node_modules/");
+            if (parts.length > 1) {
+              const pkgName = parts[1].split("/")[0];
+              return `vendor_${pkgName}`;
+            }
+          }
+        },
+      },
     },
   },
+  resolve: {
+    alias: {},
+  },
   define: {
-    global: "globalThis", // helpful if any library expects 'global'
+    global: "globalThis",
   },
 });

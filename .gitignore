@@ -15,9 +15,11 @@ env.production
 # Other local folders and files
 logs/
 material/
+build
 
 # Ignore local Docker ignore file to avoid adding locally ignored files in the image
 .dockerignore
 
 # Scripts & backend files - normally tracked, so comment out ignore unless needed
 scripts/prod-deploy.sh
+stats.html

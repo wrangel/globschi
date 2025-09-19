@@ -1,4 +1,4 @@
-// src/frontend/views/Grid.js
+// src/frontend/pages/Grid.js
 
 import React, { useCallback } from "react";
 import { Helmet } from "react-helmet-async";

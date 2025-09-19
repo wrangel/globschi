@@ -1,7 +1,5 @@
 // src/frontend/App.jsx
 
-// src/frontend/App.jsx
-
 import "./styles/Global.css";
 import React, { Suspense, lazy } from "react";
 import { Routes, Route, useNavigate } from "react-router-dom";
@@ -17,9 +15,9 @@ const fetcher = (url) => fetch(url).then((res) => res.json());
 
 preload(COMBINED_DATA_URL, fetcher);
 
-const Home = lazy(() => import("./views/Home"));
-const Grid = lazy(() => import("./views/Grid"));
-const Map = lazy(() => import("./views/Map"));
+const Home = lazy(() => import("./pages/Home"));
+const Grid = lazy(() => import("./pages/Grid"));
+const Map = lazy(() => import("./pages/Map"));
 
 function App() {
   const navigate = useNavigate();

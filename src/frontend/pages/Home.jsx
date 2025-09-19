@@ -1,4 +1,4 @@
-// src/frontend/views/Home.js
+// src/frontend/pages/Home.js
 
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";

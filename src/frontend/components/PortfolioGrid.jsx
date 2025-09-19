@@ -1,14 +1,13 @@
 // src/frontend/components/PortfolioGrid.jsx
 
-import Masonry from "react-masonry-css";
+import { Masonry } from "masonic";
 import LoadingErrorHandler from "./LoadingErrorHandler";
 import PortfolioItem from "./PortfolioItem";
 import { useLoadingError } from "../hooks/useLoadingError";
-import { GRID_BREAKPOINTS } from "../constants";
-import styles from "../styles/PortfolioGrid.module.css";
+import { useResponsiveGridWithRatio } from "../hooks/useResponsiveGridWithRatio";
 
 /**
- * PortfolioGrid component renders a masonry grid layout of portfolio items.
+ * PortfolioGrid component renders a masonry grid layout of portfolio items using Masonic.
  *
  * It handles loading and error states using the useLoadingError hook,
  * and displays the portfolio items in a responsive masonry layout.
@@ -21,25 +20,29 @@ import styles from "../styles/PortfolioGrid.module.css";
  */
 const PortfolioGrid = ({ items, onItemClick }) => {
   const { isLoading, error } = useLoadingError(false);
+  const { columnWidth, columnGutter, rowGutter } = useResponsiveGridWithRatio(
+    16,
+    -2 / 16
+  );
+
+  const renderItem = ({ data }) => (
+    <PortfolioItem
+      key={data.id}
+      item={data}
+      onItemClick={onItemClick}
+      useLazyImage={true}
+    />
+  );
 
   return (
     <LoadingErrorHandler isLoading={isLoading} error={error}>
-      <div>
-        <Masonry
-          breakpointCols={GRID_BREAKPOINTS} // Responsive column counts
-          className={styles.masonryGrid} // CSS class for the grid container
-          columnClassName={styles.masonryGridColumn} // CSS class for each column
-        >
-          {items.map((item) => (
-            <PortfolioItem
-              key={item.id}
-              item={item}
-              onItemClick={onItemClick}
-              useLazyImage={true} // new prop to toggle LazyImage use
-            />
-          ))}
-        </Masonry>
-      </div>
+      <Masonry
+        items={items}
+        columnWidth={columnWidth}
+        columnGutter={columnGutter}
+        rowGutter={rowGutter}
+        render={renderItem}
+      />
     </LoadingErrorHandler>
   );
 };

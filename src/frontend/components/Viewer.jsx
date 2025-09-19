@@ -1,11 +1,20 @@
 // src/frontend/components/Viewer.jsx
 
-import React, { useState, useEffect, useRef, useCallback, memo } from "react";
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  useCallback,
+  memo,
+  Suspense,
+  lazy,
+} from "react";
 import PropTypes from "prop-types";
 import NavigationMedia from "./NavigationMedia";
 import ViewerImage from "./ViewerImage";
 import PopupMetadata from "./PopupMetadata";
-import ViewerPanorama from "./ViewerPanorama";
+// Lazy load ViewerPanorama for performance
+const ViewerPanorama = lazy(() => import("./ViewerPanorama"));
 import LoadingOverlay from "./LoadingOverlay";
 import useKeyboardNavigation from "../hooks/useKeyboardNavigation";
 import ErrorBoundary from "./ErrorBoundary";
@@ -15,13 +24,15 @@ const MediaContent = memo(({ item, isNavigationMode, onContentLoaded }) => {
   return (
     <ErrorBoundary>
       {item.viewer === "pano" ? (
-        <ViewerPanorama
-          panoPath={item.panoPath}
-          levels={item.levels}
-          initialViewParameters={item.initialViewParameters}
-          onReady={onContentLoaded}
-          onError={(err) => console.error("Panorama error:", err)}
-        />
+        <Suspense fallback={<div>Loading panorama viewer...</div>}>
+          <ViewerPanorama
+            panoPath={item.panoPath}
+            levels={item.levels}
+            initialViewParameters={item.initialViewParameters}
+            onReady={onContentLoaded}
+            onError={(err) => console.error("Panorama error:", err)}
+          />
+        </Suspense>
       ) : (
         <ViewerImage
           actualUrl={item.actualUrl}

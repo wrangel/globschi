@@ -8,7 +8,7 @@ export default defineConfig({
       jsxInclude: ["**/*.jsx", "**/*.js"],
     }),
     visualizer({
-      open: true, // Opens report automatically
+      open: true,
       filename: "stats.html",
       gzipSize: true,
       brotliSize: true,
@@ -26,6 +26,24 @@ export default defineConfig({
   },
   build: {
     outDir: "build",
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (id.includes("node_modules/react")) {
+            return "vendor_react";
+          }
+          if (id.includes("node_modules/marzipano")) {
+            return "vendor_marzipano";
+          }
+          if (id.includes("node_modules/hammerjs")) {
+            return "vendor_hammerjs";
+          }
+          if (id.includes("node_modules")) {
+            return "vendor";
+          }
+        },
+      },
+    },
   },
   resolve: {
     alias: {},

@@ -72,11 +72,28 @@ const MapPage = () => {
 
   const [view, setView] = useState({ center: [0, 0], zoom: 2 });
 
+  // Manage Dimensions for map width/height (numeric only)
+  const [dimensions, setDimensions] = useState({
+    width: window.innerWidth,
+    height: window.innerHeight,
+  });
+
   useEffect(() => {
     if (items.length > 0) {
       setView(calculateBounds(items));
     }
   }, [items]);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setDimensions({
+        width: window.innerWidth,
+        height: window.innerHeight,
+      });
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   useEffect(() => {
     if (!isItemsLoading) {
@@ -104,8 +121,8 @@ const MapPage = () => {
             <Map
               provider={mapboxSatelliteProvider}
               dprs={[1, 2]}
-              height={window.innerHeight}
-              width="100%"
+              height={dimensions.height}
+              width={dimensions.width}
               center={view.center}
               zoom={view.zoom}
               onBoundsChanged={({ center, zoom }) => setView({ center, zoom })}

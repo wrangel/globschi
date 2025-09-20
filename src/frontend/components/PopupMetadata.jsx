@@ -62,6 +62,8 @@ const PopupMetadata = ({
     let lastY = pointer.clientY;
 
     const onMove = (ev) => {
+      ev.stopPropagation();
+      ev.preventDefault();
       const p = isTouch ? ev.touches[0] : ev;
       baseLeft += p.clientX - lastX;
       baseTop += p.clientY - lastY;
@@ -71,7 +73,9 @@ const PopupMetadata = ({
       popup.style.top = `${baseTop}px`;
     };
 
-    const onUp = () => {
+    const onUp = (ev) => {
+      ev.stopPropagation();
+      ev.preventDefault();
       setPopupPosition({ x: baseLeft, y: baseTop });
       document.removeEventListener(isTouch ? "touchmove" : "mousemove", onMove);
       document.removeEventListener(isTouch ? "touchend" : "mouseup", onUp);

@@ -1,35 +1,31 @@
 /* src/styles/Map.module.css */
 
-.mapContainer {
+/* Main map container */
+.MapContainer {
   position: relative;
-  z-index: 800; /* Adjust as needed for overlay stacking, e.g. below menus */
+  z-index: 800; /* Adjust as needed for overlay stacking */
   width: 100%;
   height: 100vh; /* Full viewport height */
+  overflow: hidden;
 }
 
-/* Pigeon Maps tiles container */
-.pigeon-tiles {
-  filter: none; /* You can apply filters like grayscale or brightness here if desired */
+/* Optional: MapLibre popup content styling */
+.maplibregl-popup-content {
+  background-color: var(--popup-bg-color, #222);
+  color: var(--popup-text-color, #eee);
+  padding: 10px;
+  border-radius: 4px;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.6);
+  font-size: 14px;
+  line-height: 1.4;
 }
 
-/* Marker styles (you can restyle with custom CSS or overlay images) */
-.pigeon-marker {
-  cursor: pointer;
-  /* For default markers, Pigeon Maps uses SVG circles. You can customize marker styling here */
+/* Optional: MapLibre popup tip arrow */
+.maplibregl-popup-tip {
+  border-top-color: var(--popup-bg-color, #222);
 }
 
-/* Zoom control container */
-.zoomControlContainer {
-  position: absolute;
-  top: var(--spacing-small, 10px);
-  right: var(--spacing-small, 10px);
-  background: var(--zoom-control-bg, rgba(255, 255, 255, 0.8));
-  border-radius: var(--zoom-control-border-radius, 4px);
-  box-shadow: var(--zoom-control-box-shadow, 0 0 4px rgba(0, 0, 0, 0.3));
-  z-index: 1000; /* above markers and map */
-}
-
-/* Popup styles over the map (customize your PopupViewer) */
+/* Custom popup viewer styles (your PopupViewer component) */
 .popupContent {
   background-color: var(--popup-bg-color, #222);
   color: var(--popup-text-color, #eee);
@@ -38,7 +34,7 @@
   box-shadow: 0 0 8px rgba(0, 0, 0, 0.6);
 }
 
-/* Example of positioning popup tip */
+/* Popup tip for custom viewer */
 .popupTip {
   width: 0;
   height: 0;

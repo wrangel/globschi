@@ -1,8 +1,8 @@
-// src/frontend/pages/Map.js
-
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useRef, useState, useCallback } from "react";
 import { Helmet } from "react-helmet-async";
-import { Map, Marker } from "pigeon-maps";
+import maplibregl from "maplibre-gl";
+import "maplibre-gl/dist/maplibre-gl.css";
+
 import LoadingErrorHandler from "../components/LoadingErrorHandler";
 import PopupViewer from "../components/PopupViewer";
 import { useItems } from "../hooks/useItems";
@@ -12,13 +12,6 @@ import MascotCorner from "../components/MascotCorner";
 import ErrorBoundary from "../components/ErrorBoundary";
 import { DOMAIN } from "../constants";
 import styles from "../styles/Map.module.css";
-
-function mapboxSatelliteProvider(x, y, z, dpr) {
-  const token = import.meta.env.VITE_MAPBOX_PUBLIC_TOKEN;
-  return `https://api.mapbox.com/styles/v1/mapbox/satellite-v9/tiles/256/${z}/${x}/${y}${
-    dpr >= 2 ? "@2x" : ""
-  }?access_token=${token}`;
-}
 
 function calculateBounds(items) {
   if (!items.length) return { center: [0, 0], zoom: 2 };
@@ -35,7 +28,7 @@ function calculateBounds(items) {
     if (longitude > maxLng) maxLng = longitude;
   });
 
-  const center = [(minLat + maxLat) / 2, (minLng + maxLng) / 2];
+  const center = [(minLng + maxLng) / 2, (minLat + maxLat) / 2];
   const latDelta = maxLat - minLat;
   const lngDelta = maxLng - minLng;
   const maxDelta = Math.max(latDelta, lngDelta);
@@ -70,9 +63,11 @@ const MapPage = () => {
   const onNext = useCallback(handleNextItem, [handleNextItem]);
   const onPrevious = useCallback(handlePreviousItem, [handlePreviousItem]);
 
+  const mapContainer = useRef(null);
+  const mapRef = useRef(null);
+  const markersRef = useRef([]);
   const [view, setView] = useState({ center: [0, 0], zoom: 2 });
 
-  // Manage Dimensions for map width/height (numeric only)
   const [dimensions, setDimensions] = useState({
     width: window.innerWidth,
     height: window.innerHeight,
@@ -85,23 +80,84 @@ const MapPage = () => {
   }, [items]);
 
   useEffect(() => {
+    if (!mapRef.current && mapContainer.current) {
+      mapRef.current = new maplibregl.Map({
+        container: mapContainer.current,
+        style: {
+          version: 8,
+          sources: {
+            satellite: {
+              type: "raster",
+              tiles: [
+                "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless-2020_3857/default/g/{z}/{y}/{x}.jpg",
+              ],
+              tileSize: 256,
+            },
+          },
+          layers: [
+            {
+              id: "satellite-layer",
+              type: "raster",
+              source: "satellite",
+              minzoom: 0,
+              maxzoom: 18,
+            },
+          ],
+        },
+        center: view.center,
+        zoom: view.zoom,
+        attributionControl: false,
+        interactive: true,
+      });
+
+      mapRef.current.on("moveend", () => {
+        const center = mapRef.current.getCenter();
+        const zoom = mapRef.current.getZoom();
+        setView({ center: [center.lng, center.lat], zoom });
+      });
+
+      mapRef.current.on("load", () => {
+        markersRef.current.forEach((m) => m.remove());
+        markersRef.current = [];
+
+        items.forEach((item) => {
+          const marker = new maplibregl.Marker()
+            .setLngLat([item.longitude, item.latitude])
+            .setPopup(new maplibregl.Popup().setText(item.name || "Map marker"))
+            .addTo(mapRef.current);
+
+          marker
+            .getElement()
+            .addEventListener("click", () => onItemClick(item));
+          markersRef.current.push(marker);
+        });
+      });
+    }
+  }, [items, onItemClick, view.center, view.zoom]);
+
+  useEffect(() => {
+    if (mapRef.current) {
+      mapRef.current.flyTo({ center: view.center, zoom: view.zoom });
+    }
+  }, [view]);
+
+  useEffect(() => {
     const handleResize = () => {
       setDimensions({
         width: window.innerWidth,
         height: window.innerHeight,
       });
+      if (mapRef.current) {
+        mapRef.current.resize();
+      }
     };
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   useEffect(() => {
-    if (!isItemsLoading) {
-      stopLoading();
-    }
-    if (itemsError) {
-      setErrorMessage(itemsError);
-    }
+    if (!isItemsLoading) stopLoading();
+    if (itemsError) setErrorMessage(itemsError);
   }, [isItemsLoading, itemsError, stopLoading, setErrorMessage]);
 
   return (
@@ -117,40 +173,20 @@ const MapPage = () => {
       </Helmet>
       <LoadingErrorHandler isLoading={isLoading} error={error}>
         <ErrorBoundary>
-          <div className={styles.MapContainer}>
-            <Map
-              provider={mapboxSatelliteProvider}
-              dprs={[1, 2]}
-              height={dimensions.height}
-              width={dimensions.width}
-              center={view.center}
-              zoom={view.zoom}
-              onBoundsChanged={({ center, zoom }) => setView({ center, zoom })}
-              minZoom={2}
-              maxZoom={18}
-              animate={true}
-              twoFingerDragWarning={null}
-            >
-              {items.map((item) => (
-                <Marker
-                  key={item.id}
-                  anchor={[item.latitude, item.longitude]}
-                  onClick={() => onItemClick(item)}
-                  title={item.name || "Map marker"}
-                />
-              ))}
-            </Map>
-
-            {isModalOpen && (
-              <PopupViewer
-                item={selectedItem}
-                isOpen={isModalOpen}
-                onClose={onClose}
-                onNext={onNext}
-                onPrevious={onPrevious}
-              />
-            )}
-          </div>
+          <div
+            ref={mapContainer}
+            className={styles.MapContainer}
+            style={{ width: dimensions.width, height: dimensions.height }}
+          />
+          {isModalOpen && (
+            <PopupViewer
+              item={selectedItem}
+              isOpen={isModalOpen}
+              onClose={onClose}
+              onNext={onNext}
+              onPrevious={onPrevious}
+            />
+          )}
         </ErrorBoundary>
       </LoadingErrorHandler>
     </>

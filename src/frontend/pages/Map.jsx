@@ -14,7 +14,7 @@ import { DOMAIN } from "../constants";
 import styles from "../styles/Map.module.css";
 
 function calculateBounds(items) {
-  if (!items.length) return { center: [0, 0], zoom: 2 };
+  if (!items.length) return { center: [0, 0], zoom: 4 };
 
   let minLat = items[0].latitude,
     maxLat = items[0].latitude,
@@ -42,10 +42,7 @@ function calculateBounds(items) {
   else if (maxDelta > 2) zoom = 12;
   else zoom = 14;
 
-  const MIN_ZOOM = 4;
-  if (zoom < MIN_ZOOM) zoom = MIN_ZOOM;
-
-  return { center, zoom };
+  return { center, zoom: Math.max(zoom, 4) };
 }
 
 const MapPage = () => {
@@ -69,8 +66,7 @@ const MapPage = () => {
   const mapContainer = useRef(null);
   const mapRef = useRef(null);
   const markersRef = useRef([]);
-
-  const [view, setView] = useState({ center: [0, 0], zoom: 2 });
+  const [view, setView] = useState({ center: [0, 0], zoom: 4 });
 
   const [dimensions, setDimensions] = useState({
     width: window.innerWidth,
@@ -112,6 +108,8 @@ const MapPage = () => {
         zoom: view.zoom,
         attributionControl: false,
         interactive: true,
+        dragPan: true,
+        dragRotate: false,
       });
 
       mapRef.current.on("moveend", () => {
@@ -169,6 +167,26 @@ const MapPage = () => {
     if (!isItemsLoading) stopLoading();
     if (itemsError) setErrorMessage(itemsError);
   }, [isItemsLoading, itemsError, stopLoading, setErrorMessage]);
+
+  // 🖱️ Cursor override: force default on canvas
+  useEffect(() => {
+    if (mapRef.current && mapContainer.current) {
+      mapContainer.current.classList.add("maplibre-default-cursor");
+
+      const canvas = mapContainer.current.querySelector(".maplibregl-canvas");
+      if (canvas) {
+        const observer = new MutationObserver(() => {
+          canvas.style.cursor = "default";
+        });
+        observer.observe(canvas, {
+          attributes: true,
+          attributeFilter: ["style"],
+        });
+
+        return () => observer.disconnect();
+      }
+    }
+  }, []);
 
   return (
     <>

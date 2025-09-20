@@ -112,3 +112,7 @@ code {
   white-space: nowrap;
   border: 0;
 }
+
+.maplibregl-canvas {
+  cursor: default !important;
+}

@@ -5,10 +5,14 @@
   width: 100%;
   height: 100vh;
   overflow: hidden;
-  cursor: default; /* Default mouse cursor on map canvas */
 }
 
-/* Hand cursor only on markers */
+/* Force default cursor on the map canvas */
+.maplibre-default-cursor .maplibregl-canvas {
+  cursor: default !important;
+}
+
+/* Hand cursor only on marker elements */
 .maplibregl-marker {
   cursor: pointer !important;
 }

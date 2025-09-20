@@ -128,6 +128,8 @@ const MapPage = () => {
               onBoundsChanged={({ center, zoom }) => setView({ center, zoom })}
               minZoom={2}
               maxZoom={18}
+              animate={true}
+              twoFingerDragWarning={null}
             >
               {items.map((item) => (
                 <Marker

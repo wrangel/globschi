@@ -42,6 +42,9 @@ function calculateBounds(items) {
   else if (maxDelta > 2) zoom = 12;
   else zoom = 14;
 
+  const MIN_ZOOM = 4;
+  if (zoom < MIN_ZOOM) zoom = MIN_ZOOM;
+
   return { center, zoom };
 }
 
@@ -66,6 +69,7 @@ const MapPage = () => {
   const mapContainer = useRef(null);
   const mapRef = useRef(null);
   const markersRef = useRef([]);
+
   const [view, setView] = useState({ center: [0, 0], zoom: 2 });
 
   const [dimensions, setDimensions] = useState({
@@ -121,14 +125,20 @@ const MapPage = () => {
         markersRef.current = [];
 
         items.forEach((item) => {
+          const popup = new maplibregl.Popup({
+            closeOnClick: true,
+            closeButton: true,
+          }).setText(item.name || "");
+
           const marker = new maplibregl.Marker()
             .setLngLat([item.longitude, item.latitude])
-            .setPopup(new maplibregl.Popup().setText(item.name || "Map marker"))
             .addTo(mapRef.current);
 
-          marker
-            .getElement()
-            .addEventListener("click", () => onItemClick(item));
+          marker.getElement().addEventListener("click", () => {
+            popup.setLngLat(marker.getLngLat()).addTo(mapRef.current);
+            onItemClick(item);
+          });
+
           markersRef.current.push(marker);
         });
       });
